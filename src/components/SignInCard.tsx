@@ -1,12 +1,10 @@
 import { Box, Button, Image, VStack } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
-import { primaryColor, secondaryColor } from "../configs";
+import { GoSaaSLabsLogo, primaryColor, secondaryColor } from "../configs";
 import { useNavigate } from "react-router-dom";
 
 const SignInCard = () => {
   const navigate = useNavigate();
-  const GoSaaSLabsLogo: string =
-    "https://gosaaslabs.com/wp-content/uploads/2022/02/GoSaaS-Labs-h.png";
 
   return (
     <Box padding={70}>
