@@ -1,5 +1,21 @@
+import { Grid, GridItem, Show } from "@chakra-ui/react";
+
 const Homepage = () => {
-  return <div style={{ backgroundColor: "red" }}>Homepage</div>;
+  return (
+    <Grid templateAreas={`"nav nav" "sidebar main"`}>
+      <GridItem area="nav" bg={"coral"}>
+        Nav
+      </GridItem>
+      <Show above="lg">
+        <GridItem area="sidebar" bg={"gold"}>
+          Sidebar
+        </GridItem>
+      </Show>
+      <GridItem area="main" bg={"dodgerblue"}>
+        Main
+      </GridItem>
+    </Grid>
+  );
 };
 
 export default Homepage;
