@@ -1,23 +1,30 @@
-# GoSaaS Reporting Service
+# React + TypeScript + Vite + Chakara UI
 
-**Overview:**
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-GoSaaS aims to develop a unified reporting microservice that addresses the current challenges posed by diverse reporting mechanisms across multiple products. The primary objective is to centralize report generation, improve scalability for large reports, and introduce additional features such as product/report registration tracking.
+Currently, two official plugins are available:
 
-## Goals
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-The core goals of the GoSaaS Reporting Service project are:
+## Expanding the ESLint configuration
 
-### Centralized Reporting
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-*   **Consolidation:** Eliminate redundant report generation processes by establishing a single access point for all report types.
-*   **Efficiency:** Streamline the reporting process, reducing manual intervention and ensuring consistency across all reports.
-*   **Time Savings:** Minimize the time spent on manual report creation, freeing up resources for other tasks.
+- Configure the top-level `parserOptions` property like this:
 
-### Scalability
+```js
+export default {
+  // other rules...
+  parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json", "./tsconfig.app.json"],
+    tsconfigRootDir: __dirname,
+  },
+};
+```
 
-*   **High Performance:** Design the reporting system to handle large volumes of data and numerous report requests without compromising performance.
-*   **Adaptability:** Ensure the system can accommodate future growth in data volumes and user demand.
-*   **Resource Optimization:** Efficiently utilize system resources to maximize the number of reports that can be generated concurrently.
-
-By achieving these goals, GoSaaS will provide a robust, efficient, and scalable reporting solution that empowers users to generate insights and make data-driven decisions with ease.
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
