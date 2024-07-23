@@ -3,7 +3,11 @@ import { primaryColor, sidebarHeight } from "../configs";
 import { MdDashboard } from "react-icons/md";
 import { AiOutlineAudit } from "react-icons/ai";
 
-const Sidebar = () => {
+interface SidebarProps {
+  onSelected: (selectedComponent: string) => void;
+}
+
+const Sidebar = ({ onSelected }: SidebarProps) => {
   return (
     <Box
       height={sidebarHeight}
@@ -12,13 +16,13 @@ const Sidebar = () => {
       borderRightColor={"lightgrey"}
       borderRightWidth={1}
     >
-      <Button onClick={() => console.log("Dashboard Pressed")}>
+      <Button onClick={() => onSelected("Dashboard")}>
         <MdDashboard size={20} color={primaryColor} />
         <Text textColor={"black"} fontWeight={"normal"} paddingLeft={2}>
           Dashboard
         </Text>
       </Button>
-      <Button onClick={() => console.log("Audit Trail Pressed")}>
+      <Button onClick={() => onSelected("Audit Trail")}>
         <AiOutlineAudit size={20} color={primaryColor} />
         <Text textColor={"black"} fontWeight={"normal"} paddingLeft={2}>
           Audit Trail

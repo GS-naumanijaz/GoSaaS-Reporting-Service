@@ -1,9 +1,18 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
-import NavBar from "../components/NavBar";
 import { secondaryColor, tertiaryColor } from "../configs";
+import NavBar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
+import Dashboard from "../components/Dashboard";
+import { useState } from "react";
+import AuditTrail from "../components/AuditTrail";
 
 const Homepage = () => {
+  const [selectedComponent, setSelectedComponent] =
+    useState<string>("Dashboard");
+
+  const onSelected = (passedSelection: string) => {
+    setSelectedComponent(passedSelection);
+  };
   return (
     <Grid
       templateAreas={`"nav nav" "sidebar main"`}
@@ -14,11 +23,11 @@ const Homepage = () => {
       </GridItem>
       <Show above="lg">
         <GridItem area="sidebar">
-          <Sidebar />
+          <Sidebar onSelected={onSelected} />
         </GridItem>
       </Show>
       <GridItem area="main" bg={tertiaryColor}>
-        Main
+        {selectedComponent === "Dashboard" ? <Dashboard /> : <AuditTrail />}
       </GridItem>
     </Grid>
   );
