@@ -1,13 +1,14 @@
 import {
   Box,
   Button,
+  Divider,
   HStack,
   Popover,
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
 } from "@chakra-ui/react";
-import { primaryColor } from "../configs";
+import { primaryColor, tertiaryColor } from "../configs";
 import { FaBell } from "react-icons/fa";
 import { BiSolidCircle } from "react-icons/bi";
 import { useEffect, useState } from "react";
@@ -47,11 +48,13 @@ const NotificationPopup = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        bg={"lightgrey"}
+        bg={tertiaryColor}
         maxWidth={"320px"}
         marginRight={5}
         borderWidth={1}
         borderColor={"grey"}
+        paddingX={2}
+        paddingBottom={1}
       >
         <HStack justifyContent={"space-between"}>
           <PopoverHeader>Notifications</PopoverHeader>
@@ -59,6 +62,7 @@ const NotificationPopup = () => {
             Mark All as Read
           </Button>
         </HStack>
+        <Divider />
         {notifications.map((n, index) => (
           <HStack key={index} justifyContent={"space-between"} p={2}>
             <Button variant={"link"} textColor={"black"} fontWeight={"normal"}>

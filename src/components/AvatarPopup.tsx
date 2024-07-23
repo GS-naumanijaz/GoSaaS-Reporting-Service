@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
   Portal,
 } from "@chakra-ui/react";
-import { primaryColor } from "../configs";
+import { primaryColor, tertiaryColor } from "../configs";
 import { RxAvatar } from "react-icons/rx";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -27,13 +27,14 @@ const AvatarPopup = () => {
         </Button>
       </PopoverTrigger>
       <Portal>
-        <PopoverContent bg={"lightgrey"} maxWidth={"150px"}>
+        <PopoverContent bg={tertiaryColor} maxWidth={"150px"}>
           <PopoverBody>
             <Button
               textColor={"black"}
               fontWeight={"normal"}
               width={"100%"}
               leftIcon={<RiLogoutBoxRLine />}
+              size={"sm"}
               onClick={() => navigate("/")}
             >
               Logout
