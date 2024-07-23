@@ -3,7 +3,10 @@ import NavBar from "../components/NavBar";
 
 const Homepage = () => {
   return (
-    <Grid templateAreas={`"nav nav" "sidebar main"`}>
+    <Grid
+      templateAreas={`"nav nav" "sidebar main"`}
+      templateColumns={{ base: "0fr", lg: "250px 1fr" }}
+    >
       <GridItem area="nav">
         <NavBar />
       </GridItem>
