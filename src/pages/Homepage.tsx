@@ -1,6 +1,6 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
-import { secondaryColor } from "../configs";
+import { secondaryColor, tertiaryColor } from "../configs";
 import Sidebar from "../components/Sidebar";
 
 const Homepage = () => {
@@ -17,7 +17,7 @@ const Homepage = () => {
           <Sidebar />
         </GridItem>
       </Show>
-      <GridItem area="main" bg={"dodgerblue"}>
+      <GridItem area="main" bg={tertiaryColor}>
         Main
       </GridItem>
     </Grid>
