@@ -1,6 +1,6 @@
 // Color palette
-export const primaryColor = "rgba(68, 68, 68, 1)";
-export const secondaryColor = "rgba(34, 34, 34, 1)";
+export const primaryColor = "#D40B0B";
+export const secondaryColor = "#D4C7B0";
 
 // Image Paths
 export const GoSaaSLabsLogo: string =
