@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Dashboard from "../components/Dashboard";
 import { useState } from "react";
 import AuditTrail from "../components/AuditTrail";
+import Reports from "../components/Reports";
 
 const Homepage = () => {
   const [selectedComponent, setSelectedComponent] =
@@ -27,7 +28,13 @@ const Homepage = () => {
         </GridItem>
       </Show>
       <GridItem area="main" bg={tertiaryColor}>
-        {selectedComponent === "Dashboard" ? <Dashboard /> : <AuditTrail />}
+        {selectedComponent === "Dashboard" ? (
+          <Dashboard />
+        ) : selectedComponent === "AuditTrail" ? (
+          <AuditTrail />
+        ) : (
+          <Reports />
+        )}
       </GridItem>
     </Grid>
   );
