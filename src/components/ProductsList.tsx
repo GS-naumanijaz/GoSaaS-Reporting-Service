@@ -2,9 +2,10 @@ import { Box, SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 import PageSelector from "./PageSelector";
 import ProductElement from "./ProductElement";
+import { Product } from "./Products";
 
 interface Props {
-  products: string[];
+  products: Product[];
 }
 
 const ProductsList = ({ products }: Props) => {
@@ -15,8 +16,8 @@ const ProductsList = ({ products }: Props) => {
   return (
     <>
       <SimpleGrid columns={{ md: 2, lg: 3 }} padding={10} spacing={10}>
-        {productPages[currentPage].map((product) => (
-          <ProductElement product={product} />
+        {productPages[currentPage].map((product, index) => (
+          <ProductElement key={index} product={product} />
         ))}
       </SimpleGrid>
       {productPages.length > 1 && (
@@ -32,8 +33,8 @@ const ProductsList = ({ products }: Props) => {
   );
 };
 
-function chunkArray(array: string[], chunkSize: number): string[][] {
-  const result: string[][] = [];
+function chunkArray(array: Product[], chunkSize: number): Product[][] {
+  const result: Product[][] = [];
   for (let i = 0; i < array.length; i += chunkSize) {
     result.push(array.slice(i, i + chunkSize));
   }

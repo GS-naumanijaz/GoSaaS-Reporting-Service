@@ -3,23 +3,46 @@ import { useState } from "react";
 import ProductsList from "./ProductsList";
 import { primaryColor } from "../configs";
 
+export interface Product {
+  name: string;
+  isActive: boolean;
+}
+
 const Products = () => {
-  const products = [
-    "abc",
-    "ets",
-    "123",
-    "dummy",
-    "test",
-    "abc",
-    "ets",
-    "123",
-    "dummy",
-    "test",
+  const products: Product[] = [
+    { name: "Product 1", isActive: true },
+    { name: "Product 2", isActive: false },
+    { name: "Product 3", isActive: true },
+    { name: "Product 4", isActive: false },
+    { name: "Product 5", isActive: true },
+    { name: "Product 6", isActive: false },
+    { name: "Product 7", isActive: true },
+    { name: "Product 8", isActive: false },
+    { name: "Product 9", isActive: true },
+    { name: "Product 10", isActive: false },
+    { name: "Product 11", isActive: true },
+    { name: "Product 12", isActive: false },
+    { name: "Product 13", isActive: true },
+    { name: "Product 14", isActive: false },
+    { name: "Product 15", isActive: true },
+    { name: "Product 16", isActive: false },
   ];
 
   const filters = ["All", "Active", "Inactive"];
 
   const [selectedFilter, setSelectedFilter] = useState(filters[0]);
+
+  const productsToShow = () => {
+    switch (selectedFilter) {
+      case "All":
+        return products;
+      case "Active":
+        return products.filter((product) => product.isActive);
+      case "Inactive":
+        return products.filter((product) => !product.isActive);
+    }
+    return [];
+  };
 
   return (
     <>
@@ -39,7 +62,7 @@ const Products = () => {
           </Button>
         ))}
       </HStack>
-      <ProductsList products={products} />
+      <ProductsList products={productsToShow()} />
     </>
   );
 };
