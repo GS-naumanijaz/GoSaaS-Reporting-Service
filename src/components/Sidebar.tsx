@@ -15,7 +15,7 @@ const Sidebar = ({ onSelected }: SidebarProps) => {
       paddingLeft={5}
       p={5}
       borderRightColor={"lightgrey"}
-      borderRightWidth={1}
+      borderRightWidth={2}
       bg={tertiaryColor}
     >
       <Button onClick={() => onSelected("Dashboard")}>

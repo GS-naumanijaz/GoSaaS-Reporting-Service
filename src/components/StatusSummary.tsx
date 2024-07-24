@@ -1,6 +1,6 @@
 import { Box, Divider, Text } from "@chakra-ui/react";
 import ReactApexChart from "react-apexcharts";
-import { statusSummaryHeight } from "../configs";
+import { statusSummaryHeight, sx } from "../configs";
 
 const StatusSummary = () => {
   const options: ApexCharts.ApexOptions = {
@@ -22,20 +22,17 @@ const StatusSummary = () => {
 
   return (
     <>
-      <Box
-        height={statusSummaryHeight}
-        borderLeftColor={"lightgrey"}
-        borderLeftWidth={1}
-        p={2}
-      >
+      <Box height={statusSummaryHeight} p={2}>
         <Box
           bg={"white"}
           borderColor={"lightgrey"}
           borderWidth={2}
           borderRadius="md"
           textAlign="center"
-          h="100%"
+          h="95%"
+          marginRight={2}
           overflowY="auto"
+          sx={sx}
         >
           <Text fontSize={20} p={1}>
             Status Summary

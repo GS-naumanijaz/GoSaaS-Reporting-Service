@@ -1,6 +1,6 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { Box, Button, HStack } from "@chakra-ui/react";
 import { useState } from "react";
-import { primaryColor } from "../configs";
+import { mainDashboardHeight, primaryColor, sx } from "../configs";
 import ProductsList from "./ProductsList";
 
 export interface Product {
@@ -46,32 +46,46 @@ const Products = () => {
   };
 
   return (
-    <>
-      <HStack marginLeft={10} marginTop={5} spacing={5}>
-        {allFilters.map((filter, index) => (
-          <Button
-            key={index}
-            onClick={() => {
-              setCurrentPage(0);
-              setSelectedFilter(filter);
-            }}
-            bg={selectedFilter === filter ? primaryColor : "white"}
-            color={selectedFilter === filter ? "white" : primaryColor}
-            _hover={{
-              bg: selectedFilter === filter ? primaryColor : "gray.100",
-              color: selectedFilter === filter ? "white" : "red.600",
-            }}
-          >
-            {filter}
-          </Button>
-        ))}
-      </HStack>
-      <ProductsList
-        products={productsToShow()}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
-    </>
+    <Box height={mainDashboardHeight} p={2}>
+      <Box
+        bg={"white"}
+        borderColor={"lightgrey"}
+        borderWidth={2}
+        borderRadius="md"
+        marginX={3}
+        marginTop={2}
+        textAlign="center"
+        h="96.8%"
+        overflowY="auto"
+        sx={sx}
+      >
+        <HStack marginLeft={10} marginTop={5} spacing={5}>
+          {allFilters.map((filter, index) => (
+            <Button
+              key={index}
+              onClick={() => {
+                setCurrentPage(0);
+                setSelectedFilter(filter);
+              }}
+              border={"1px"}
+              bg={selectedFilter === filter ? primaryColor : "white"}
+              color={selectedFilter === filter ? "white" : primaryColor}
+              _hover={{
+                bg: selectedFilter === filter ? primaryColor : "gray.100",
+                color: selectedFilter === filter ? "white" : primaryColor,
+              }}
+            >
+              {filter}
+            </Button>
+          ))}
+        </HStack>
+        <ProductsList
+          products={productsToShow()}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      </Box>
+    </Box>
   );
 };
 

@@ -62,17 +62,14 @@ const PinnedRequests = () => {
     },
   ];
   return (
-    <Box
-      height={pinnedRequestHeight}
-      borderLeftColor={"lightgrey"}
-      borderLeftWidth={1}
-      p={2}
-    >
+    <Box height={pinnedRequestHeight} p={2}>
       <Box
         bg={"white"}
         borderColor={"lightgrey"}
         borderWidth={2}
         borderRadius="md"
+        marginRight={2}
+        marginTop={2}
         textAlign="center"
         h="100%"
         overflowY="auto"
@@ -80,7 +77,7 @@ const PinnedRequests = () => {
         <Text fontSize={20} p={1}>
           Pinned Requests
         </Text>
-        <Divider width="80%" bg="black" mx="auto" />
+        <Divider width="80%" bg="black" mx="auto" marginBottom={2} />
 
         <TableContainer
           // Adjust maxH calculation to include navbarHeight
@@ -91,16 +88,16 @@ const PinnedRequests = () => {
           <Table size="sm" variant="simple">
             <Thead>
               <Tr>
-                <Th>Alias</Th>
-                <Th>Description</Th>
+                <Th fontSize={18}>Alias</Th>
+                <Th fontSize={18}>Description</Th>
                 <Th width="5%"></Th>
               </Tr>
             </Thead>
             <Tbody>
               {pinnedRequests.map((request, index) => (
                 <Tr key={index}>
-                  <Td fontSize={{ sm: "xs" }}>{request.alias}</Td>
-                  <Td fontSize={{ sm: "xs" }}>
+                  <Td fontSize={15}>{request.alias}</Td>
+                  <Td fontSize={15}>
                     {request.description.length > 25
                       ? `${request.description.substring(0, 25)}...`
                       : request.description}

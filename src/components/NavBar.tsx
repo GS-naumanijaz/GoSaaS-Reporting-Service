@@ -11,7 +11,7 @@ const NavBar = () => {
       borderBottomColor={"lightgrey"}
       borderBottomWidth={1}
     >
-      <Image padding={2} width={200} src={GoSaaSLabsLogo} />
+      <Image marginLeft={3} padding={2} width={200} src={GoSaaSLabsLogo} />
       <HStack marginRight={5} spacing={8}>
         <NotificationPopup />
         <AvatarPopup />
