@@ -12,3 +12,17 @@ export const navbarHeight = "10vh";
 export const sidebarHeight = "90vh";
 export const pinnedRequestHeight = "50vh";
 export const statusSummaryHeight = "40vh";
+
+// Custom Scrollbar
+export const sx = {
+  "&::-webkit-scrollbar": {
+    width: "8px",
+  },
+  "&::-webkit-scrollbar-track": {
+    background: secondaryColor,
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: primaryColor,
+    borderRadius: "4px",
+  },
+};
