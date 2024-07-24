@@ -2,6 +2,7 @@
 export const primaryColor = "#D40B0B";
 export const secondaryColor = "#D4C7B0";
 export const tertiaryColor = "#F5F5F5";
+export const disabledButton = "gray";
 
 // Image Paths
 export const GoSaaSLabsLogo: string =
