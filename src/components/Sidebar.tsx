@@ -1,5 +1,5 @@
 import { Box, Button, Text } from "@chakra-ui/react";
-import { primaryColor, sidebarHeight } from "../configs";
+import { primaryColor, sidebarHeight, tertiaryColor } from "../configs";
 import { MdDashboard } from "react-icons/md";
 import { AiOutlineAudit } from "react-icons/ai";
 import { TbReportAnalytics } from "react-icons/tb";
@@ -16,6 +16,7 @@ const Sidebar = ({ onSelected }: SidebarProps) => {
       p={5}
       borderRightColor={"lightgrey"}
       borderRightWidth={1}
+      bg={tertiaryColor}
     >
       <Button onClick={() => onSelected("Dashboard")}>
         <MdDashboard size={20} color={primaryColor} />
@@ -29,10 +30,10 @@ const Sidebar = ({ onSelected }: SidebarProps) => {
           Audit Trail
         </Text>
       </Button>
-      <Button onClick={() => onSelected("Reports")}>
+      <Button onClick={() => onSelected("Requests")}>
         <TbReportAnalytics size={20} color={primaryColor} />
         <Text textColor={"black"} fontWeight={"normal"} paddingLeft={2}>
-          Reports
+          Requests
         </Text>
       </Button>
     </Box>

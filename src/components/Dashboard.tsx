@@ -1,14 +1,16 @@
 import { Grid, GridItem } from "@chakra-ui/react";
+import PinnedRequests from "./PinnedRequests";
+import StatusSummary from "./StatusSummary";
 
 const Dashboard = () => {
   return (
     <Grid
       templateAreas={{
-        base: `"products"`, 
-        lg: `"products reports" "products summary"`,
+        base: `"products"`,
+        lg: `"products requests" "products summary"`,
       }}
       templateColumns={{
-        base: "1fr", 
+        base: "1fr",
         lg: "2.7fr 1fr",
       }}
     >
@@ -17,17 +19,17 @@ const Dashboard = () => {
       </GridItem>
       <GridItem
         display={{ base: "none", lg: "block" }}
-        area="reports"
+        area="requests"
         bg={"pink"}
       >
-        reports
+        <PinnedRequests />
       </GridItem>
       <GridItem
         display={{ base: "none", lg: "block" }}
         area="summary"
         bg={"purple"}
       >
-        Summary
+        <StatusSummary />
       </GridItem>
     </Grid>
   );

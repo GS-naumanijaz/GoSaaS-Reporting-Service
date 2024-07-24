@@ -14,6 +14,7 @@ import { BiSolidCircle } from "react-icons/bi";
 import { useEffect, useState } from "react";
 
 const NotificationPopup = () => {
+  // implement react query here
   const [notifications, setNotifications] = useState([
     {
       header: "New Message",

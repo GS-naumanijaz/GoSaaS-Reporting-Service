@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Dashboard from "../components/Dashboard";
 import { useState } from "react";
 import AuditTrail from "../components/AuditTrail";
-import Reports from "../components/Reports";
+import Requests from "../components/Requests";
 
 const Homepage = () => {
   const [selectedComponent, setSelectedComponent] =
@@ -33,7 +33,7 @@ const Homepage = () => {
         ) : selectedComponent === "AuditTrail" ? (
           <AuditTrail />
         ) : (
-          <Reports />
+          <Requests />
         )}
       </GridItem>
     </Grid>
