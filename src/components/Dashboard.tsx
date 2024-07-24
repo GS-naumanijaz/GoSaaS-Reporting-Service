@@ -1,19 +1,20 @@
 import { Grid, GridItem } from "@chakra-ui/react";
+import Products from "./Products";
 
 const Dashboard = () => {
   return (
     <Grid
       templateAreas={{
-        base: `"products"`, 
+        base: `"products"`,
         lg: `"products reports" "products summary"`,
       }}
       templateColumns={{
-        base: "1fr", 
+        base: "1fr",
         lg: "2.7fr 1fr",
       }}
     >
-      <GridItem area="products" bg={"brown"}>
-        Products
+      <GridItem area="products">
+        <Products />
       </GridItem>
       <GridItem
         display={{ base: "none", lg: "block" }}
