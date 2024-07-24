@@ -1,7 +1,7 @@
 import { Button, HStack } from "@chakra-ui/react";
 import { useState } from "react";
-import ProductsList from "./ProductsList";
 import { primaryColor } from "../configs";
+import ProductsList from "./ProductsList";
 
 export interface Product {
   name: string;
@@ -28,9 +28,10 @@ const Products = () => {
     { name: "Product 16", isActive: false },
   ];
 
-  const filters = ["All", "Active", "Inactive"];
+  const allFilters = ["All", "Active", "Inactive"];
 
-  const [selectedFilter, setSelectedFilter] = useState(filters[0]);
+  const [selectedFilter, setSelectedFilter] = useState(allFilters[0]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const productsToShow = () => {
     switch (selectedFilter) {
@@ -47,10 +48,13 @@ const Products = () => {
   return (
     <>
       <HStack marginLeft={10} marginTop={5} spacing={5}>
-        {filters.map((filter, index) => (
+        {allFilters.map((filter, index) => (
           <Button
             key={index}
-            onClick={() => setSelectedFilter(filter)}
+            onClick={() => {
+              setCurrentPage(0);
+              setSelectedFilter(filter);
+            }}
             bg={selectedFilter === filter ? primaryColor : "white"}
             color={selectedFilter === filter ? "white" : primaryColor}
             _hover={{
@@ -62,7 +66,11 @@ const Products = () => {
           </Button>
         ))}
       </HStack>
-      <ProductsList products={productsToShow()} />
+      <ProductsList
+        products={productsToShow()}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </>
   );
 };
