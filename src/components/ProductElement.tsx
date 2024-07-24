@@ -1,6 +1,4 @@
-import { Box, Center, Text } from "@chakra-ui/react";
-import React from "react";
-import { tertiaryColor } from "../configs";
+import { Box, Text } from "@chakra-ui/react";
 
 interface Props {
   product: string;

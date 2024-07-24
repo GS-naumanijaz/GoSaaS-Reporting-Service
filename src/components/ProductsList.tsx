@@ -1,7 +1,7 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
-import React, { useState } from "react";
-import ProductElement from "./ProductElement";
+import { useState } from "react";
 import PageSelector from "./PageSelector";
+import ProductElement from "./ProductElement";
 
 interface Props {
   products: string[];
