@@ -14,22 +14,15 @@ const Dashboard = () => {
         base: "1fr",
         lg: "2.7fr 1fr",
       }}
+      bg={tertiaryColor}
     >
       <GridItem area="products" bg={"brown"}>
         Products
       </GridItem>
-      <GridItem
-        display={{ base: "none", lg: "block" }}
-        area="requests"
-        bg={tertiaryColor}
-      >
+      <GridItem display={{ base: "none", lg: "block" }} area="requests">
         <PinnedRequests />
       </GridItem>
-      <GridItem
-        display={{ base: "none", lg: "block" }}
-        area="summary"
-        bg={"purple"}
-      >
+      <GridItem display={{ base: "none", lg: "block" }} area="summary">
         <StatusSummary />
       </GridItem>
     </Grid>

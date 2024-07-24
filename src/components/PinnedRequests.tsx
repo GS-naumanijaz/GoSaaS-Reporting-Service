@@ -10,11 +10,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import {
-  navbarHeight,
-  pinnedRequestHeight,
-  sx,
-} from "../configs"; // Make sure this import is correct
+import { navbarHeight, pinnedRequestHeight, sx } from "../configs"; // Make sure this import is correct
 import { IoIosArrowForward } from "react-icons/io";
 
 const PinnedRequests = () => {
@@ -100,13 +96,13 @@ const PinnedRequests = () => {
                 <Th width="5%"></Th>
               </Tr>
             </Thead>
-            <Tbody fontSize={10}>
+            <Tbody>
               {pinnedRequests.map((request, index) => (
                 <Tr key={index}>
-                  <Td>{request.alias}</Td>
-                  <Td>
-                    {request.description.length > 15
-                      ? `${request.description.substring(0, 15)}...`
+                  <Td fontSize={{ sm: "xs" }}>{request.alias}</Td>
+                  <Td fontSize={{ sm: "xs" }}>
+                    {request.description.length > 25
+                      ? `${request.description.substring(0, 25)}...`
                       : request.description}
                   </Td>
                   <Td textAlign="center">
