@@ -3,6 +3,7 @@ export abstract class TableData {
   abstract tableData(): string[];
   abstract tableHeadings(): string[];
   abstract getId(): number;
+  abstract getTableHeader(): string;
   requiresStatusToggle(): boolean {
     return false;
   }
@@ -12,4 +13,5 @@ export abstract class TableData {
   toggleSwitchStatus() {
     throw new Error("This componnent does not have a switch");
   }
+  
 }

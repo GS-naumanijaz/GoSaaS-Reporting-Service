@@ -43,12 +43,17 @@ export class SourceConnection implements TableData {
   }
 
   tableHeadings(): string[] {
-    return ["", "Connection ID", "Alias", "Type", "Host", "Port", "App ID", "Active Status", "Edit", "Delete"];
+    return ["Connection ID", "Alias", "Type", "Host", "Port", "App ID", "Active Status", "Edit", "Delete"];
+  }
+
+  getTableHeader(): string {
+      return "Source Connections"
   }
 
   requiresStatusToggle(): boolean {
     return true;
   }
+
 
   getSwitchStatus(): boolean {
       return this.isActive;

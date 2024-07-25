@@ -1,6 +1,5 @@
-import React from "react";
-import CustomTable from "./CustomTable";
 import { SourceConnection } from "../models/SourceConnection";
+import CustomTable from "./CustomTable";
 
 const ProductDetails = () => {
   const sampleData: SourceConnection[] = [
