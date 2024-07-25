@@ -1,12 +1,15 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Product } from "./Products";
 import { primaryColor } from "../configs";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   product: Product;
 }
 
 const ProductElement = ({ product }: Props) => {
+  const navigate = useNavigate();
+
   return (
     <Box
       bg={"white"}
@@ -19,6 +22,7 @@ const ProductElement = ({ product }: Props) => {
       borderColor={primaryColor}
       transition="transform 0.2s, box-shadow 0.2s"
       _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
+      onClick={() => navigate("/product")}
     >
       <Text fontSize={"xx-large"}>{product.name}</Text>
     </Box>
