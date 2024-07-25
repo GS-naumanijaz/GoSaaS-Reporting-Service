@@ -50,6 +50,14 @@ export class SourceConnection implements TableData {
       return "Source Connections"
   }
 
+  getColumnWidths(): string[] {
+      return ["10%", "10%", "10%", "10%", "10%", "10%", "10%", "10%", "10%"];
+  }
+  //these widths shoould add upto 100%
+  getCheckBoxWidth(): string {
+      return "10%";
+  }
+  
   requiresStatusToggle(): boolean {
     return true;
   }

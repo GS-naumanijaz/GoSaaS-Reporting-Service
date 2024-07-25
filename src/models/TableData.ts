@@ -4,6 +4,8 @@ export abstract class TableData {
   abstract tableHeadings(): string[];
   abstract getId(): number;
   abstract getTableHeader(): string;
+  abstract getColumnWidths(): string[];
+  abstract getCheckBoxWidth(): string;
   requiresStatusToggle(): boolean {
     return false;
   }

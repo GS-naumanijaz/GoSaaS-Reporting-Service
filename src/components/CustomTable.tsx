@@ -2,21 +2,21 @@ import {
   Button,
   Checkbox,
   HStack,
+  Input,
   Switch,
   Table,
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
-  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaPencil, FaRegTrashCan } from "react-icons/fa6";
 import { primaryColor } from "../configs";
 import { TableData } from "../models/TableData";
-import { GiConsoleController } from "react-icons/gi";
 
 interface Props {
   data: TableData[];
@@ -27,6 +27,9 @@ const CustomTable = ({ data }: Props) => {
 
   const [allRowsSelected, setAllRowsSelected] = useState(false);
   const [isSelectingRows, setIsSelectingRows] = useState(false);
+  const [isEditing, setIsEditing] = useState<boolean[]>(
+    new Array(data.length).fill(false)
+  );
 
   const [checkedState, setCheckedState] = useState(
     new Array(data.length).fill(false)
@@ -60,6 +63,22 @@ const CustomTable = ({ data }: Props) => {
     );
   };
 
+  // Function to handle toggle edit mode
+  const handleEditToggle = (index: number) => {
+    const updatedEditing = isEditing.map((edit, idx) =>
+      idx === index ? !edit : edit
+    );
+    setIsEditing(updatedEditing);
+    console.log(isEditing);
+  };
+
+  // Function to handle input change
+  const handleInputChange = (
+    rowIndex: number,
+    elementIndex: number,
+    value: string
+  ) => {};
+
   return (
     <>
       <HStack
@@ -87,7 +106,7 @@ const CustomTable = ({ data }: Props) => {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>
+              <Th width={data[0].getCheckBoxWidth()}>
                 <Checkbox
                   colorScheme="red"
                   isChecked={allRowsSelected}
@@ -95,7 +114,9 @@ const CustomTable = ({ data }: Props) => {
                 />
               </Th>
               {tableData[0].tableHeadings().map((heading, index) => (
-                <Th key={index}>{heading}</Th>
+                <Th key={index} width={data[0].getColumnWidths()[index]}>
+                  {heading}
+                </Th>
               ))}
             </Tr>
           </Thead>
@@ -110,8 +131,20 @@ const CustomTable = ({ data }: Props) => {
                   />
                 </Td>
                 {row.tableData().map((d, index) => (
-                  <Td key={index}>{d}</Td>
+                  <Td key={index}>
+                    {isEditing[rowIndex] ? (
+                      <Input
+                        value={d}
+                        onChange={(e) =>
+                          handleInputChange(rowIndex, index, e.target.value)
+                        }
+                      />
+                    ) : (
+                      d
+                    )}
+                  </Td>
                 ))}
+
                 {tableData[0].requiresStatusToggle() && (
                   <Td>
                     <Switch
@@ -130,7 +163,7 @@ const CustomTable = ({ data }: Props) => {
                   </Td>
                 )}
                 <Td>
-                  <Button>
+                  <Button onClick={() => handleEditToggle(rowIndex)}>
                     <FaPencil color="blue" />
                   </Button>
                 </Td>
