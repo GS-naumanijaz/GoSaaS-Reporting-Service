@@ -6,6 +6,8 @@ export abstract class TableData {
   abstract getTableHeader(): string;
   abstract getColumnWidths(): string[];
   abstract getCheckBoxWidth(): string;
+  abstract editRowData(elementIndex: number, newValue: string): void;
+  
   requiresStatusToggle(): boolean {
     return false;
   }
@@ -15,5 +17,6 @@ export abstract class TableData {
   toggleSwitchStatus() {
     throw new Error("This componnent does not have a switch");
   }
+  
   
 }

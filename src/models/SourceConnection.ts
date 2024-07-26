@@ -58,6 +58,34 @@ export class SourceConnection implements TableData {
       return "10%";
   }
   
+  getDataType(): string[] {
+      return ["number", "string", "string", "string", "string", "number"];
+  }
+
+  editRowData(elementIndex: number, newValue: string): void {
+    switch (elementIndex) {
+      case 0:
+        this.connectionId = Number(newValue);
+        break;
+      case 1:
+        this.alias = newValue;
+        break;
+      case 2:
+        this.type = newValue;          
+        break;
+      case 3:
+        this.host = newValue;          
+        break;
+      case 4:
+        this.port = newValue;          
+        break;
+      case 5:
+        this.connectionId = Number(newValue);
+        break;
+      
+    }
+  }
+
   requiresStatusToggle(): boolean {
     return true;
   }

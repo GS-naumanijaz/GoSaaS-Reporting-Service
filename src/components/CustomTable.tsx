@@ -17,6 +17,8 @@ import { useState } from "react";
 import { FaPencil, FaRegTrashCan } from "react-icons/fa6";
 import { primaryColor } from "../configs";
 import { TableData } from "../models/TableData";
+import { FaRegSave } from "react-icons/fa";
+import { TbPencil, TbPencilCancel } from "react-icons/tb";
 
 interface Props {
   data: TableData[];
@@ -49,7 +51,6 @@ const CustomTable = ({ data }: Props) => {
     setAllRowsSelected(!allRowsSelected);
     setCheckedState(new Array(checkedState.length).fill(!allRowsSelected));
     setIsSelectingRows(!allRowsSelected);
-    console.log(isSelectingRows);
   };
 
   const selectCheckBox = (rowIndex: number) => {
@@ -69,7 +70,6 @@ const CustomTable = ({ data }: Props) => {
       idx === index ? !edit : edit
     );
     setIsEditing(updatedEditing);
-    console.log(isEditing);
   };
 
   // Function to handle input change
@@ -77,7 +77,16 @@ const CustomTable = ({ data }: Props) => {
     rowIndex: number,
     elementIndex: number,
     value: string
-  ) => {};
+  ) => {
+    const updatedData = tableData.map((row, index) => {
+      if (index === rowIndex) {
+        row.editRowData(elementIndex, value);
+      }
+      return row;
+    });
+    console.log(updatedData);
+    setTableData([...updatedData]);
+  };
 
   return (
     <>
@@ -163,9 +172,20 @@ const CustomTable = ({ data }: Props) => {
                   </Td>
                 )}
                 <Td>
-                  <Button onClick={() => handleEditToggle(rowIndex)}>
-                    <FaPencil color="blue" />
-                  </Button>
+                  {isEditing[rowIndex] ? (
+                    <HStack>
+                      <Button onClick={() => handleEditToggle(rowIndex)}>
+                        <FaRegSave color="green" />
+                      </Button>
+                      <Button onClick={() => handleEditToggle(rowIndex)}>
+                        <TbPencilCancel color="red" />
+                      </Button>
+                    </HStack>
+                  ) : (
+                    <Button onClick={() => handleEditToggle(rowIndex)}>
+                      <TbPencil color="blue" />
+                    </Button>
+                  )}
                 </Td>
                 <Td>
                   <Button>
