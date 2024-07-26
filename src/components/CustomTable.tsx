@@ -19,6 +19,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { TbPencil, TbPencilCancel } from "react-icons/tb";
 import { primaryColor } from "../configs";
 import { TableData } from "../models/TableData";
+import FilterSortPopup from "./FilterSortPopup";
 
 interface Props {
   data: TableData[];
@@ -182,7 +183,7 @@ const CustomTable = ({ data }: Props) => {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th width={data[0].getCheckBoxWidth()}>
+              <Th textAlign="center" width={data[0].getCheckBoxWidth()}>
                 <Checkbox
                   colorScheme="red"
                   isChecked={allRowsSelected}
@@ -190,8 +191,12 @@ const CustomTable = ({ data }: Props) => {
                 />
               </Th>
               {tableData[0].tableHeadings().map((heading, index) => (
-                <Th key={index} width={data[0].getColumnWidths()[index]}>
-                  {heading}
+                <Th
+                  key={index}
+                  textAlign="center"
+                  width={data[0].getColumnWidths()[index]}
+                >
+                  <FilterSortPopup heading={heading} />
                 </Th>
               ))}
             </Tr>
@@ -199,7 +204,7 @@ const CustomTable = ({ data }: Props) => {
           <Tbody>
             {tableData.map((row, rowIndex) => (
               <Tr key={row.getId()}>
-                <Td>
+                <Td textAlign="center">
                   <Checkbox
                     colorScheme="red"
                     isChecked={checkedState[rowIndex]}
@@ -207,9 +212,10 @@ const CustomTable = ({ data }: Props) => {
                   />
                 </Td>
                 {row.tableData().map((d, index) => (
-                  <Td key={index}>
+                  <Td key={index} textAlign="center">
                     {isEditing[rowIndex] ? (
                       <Input
+                        textAlign="center"
                         value={d}
                         onChange={(e) =>
                           handleInputChange(rowIndex, index, e.target.value)
@@ -222,7 +228,7 @@ const CustomTable = ({ data }: Props) => {
                 ))}
 
                 {tableData[0].requiresStatusToggle() && (
-                  <Td>
+                  <Td textAlign="center">
                     <Switch
                       isChecked={row.getSwitchStatus()}
                       onChange={() => handleToggleSwitch(row.getId())}
@@ -238,7 +244,7 @@ const CustomTable = ({ data }: Props) => {
                     />
                   </Td>
                 )}
-                <Td>
+                <Td textAlign="center">
                   {isEditing[rowIndex] ? (
                     <HStack>
                       <Button onClick={() => handleEditToggle(rowIndex)}>
@@ -259,7 +265,7 @@ const CustomTable = ({ data }: Props) => {
                     </Button>
                   )}
                 </Td>
-                <Td>
+                <Td textAlign="center">
                   <Button onClick={() => handleDeleteRow(rowIndex)}>
                     <FaRegTrashCan color="red" size={20} />
                   </Button>
