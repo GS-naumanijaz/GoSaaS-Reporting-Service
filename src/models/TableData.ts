@@ -7,6 +7,7 @@ export abstract class TableData {
   abstract getColumnWidths(): string[];
   abstract getCheckBoxWidth(): string;
   abstract editRowData(elementIndex: number, newValue: string): void;
+  abstract editCompleteRow(newValue: string[]): void;
   
   requiresStatusToggle(): boolean {
     return false;
@@ -14,7 +15,7 @@ export abstract class TableData {
   getSwitchStatus(): boolean {
     throw new Error("This componnent does not have a switch");
   }
-  setSwitchStatus(status: boolean) {
+  setSwitchStatus(_: boolean) {
     throw new Error("This componnent does not have a switch");
   }
   toggleSwitchStatus() {

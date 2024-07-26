@@ -14,11 +14,11 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaPencil, FaRegTrashCan } from "react-icons/fa6";
+import { FaRegSave } from "react-icons/fa";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { TbPencil, TbPencilCancel } from "react-icons/tb";
 import { primaryColor } from "../configs";
 import { TableData } from "../models/TableData";
-import { FaRegSave } from "react-icons/fa";
-import { TbPencil, TbPencilCancel } from "react-icons/tb";
 
 interface Props {
   data: TableData[];
@@ -31,6 +31,10 @@ const CustomTable = ({ data }: Props) => {
   const [isSelectingRows, setIsSelectingRows] = useState(false);
   const [isEditing, setIsEditing] = useState<boolean[]>(
     new Array(data.length).fill(false)
+  );
+
+  const [preEditRows, setPreEditRows] = useState<string[][]>(
+    new Array(data.length).fill([])
   );
 
   const [checkedState, setCheckedState] = useState(
@@ -76,9 +80,19 @@ const CustomTable = ({ data }: Props) => {
 
   // Function to handle toggle edit mode
   const handleEditToggle = (index: number) => {
-    const updatedEditing = isEditing.map((edit, idx) =>
-      idx === index ? !edit : edit
-    );
+    const updatedEditing = isEditing.map((edit, idx) => {
+      if (idx === index) {
+        const updatedPreEditRows = preEditRows.map((row, index2) => {
+          if (index2 === index) {
+            row = tableData[idx].tableData();
+          }
+          return row;
+        });
+        setPreEditRows([...updatedPreEditRows]);
+        return !edit;
+      }
+      return edit;
+    });
     setIsEditing(updatedEditing);
   };
 
@@ -91,6 +105,17 @@ const CustomTable = ({ data }: Props) => {
     const updatedData = tableData.map((row, index) => {
       if (index === rowIndex) {
         row.editRowData(elementIndex, value);
+      }
+      return row;
+    });
+    setTableData([...updatedData]);
+  };
+
+  const revertEdit = (rowIndex: number) => {
+    const updatedData = tableData.map((row, index) => {
+      if (index === rowIndex) {
+        const newRow = data.find((item) => item.getId() === row.getId());
+        if (newRow) row.editCompleteRow(preEditRows[index]);
       }
       return row;
     });
@@ -219,7 +244,12 @@ const CustomTable = ({ data }: Props) => {
                       <Button onClick={() => handleEditToggle(rowIndex)}>
                         <FaRegSave color="green" size={20} />
                       </Button>
-                      <Button onClick={() => handleEditToggle(rowIndex)}>
+                      <Button
+                        onClick={() => {
+                          handleEditToggle(rowIndex);
+                          revertEdit(rowIndex);
+                        }}
+                      >
                         <TbPencilCancel color="red" size={20} />
                       </Button>
                     </HStack>

@@ -80,10 +80,19 @@ export class SourceConnection implements TableData {
         this.port = newValue;          
         break;
       case 5:
-        this.connectionId = Number(newValue);
+        this.appId = Number(newValue);
         break;
       
     }
+  }
+
+  editCompleteRow(newValue: string[]) {
+    this.connectionId = Number(newValue[0]);
+    this.alias = newValue[1];
+    this.type = newValue[2];
+    this.host = newValue[3];
+    this.port = newValue[4];
+    this.appId = Number(newValue[5]);
   }
 
   requiresStatusToggle(): boolean {
