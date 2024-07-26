@@ -95,6 +95,10 @@ export class SourceConnection implements TableData {
       return this.isActive;
   }
 
+  setSwitchStatus(status: boolean): void {
+      this.isActive = status;
+  }
+
   toggleSwitchStatus() {
       this.isActive = !this.isActive;
   }

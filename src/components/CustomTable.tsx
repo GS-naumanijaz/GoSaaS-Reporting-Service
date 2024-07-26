@@ -47,6 +47,16 @@ const CustomTable = ({ data }: Props) => {
     setTableData([...updatedData]);
   };
 
+  const handleBulkSwitchActions = (newStatus: boolean) => {
+    const updatedData = tableData.map((row, index) => {
+      if (checkedState[index]) {
+        row.setSwitchStatus(newStatus);
+      }
+      return row;
+    });
+    setTableData([...updatedData]);
+  };
+
   const selectAllCheckBoxes = () => {
     setAllRowsSelected(!allRowsSelected);
     setCheckedState(new Array(checkedState.length).fill(!allRowsSelected));
@@ -84,9 +94,40 @@ const CustomTable = ({ data }: Props) => {
       }
       return row;
     });
-    console.log(updatedData);
     setTableData([...updatedData]);
   };
+
+  //delete rows
+  const handleDeleteRow = (rowIndex: number) => {
+    const updatedData = tableData.filter((_, index) => index !== rowIndex);
+    setTableData([...updatedData]);
+
+    const updatedCheckedState = [
+      ...checkedState.slice(0, rowIndex),
+      ...checkedState.slice(rowIndex + 1),
+    ];
+    setCheckedState(updatedCheckedState);
+
+    const updatedIsEditingState = [
+      ...isEditing.slice(0, rowIndex),
+      ...isEditing.slice(rowIndex + 1),
+    ];
+    setIsEditing(updatedIsEditingState);
+  };
+
+  const handleBulkDeleteRows = () => {
+    const updatedData = tableData.filter((_, index) => !checkedState[index]);
+    setTableData([...updatedData]);
+
+    const updatedIsEditingState = isEditing.filter(
+      (_, index) => !checkedState[index]
+    );
+    setIsEditing(updatedIsEditingState);
+
+    setCheckedState(new Array(tableData.length).fill(false));
+  };
+
+  if (tableData.length === 0) return <Text>No data to show</Text>;
 
   return (
     <>
@@ -99,14 +140,15 @@ const CustomTable = ({ data }: Props) => {
       >
         <Text fontSize={"x-large"}>{data[0].getTableHeader()}</Text>
         {isSelectingRows && (
-          <HStack spacing={10}>
-            <Button>Activate All</Button>
-            <Button>Deactivate All</Button>
-            <Button>
-              <FaPencil color="blue" />
+          <HStack spacing={6}>
+            <Button onClick={() => handleBulkSwitchActions(true)}>
+              Activate All
             </Button>
-            <Button>
-              <FaRegTrashCan color="red" />
+            <Button onClick={() => handleBulkSwitchActions(false)}>
+              Deactivate All
+            </Button>
+            <Button onClick={handleBulkDeleteRows}>
+              <FaRegTrashCan color="red" size={20} />
             </Button>
           </HStack>
         )}
@@ -175,21 +217,21 @@ const CustomTable = ({ data }: Props) => {
                   {isEditing[rowIndex] ? (
                     <HStack>
                       <Button onClick={() => handleEditToggle(rowIndex)}>
-                        <FaRegSave color="green" />
+                        <FaRegSave color="green" size={20} />
                       </Button>
                       <Button onClick={() => handleEditToggle(rowIndex)}>
-                        <TbPencilCancel color="red" />
+                        <TbPencilCancel color="red" size={20} />
                       </Button>
                     </HStack>
                   ) : (
                     <Button onClick={() => handleEditToggle(rowIndex)}>
-                      <TbPencil color="blue" />
+                      <TbPencil color="blue" size={20} />
                     </Button>
                   )}
                 </Td>
                 <Td>
-                  <Button>
-                    <FaRegTrashCan color="red" />
+                  <Button onClick={() => handleDeleteRow(rowIndex)}>
+                    <FaRegTrashCan color="red" size={20} />
                   </Button>
                 </Td>
               </Tr>

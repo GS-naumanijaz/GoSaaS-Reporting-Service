@@ -14,9 +14,13 @@ export abstract class TableData {
   getSwitchStatus(): boolean {
     throw new Error("This componnent does not have a switch");
   }
+  setSwitchStatus(status: boolean) {
+    throw new Error("This componnent does not have a switch");
+  }
   toggleSwitchStatus() {
     throw new Error("This componnent does not have a switch");
   }
+  
   
   
 }
