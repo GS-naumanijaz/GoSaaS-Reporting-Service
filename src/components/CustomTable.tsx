@@ -1,8 +1,11 @@
 import {
+  Box,
   Button,
   Checkbox,
+  Flex,
   HStack,
   Input,
+  Spacer,
   Switch,
   Table,
   TableContainer,
@@ -14,7 +17,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaRegSave } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaRegSave } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { TbPencil, TbPencilCancel } from "react-icons/tb";
 import { primaryColor } from "../configs";
@@ -275,6 +278,24 @@ const CustomTable = ({ data }: Props) => {
           </Tbody>
         </Table>
       </TableContainer>
+      <Box margin={4}>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Spacer />
+          <HStack spacing={4} flex="1">
+            <Button>
+              <FaChevronLeft />
+            </Button>
+            <Text>2 of 20</Text>
+            <Button>
+              <FaChevronRight />
+            </Button>
+          </HStack>
+          <HStack>
+            <Text>Max Rows per Page</Text>
+            <Input width={20} />
+          </HStack>
+        </Flex>
+      </Box>
     </>
   );
 };

@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  HStack,
+  Input,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -10,6 +12,7 @@ import {
   PopoverTrigger,
   Stack,
 } from "@chakra-ui/react";
+import { FaSearch } from "react-icons/fa";
 
 interface Props {
   heading: string;
@@ -32,13 +35,14 @@ const FilterSortPopup = ({ heading }: Props) => {
               <Button variant="outline">Deccending</Button>
             </Stack>
           </PopoverBody>
-          <PopoverHeader>Filter by</PopoverHeader>
+          <PopoverHeader>Search</PopoverHeader>
           <PopoverBody>
-            <Stack spacing={2}>
-              <Button variant="outline">Option 1</Button>
-              <Button variant="outline">Option 2</Button>
-              <Button variant="outline">Option 3</Button>
-            </Stack>
+            <HStack>
+              <Input />
+              <Button>
+                <FaSearch />
+              </Button>
+            </HStack>
           </PopoverBody>
         </PopoverContent>
       </Popover>
