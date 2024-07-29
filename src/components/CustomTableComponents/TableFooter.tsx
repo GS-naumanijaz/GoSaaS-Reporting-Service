@@ -18,7 +18,7 @@ const TableFooter = () => {
           <Button>
             <FaChevronLeft />
           </Button>
-          <Text>2 of 20</Text>
+          <Text>1 of 1</Text>
           <Button>
             <FaChevronRight />
           </Button>

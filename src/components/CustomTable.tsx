@@ -188,17 +188,16 @@ const CustomTable = ({ data }: Props) => {
               <Tr key={row.getId()}>
                 <TdCheckBox
                   checkedState={checkedState[rowIndex]}
-                  rowIndex={rowIndex}
-                  selectCheckBox={selectCheckBox}
+                  selectCheckBox={() => selectCheckBox(rowIndex)}
                 />
                 {row.tableData().map((d, index) => (
                   <TdData
                     key={index}
                     isEditing={isEditing[rowIndex]}
                     data={d}
-                    rowIndex={rowIndex}
-                    index={index}
-                    handleInputChange={handleInputChange}
+                    handleInputChange={(value) =>
+                      handleInputChange(rowIndex, index, value)
+                    }
                   />
                 ))}
 
@@ -207,13 +206,11 @@ const CustomTable = ({ data }: Props) => {
                 )}
                 <TdEditButton
                   isEditing={isEditing[rowIndex]}
-                  rowIndex={rowIndex}
-                  handleEditToggle={handleEditToggle}
-                  revertEdit={revertEdit}
+                  handleEditToggle={() => handleEditToggle(rowIndex)}
+                  revertEdit={() => revertEdit(rowIndex)}
                 />
                 <TdDeleteButton
-                  rowIndex={rowIndex}
-                  handleDeleteRow={handleDeleteRow}
+                  handleDeleteRow={() => handleDeleteRow(rowIndex)}
                 />
               </Tr>
             ))}

@@ -1,17 +1,23 @@
-import { Button, Td } from "@chakra-ui/react";
+import { Td } from "@chakra-ui/react";
 import { FaRegTrashCan } from "react-icons/fa6";
+import AlertDialogButton from "../General/AlertDialogButton";
 
 interface Props {
-  rowIndex: number;
-  handleDeleteRow: (index: number) => void;
+  handleDeleteRow: () => void;
 }
 
-const TdDeleteButton = ({ rowIndex, handleDeleteRow }: Props) => {
+const TdDeleteButton = ({ handleDeleteRow }: Props) => {
   return (
     <Td textAlign="center">
-      <Button onClick={() => handleDeleteRow(rowIndex)}>
+      <AlertDialogButton
+        header="Delete Connection"
+        body="Are you sure you want to delete this connection?"
+        cancelText="Cancel"
+        confirmText="Confirm"
+        onDelete={handleDeleteRow}
+      >
         <FaRegTrashCan color="red" size={20} />
-      </Button>
+      </AlertDialogButton>
     </Td>
   );
 };
