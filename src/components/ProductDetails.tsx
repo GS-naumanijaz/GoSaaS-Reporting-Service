@@ -1,4 +1,5 @@
 import { SourceConnection } from "../models/SourceConnection";
+import { TableManager } from "../models/TableManager";
 import CustomTable from "./CustomTable";
 
 const ProductDetails = () => {
@@ -50,7 +51,9 @@ const ProductDetails = () => {
     ),
   ];
 
-  return <CustomTable data={sampleData} />;
+  const manager = new TableManager(sampleData);
+
+  return <CustomTable tableManager={manager} />;
 };
 
 export default ProductDetails;

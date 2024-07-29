@@ -9,7 +9,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { TableData } from "../models/TableData";
+import { TableManager } from "../models/TableManager";
 import FilterSortPopup from "./CustomTableComponents/FilterSortPopup";
 import TableFooter from "./CustomTableComponents/TableFooter";
 import TableHeader from "./CustomTableComponents/TableHeader";
@@ -20,143 +20,86 @@ import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
 
 interface Props {
-  data: TableData[];
+  tableManager: TableManager;
 }
 
-const CustomTable = ({ data }: Props) => {
-  const [tableData, setTableData] = useState(data);
+const CustomTable = ({ tableManager }: Props) => {
+  const [tableState, setTableState] = useState({
+    tableData: tableManager.getTableData(),
+    checkedState: tableManager.getCheckedState(),
+    isEditing: tableManager.getIsEditing(),
+    allRowsSelected: tableManager.getAllRowsSelected(),
+    isSelectingRows: tableManager.getIsSelectingRows(),
+  });
 
-  const [allRowsSelected, setAllRowsSelected] = useState(false);
-  const [isSelectingRows, setIsSelectingRows] = useState(false);
-  const [isEditing, setIsEditing] = useState<boolean[]>(
-    new Array(data.length).fill(false)
-  );
-
-  const [preEditRows, setPreEditRows] = useState<string[][]>(
-    new Array(data.length).fill([])
-  );
-
-  const [checkedState, setCheckedState] = useState(
-    new Array(data.length).fill(false)
-  );
-
-  const handleToggleSwitch = (id: number) => {
-    const updatedData = tableData.map((row) => {
-      if (row.getId() === id) {
-        row.toggleSwitchStatus();
-      }
-      return row;
+  const updateState = () => {
+    setTableState({
+      tableData: tableManager.getTableData(),
+      checkedState: tableManager.getCheckedState(),
+      isEditing: tableManager.getIsEditing(),
+      allRowsSelected: tableManager.getAllRowsSelected(),
+      isSelectingRows: tableManager.getIsSelectingRows(),
     });
-    setTableData([...updatedData]);
   };
 
   const handleBulkSwitchActions = (newStatus: boolean) => {
-    const updatedData = tableData.map((row, index) => {
-      if (checkedState[index]) {
-        row.setSwitchStatus(newStatus);
-      }
-      return row;
-    });
-    setTableData([...updatedData]);
+    tableManager.handleBulkSwitchActions(newStatus);
+    updateState();
   };
 
   const selectAllCheckBoxes = () => {
-    setAllRowsSelected(!allRowsSelected);
-    setCheckedState(new Array(checkedState.length).fill(!allRowsSelected));
-    setIsSelectingRows(!allRowsSelected);
+    tableManager.selectAllCheckBoxes();
+    updateState();
   };
 
   const selectCheckBox = (rowIndex: number) => {
-    const updatedCheckedState = checkedState.map((item, idx) =>
-      idx === rowIndex ? !item : item
-    );
-    setCheckedState(updatedCheckedState);
-    setIsSelectingRows(updatedCheckedState.some((element) => element === true));
-    setAllRowsSelected(
-      updatedCheckedState.every((element) => element === true)
-    );
+    tableManager.selectCheckBox(rowIndex);
+    updateState();
   };
 
-  // Function to handle toggle edit mode
   const handleEditToggle = (index: number) => {
-    const updatedEditing = isEditing.map((edit, idx) => {
-      if (idx === index) {
-        const updatedPreEditRows = preEditRows.map((row, index2) => {
-          if (index2 === index) {
-            row = tableData[idx].tableData();
-          }
-          return row;
-        });
-        setPreEditRows([...updatedPreEditRows]);
-        return !edit;
-      }
-      return edit;
-    });
-    setIsEditing(updatedEditing);
+    tableManager.handleEditToggle(index);
+    updateState();
   };
 
-  // Function to handle input change
   const handleInputChange = (
     rowIndex: number,
     elementIndex: number,
     value: string
   ) => {
-    const updatedData = tableData.map((row, index) => {
-      if (index === rowIndex) {
-        row.editRowData(elementIndex, value);
-      }
-      return row;
-    });
-    setTableData([...updatedData]);
+    tableManager.handleInputChange(rowIndex, elementIndex, value);
+    updateState();
   };
 
   const revertEdit = (rowIndex: number) => {
-    const updatedData = tableData.map((row, index) => {
-      if (index === rowIndex) {
-        const newRow = data.find((item) => item.getId() === row.getId());
-        if (newRow) row.editCompleteRow(preEditRows[index]);
-      }
-      return row;
-    });
-    setTableData([...updatedData]);
+    tableManager.revertEdit(rowIndex);
+    updateState();
   };
 
-  //delete rows
   const handleDeleteRow = (rowIndex: number) => {
-    const updatedData = tableData.filter((_, index) => index !== rowIndex);
-    setTableData([...updatedData]);
-
-    const updatedCheckedState = [
-      ...checkedState.slice(0, rowIndex),
-      ...checkedState.slice(rowIndex + 1),
-    ];
-    setCheckedState(updatedCheckedState);
-
-    const updatedIsEditingState = [
-      ...isEditing.slice(0, rowIndex),
-      ...isEditing.slice(rowIndex + 1),
-    ];
-    setIsEditing(updatedIsEditingState);
+    tableManager.handleDeleteRow(rowIndex);
+    updateState();
   };
 
   const handleBulkDeleteRows = () => {
-    const updatedData = tableData.filter((_, index) => !checkedState[index]);
-    setTableData([...updatedData]);
-
-    const updatedIsEditingState = isEditing.filter(
-      (_, index) => !checkedState[index]
-    );
-    setIsEditing(updatedIsEditingState);
-
-    setCheckedState(new Array(tableData.length).fill(false));
+    tableManager.handleBulkDeleteRows();
+    updateState();
   };
+
+  const {
+    tableData,
+    checkedState,
+    isEditing,
+    allRowsSelected,
+    isSelectingRows,
+  } = tableState;
 
   if (tableData.length === 0) return <Text>No data to show</Text>;
 
   return (
     <>
       <TableHeader
-        tableHeading={data[0].getTableHeader()}
+        tableHeading={tableData[0].getTableHeader()}
         isSelectingRows={isSelectingRows}
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
@@ -165,7 +108,7 @@ const CustomTable = ({ data }: Props) => {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th textAlign="center" width={data[0].getCheckBoxWidth()}>
+              <Th textAlign="center" width={tableData[0].getCheckBoxWidth()}>
                 <Checkbox
                   colorScheme="red"
                   isChecked={allRowsSelected}
@@ -176,7 +119,7 @@ const CustomTable = ({ data }: Props) => {
                 <Th
                   key={index}
                   textAlign="center"
-                  width={data[0].getColumnWidths()[index]}
+                  width={tableData[0].getColumnWidths()[index]}
                 >
                   <FilterSortPopup heading={heading} />
                 </Th>
@@ -202,7 +145,13 @@ const CustomTable = ({ data }: Props) => {
                 ))}
 
                 {tableData[0].requiresStatusToggle() && (
-                  <TdSwitch row={row} handleToggleSwitch={handleToggleSwitch} />
+                  <TdSwitch
+                    row={row}
+                    handleToggleSwitch={() => {
+                      tableManager.handleToggleSwitch(row.getId());
+                      updateState();
+                    }}
+                  />
                 )}
                 <TdEditButton
                   isEditing={isEditing[rowIndex]}

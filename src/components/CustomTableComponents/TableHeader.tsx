@@ -1,6 +1,7 @@
 import { Button, HStack, Text } from "@chakra-ui/react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import AlertDialogButton from "../General/AlertDialogButton";
+import { FaPlus } from "react-icons/fa";
 
 interface Props {
   tableHeading: string;
@@ -23,7 +24,12 @@ const TableHeader = ({
       display="flex"
       justifyContent="space-between"
     >
-      <Text fontSize={"x-large"}>{tableHeading}</Text>
+      <HStack spacing={4}>
+        <Text fontSize={"x-large"}>{tableHeading}</Text>
+        <Button>
+          <FaPlus />
+        </Button>
+      </HStack>
       {isSelectingRows && (
         <HStack spacing={6}>
           <Button onClick={() => handleBulkSwitchActions(true)}>

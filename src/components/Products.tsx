@@ -59,26 +59,34 @@ const Products = () => {
         overflowY="auto"
         sx={sx}
       >
-        <HStack marginLeft={10} marginTop={5} spacing={5}>
-          {allFilters.map((filter, index) => (
-            <Button
-              key={index}
-              onClick={() => {
-                setCurrentPage(0);
-                setSelectedFilter(filter);
-              }}
-              border={"1px"}
-              bg={selectedFilter === filter ? primaryColor : "white"}
-              color={selectedFilter === filter ? "white" : primaryColor}
-              _hover={{
-                bg: selectedFilter === filter ? primaryColor : "gray.100",
-                color: selectedFilter === filter ? "white" : primaryColor,
-              }}
-            >
-              {filter}
-            </Button>
-          ))}
-        </HStack>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          marginX={10}
+          marginTop={5}
+        >
+          <HStack spacing={5}>
+            {allFilters.map((filter, index) => (
+              <Button
+                key={index}
+                onClick={() => {
+                  setCurrentPage(0);
+                  setSelectedFilter(filter);
+                }}
+                border={"1px"}
+                bg={selectedFilter === filter ? primaryColor : "white"}
+                color={selectedFilter === filter ? "white" : primaryColor}
+                _hover={{
+                  bg: selectedFilter === filter ? primaryColor : "gray.100",
+                  color: selectedFilter === filter ? "white" : primaryColor,
+                }}
+              >
+                {filter}
+              </Button>
+            ))}
+          </HStack>
+          <Button>Add Aplication</Button>
+        </Box>
         <ProductsList
           products={productsToShow()}
           currentPage={currentPage}
