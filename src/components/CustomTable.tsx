@@ -1,28 +1,23 @@
 import {
-  Box,
-  Button,
   Checkbox,
-  Flex,
-  HStack,
-  Input,
-  Spacer,
-  Switch,
   Table,
   TableContainer,
   Tbody,
-  Td,
   Text,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaRegSave } from "react-icons/fa";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { TbPencil, TbPencilCancel } from "react-icons/tb";
-import { primaryColor } from "../configs";
 import { TableData } from "../models/TableData";
-import FilterSortPopup from "./FilterSortPopup";
+import FilterSortPopup from "./CustomTableComponents/FilterSortPopup";
+import TableFooter from "./CustomTableComponents/TableFooter";
+import TableHeader from "./CustomTableComponents/TableHeader";
+import TdCheckBox from "./CustomTableComponents/TdCheckBox";
+import TdData from "./CustomTableComponents/TdData";
+import TdDeleteButton from "./CustomTableComponents/TdDeleteButton";
+import TdEditButton from "./CustomTableComponents/TdEditButton";
+import TdSwitch from "./CustomTableComponents/TdSwitch";
 
 interface Props {
   data: TableData[];
@@ -160,28 +155,12 @@ const CustomTable = ({ data }: Props) => {
 
   return (
     <>
-      <HStack
-        marginX={10}
-        marginTop={4}
-        height={12}
-        display="flex"
-        justifyContent="space-between"
-      >
-        <Text fontSize={"x-large"}>{data[0].getTableHeader()}</Text>
-        {isSelectingRows && (
-          <HStack spacing={6}>
-            <Button onClick={() => handleBulkSwitchActions(true)}>
-              Activate All
-            </Button>
-            <Button onClick={() => handleBulkSwitchActions(false)}>
-              Deactivate All
-            </Button>
-            <Button onClick={handleBulkDeleteRows}>
-              <FaRegTrashCan color="red" size={20} />
-            </Button>
-          </HStack>
-        )}
-      </HStack>
+      <TableHeader
+        tableHeading={data[0].getTableHeader()}
+        isSelectingRows={isSelectingRows}
+        handleBulkSwitchActions={handleBulkSwitchActions}
+        handleBulkDeleteRows={handleBulkDeleteRows}
+      />
       <TableContainer>
         <Table variant="simple">
           <Thead>
@@ -207,95 +186,41 @@ const CustomTable = ({ data }: Props) => {
           <Tbody>
             {tableData.map((row, rowIndex) => (
               <Tr key={row.getId()}>
-                <Td textAlign="center">
-                  <Checkbox
-                    colorScheme="red"
-                    isChecked={checkedState[rowIndex]}
-                    onChange={() => selectCheckBox(rowIndex)}
-                  />
-                </Td>
+                <TdCheckBox
+                  checkedState={checkedState[rowIndex]}
+                  rowIndex={rowIndex}
+                  selectCheckBox={selectCheckBox}
+                />
                 {row.tableData().map((d, index) => (
-                  <Td key={index} textAlign="center">
-                    {isEditing[rowIndex] ? (
-                      <Input
-                        textAlign="center"
-                        value={d}
-                        onChange={(e) =>
-                          handleInputChange(rowIndex, index, e.target.value)
-                        }
-                      />
-                    ) : (
-                      d
-                    )}
-                  </Td>
+                  <TdData
+                    key={index}
+                    isEditing={isEditing[rowIndex]}
+                    data={d}
+                    rowIndex={rowIndex}
+                    index={index}
+                    handleInputChange={handleInputChange}
+                  />
                 ))}
 
                 {tableData[0].requiresStatusToggle() && (
-                  <Td textAlign="center">
-                    <Switch
-                      isChecked={row.getSwitchStatus()}
-                      onChange={() => handleToggleSwitch(row.getId())}
-                      // size="lg"
-                      sx={{
-                        "& .chakra-switch__track": {
-                          bg: row.getSwitchStatus() ? primaryColor : "gray.200",
-                        },
-                        "& .chakra-switch__thumb": {
-                          bg: row.getSwitchStatus() ? "white" : "gray.500",
-                        },
-                      }}
-                    />
-                  </Td>
+                  <TdSwitch row={row} handleToggleSwitch={handleToggleSwitch} />
                 )}
-                <Td textAlign="center">
-                  {isEditing[rowIndex] ? (
-                    <HStack>
-                      <Button onClick={() => handleEditToggle(rowIndex)}>
-                        <FaRegSave color="green" size={20} />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          handleEditToggle(rowIndex);
-                          revertEdit(rowIndex);
-                        }}
-                      >
-                        <TbPencilCancel color="red" size={20} />
-                      </Button>
-                    </HStack>
-                  ) : (
-                    <Button onClick={() => handleEditToggle(rowIndex)}>
-                      <TbPencil color="blue" size={20} />
-                    </Button>
-                  )}
-                </Td>
-                <Td textAlign="center">
-                  <Button onClick={() => handleDeleteRow(rowIndex)}>
-                    <FaRegTrashCan color="red" size={20} />
-                  </Button>
-                </Td>
+                <TdEditButton
+                  isEditing={isEditing[rowIndex]}
+                  rowIndex={rowIndex}
+                  handleEditToggle={handleEditToggle}
+                  revertEdit={revertEdit}
+                />
+                <TdDeleteButton
+                  rowIndex={rowIndex}
+                  handleDeleteRow={handleDeleteRow}
+                />
               </Tr>
             ))}
           </Tbody>
         </Table>
       </TableContainer>
-      <Box margin={4}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Spacer />
-          <HStack spacing={4} flex="1">
-            <Button>
-              <FaChevronLeft />
-            </Button>
-            <Text>2 of 20</Text>
-            <Button>
-              <FaChevronRight />
-            </Button>
-          </HStack>
-          <HStack>
-            <Text>Max Rows per Page</Text>
-            <Input width={20} />
-          </HStack>
-        </Flex>
-      </Box>
+      <TableFooter />
     </>
   );
 };
