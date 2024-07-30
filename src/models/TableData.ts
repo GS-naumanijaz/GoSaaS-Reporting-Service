@@ -8,6 +8,8 @@ export abstract class TableData {
   abstract getCheckBoxWidth(): string;
   abstract editRowData(elementIndex: number, newValue: string): void;
   abstract editCompleteRow(newValue: string[]): void;
+  abstract getInputType(): string[];
+  abstract getEditAccess(): boolean[];
   
   requiresStatusToggle(): boolean {
     return false;

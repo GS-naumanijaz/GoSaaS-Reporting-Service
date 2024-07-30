@@ -57,6 +57,13 @@ export class TableManager {
     return this.data[0].getColumnWidths();
   }
 
+  getInputType(index: number): string {
+    return this.data[0].getInputType()[index];
+  }
+
+  getEditAccess(index: number): boolean {
+    return this.data[0].getEditAccess()[index];
+  }
 
   toggleRowEditState(index: number) {
     this.isEditing[index] = !this.isEditing[index];

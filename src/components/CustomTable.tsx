@@ -137,7 +137,9 @@ const CustomTable = ({ tableManager }: Props) => {
                   <TdData
                     key={index}
                     isEditing={isEditing[rowIndex]}
+                    isEditable={tableManager.getEditAccess(index)}
                     data={d}
+                    type={tableManager.getInputType(index)}
                     handleInputChange={(value) =>
                       handleInputChange(rowIndex, index, value)
                     }

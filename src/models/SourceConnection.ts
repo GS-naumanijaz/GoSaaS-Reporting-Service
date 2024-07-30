@@ -58,8 +58,12 @@ export class SourceConnection implements TableData {
       return "10%";
   }
   
-  getDataType(): string[] {
-      return ["number", "string", "string", "string", "string", "number"];
+  getInputType(): string[] {
+      return ["number", "text", "text", "text", "text", "number"];
+  }
+
+  getEditAccess(): boolean[] {
+      return [false, true, true, true, true, true];
   }
 
   editRowData(elementIndex: number, newValue: string): void {
