@@ -30,6 +30,7 @@ const CustomTable = ({ tableManager }: Props) => {
     isEditing: tableManager.getIsEditing(),
     allRowsSelected: tableManager.getAllRowsSelected(),
     isSelectingRows: tableManager.getIsSelectingRows(),
+    canSaveEditedRows: tableManager.getCanSaveEditedRows(),
   });
 
   const updateState = () => {
@@ -39,6 +40,7 @@ const CustomTable = ({ tableManager }: Props) => {
       isEditing: tableManager.getIsEditing(),
       allRowsSelected: tableManager.getAllRowsSelected(),
       isSelectingRows: tableManager.getIsSelectingRows(),
+      canSaveEditedRows: tableManager.getCanSaveEditedRows(),
     });
   };
 
@@ -65,9 +67,11 @@ const CustomTable = ({ tableManager }: Props) => {
   const handleInputChange = (
     rowIndex: number,
     elementIndex: number,
-    value: string
+    value: string,
+    error: string
   ) => {
     tableManager.handleInputChange(rowIndex, elementIndex, value);
+    tableManager.setEditSaveOnRow(rowIndex, !!error);
     updateState();
   };
 
@@ -102,7 +106,6 @@ const CustomTable = ({ tableManager }: Props) => {
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}
         inputFields={tableManager.getInputFields()}
-        inputFieldTypes={tableManager.getInputFieldTypes()}
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
       />
@@ -141,10 +144,11 @@ const CustomTable = ({ tableManager }: Props) => {
                     isEditing={isEditing[rowIndex]}
                     isEditable={tableManager.getEditAccess(index)}
                     data={d}
-                    type={tableManager.getInputType(index)}
-                    handleInputChange={(value) =>
-                      handleInputChange(rowIndex, index, value)
+                    type={tableManager.getInputFields()[index].type}
+                    handleInputChange={(value, error) =>
+                      handleInputChange(rowIndex, index, value, error)
                     }
+                    validation={tableManager.getInputFields()[index].validation}
                   />
                 ))}
 
@@ -159,6 +163,7 @@ const CustomTable = ({ tableManager }: Props) => {
                 )}
                 <TdEditButton
                   isEditing={isEditing[rowIndex]}
+                  isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
                   handleEditToggle={() => handleEditToggle(rowIndex)}
                   revertEdit={() => revertEdit(rowIndex)}
                 />

@@ -1,9 +1,9 @@
 import { Switch, Td } from "@chakra-ui/react";
 import { primaryColor } from "../../configs";
-import { TableData } from "../../models/TableData";
+import { TableRowData } from "../../models/TableData";
 
 interface Props {
-  row: TableData;
+  row: TableRowData;
   handleToggleSwitch: (id: number) => void;
 }
 

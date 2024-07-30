@@ -2,12 +2,12 @@ import { Button, HStack, Text } from "@chakra-ui/react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import AlertDialogButton from "../General/AlertDialogButton";
 import AddRowDialogButton from "./AddRowDialogButton";
+import InputField from "../../models/InputField";
 
 interface Props {
   tableHeading: string;
   isSelectingRows: boolean;
-  inputFields: string[];
-  inputFieldTypes: string[];
+  inputFields: InputField[];
   handleBulkSwitchActions: (status: boolean) => void;
   handleBulkDeleteRows: () => void;
 }
@@ -16,7 +16,6 @@ const TableHeader = ({
   tableHeading,
   isSelectingRows,
   inputFields,
-  inputFieldTypes,
   handleBulkSwitchActions,
   handleBulkDeleteRows,
 }: Props) => {
@@ -33,7 +32,9 @@ const TableHeader = ({
         <AddRowDialogButton
           header={"Add New"}
           inputFields={inputFields}
-          inputFieldTypes={inputFieldTypes}
+          onSubmit={function (): void {
+            throw new Error("Function not implemented.");
+          }}
         />
       </HStack>
       {isSelectingRows && (

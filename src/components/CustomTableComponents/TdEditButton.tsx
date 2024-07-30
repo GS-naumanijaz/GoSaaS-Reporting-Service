@@ -4,16 +4,22 @@ import { TbPencil, TbPencilCancel } from "react-icons/tb";
 
 interface Props {
   isEditing: boolean;
+  isDisabled: boolean;
   handleEditToggle: () => void;
   revertEdit: () => void;
 }
 
-const TdEditButton = ({ isEditing, handleEditToggle, revertEdit }: Props) => {
+const TdEditButton = ({
+  isEditing,
+  isDisabled,
+  handleEditToggle,
+  revertEdit,
+}: Props) => {
   return (
     <Td textAlign="center">
       {isEditing ? (
         <HStack>
-          <Button onClick={handleEditToggle}>
+          <Button onClick={handleEditToggle} isDisabled={isDisabled}>
             <FaRegSave color="green" size={20} />
           </Button>
           <Button

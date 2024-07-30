@@ -1,37 +1,45 @@
 import {
-  Button,
   AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
   AlertDialogBody,
+  AlertDialogContent,
   AlertDialogFooter,
-  useDisclosure,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
+  Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import InputField from "../../models/InputField";
+import { validateField } from "../../models/ValidationRule";
 
 interface Props {
   header: string;
-  inputFields: string[];
-  inputFieldTypes: string[];
+  inputFields: InputField[];
+  onSubmit: () => void;
 }
 
-const AddRowDialogButton = ({
+const AddRowDialogButton: React.FC<Props> = ({
   header,
   inputFields,
-  inputFieldTypes,
-}: Props) => {
+  onSubmit,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
 
-  const [formData, setFormData] = useState<Record<string, string>>(
-    inputFields.reduce((acc, field) => ({ ...acc, [field]: "" }), {})
+  const initialFormState = inputFields.reduce(
+    (acc, field) => ({ ...acc, [field.name]: "" }),
+    {}
   );
+
+  const [formData, setFormData] =
+    useState<Record<string, string>>(initialFormState);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,15 +47,29 @@ const AddRowDialogButton = ({
     };
 
   const handleSubmit = () => {
-    // onSubmit(formData);
-    onClose();
+    const newErrors: Record<string, string> = {};
+    inputFields.forEach((field) => {
+      const error = validateField(formData[field.name], field.validation);
+      if (error) newErrors[field.name] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setFormErrors(newErrors);
+    } else {
+      onSubmit();
+      onClose();
+    }
   };
 
-  console.log(inputFieldTypes);
+  const handleOpen = () => {
+    setFormData(initialFormState); // Reset form data
+    setFormErrors({}); // Clear errors
+    onOpen();
+  };
 
   return (
     <>
-      <Button onClick={onOpen}>
+      <Button onClick={handleOpen}>
         <FaPlus />
       </Button>
 
@@ -66,21 +88,26 @@ const AddRowDialogButton = ({
             <AlertDialogBody>
               {inputFields.map((field, index) => (
                 <Box key={index} mb={4}>
-                  <FormControl>
-                    <FormLabel>{field}</FormLabel>
+                  <FormControl isInvalid={!!formErrors[field.name]}>
+                    <FormLabel>{field.label}</FormLabel>
                     <Input
-                      type={inputFieldTypes[index]}
-                      value={formData[field]}
-                      onChange={handleChange(field)}
-                      placeholder={`Enter ${field.toLowerCase()}`}
+                      type={inputFields[index].type}
+                      value={formData[field.name]}
+                      onChange={handleChange(field.name)}
+                      placeholder={`Enter ${field.label.toLowerCase()}`}
                     />
+                    <FormErrorMessage>
+                      {formErrors[field.name]}
+                    </FormErrorMessage>
                   </FormControl>
                 </Box>
               ))}
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button onClick={onClose}>Cancel</Button>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
               <Button colorScheme="red" onClick={handleSubmit} ml={3}>
                 Add
               </Button>

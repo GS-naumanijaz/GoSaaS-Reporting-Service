@@ -1,5 +1,6 @@
+import InputField from "./InputField";
 
-export abstract class TableData {
+export abstract class TableRowData {
   abstract getTableData(): string[];
   abstract getTableHeadings(): string[];
   abstract getId(): number;
@@ -8,8 +9,7 @@ export abstract class TableData {
   abstract getCheckBoxWidth(): string;
   abstract editRowData(elementIndex: number, newValue: string): void;
   abstract editCompleteRow(newValue: string[]): void;
-  abstract getInputFields(): string[];
-  abstract getInputType(): string[];
+  abstract getInputFields(): InputField[];
   abstract getEditAccess(): boolean[];
   
   requiresStatusToggle(): boolean {

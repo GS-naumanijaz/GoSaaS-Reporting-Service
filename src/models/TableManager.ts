@@ -1,18 +1,21 @@
-import { TableData } from "./TableData";
+import InputField from "./InputField";
+import { TableRowData } from "./TableData";
 
 export class TableManager {
-  private data: TableData[];
+  private data: TableRowData[];
   private isEditing: boolean[];
   private preEditRows: string[][];
   private checkedState: boolean[];
   private allRowsSelected: boolean;
   private isSelectingRows: boolean;
+  private canSaveEditedRows: boolean[];
 
-  constructor(data: TableData[]) {
+  constructor(data: TableRowData[]) {
     this.data = data;
     this.isEditing = new Array(this.data.length).fill(false);
     this.preEditRows = new Array(data.length).fill([]);
     this.checkedState = new Array(this.data.length).fill(false);
+    this.canSaveEditedRows = new Array(this.data.length).fill(false);
     this.allRowsSelected = false;
     this.isSelectingRows = false;
   }
@@ -21,7 +24,7 @@ export class TableManager {
     return this.data.length;
   }
 
-  getTableData(): TableData[] {
+  getTableData(): TableRowData[] {
     return this.data;
   }
 
@@ -41,6 +44,10 @@ export class TableManager {
     return this.isSelectingRows;
   }
 
+  getCanSaveEditedRows(): boolean[] {
+    return this.canSaveEditedRows;
+  }
+
   getTableHeader(): string {
     return this.data[0].getTableHeader();
   }
@@ -57,20 +64,16 @@ export class TableManager {
     return this.data[0].getColumnWidths();
   }
 
-  getInputFields(): string[] {
+  getInputFields(): InputField[] {
     return this.data[0].getInputFields();
-  }
-
-  getInputType(index: number): string {
-    return this.data[0].getInputType()[index];
-  }
-
-  getInputFieldTypes(): string[] {
-    return this.data[0].getInputType();
   }
 
   getEditAccess(index: number): boolean {
     return this.data[0].getEditAccess()[index];
+  }
+
+  setEditSaveOnRow(index: number, newValue: boolean) {
+    this.canSaveEditedRows[index] = newValue;
   }
 
   toggleRowEditState(index: number) {
@@ -134,4 +137,6 @@ export class TableManager {
     this.isEditing = this.isEditing.filter((_, index) => !this.checkedState[index]);
     this.checkedState = new Array(this.data.length).fill(false);
   }
+
+
 }

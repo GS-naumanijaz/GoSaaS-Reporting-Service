@@ -1,6 +1,7 @@
-import { TableData } from "./TableData";
+import InputField from "./InputField";
+import { TableRowData } from "./TableData";
 
-export class SourceConnection implements TableData {
+export class SourceConnection implements TableRowData {
   private connectionId: number;
   private alias: string;
   private type: string;
@@ -11,6 +12,45 @@ export class SourceConnection implements TableData {
 
   //Static variables
   private static columnWidths = ["5%", "5%", "30%", "10%", "15%", "10%", "10%", "5%", "5%", "5%"];
+
+  private static inputFields: InputField[] = [
+    {
+      name: "Connection ID",
+      label: "connectionId",
+      type: "number",
+      validation: { required: true }
+    },
+    {
+      name: "Alias",
+      label: "alias",
+      type: "text",
+      validation: { required: true, minLength: 2, maxLength: 10 }
+    },
+    {
+      name: "Type",
+      label: "type",
+      type: "text",
+      validation: { required: true, minLength: 2, maxLength: 10 }
+    },
+    {
+      name: "Host",
+      label: "host",
+      type: "text",
+      validation: { required: true }
+    },
+    {
+      name: "Port",
+      label: "port",
+      type: "text",
+      validation: { required: true }
+    },
+    {
+      name: "App ID",
+      label: "appId",
+      type: "number",
+      validation: { required: true }
+    },
+  ]
 
   constructor(
     connectionId: number,
@@ -61,12 +101,8 @@ export class SourceConnection implements TableData {
       return SourceConnection.columnWidths[0];
   }
 
-  getInputFields(): string[] {    
-    return ["Connection ID", "Alias", "Type", "Host", "Port", "App ID"];
-  }
-  
-  getInputType(): string[] {
-      return ["number", "text", "text", "text", "text", "number"];
+  getInputFields(): InputField[] {
+    return SourceConnection.inputFields;
   }
 
   getEditAccess(): boolean[] {
