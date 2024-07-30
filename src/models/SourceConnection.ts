@@ -9,6 +9,9 @@ export class SourceConnection implements TableData {
   private appId: number;
   private isActive: boolean;
 
+  //Static variables
+  private static columnWidths = ["5%", "5%", "30%", "10%", "15%", "10%", "10%", "5%", "5%", "5%"];
+
   constructor(
     connectionId: number,
     alias: string,
@@ -27,7 +30,7 @@ export class SourceConnection implements TableData {
     this.isActive = isActive;
   }
 
-  tableData(): string[] {
+  getTableData(): string[] {
     return [
       String(this.connectionId),
       this.alias,
@@ -42,7 +45,7 @@ export class SourceConnection implements TableData {
     return this.connectionId;
   }
 
-  tableHeadings(): string[] {
+  getTableHeadings(): string[] {
     return ["Connection ID", "Alias", "Type", "Host", "Port", "App ID", "Active Status", "Edit", "Delete"];
   }
 
@@ -51,11 +54,15 @@ export class SourceConnection implements TableData {
   }
 
   getColumnWidths(): string[] {
-      return ["10%", "10%", "10%", "10%", "10%", "10%", "10%", "10%", "10%"];
+      return SourceConnection.columnWidths.slice(1);
   }
-  //these widths shoould add upto 100%
+
   getCheckBoxWidth(): string {
-      return "10%";
+      return SourceConnection.columnWidths[0];
+  }
+
+  getInputFields(): string[] {    
+    return ["Connection ID", "Alias", "Type", "Host", "Port", "App ID"];
   }
   
   getInputType(): string[] {
@@ -115,4 +122,5 @@ export class SourceConnection implements TableData {
   toggleSwitchStatus() {
       this.isActive = !this.isActive;
   }
+
 }

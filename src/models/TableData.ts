@@ -1,13 +1,14 @@
 
 export abstract class TableData {
-  abstract tableData(): string[];
-  abstract tableHeadings(): string[];
+  abstract getTableData(): string[];
+  abstract getTableHeadings(): string[];
   abstract getId(): number;
   abstract getTableHeader(): string;
   abstract getColumnWidths(): string[];
   abstract getCheckBoxWidth(): string;
   abstract editRowData(elementIndex: number, newValue: string): void;
   abstract editCompleteRow(newValue: string[]): void;
+  abstract getInputFields(): string[];
   abstract getInputType(): string[];
   abstract getEditAccess(): boolean[];
   

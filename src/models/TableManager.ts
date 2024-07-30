@@ -46,7 +46,7 @@ export class TableManager {
   }
 
   getTableHeadings(): string[] {
-    return this.data[0].tableHeadings();
+    return this.data[0].getTableHeadings();
   }
 
   getCheckBoxWidth(): string {
@@ -57,8 +57,16 @@ export class TableManager {
     return this.data[0].getColumnWidths();
   }
 
+  getInputFields(): string[] {
+    return this.data[0].getInputFields();
+  }
+
   getInputType(index: number): string {
     return this.data[0].getInputType()[index];
+  }
+
+  getInputFieldTypes(): string[] {
+    return this.data[0].getInputType();
   }
 
   getEditAccess(index: number): boolean {
@@ -68,7 +76,7 @@ export class TableManager {
   toggleRowEditState(index: number) {
     this.isEditing[index] = !this.isEditing[index];
     if (this.isEditing[index]) {
-      this.preEditRows[index] = this.data[index].tableData();
+      this.preEditRows[index] = this.data[index].getTableData();
     }
   }
 

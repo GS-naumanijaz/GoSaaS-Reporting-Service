@@ -101,6 +101,8 @@ const CustomTable = ({ tableManager }: Props) => {
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}
+        inputFields={tableManager.getInputFields()}
+        inputFieldTypes={tableManager.getInputFieldTypes()}
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
       />
@@ -133,7 +135,7 @@ const CustomTable = ({ tableManager }: Props) => {
                   checkedState={checkedState[rowIndex]}
                   selectCheckBox={() => selectCheckBox(rowIndex)}
                 />
-                {row.tableData().map((d, index) => (
+                {row.getTableData().map((d, index) => (
                   <TdData
                     key={index}
                     isEditing={isEditing[rowIndex]}

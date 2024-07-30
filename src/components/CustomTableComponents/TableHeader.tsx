@@ -1,11 +1,13 @@
 import { Button, HStack, Text } from "@chakra-ui/react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import AlertDialogButton from "../General/AlertDialogButton";
-import { FaPlus } from "react-icons/fa";
+import AddRowDialogButton from "./AddRowDialogButton";
 
 interface Props {
   tableHeading: string;
   isSelectingRows: boolean;
+  inputFields: string[];
+  inputFieldTypes: string[];
   handleBulkSwitchActions: (status: boolean) => void;
   handleBulkDeleteRows: () => void;
 }
@@ -13,6 +15,8 @@ interface Props {
 const TableHeader = ({
   tableHeading,
   isSelectingRows,
+  inputFields,
+  inputFieldTypes,
   handleBulkSwitchActions,
   handleBulkDeleteRows,
 }: Props) => {
@@ -26,9 +30,11 @@ const TableHeader = ({
     >
       <HStack spacing={4}>
         <Text fontSize={"x-large"}>{tableHeading}</Text>
-        <Button>
-          <FaPlus />
-        </Button>
+        <AddRowDialogButton
+          header={"Add New"}
+          inputFields={inputFields}
+          inputFieldTypes={inputFieldTypes}
+        />
       </HStack>
       {isSelectingRows && (
         <HStack spacing={6}>
