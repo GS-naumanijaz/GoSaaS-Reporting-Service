@@ -99,7 +99,7 @@ const CustomTable = ({ tableManager }: Props) => {
   return (
     <>
       <TableHeader
-        tableHeading={tableData[0].getTableHeader()}
+        tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
@@ -108,18 +108,18 @@ const CustomTable = ({ tableManager }: Props) => {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th textAlign="center" width={tableData[0].getCheckBoxWidth()}>
+              <Th textAlign="center" width={tableManager.getCheckBoxWidth()}>
                 <Checkbox
                   colorScheme="red"
                   isChecked={allRowsSelected}
                   onChange={selectAllCheckBoxes}
                 />
               </Th>
-              {tableData[0].tableHeadings().map((heading, index) => (
+              {tableManager.getTableHeadings().map((heading, index) => (
                 <Th
                   key={index}
                   textAlign="center"
-                  width={tableData[0].getColumnWidths()[index]}
+                  width={tableManager.getColumnWidths()[index]}
                 >
                   <FilterSortPopup heading={heading} />
                 </Th>

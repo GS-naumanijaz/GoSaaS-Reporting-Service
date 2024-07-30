@@ -41,6 +41,23 @@ export class TableManager {
     return this.isSelectingRows;
   }
 
+  getTableHeader(): string {
+    return this.data[0].getTableHeader();
+  }
+
+  getTableHeadings(): string[] {
+    return this.data[0].tableHeadings();
+  }
+
+  getCheckBoxWidth(): string {
+    return this.data[0].getCheckBoxWidth();
+  }
+
+  getColumnWidths(): string[] {
+    return this.data[0].getColumnWidths();
+  }
+
+
   toggleRowEditState(index: number) {
     this.isEditing[index] = !this.isEditing[index];
     if (this.isEditing[index]) {
