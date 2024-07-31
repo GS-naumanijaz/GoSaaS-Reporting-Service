@@ -1,20 +1,20 @@
 // src/components/TdData.tsx
 import {
-  Input,
-  Td,
-  FormControl,
-  FormErrorMessage,
   Box,
   Button,
+  FormControl,
+  FormErrorMessage,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Td,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { validateField, ValidationRule } from "../../models/ValidationRule"; // Adjust the import path as needed
-import { InputField } from "../../models/TableManagementModels";
 import { FaChevronDown } from "react-icons/fa";
+import { InputField } from "../../models/TableManagementModels";
+import { validateField } from "../../models/ValidationRule"; // Adjust the import path as needed
 
 interface Props {
   isEditing: boolean;
@@ -32,6 +32,12 @@ const TdData = ({
   handleInputChange,
 }: Props) => {
   const [error, setError] = useState<string>("");
+  const [selectedItem, setSelectedItem] = useState(data);
+
+  const handleMenuItemClick = (item: string) => {
+    setSelectedItem(item);
+    handleInputChange(item, "");
+  };
 
   useEffect(() => {
     if (isEditing) {
@@ -61,11 +67,15 @@ const TdData = ({
                 fontWeight="normal"
                 rightIcon={<FaChevronDown />}
               >
-                {data}
+                {selectedItem}
               </MenuButton>
               <MenuList>
                 {inputField.options!.map((item, index) => (
-                  <MenuItem key={index} fontSize={16}>
+                  <MenuItem
+                    key={index}
+                    fontSize={16}
+                    onClick={() => handleMenuItemClick(item)}
+                  >
                     {item}
                   </MenuItem>
                 ))}
