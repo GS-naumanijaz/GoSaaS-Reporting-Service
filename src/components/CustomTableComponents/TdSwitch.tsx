@@ -1,6 +1,6 @@
 import { Switch, Td } from "@chakra-ui/react";
 import { primaryColor } from "../../configs";
-import { TableRowData } from "../../models/TableData";
+import { TableRowData } from "../../models/TableRowData";
 
 interface Props {
   row: TableRowData;

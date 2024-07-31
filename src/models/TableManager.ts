@@ -1,8 +1,9 @@
 import InputField from "./InputField";
-import { TableRowData } from "./TableData";
+import { TableRowData } from "./TableRowData";
 
 export class TableManager {
   private data: TableRowData[];
+
   private isEditing: boolean[];
   private preEditRows: string[][];
   private checkedState: boolean[];

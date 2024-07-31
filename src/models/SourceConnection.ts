@@ -1,5 +1,5 @@
 import InputField from "./InputField";
-import { TableRowData } from "./TableData";
+import { TableRowData } from "./TableRowData";
 
 export class SourceConnection implements TableRowData {
   private connectionId: number;
