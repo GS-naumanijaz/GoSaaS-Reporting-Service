@@ -19,24 +19,27 @@ export class SourceConnection implements TableRowData {
     {
       name: "Alias",
       label: "alias",
+      isSelectable: false,
       type: "text",
       validation: { required: true, minLength: 2, maxLength: 20 }
     },
     {
       name: "Type",
       label: "type",
-      type: "text",
-      validation: { required: true, minLength: 2, maxLength: 10 }
+      isSelectable: true,
+      options: ["SQL", "NoSQL"]
     },
     {
       name: "Host",
       label: "host",
+      isSelectable: false,
       type: "text",
       validation: { required: true }
     },
     {
       name: "Port",
       label: "port",
+      isSelectable: false,
       type: "text",
       validation: { required: true }
     },

@@ -78,7 +78,11 @@ const FilterSortPopup = ({ heading, sortFilterOptions }: Props) => {
                 <Menu>
                   <MenuButton
                     width={"100%"}
+                    bg="white"
+                    border="1px"
+                    borderColor="gray.200"
                     as={Button}
+                    fontWeight="normal"
                     rightIcon={<FaChevronDown />}
                   >
                     {heading}

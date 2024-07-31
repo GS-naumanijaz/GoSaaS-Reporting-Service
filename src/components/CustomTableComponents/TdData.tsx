@@ -1,24 +1,35 @@
 // src/components/TdData.tsx
-import { Input, Td, FormControl, FormErrorMessage } from "@chakra-ui/react";
+import {
+  Input,
+  Td,
+  FormControl,
+  FormErrorMessage,
+  Box,
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { validateField, ValidationRule } from "../../models/ValidationRule"; // Adjust the import path as needed
+import { InputField } from "../../models/TableManagementModels";
+import { FaChevronDown } from "react-icons/fa";
 
 interface Props {
   isEditing: boolean;
   isEditable: boolean;
   data: string;
-  type: string;
+  inputField: InputField;
   handleInputChange: (value: string, error: string) => void;
-  validation?: ValidationRule;
 }
 
 const TdData = ({
   isEditing,
   isEditable,
   data,
-  type,
+  inputField,
   handleInputChange,
-  validation,
 }: Props) => {
   const [error, setError] = useState<string>("");
 
@@ -30,7 +41,7 @@ const TdData = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    const error = validateField(value, validation);
+    const error = validateField(value, inputField.validation);
     setError(error);
     handleInputChange(value, error); // Always apply changes
   };
@@ -38,15 +49,40 @@ const TdData = ({
   return (
     <Td textAlign="center">
       {isEditing && isEditable ? (
-        <FormControl isInvalid={!!error}>
-          <Input
-            type={type}
-            textAlign="center"
-            value={data}
-            onChange={handleChange}
-          />
-          <FormErrorMessage>{error}</FormErrorMessage>
-        </FormControl>
+        <Box>
+          {inputField.isSelectable ? (
+            <Menu>
+              <MenuButton
+                width={"100%"}
+                bg="white"
+                border="1px"
+                borderColor="gray.200"
+                as={Button}
+                fontWeight="normal"
+                rightIcon={<FaChevronDown />}
+              >
+                {data}
+              </MenuButton>
+              <MenuList>
+                {inputField.options!.map((item, index) => (
+                  <MenuItem key={index} fontSize={16}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          ) : (
+            <FormControl isInvalid={!!error}>
+              <Input
+                type={inputField.type}
+                textAlign="center"
+                value={data}
+                onChange={handleChange}
+              />
+              <FormErrorMessage>{error}</FormErrorMessage>
+            </FormControl>
+          )}
+        </Box>
       ) : (
         data
       )}

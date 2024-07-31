@@ -11,11 +11,16 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   useDisclosure,
+  Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import InputField from "../../models/TableManagementModels";
+import { FaChevronDown, FaPlus } from "react-icons/fa";
+import { InputField } from "../../models/TableManagementModels";
 import { validateField } from "../../models/ValidationRule";
 
 interface Props {
@@ -88,18 +93,45 @@ const AddRowDialogButton: React.FC<Props> = ({
             <AlertDialogBody>
               {inputFields.map((field, index) => (
                 <Box key={index} mb={4}>
-                  <FormControl isInvalid={!!formErrors[field.name]}>
-                    <FormLabel>{field.label}</FormLabel>
-                    <Input
-                      type={inputFields[index].type}
-                      value={formData[field.name]}
-                      onChange={handleChange(field.name)}
-                      placeholder={`Enter ${field.label.toLowerCase()}`}
-                    />
-                    <FormErrorMessage>
-                      {formErrors[field.name]}
-                    </FormErrorMessage>
-                  </FormControl>
+                  {field.isSelectable ? (
+                    <Box>
+                      <Text>{field.label}</Text>
+                      <Menu>
+                        <MenuButton
+                          width={"100%"}
+                          bg="white"
+                          border="1px"
+                          borderColor="gray.200"
+                          as={Button}
+                          textAlign="left"
+                          fontWeight="normal"
+                          rightIcon={<FaChevronDown />}
+                        >
+                          {field.label}
+                        </MenuButton>
+                        <MenuList>
+                          {field.options!.map((item, index) => (
+                            <MenuItem key={index} fontSize={16}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </MenuList>
+                      </Menu>
+                    </Box>
+                  ) : (
+                    <FormControl isInvalid={!!formErrors[field.name]}>
+                      <FormLabel>{field.label}</FormLabel>
+                      <Input
+                        type={inputFields[index].type}
+                        value={formData[field.name]}
+                        onChange={handleChange(field.name)}
+                        placeholder={`Enter ${field.label.toLowerCase()}`}
+                      />
+                      <FormErrorMessage>
+                        {formErrors[field.name]}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
                 </Box>
               ))}
             </AlertDialogBody>

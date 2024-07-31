@@ -2,7 +2,7 @@ import { Button, HStack, Text } from "@chakra-ui/react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import AlertDialogButton from "../General/AlertDialogButton";
 import AddRowDialogButton from "./AddRowDialogButton";
-import InputField from "../../models/TableManagementModels";
+import { InputField } from "../../models/TableManagementModels";
 
 interface Props {
   tableHeading: string;

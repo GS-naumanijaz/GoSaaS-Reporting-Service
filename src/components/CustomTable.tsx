@@ -149,11 +149,10 @@ const CustomTable = ({ tableManager }: Props) => {
                     isEditing={isEditing[rowIndex]}
                     isEditable={tableManager.getEditAccess(index)}
                     data={d}
-                    type={tableManager.getInputFields()[index].type}
+                    inputField={tableManager.getInputFields()[index]}
                     handleInputChange={(value, error) =>
                       handleInputChange(rowIndex, index, value, error)
                     }
-                    validation={tableManager.getInputFields()[index].validation}
                   />
                 ))}
 

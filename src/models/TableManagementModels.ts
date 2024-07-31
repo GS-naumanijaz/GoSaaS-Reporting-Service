@@ -3,8 +3,10 @@ import { ValidationRule } from "./ValidationRule";
 export interface InputField {
   label: string;
   name: string;
-  type: string;
+  isSelectable: boolean;
+  type?: string;
   validation?: ValidationRule;
+  options?: string[];
 }
 
 export interface ColumnSortFilterOptions {
