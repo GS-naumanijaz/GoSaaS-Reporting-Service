@@ -1,7 +1,23 @@
-import { Box, Button, HStack } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  HStack,
+  Input,
+  Textarea,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { mainDashboardHeight, primaryColor, sx } from "../configs";
 import ProductsList from "./ProductsList";
+import React from "react";
 
 export interface Product {
   name: string;
@@ -32,6 +48,17 @@ const Products = () => {
 
   const [selectedFilter, setSelectedFilter] = useState(allFilters[0]);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+  const [appName, setAppName] = useState("");
+  const [appBody, setAppBody] = useState("");
+
+  const handleAdd = () => {
+    // Handle the add logic here
+    onClose();
+  };
 
   const productsToShow = () => {
     switch (selectedFilter) {
@@ -85,7 +112,61 @@ const Products = () => {
               </Button>
             ))}
           </HStack>
-          <Button>Add Aplication</Button>
+          <Button
+            onClick={onOpen}
+            border={"1px"}
+            bg={primaryColor}
+            color={"white"}
+            _hover={{
+              bg: "gray.100",
+              color: primaryColor,
+            }}
+          >
+            Add Aplication
+          </Button>
+          <AlertDialog
+            isOpen={isOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isCentered
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Add Application
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  <FormControl mb={4}>
+                    <FormLabel>Application Name</FormLabel>
+                    <Input
+                      value={appName}
+                      onChange={(e) => setAppName(e.target.value)}
+                      placeholder="Enter application name"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Application Body</FormLabel>
+                    <Textarea
+                      value={appBody}
+                      onChange={(e) => setAppBody(e.target.value)}
+                      placeholder="Enter application body"
+                      rows={5}
+                    />
+                  </FormControl>
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="red" onClick={handleAdd} ml={3}>
+                    Add
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
         </Box>
         <ProductsList
           products={productsToShow()}
