@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
 import Homepage from "../pages/Homepage";
+import App from "../App";
+import AuthenticatedRoute from "../components/AuthenticatedRoute";
 
 const router = createBrowserRouter([
   {
@@ -9,7 +10,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/homepage",
-    element: <Homepage />,
+    element: <AuthenticatedRoute element={<Homepage />} />,
   },
 ]);
 

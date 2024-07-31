@@ -1,5 +1,6 @@
 {
   "name": "gosaas-reporting-service",
+  "proxy": "http://localhost:8080",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,6 +16,8 @@
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "apexcharts": "^3.51.0",
+    "axios": "^1.7.2",
+    "fetch": "^1.1.0",
     "framer-motion": "^6.5.1",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
