@@ -1,4 +1,4 @@
-import InputField from "./InputField";
+import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
 export class SourceConnection implements TableRowData {
@@ -7,10 +7,12 @@ export class SourceConnection implements TableRowData {
   private type: string;
   private host: string;
   private port: string;
-  private appId: number;
+  // private appId: number;
   private isActive: boolean;
 
   //Static variables
+  private static tableHeader = "Source Connections"
+  private static tableHeadings = ["", "Alias", "Type", "Host", "Port", "Active Status", "Edit", "Delete"];
   private static columnWidths = ["5%", "30%", "15%", "15%", "15%", "5%", "10%", "5%"];
 
   private static inputFields: InputField[] = [
@@ -40,13 +42,44 @@ export class SourceConnection implements TableRowData {
     },
   ]
 
+  private static sortFilterOptions: ColumnSortFilterOptions[] = [
+    {
+      isEnabled: true,
+      isSortable: true,
+      isSearchable: true,
+    },
+    {
+      isEnabled: true,
+      dropdownFilter: ["SQL", "NoSQL"]
+    },
+    {
+      isEnabled: true,
+      isSearchable: true
+    },
+    {
+      isEnabled: true,
+      isSortable: true,
+      isSearchable: true,
+    },
+    {
+      isEnabled: true,
+      dropdownFilter: ["Active", "Inactive"]
+    },
+    {
+      isEnabled: false
+    },
+    {
+      isEnabled: false
+    } 
+  ]
+
   constructor(
     connectionId: number,
     alias: string,
     type: string,
     host: string,
     port: string,
-    appId: number,
+    // appId: number,
     isActive: boolean
   ) {
     this.connectionId = connectionId;
@@ -54,7 +87,7 @@ export class SourceConnection implements TableRowData {
     this.type = type;
     this.host = host;
     this.port = port;
-    this.appId = appId;
+    // this.appId = appId;
     this.isActive = isActive;
   }
 
@@ -72,11 +105,11 @@ export class SourceConnection implements TableRowData {
   }
 
   getTableHeadings(): string[] {
-    return ["Alias", "Type", "Host", "Port", "Active Status", "Edit", "Delete"];
+    return SourceConnection.tableHeadings.slice(1);
   }
 
   getTableHeader(): string {
-      return "Source Connections"
+      return SourceConnection.tableHeader;
   }
 
   getColumnWidths(): string[] {
@@ -89,6 +122,10 @@ export class SourceConnection implements TableRowData {
 
   getInputFields(): InputField[] {
     return SourceConnection.inputFields;
+  }
+
+  getSortFilterOptions(): ColumnSortFilterOptions[] {
+    return SourceConnection.sortFilterOptions;
   }
 
   getEditAccess(): boolean[] {

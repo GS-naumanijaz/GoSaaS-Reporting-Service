@@ -126,7 +126,12 @@ const CustomTable = ({ tableManager }: Props) => {
                   textAlign="center"
                   width={tableManager.getColumnWidths()[index]}
                 >
-                  <FilterSortPopup heading={heading} />
+                  <FilterSortPopup
+                    heading={heading}
+                    sortFilterOptions={
+                      tableManager.getSortFilterOptions()[index]
+                    }
+                  />
                 </Th>
               ))}
             </Tr>

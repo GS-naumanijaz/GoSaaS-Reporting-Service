@@ -1,4 +1,4 @@
-import InputField from "./InputField";
+import {ColumnSortFilterOptions, InputField} from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
 export class TableManager {
@@ -67,6 +67,10 @@ export class TableManager {
 
   getInputFields(): InputField[] {
     return this.data[0].getInputFields();
+  }
+
+  getSortFilterOptions(): ColumnSortFilterOptions[] {
+    return this.data[0].getSortFilterOptions();
   }
 
   getEditAccess(index: number): boolean {
