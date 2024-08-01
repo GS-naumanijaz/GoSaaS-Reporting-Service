@@ -95,7 +95,7 @@ const AddRowDialogButton: React.FC<Props> = ({
                 <Box key={index} mb={4}>
                   {field.isSelectable ? (
                     <Box>
-                      <Text>{field.label}</Text>
+                      <Text>{field.name}</Text>
                       <Menu>
                         <MenuButton
                           width={"100%"}
@@ -107,7 +107,7 @@ const AddRowDialogButton: React.FC<Props> = ({
                           fontWeight="normal"
                           rightIcon={<FaChevronDown />}
                         >
-                          {field.label}
+                          {field.name}
                         </MenuButton>
                         <MenuList>
                           {field.options!.map((item, index) => (
@@ -120,7 +120,7 @@ const AddRowDialogButton: React.FC<Props> = ({
                     </Box>
                   ) : (
                     <FormControl isInvalid={!!formErrors[field.name]}>
-                      <FormLabel>{field.label}</FormLabel>
+                      <FormLabel>{field.name}</FormLabel>
                       <Input
                         type={inputFields[index].type}
                         value={formData[field.name]}

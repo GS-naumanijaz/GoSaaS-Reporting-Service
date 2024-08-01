@@ -13,6 +13,11 @@ import { useNavigate } from "react-router-dom";
 
 const AvatarPopup = () => {
   const navigate = useNavigate();
+  const handleLogout = () => {
+    // tell backend to deauthenticate
+    navigate("/");
+  };
+
   return (
     <Popover placement="bottom-end" isLazy>
       <PopoverTrigger>
@@ -35,7 +40,7 @@ const AvatarPopup = () => {
               width={"100%"}
               leftIcon={<RiLogoutBoxRLine />}
               size={"sm"}
-              onClick={() => navigate("/")}
+              onClick={handleLogout}
             >
               Logout
             </Button>

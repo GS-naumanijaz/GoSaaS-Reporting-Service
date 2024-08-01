@@ -4,22 +4,13 @@ import CustomTable from "./CustomTable";
 
 const ProductDetails = () => {
   const sampleData: SourceConnection[] = [
-    new SourceConnection(
-      1,
-      "Main Server",
-      "SQL",
-      "192.168.1.1",
-      "5432",
-      101,
-      true
-    ),
+    new SourceConnection(1, "Main Server", "SQL", "192.168.1.1", "5432", true),
     new SourceConnection(
       2,
       "Backup Server",
       "NoSQL",
       "192.168.1.2",
       "27017",
-      102,
       false
     ),
     new SourceConnection(
@@ -28,25 +19,15 @@ const ProductDetails = () => {
       "SQL",
       "192.168.1.3",
       "3306",
-      103,
       false
     ),
-    new SourceConnection(
-      4,
-      "Test Server",
-      "SQL",
-      "192.168.1.4",
-      "1521",
-      104,
-      true
-    ),
+    new SourceConnection(4, "Test Server", "SQL", "192.168.1.4", "1521", true),
     new SourceConnection(
       5,
       "Dev Server",
       "NoSQL",
       "192.168.1.5",
       "6379",
-      105,
       false
     ),
   ];

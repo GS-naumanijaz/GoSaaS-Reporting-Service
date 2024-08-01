@@ -1,4 +1,3 @@
-// src/components/TdData.tsx
 import {
   Box,
   Button,
@@ -14,7 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { InputField } from "../../models/TableManagementModels";
-import { validateField } from "../../models/ValidationRule"; // Adjust the import path as needed
+import { validateField } from "../../models/ValidationRule"; 
 
 interface Props {
   isEditing: boolean;

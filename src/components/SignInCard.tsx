@@ -1,10 +1,11 @@
 import { Box, Button, Image, VStack } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
 import { GoSaaSLabsLogo, primaryColor, secondaryColor } from "../configs";
-import { useNavigate } from "react-router-dom";
 
 const SignInCard = () => {
-  const navigate = useNavigate();
+  const handleClick = async () => {  // redirect to google oauth 
+    window.open("http://localhost:8080", "_self");
+  };
 
   return (
     <Box padding={70}>
@@ -12,7 +13,7 @@ const SignInCard = () => {
 
       <VStack direction="row" spacing={4} paddingTop={7}>
         <Button
-          onClick={() => navigate("/homepage")}
+          onClick={handleClick}
           leftIcon={<FcGoogle />}
           bgColor={primaryColor}
           variant="solid"

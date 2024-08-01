@@ -52,8 +52,8 @@ const FilterSortPopup = ({ heading, sortFilterOptions }: Props) => {
               <PopoverHeader>Sort by</PopoverHeader>
               <PopoverBody>
                 <Stack spacing={2}>
-                  <Button variant="outline">Accending</Button>
-                  <Button variant="outline">Deccending</Button>
+                  <Button variant="outline">Ascending</Button>
+                  <Button variant="outline">Descending</Button>
                 </Stack>
               </PopoverBody>
             </Box>

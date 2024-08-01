@@ -22,7 +22,7 @@ const TableFooter = () => {
           <Button>
             <FaChevronLeft />
           </Button>
-          <Text>1 of 1</Text>
+          <Text>1 of 1</Text>  // Make dynamic
           <Button>
             <FaChevronRight />
           </Button>
