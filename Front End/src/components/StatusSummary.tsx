@@ -8,11 +8,6 @@ const StatusSummary = () => {
       type: "donut",
     },
     labels: ["Successful", "In Progress", "Pending", "Failed"],
-    responsive: [
-      {
-        breakpoint: 480,
-      },
-    ],
     dataLabels: {
       enabled: false,
     },
@@ -39,8 +34,13 @@ const StatusSummary = () => {
           </Text>
           <Divider width="80%" bg="black" mx="auto" />
           <Box paddingTop={5}>
-            <ReactApexChart options={options} series={series} type="donut" />
-            <Text fontSize={15} p={1}>
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="donut"
+              height={"100%"}
+            />
+            <Text fontSize={15} p={1} pt={5}>
               Total Reports: {series.reduce((a, b) => a + b, 0)}
             </Text>
           </Box>
