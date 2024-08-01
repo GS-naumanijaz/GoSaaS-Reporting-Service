@@ -19,8 +19,8 @@ public class SecurityConfig {
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-////    @Value("${frontend.url}")
-//    private String frontendUrl = "";
+     @Value("${frontend.url}")
+     private String frontendUrl;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,8 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated() // all requests must be authenticated
                 )
-                .oauth2Login(oauth2 -> {  // configure OAuth2 login
-                    oauth2.successHandler(oAuth2LoginSuccessHandler);  // success handler will set new default url
+                .oauth2Login(oauth2 -> { // configure OAuth2 login
+                    oauth2.successHandler(oAuth2LoginSuccessHandler); // success handler will set new default url
                 })
                 .build();
     }
@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
-        cors.addAllowedOrigin("http://localhost:5173");
+        cors.addAllowedOrigin(frontendUrl);
         cors.addAllowedMethod("*");
         cors.addAllowedHeader("*");
         cors.setAllowCredentials(true);
@@ -48,6 +48,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", cors);
         return source;
     }
-
 
 }

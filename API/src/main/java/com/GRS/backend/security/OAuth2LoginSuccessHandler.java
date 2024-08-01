@@ -13,14 +13,14 @@ import java.io.IOException;
 @Component
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-//    @Value("${frontend.url}")
-//    private String Url = "";
-
+     @Value("${frontend.url}")
+     private String frontendUrl;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+            Authentication authentication) throws IOException, ServletException {
         this.setAlwaysUseDefaultTargetUrl(true);
-        this.setDefaultTargetUrl("http://localhost:5173/homepage");
+        this.setDefaultTargetUrl(frontendUrl+"/homepage");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }
