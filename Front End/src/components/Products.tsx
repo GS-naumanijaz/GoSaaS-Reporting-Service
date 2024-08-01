@@ -14,10 +14,11 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mainDashboardHeight, primaryColor, sx } from "../configs";
 import ProductsList from "./ProductsList";
 import React from "react";
+import { motion } from "framer-motion";
 
 export interface Product {
   name: string;
@@ -72,6 +73,12 @@ const Products = () => {
     return [];
   };
 
+  // Animation variants
+  const itemVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: { opacity: 1, x: 0 },
+  };
+
   return (
     <Box height={mainDashboardHeight} p={2}>
       <Box
@@ -122,7 +129,7 @@ const Products = () => {
               color: primaryColor,
             }}
           >
-            Add Aplication
+            Add Application
           </Button>
           <AlertDialog
             isOpen={isOpen}
@@ -168,11 +175,18 @@ const Products = () => {
             </AlertDialogOverlay>
           </AlertDialog>
         </Box>
-        <ProductsList
-          products={productsToShow()}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <ProductsList
+            products={productsToShow()}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            itemVariants={itemVariants} // Pass the animation variants if needed in ProductsList
+          />
+        </motion.div>
       </Box>
     </Box>
   );
