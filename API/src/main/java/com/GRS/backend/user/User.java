@@ -2,28 +2,70 @@ package com.GRS.backend.user;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "users") // Ensure this matches your database table name
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String email;
-    private String password;
+    private Date created_at;
+    private Date last_login;
 
     public User() {
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.created_at = new Date();
+        this.last_login = new Date();
+
     }
 
-    @Override
-    public String toString() {
-        return "User{id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + '}';
+    public String getName() {
+        return name;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Date getCreatedAt() {
+        return created_at;
+    }
+
+    public Date getLastLogin() {
+        return last_login;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public void setCreatedAt(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public void setLastLogin(Date last_login) {
+        this.last_login = last_login;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
 }

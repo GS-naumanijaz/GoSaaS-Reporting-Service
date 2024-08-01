@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class userController {
+public class UserController {
     @Autowired
-    private userService userService;
+    private UserService userService;
 
     @GetMapping("/findUserByEmail/{email}")
     public ResponseEntity<User> findUserByEmail(@PathVariable String email) {

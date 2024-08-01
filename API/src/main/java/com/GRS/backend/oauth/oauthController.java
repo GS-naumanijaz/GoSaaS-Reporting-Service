@@ -1,4 +1,4 @@
-package com.GRS.backend.demo;
+package com.GRS.backend.oauth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,10 +15,11 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
-public class DemoController {
+public class oauthController {
 
     @GetMapping("/check-auth")
     public ResponseEntity<Map<String, Boolean>> checkAuth(HttpServletRequest request) {
+        // get auth and check if still authenticated or not
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken);
@@ -28,10 +29,12 @@ public class DemoController {
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // sets auth to null ie logged out and redirects to login page
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/"; // Redirect to login page
+        return "redirect:/";
     }
+
 }
