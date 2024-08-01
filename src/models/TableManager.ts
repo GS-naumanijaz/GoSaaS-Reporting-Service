@@ -88,6 +88,15 @@ export class TableManager {
     }
   }
 
+  requiresStatusToggle() {
+    return this.data[0].requiresStatusToggle();
+  }
+ 
+  requiresCheckBox() {
+    return this.data[0].requiresCheckBox();
+  }
+
+
   handleToggleSwitch(id: number) {
     this.data = this.data.map((row) => {
       if (row.getId() === id) {

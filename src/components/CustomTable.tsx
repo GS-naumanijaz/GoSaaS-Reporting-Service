@@ -113,13 +113,15 @@ const CustomTable = ({ tableManager }: Props) => {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th textAlign="center" width={tableManager.getCheckBoxWidth()}>
-                <Checkbox
-                  colorScheme="red"
-                  isChecked={allRowsSelected}
-                  onChange={selectAllCheckBoxes}
-                />
-              </Th>
+              {tableManager.requiresCheckBox() && (
+                <Th textAlign="center" width={tableManager.getCheckBoxWidth()}>
+                  <Checkbox
+                    colorScheme="red"
+                    isChecked={allRowsSelected}
+                    onChange={selectAllCheckBoxes}
+                  />
+                </Th>
+              )}
               {tableManager.getTableHeadings().map((heading, index) => (
                 <Th
                   key={index}
@@ -139,10 +141,12 @@ const CustomTable = ({ tableManager }: Props) => {
           <Tbody>
             {tableData.map((row, rowIndex) => (
               <Tr key={row.getId()}>
-                <TdCheckBox
-                  checkedState={checkedState[rowIndex]}
-                  selectCheckBox={() => selectCheckBox(rowIndex)}
-                />
+                {tableManager.requiresCheckBox() && (
+                  <TdCheckBox
+                    checkedState={checkedState[rowIndex]}
+                    selectCheckBox={() => selectCheckBox(rowIndex)}
+                  />
+                )}
                 {row.getTableData().map((d, index) => (
                   <TdData
                     key={index}
@@ -156,7 +160,7 @@ const CustomTable = ({ tableManager }: Props) => {
                   />
                 ))}
 
-                {tableData[0].requiresStatusToggle() && (
+                {tableManager.requiresStatusToggle() && (
                   <TdSwitch
                     row={row}
                     handleToggleSwitch={() => {

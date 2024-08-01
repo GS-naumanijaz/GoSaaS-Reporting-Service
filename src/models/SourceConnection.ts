@@ -1,7 +1,7 @@
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
-export class SourceConnection implements TableRowData {
+export class SourceConnection extends TableRowData {
   private connectionId: number;
   private alias: string;
   private type: string;
@@ -85,6 +85,7 @@ export class SourceConnection implements TableRowData {
     // appId: number,
     isActive: boolean
   ) {
+    super();
     this.connectionId = connectionId;
     this.alias = alias;
     this.type = type;
@@ -94,6 +95,10 @@ export class SourceConnection implements TableRowData {
     this.isActive = isActive;
   }
 
+  getId(): number {
+    return this.connectionId;
+  }
+
   getTableData(): string[] {
     return [
       this.alias,
@@ -101,10 +106,6 @@ export class SourceConnection implements TableRowData {
       this.host,
       this.port,
     ];
-  }
-
-  getId(): number {
-    return this.connectionId;
   }
 
   getTableHeadings(): string[] {
@@ -118,52 +119,55 @@ export class SourceConnection implements TableRowData {
   getColumnWidths(): string[] {
       return SourceConnection.columnWidths.slice(1);
   }
-
-  getCheckBoxWidth(): string {
-      return SourceConnection.columnWidths[0];
-  }
-
-  getInputFields(): InputField[] {
-    return SourceConnection.inputFields;
-  }
-
-  getSortFilterOptions(): ColumnSortFilterOptions[] {
-    return SourceConnection.sortFilterOptions;
-  }
-
-  getEditAccess(): boolean[] {
-      return [true, true, true, true];
-  }
-
+  
   editRowData(elementIndex: number, newValue: string): void {
     switch (elementIndex) {
       case 0:
         this.alias = newValue;
         break;
-      case 1:
-        this.type = newValue;          
-        break;
-      case 2:
+        case 1:
+          this.type = newValue;          
+          break;
+          case 2:
         this.host = newValue;          
         break;
       case 3:
         this.port = newValue;          
         break;
-      
+        
+      }
     }
-  }
+    
+    editCompleteRow(newValue: string[]) {
+      this.alias = newValue[0];
+      this.type = newValue[1];
+      this.host = newValue[2];
+      this.port = newValue[3];
+    }
 
-  editCompleteRow(newValue: string[]) {
-    this.alias = newValue[0];
-    this.type = newValue[1];
-    this.host = newValue[2];
-    this.port = newValue[3];
+  getInputFields(): InputField[] {
+    return SourceConnection.inputFields;
   }
-
-  requiresStatusToggle(): boolean {
+  
+  getSortFilterOptions(): ColumnSortFilterOptions[] {
+    return SourceConnection.sortFilterOptions;
+  }
+  
+  getEditAccess(): boolean[] {
+    return [true, true, true, true];
+  }
+  
+  requiresCheckBox(): boolean {
     return true;
   }
 
+  getCheckBoxWidth(): string {
+      return SourceConnection.columnWidths[0];
+  }
+  
+  requiresStatusToggle(): boolean {
+    return true;
+  }
 
   getSwitchStatus(): boolean {
       return this.isActive;
