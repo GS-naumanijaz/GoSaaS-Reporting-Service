@@ -1,6 +1,7 @@
-import { Spinner, Text } from "@chakra-ui/react";
+import { Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { primaryColor } from "../configs";
 
 const AuthenticatedRoute = ({ element }: any) => {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
@@ -36,8 +37,7 @@ const AuthenticatedRoute = ({ element }: any) => {
           height: "100vh",
         }}
       >
-        <Spinner />
-        <Text> Loading... </Text>
+        <Spinner size={"xl"} color={primaryColor} />
       </div>
     ); // Show a loader while authentication is being checked
   }

@@ -9,13 +9,24 @@ import {
 import { primaryColor, tertiaryColor } from "../configs";
 import { RxAvatar } from "react-icons/rx";
 import { RiLogoutBoxRLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
 
 const AvatarPopup = () => {
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    // tell backend to deauthenticate
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      console.log("Logging out Called");
+      const response = await fetch("http://localhost:8080/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        window.location.href = "/";
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("An error occurred during logout", error);
+    }
   };
 
   return (

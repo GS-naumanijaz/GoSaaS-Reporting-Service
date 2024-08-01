@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // disable CSRF
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/logout").permitAll() // Allow unauthenticated access to /logout
                         .anyRequest().authenticated() // all requests must be authenticated
                 )
                 .oauth2Login(oauth2 -> { // configure OAuth2 login
