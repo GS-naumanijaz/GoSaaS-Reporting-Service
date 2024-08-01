@@ -138,7 +138,7 @@ const Products = () => {
 
                 <AlertDialogBody>
                   <FormControl mb={4}>
-                    <FormLabel>Application Name</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <Input
                       value={appName}
                       onChange={(e) => setAppName(e.target.value)}
@@ -146,17 +146,17 @@ const Products = () => {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Application Body</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <Textarea
                       value={appBody}
                       onChange={(e) => setAppBody(e.target.value)}
-                      placeholder="Enter application body"
+                      placeholder="Enter application descriptions"
                       rows={5}
                     />
                   </FormControl>
                 </AlertDialogBody>
 
-                <AlertDialogFooter>
+                <AlertDialogFooter justifyContent={"space-between"}>
                   <Button ref={cancelRef} onClick={onClose}>
                     Cancel
                   </Button>
