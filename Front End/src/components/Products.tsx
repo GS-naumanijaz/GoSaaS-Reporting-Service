@@ -14,7 +14,7 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { mainDashboardHeight, primaryColor, sx } from "../configs";
 import ProductsList from "./ProductsList";
 import React from "react";
