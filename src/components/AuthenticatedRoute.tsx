@@ -1,3 +1,4 @@
+import { Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
@@ -26,7 +27,11 @@ const AuthenticatedRoute = ({ element }: any) => {
   }, []);
 
   if (authenticated === null) {
-    return <div>Loading...</div>; // Show a loader while authentication is being checked
+    return (
+      <div>
+        <Spinner />
+      </div>
+    ); // Show a loader while authentication is being checked
   }
 
   return authenticated ? element : <Navigate to="/" />;
