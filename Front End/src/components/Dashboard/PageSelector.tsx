@@ -23,7 +23,7 @@ const PageSelector = ({ currentPage, totalPages, setCurrentPage }: Props) => {
         <FaChevronLeft />
       </Button>
 
-      <Text fontSize={"x-large"}>{currentPage + 1}</Text>
+      <Text fontSize={"x-large"}>{currentPage + 1 + " / " + totalPages}</Text>
 
       <Button
         onClick={() => setCurrentPage(currentPage + 1)}

@@ -18,6 +18,8 @@ import React, { useState } from "react";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
 import ProductsList from "./ProductsList";
 import { motion } from "framer-motion";
+import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
+import { FaSearch } from "react-icons/fa";
 
 export interface Product {
   name: string;
@@ -118,18 +120,26 @@ const Products = () => {
               </Button>
             ))}
           </HStack>
-          <Button
-            onClick={onOpen}
-            border={"1px"}
-            bg={primaryColor}
-            color={"white"}
-            _hover={{
-              bg: "gray.100",
-              color: primaryColor,
-            }}
-          >
-            Add Application
-          </Button>
+          <HStack spacing={10}>
+            <ExpandingSearchbar
+              onSearch={(searchTerm) => console.log(searchTerm)}
+              bg="white"
+            >
+              <FaSearch color={primaryColor} />
+            </ExpandingSearchbar>
+            <Button
+              onClick={onOpen}
+              border={"1px"}
+              bg={primaryColor}
+              color={"white"}
+              _hover={{
+                bg: "gray.100",
+                color: primaryColor,
+              }}
+            >
+              Add Application
+            </Button>
+          </HStack>
           <AlertDialog
             isOpen={isOpen}
             leastDestructiveRef={cancelRef}
