@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "users") // Ensure this matches your database table name
-public class User {
+public class    User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

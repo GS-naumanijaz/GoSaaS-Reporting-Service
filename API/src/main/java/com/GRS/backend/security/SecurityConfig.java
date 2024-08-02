@@ -35,6 +35,10 @@ public class SecurityConfig {
                     oauth2.successHandler(oAuth2LoginSuccessHandler); // success handler will set new default url
                 })
                 .build();
+//        return http
+//                .csrf().disable() // Disable CSRF protection for simplicity (not recommended for production)
+//                .authorizeHttpRequests()
+//                .anyRequest().permitAll().and().build();
     }
 
     @Bean
