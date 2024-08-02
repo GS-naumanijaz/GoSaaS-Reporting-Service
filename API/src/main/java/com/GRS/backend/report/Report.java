@@ -1,15 +1,16 @@
 package com.GRS.backend.report;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "reports")
+@Data
 public class Report {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int reportId;
 
     //FK
@@ -23,6 +24,7 @@ public class Report {
     private String[] params;
     private String XSLTemplate;
     private Boolean isDeleted;
+    private Boolean isPinned;
     private LocalDate creationDate;
     private LocalDate deletionDate;
     private LocalDate updationDate;
