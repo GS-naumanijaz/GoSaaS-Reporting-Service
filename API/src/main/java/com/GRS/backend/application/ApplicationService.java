@@ -35,9 +35,7 @@ public class ApplicationService {
 
         if (existingApplication.isPresent()) {
             Application appToUpdate = existingApplication.get();
-            if (application.getUserId() != 0) {
-                appToUpdate.setUserId(application.getUserId());
-            }
+
             if (application.getName() != null) {
                 appToUpdate.setName(application.getName());
             }
@@ -47,20 +45,11 @@ public class ApplicationService {
             if (application.getIsActive() != null) {
                 appToUpdate.setIsActive(application.getIsActive());
             }
-            if (application.getIsDeleted() != null) {
-                appToUpdate.setIsDeleted(application.getIsDeleted());
-            }
             if (application.getCreatedBy() != null) {
                 appToUpdate.setCreatedBy(application.getCreatedBy());
             }
             if (application.getDeletedBy() != null) {
                 appToUpdate.setDeletedBy(application.getDeletedBy());
-            }
-            if (application.getCreatedBy() != null) {
-                appToUpdate.setCreatedBy(application.getCreatedBy());
-            }
-            if (application.getCreatedBy() != null) {
-                appToUpdate.setCreatedBy(application.getCreatedBy());
             }
 
 

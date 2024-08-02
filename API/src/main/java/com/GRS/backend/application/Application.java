@@ -1,14 +1,9 @@
 package com.GRS.backend.application;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-
 
 @Entity
 @Table(name = "applications")
@@ -30,4 +25,22 @@ public class Application {
     private LocalDate creationDate;
     private LocalDate deletionDate;
     private LocalDate updationDate;
+
+    @PrePersist
+    public void prePersist() {
+        this.creationDate = LocalDate.now();
+        this.updationDate = LocalDate.now();
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+        if (this.isDeleted == null) {
+            this.isDeleted = false;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updationDate = LocalDate.now();
+    }
+
 }
