@@ -1,15 +1,12 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Product } from "./Products";
 import { primaryColor } from "../../configs";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   product: Product;
 }
 
 const ProductElement = ({ product }: Props) => {
-  const navigate = useNavigate();
-
   return (
     <Box
       bg={"white"}
