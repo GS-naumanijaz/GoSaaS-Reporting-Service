@@ -1,6 +1,6 @@
-import { SourceConnection } from "../models/SourceConnection";
-import { TableManager } from "../models/TableManager";
-import CustomTable from "./CustomTable";
+import { SourceConnection } from "../../models/SourceConnection";
+import { TableManager } from "../../models/TableManager";
+import CustomTable from "../Shared/CustomTable";
 
 const ProductDetails = () => {
   const sampleData: SourceConnection[] = [

@@ -9,7 +9,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { TableManager } from "../models/TableManager";
+import { TableManager } from "../../models/TableManager";
 import FilterSortPopup from "./CustomTableComponents/FilterSortPopup";
 import TableFooter from "./CustomTableComponents/TableFooter";
 import TableHeader from "./CustomTableComponents/TableHeader";

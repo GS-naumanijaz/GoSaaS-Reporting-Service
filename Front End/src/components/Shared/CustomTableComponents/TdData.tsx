@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import { InputField } from "../../models/TableManagementModels";
-import { validateField } from "../../models/ValidationRule"; 
+import { InputField } from "../../../models/TableManagementModels";
+import { validateField } from "../../../models/ValidationRule";
 
 interface Props {
   isEditing: boolean;

@@ -18,7 +18,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
-import { ColumnSortFilterOptions } from "../../models/TableManagementModels";
+import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
 
 interface Props {
   heading: string;

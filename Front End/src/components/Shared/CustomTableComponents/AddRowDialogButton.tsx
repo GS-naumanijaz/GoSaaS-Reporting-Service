@@ -20,8 +20,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown, FaPlus } from "react-icons/fa";
-import { InputField } from "../../models/TableManagementModels";
-import { validateField } from "../../models/ValidationRule";
+import { InputField } from "../../../models/TableManagementModels";
+import { validateField } from "../../../models/ValidationRule";
 
 interface Props {
   header: string;

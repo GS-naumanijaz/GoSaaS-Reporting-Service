@@ -1,5 +1,5 @@
 import { HStack, Image } from "@chakra-ui/react";
-import { GoSaaSLabsLogo, navbarHeight } from "../configs";
+import { GoSaaSLabsLogo, navbarHeight } from "../../configs";
 import NotificationPopup from "./NotificationPopup";
 import AvatarPopup from "./AvatarPopup";
 

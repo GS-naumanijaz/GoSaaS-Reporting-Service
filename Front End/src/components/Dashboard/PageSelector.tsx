@@ -1,6 +1,6 @@
 import { Button, HStack, Text } from "@chakra-ui/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { disabledButton, primaryColor } from "../configs";
+import { disabledButton, primaryColor } from "../../configs";
 
 interface Props {
   currentPage: number;

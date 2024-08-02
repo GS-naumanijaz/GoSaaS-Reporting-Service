@@ -1,5 +1,5 @@
 import { Box, Button, Text } from "@chakra-ui/react";
-import { primaryColor, sidebarHeight, tertiaryColor } from "../configs";
+import { primaryColor, sidebarHeight, tertiaryColor } from "../../configs";
 import { MdDashboard } from "react-icons/md";
 import { AiOutlineAudit } from "react-icons/ai";
 import { TbReportAnalytics } from "react-icons/tb";

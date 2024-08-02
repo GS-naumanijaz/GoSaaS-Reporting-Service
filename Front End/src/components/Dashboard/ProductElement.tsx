@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Product } from "./Products";
-import { primaryColor } from "../configs";
+import { primaryColor } from "../../configs";
 import { useNavigate } from "react-router-dom";
 
 interface Props {

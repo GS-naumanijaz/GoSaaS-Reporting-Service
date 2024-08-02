@@ -1,7 +1,7 @@
 import { Box, HStack, Text } from "@chakra-ui/react";
-import SignInCard from "./components/SignInCard";
+import SignInCard from "../components/LoginPage/SignInCard";
 
-const App = () => {
+const LoginPage = () => {
   return (
     <div
       style={{
@@ -25,4 +25,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default LoginPage;

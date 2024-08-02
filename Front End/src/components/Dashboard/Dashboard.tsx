@@ -1,7 +1,7 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import PinnedRequests from "./PinnedRequests";
 import StatusSummary from "./StatusSummary";
-import { tertiaryColor } from "../configs";
+import { tertiaryColor } from "../../configs";
 import Products from "./Products";
 
 const Dashboard = () => {

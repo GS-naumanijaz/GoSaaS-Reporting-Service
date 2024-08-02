@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
   Portal,
 } from "@chakra-ui/react";
-import { primaryColor, tertiaryColor } from "../configs";
+import { primaryColor, tertiaryColor } from "../../configs";
 import { RxAvatar } from "react-icons/rx";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 

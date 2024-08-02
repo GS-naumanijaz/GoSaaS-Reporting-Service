@@ -10,7 +10,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { navbarHeight, pinnedRequestHeight, sx } from "../configs"; // Make sure this import is correct
+import { navbarHeight, pinnedRequestHeight, sx } from "../../configs"; // Make sure this import is correct
 import { IoIosArrowForward } from "react-icons/io";
 
 const PinnedRequests = () => {

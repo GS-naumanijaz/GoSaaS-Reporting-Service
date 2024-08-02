@@ -1,6 +1,6 @@
 import { Td } from "@chakra-ui/react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import AlertDialogButton from "../General/AlertDialogButton";
+import AlertDialogButton from "../AlertDialogButton";
 
 interface Props {
   handleDeleteRow: () => void;

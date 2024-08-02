@@ -1,6 +1,6 @@
 import { Box, Divider, Text } from "@chakra-ui/react";
 import ReactApexChart from "react-apexcharts";
-import { statusSummaryHeight, sx } from "../configs";
+import { statusSummaryHeight, sx } from "../../configs";
 
 const StatusSummary = () => {
   const options: ApexCharts.ApexOptions = {

@@ -8,7 +8,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
 } from "@chakra-ui/react";
-import { primaryColor, tertiaryColor } from "../configs";
+import { primaryColor, tertiaryColor } from "../../configs";
 import { FaBell } from "react-icons/fa";
 import { BiSolidCircle } from "react-icons/bi";
 import { useEffect, useState } from "react";
