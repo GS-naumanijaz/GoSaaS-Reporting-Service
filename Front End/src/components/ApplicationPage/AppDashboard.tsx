@@ -3,6 +3,7 @@ import DestinationConnectionData from "../Data/DestinationConnectionData";
 import AppHeader from "./AppHeader";
 import { sx } from "../../configs";
 import { Box, VStack } from "@chakra-ui/react";
+import ReportsConnectionData from "../Data/ReportsConnectionData";
 
 const AppDashboard = () => {
   return (
@@ -27,6 +28,7 @@ const AppDashboard = () => {
         >
           <SourceConnectionData />
           <DestinationConnectionData />
+          <ReportsConnectionData />
         </VStack>
       </Box>
     </Box>
