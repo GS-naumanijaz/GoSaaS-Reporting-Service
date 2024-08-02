@@ -6,9 +6,6 @@ export const theme = extendTheme({
         bg: "white",
         color: "black",
       },
-      text: {
-        color: "black",
-      },
     },
   },
 });
