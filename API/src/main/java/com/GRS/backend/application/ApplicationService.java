@@ -30,15 +30,40 @@ public class ApplicationService {
 
     public Application updateApplication(int appId, Application application) {
         Optional<Application> existingApplication = applicationRepository.findById(appId);
+
+        System.out.println(application);
+
         if (existingApplication.isPresent()) {
             Application appToUpdate = existingApplication.get();
+            if (application.getUserId() != 0) {
+                appToUpdate.setUserId(application.getUserId());
+            }
             if (application.getName() != null) {
                 appToUpdate.setName(application.getName());
             }
             if (application.getDescription() != null) {
                 appToUpdate.setDescription(application.getDescription());
             }
-            // Set other fields as needed
+            if (application.getIsActive() != null) {
+                appToUpdate.setIsActive(application.getIsActive());
+            }
+            if (application.getIsDeleted() != null) {
+                appToUpdate.setIsDeleted(application.getIsDeleted());
+            }
+            if (application.getCreatedBy() != null) {
+                appToUpdate.setCreatedBy(application.getCreatedBy());
+            }
+            if (application.getDeletedBy() != null) {
+                appToUpdate.setDeletedBy(application.getDeletedBy());
+            }
+            if (application.getCreatedBy() != null) {
+                appToUpdate.setCreatedBy(application.getCreatedBy());
+            }
+            if (application.getCreatedBy() != null) {
+                appToUpdate.setCreatedBy(application.getCreatedBy());
+            }
+
+
             return applicationRepository.save(appToUpdate);
         }
         return null;
