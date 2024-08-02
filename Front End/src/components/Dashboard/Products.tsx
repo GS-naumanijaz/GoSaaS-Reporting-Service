@@ -105,7 +105,7 @@ const Products = () => {
               <FaSearch color={primaryColor} />
             </ExpandingSearchbar>
             <Button
-              onClick={onOpen}
+              onClick={() => navigate("/application")}
               border={"1px"}
               bg={primaryColor}
               color={"white"}
@@ -117,49 +117,6 @@ const Products = () => {
               Add Application
             </Button>
           </HStack>
-          <AlertDialog
-            isOpen={isOpen}
-            leastDestructiveRef={cancelRef}
-            onClose={onClose}
-            isCentered
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Add Application
-                </AlertDialogHeader>
-
-                <AlertDialogBody>
-                  <FormControl mb={4}>
-                    <FormLabel>Name</FormLabel>
-                    <Input
-                      value={appName}
-                      onChange={(e) => setAppName(e.target.value)}
-                      placeholder="Enter application name"
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Description</FormLabel>
-                    <Textarea
-                      value={appBody}
-                      onChange={(e) => setAppBody(e.target.value)}
-                      placeholder="Enter application descriptions"
-                      rows={5}
-                    />
-                  </FormControl>
-                </AlertDialogBody>
-
-                <AlertDialogFooter justifyContent={"space-between"}>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button colorScheme="red" onClick={handleAdd} ml={3}>
-                    Add
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
         </Box>
         <motion.div
           initial="hidden"

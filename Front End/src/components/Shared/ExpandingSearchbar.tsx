@@ -1,5 +1,6 @@
 import { Flex, Button, Input, Box } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { primaryColor } from "../../configs";
 
 interface Props {
   onSearch: (searchTerm: string) => void;
@@ -43,6 +44,7 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
           onBlur={() => setIsExpanded(false)}
           autoFocus={isExpanded}
           onChange={handleSearch}
+          focusBorderColor={primaryColor}
         />
       </Flex>
     </Box>
