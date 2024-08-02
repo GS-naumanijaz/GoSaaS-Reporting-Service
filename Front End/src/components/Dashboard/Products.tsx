@@ -3,6 +3,8 @@ import { useState } from "react";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
 import ProductsList from "./ProductsList";
 import { motion } from "framer-motion";
+import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
+import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export interface Product {
@@ -95,18 +97,69 @@ const Products = () => {
               </Button>
             ))}
           </HStack>
-          <Button
-            onClick={() => navigate("/application")}
-            border={"1px"}
-            bg={primaryColor}
-            color={"white"}
-            _hover={{
-              bg: "gray.100",
-              color: primaryColor,
-            }}
+          <HStack spacing={10}>
+            <ExpandingSearchbar
+              onSearch={(searchTerm) => console.log(searchTerm)}
+              bg="white"
+            >
+              <FaSearch color={primaryColor} />
+            </ExpandingSearchbar>
+            <Button
+              onClick={onOpen}
+              border={"1px"}
+              bg={primaryColor}
+              color={"white"}
+              _hover={{
+                bg: "gray.100",
+                color: primaryColor,
+              }}
+            >
+              Add Application
+            </Button>
+          </HStack>
+          <AlertDialog
+            isOpen={isOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isCentered
           >
-            Add Application
-          </Button>
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Add Application
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  <FormControl mb={4}>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      value={appName}
+                      onChange={(e) => setAppName(e.target.value)}
+                      placeholder="Enter application name"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Description</FormLabel>
+                    <Textarea
+                      value={appBody}
+                      onChange={(e) => setAppBody(e.target.value)}
+                      placeholder="Enter application descriptions"
+                      rows={5}
+                    />
+                  </FormControl>
+                </AlertDialogBody>
+
+                <AlertDialogFooter justifyContent={"space-between"}>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="red" onClick={handleAdd} ml={3}>
+                    Add
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
         </Box>
         <motion.div
           initial="hidden"

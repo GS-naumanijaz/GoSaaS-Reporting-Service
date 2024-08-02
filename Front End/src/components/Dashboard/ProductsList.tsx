@@ -1,4 +1,4 @@
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import PageSelector from "./PageSelector";
 import ProductElement from "./ProductElement";
@@ -42,13 +42,21 @@ const ProductsList = ({
         ))}
       </SimpleGrid>
       {productPages.length > 1 && (
-        <Box display="flex" justifyContent="center">
-          <PageSelector
-            currentPage={currentPage}
-            totalPages={productPages.length}
-            setCurrentPage={setCurrentPage}
-          />
-        </Box>
+        <Flex alignItems="center" marginX={12}>
+          <Box flex="1">
+            {/* Empty Box to take up space and push the selector to the center */}
+          </Box>
+          <Box>
+            <PageSelector
+              currentPage={currentPage}
+              totalPages={productPages.length}
+              setCurrentPage={setCurrentPage}
+            />
+          </Box>
+          <Box flex="1" textAlign="right">
+            <Text>Total number of applications = {products.length}</Text>
+          </Box>
+        </Flex>
       )}
     </>
   );
