@@ -7,11 +7,12 @@ export interface InputField {
   type?: string;
   validation?: ValidationRule;
   options?: string[];
+  isHidden?: boolean;
 }
 
 export interface ColumnSortFilterOptions {
   isEnabled: boolean;
   isSortable?: boolean;
   isSearchable?: boolean;
-  dropdownFilter?: string[] ;
+  dropdownFilter?: string[];
 }

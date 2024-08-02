@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Table,
   TableContainer,
@@ -18,6 +19,7 @@ import TdData from "./CustomTableComponents/TdData";
 import TdDeleteButton from "./CustomTableComponents/TdDeleteButton";
 import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
+import { sx } from "../../configs";
 
 interface Props {
   tableManager: TableManager;
@@ -101,7 +103,14 @@ const CustomTable = ({ tableManager }: Props) => {
   if (tableData.length === 0) return <Text>No data to show</Text>;
 
   return (
-    <>
+    <Box
+      borderWidth={3}
+      borderColor={"lightgrey"}
+      borderEndWidth={0}
+      borderStartWidth={0}
+      my={10}
+      width={"90%"}
+    >
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}
@@ -109,8 +118,8 @@ const CustomTable = ({ tableManager }: Props) => {
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
       />
-      <TableContainer>
-        <Table variant="simple">
+      <TableContainer sx={sx}>
+        <Table variant="simple" size="sm">
           <Thead>
             <Tr>
               {tableManager.requiresCheckBox() && (
@@ -184,7 +193,7 @@ const CustomTable = ({ tableManager }: Props) => {
         </Table>
       </TableContainer>
       <TableFooter />
-    </>
+    </Box>
   );
 };
 

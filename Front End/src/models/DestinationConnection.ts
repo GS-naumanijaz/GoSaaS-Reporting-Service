@@ -1,42 +1,39 @@
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
-export class SourceConnection extends TableRowData {
-  private connectionId: number;
+export class DestinationConnection extends TableRowData {
+  private destinationId: number;
   private alias: string;
-  private connection_type: string;
-  private host: string;
+  private type: string;
+  private url: string;
   private port: string;
-  private database_name: string;
-  private username: string;
-  private password: string;
+  private access_key: string;
+  private secret_key: string;
   // private appId: number;
   private isActive: boolean;
 
   //Static variables
-  private static tableHeader = "Source Connections";
+  private static tableHeader = "Destination Connections";
   private static tableHeadings = [
     "",
     "Alias",
-    "Connection Type",
-    "Database Name",
-    "Host",
+    "Type",
+    "URL",
     "Port",
-    "Username",
-    "Password",
+    "Access Key",
+    "Secret Key",
     "Active Status",
     "Edit",
     "Delete",
   ];
   private static columnWidths = [
-    "2.5%",
-    "12.5%",
-    "12.5%",
+    "5%",
+    "25%",
     "10%",
     "10%",
     "10%",
     "10%",
-    "12.5%",
+    "10%",
     "5%",
     "10%",
     "5%",
@@ -51,21 +48,14 @@ export class SourceConnection extends TableRowData {
       validation: { required: true, minLength: 2, maxLength: 20 },
     },
     {
-      name: "Connection Type",
-      label: "connection type",
+      name: "Type",
+      label: "type",
       isSelectable: true,
       options: ["SQL", "NoSQL"],
     },
     {
-      name: "Database Name",
-      label: "database name",
-      isSelectable: false,
-      type: "text",
-      validation: { required: true },
-    },
-    {
-      name: "Host",
-      label: "host",
+      name: "Url",
+      label: "url",
       isSelectable: false,
       type: "text",
       validation: { required: true },
@@ -78,19 +68,19 @@ export class SourceConnection extends TableRowData {
       validation: { required: true },
     },
     {
-      name: "Username",
-      label: "username",
+      name: "Access Key",
+      label: "access_key",
       isSelectable: false,
       type: "text",
       validation: { required: true },
     },
     {
-      name: "Password",
-      label: "password",
+      name: "Secret Key",
+      label: "secret_key",
       isSelectable: false,
-      isHidden: true,
       type: "text",
       validation: { required: true },
+      isHidden: true,
     },
   ];
 
@@ -106,7 +96,6 @@ export class SourceConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      isSortable: true,
       isSearchable: true,
     },
     {
@@ -123,9 +112,6 @@ export class SourceConnection extends TableRowData {
       isEnabled: true,
       isSortable: true,
       isSearchable: true,
-    },
-    {
-      isEnabled: false,
     },
     {
       isEnabled: true,
@@ -142,54 +128,51 @@ export class SourceConnection extends TableRowData {
   constructor(
     connectionId: number,
     alias: string,
-    connection_type: string,
-    database_name: string,
+    type: string,
     host: string,
     port: string,
-    username: string,
-    password: string,
+    access_key: string,
+    secret_key: string,
     // appId: number,
     isActive: boolean
   ) {
     super();
-    this.connectionId = connectionId;
+    this.destinationId = connectionId;
     this.alias = alias;
-    this.connection_type = connection_type;
-    this.host = host;
+    this.type = type;
+    this.url = host;
     this.port = port;
-    this.database_name = database_name;
-    this.username = username;
-    this.password = password;
+    this.access_key = access_key;
+    this.secret_key = secret_key;
     // this.appId = appId;
     this.isActive = isActive;
   }
 
   getId(): number {
-    return this.connectionId;
+    return this.destinationId;
   }
 
   getTableData(): string[] {
     return [
       this.alias,
-      this.connection_type,
-      this.database_name,
-      this.host,
+      this.type,
+      this.url,
       this.port,
-      this.username,
-      this.password,
+      this.access_key,
+      this.secret_key,
     ];
   }
 
   getTableHeadings(): string[] {
-    return SourceConnection.tableHeadings.slice(1);
+    return DestinationConnection.tableHeadings.slice(1);
   }
 
   getTableHeader(): string {
-    return SourceConnection.tableHeader;
+    return DestinationConnection.tableHeader;
   }
 
   getColumnWidths(): string[] {
-    return SourceConnection.columnWidths.slice(1);
+    return DestinationConnection.columnWidths.slice(1);
   }
 
   editRowData(elementIndex: number, newValue: string): void {
@@ -198,46 +181,42 @@ export class SourceConnection extends TableRowData {
         this.alias = newValue;
         break;
       case 1:
-        this.connection_type = newValue;
+        this.type = newValue;
         break;
       case 2:
-        this.host = newValue;
+        this.url = newValue;
         break;
       case 3:
         this.port = newValue;
         break;
       case 4:
-        this.connection_type = newValue;
+        this.access_key = newValue;
         break;
       case 5:
-        this.host = newValue;
-        break;
-      case 6:
-        this.port = newValue;
+        this.secret_key = newValue;
         break;
     }
   }
 
   editCompleteRow(newValue: string[]) {
     this.alias = newValue[0];
-    this.connection_type = newValue[1];
-    this.database_name = newValue[2];
-    this.host = newValue[3];
-    this.port = newValue[4];
-    this.username = newValue[5];
-    this.password = newValue[6];
+    this.type = newValue[1];
+    this.url = newValue[2];
+    this.port = newValue[3];
+    this.access_key = newValue[4];
+    this.secret_key = newValue[5];
   }
 
   getInputFields(): InputField[] {
-    return SourceConnection.inputFields;
+    return DestinationConnection.inputFields;
   }
 
   getSortFilterOptions(): ColumnSortFilterOptions[] {
-    return SourceConnection.sortFilterOptions;
+    return DestinationConnection.sortFilterOptions;
   }
 
   getEditAccess(): boolean[] {
-    return [true, true, true, true, true, true, true];
+    return [true, true, true, true, true, true];
   }
 
   requiresCheckBox(): boolean {
@@ -245,7 +224,7 @@ export class SourceConnection extends TableRowData {
   }
 
   getCheckBoxWidth(): string {
-    return SourceConnection.columnWidths[0];
+    return DestinationConnection.columnWidths[0];
   }
 
   requiresStatusToggle(): boolean {

@@ -22,7 +22,7 @@ const ProductElement = ({ product }: Props) => {
       borderColor={primaryColor}
       transition="transform 0.2s, box-shadow 0.2s"
       _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
-      onClick={() => navigate("/product")}
+      onClick={() => alert("Implemention Redirect with Props")}
     >
       <Text fontSize={"xx-large"}>{product.name}</Text>
     </Box>

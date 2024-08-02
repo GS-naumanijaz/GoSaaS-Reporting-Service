@@ -85,7 +85,7 @@ const TdData = ({
               <Input
                 type={inputField.type}
                 textAlign="center"
-                value={data}
+                value={inputField.isHidden ? "*".repeat(data.length) : data}
                 onChange={handleChange}
               />
               <FormErrorMessage>{error}</FormErrorMessage>
@@ -93,7 +93,7 @@ const TdData = ({
           )}
         </Box>
       ) : (
-        data
+        inputField.isHidden ? "*".repeat(data.length) : data
       )}
     </Td>
   );
