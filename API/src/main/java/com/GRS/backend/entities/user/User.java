@@ -1,8 +1,10 @@
-package com.GRS.backend.user;
+package com.GRS.backend.entities.user;
 
+import com.GRS.backend.entities.application.Application;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users") // Ensure this matches your database table name
@@ -14,6 +16,10 @@ public class    User {
     private String email;
     private Date created_at;
     private Date last_login;
+
+//    @OneToMany
+//    @JoinColumn(name = "app_id")
+//    private List<Application> applications;
 
     public User() {
     }

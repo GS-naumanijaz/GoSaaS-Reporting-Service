@@ -1,4 +1,4 @@
-package com.GRS.backend.user;
+package com.GRS.backend.entities.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

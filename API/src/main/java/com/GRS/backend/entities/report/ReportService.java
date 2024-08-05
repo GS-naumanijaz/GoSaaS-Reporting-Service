@@ -1,4 +1,4 @@
-package com.GRS.backend.report;
+package com.GRS.backend.entities.report;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,29 +38,29 @@ public class ReportService {
             if (report.getDescription() != null) {
                 reportToUpdate.setDescription(report.getDescription());
             }
-            if (report.getStoredProcedure() != null) {
-                reportToUpdate.setStoredProcedure(report.getStoredProcedure());
+            if (report.getStored_procedure() != null) {
+                reportToUpdate.setStored_procedure(report.getStored_procedure());
             }
             if (report.getParams() != null) {
                 reportToUpdate.setParams(report.getParams());
             }
-            if (report.getXSLTemplate() != null) {
-                reportToUpdate.setXSLTemplate(report.getXSLTemplate());
+            if (report.getXsl_template() != null) {
+                reportToUpdate.setXsl_template(report.getXsl_template());
             }
-            if (report.getIsDeleted() != null) {
-                reportToUpdate.setIsDeleted(report.getIsDeleted());
+            if (report.getIs_deleted() != null) {
+                reportToUpdate.setIs_deleted(report.getIs_deleted());
             }
-            if (report.getIsPinned() != null) {
-                reportToUpdate.setIsPinned(report.getIsPinned());
+            if (report.getIs_pinned() != null) {
+                reportToUpdate.setIs_pinned(report.getIs_pinned());
             }
-            if (report.getCreationDate() != null) {
-                reportToUpdate.setCreationDate(report.getCreationDate());
+            if (report.getCreation_date() != null) {
+                reportToUpdate.setCreation_date(report.getCreation_date());
             }
-            if (report.getDeletionDate() != null) {
-                reportToUpdate.setDeletionDate(report.getDeletionDate());
+            if (report.getDeletion_date() != null) {
+                reportToUpdate.setDeletion_date(report.getDeletion_date());
             }
-            if (report.getUpdationDate() != null) {
-                reportToUpdate.setUpdationDate(report.getUpdationDate());
+            if (report.getUpdation_date() != null) {
+                reportToUpdate.setUpdation_date(report.getUpdation_date());
             }
             return reportRepository.save(reportToUpdate);
         }

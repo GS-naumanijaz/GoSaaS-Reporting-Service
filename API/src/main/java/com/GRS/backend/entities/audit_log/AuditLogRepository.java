@@ -1,9 +1,9 @@
-package com.GRS.backend.application;
+package com.GRS.backend.entities.audit_log;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ApplicationRepository extends JpaRepository<Application, Integer>,  JpaSpecificationExecutor<Application> {
+public interface AuditLogRepository extends JpaRepository<AuditLog, Integer>, JpaSpecificationExecutor<AuditLog> {
 }

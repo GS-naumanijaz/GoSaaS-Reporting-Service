@@ -1,7 +1,7 @@
 package com.GRS.backend.security;
 
-import com.GRS.backend.user.User;
-import com.GRS.backend.user.UserService;
+import com.GRS.backend.entities.user.User;
+import com.GRS.backend.entities.user.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
