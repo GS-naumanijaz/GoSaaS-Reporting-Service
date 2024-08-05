@@ -33,7 +33,7 @@ const AppDashboard = () => {
         >
           <SourceConnectionData />
           <DestinationConnectionData />
-          <ReportsConnectionData />
+          <ReportsConnectionData product={location.state} />
         </VStack>
       </Box>
     </Box>

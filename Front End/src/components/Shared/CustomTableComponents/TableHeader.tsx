@@ -6,6 +6,7 @@ import { InputField } from "../../../models/TableManagementModels";
 import { FaPlus } from "react-icons/fa";
 import { primaryColor } from "../../../configs";
 import { useNavigate } from "react-router-dom";
+import { Product } from "../../Dashboard/Products";
 
 interface Props {
   tableHeading: string;
@@ -13,6 +14,7 @@ interface Props {
   inputFields: InputField[];
   handleBulkSwitchActions: (status: boolean) => void;
   handleBulkDeleteRows: () => void;
+  productDetails?: Product;
 }
 
 const TableHeader = ({
@@ -21,6 +23,7 @@ const TableHeader = ({
   inputFields,
   handleBulkSwitchActions,
   handleBulkDeleteRows,
+  productDetails,
 }: Props) => {
   const navigate = useNavigate();
   return (
@@ -62,7 +65,10 @@ const TableHeader = ({
             }}
           />
         ) : (
-          <Button variant={"ghost"} onClick={() => navigate("/addreport")}>
+          <Button
+            variant={"ghost"}
+            onClick={() => navigate("/addreport", { state: productDetails })}
+          >
             <FaPlus color={primaryColor} />
           </Button>
         )}

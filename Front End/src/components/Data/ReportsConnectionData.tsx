@@ -1,8 +1,9 @@
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { TableManager } from "../../models/TableManager";
+import { Product } from "../Dashboard/Products";
 import CustomTable from "../Shared/CustomTable";
 
-const ReportsConnectionData = () => {
+const ReportsConnectionData = ({ product }: { product: Product }) => {
   const sampleData: ReportsConnection[] = [
     new ReportsConnection(
       1,
@@ -44,7 +45,7 @@ const ReportsConnectionData = () => {
     ),
   ];
 
-  const manager = new TableManager(sampleData);
+  const manager = new TableManager(sampleData, product);
 
   return <CustomTable tableManager={manager} />;
 };

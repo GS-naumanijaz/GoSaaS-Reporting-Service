@@ -117,6 +117,7 @@ const CustomTable = ({ tableManager }: Props) => {
         inputFields={tableManager.getInputFields()}
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
+        productDetails={tableManager.getTableProduct()}
       />
       <TableContainer sx={sx}>
         <Table variant="simple" size="sm">
