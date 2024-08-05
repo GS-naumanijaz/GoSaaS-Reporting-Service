@@ -32,13 +32,16 @@ const AddReportDashboard = () => {
   ];
   const destinationConnections = ["Backend Server", "Default Backend Server"];
   const storedProcedures: { [key: string]: string[] } = {
-    ["Main"]: ["Procedure 1", "Procedure 2"],
-    ["Backup"]: ["Procedure 3", "Procedure 4"],
-    ["Analytics"]: ["Procedure 5", "Procedure 6"],
+    Main: ["Procedure 1", "Procedure 2"],
+    Backup: ["Procedure 3", "Procedure 4"],
+    Analytics: ["Procedure 5", "Procedure 6"],
   };
-  const [selectedProcedure, setSelectedProcedure] = useState("");
 
-  // get file from directory
+  const [reportAlias, setReportAlias] = useState("");
+  const [reportDescription, setReportDescription] = useState("");
+  const [selectedSource, setSelectedSource] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState("");
+  const [selectedProcedure, setSelectedProcedure] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,10 +62,25 @@ const AddReportDashboard = () => {
   const onSave = () => {
     // save changes to database
     // reload the application page
+    if (isSaveButtonDisabled) {
+      console.log("Please fill all the fields");
+      return;
+    }
     console.log("Changes saved");
+    setIsSaveOpen(false);
     onSaveClose();
     navigate("/homepage");
   };
+
+  const isSaveButtonDisabled =
+    !reportAlias ||
+    !reportDescription ||
+    !selectedSource ||
+    !selectedDestination ||
+    !selectedProcedure ||
+    !selectedFile;
+
+  console.log("Val of savebutton: ", isSaveButtonDisabled);
 
   return (
     <>
@@ -101,7 +119,6 @@ const AddReportDashboard = () => {
               Register Report
             </Text>
             <Spacer />
-
             <Button
               variant="link"
               p={0}
@@ -109,7 +126,7 @@ const AddReportDashboard = () => {
               color={primaryColor}
               onClick={() => setIsSaveOpen(true)}
             >
-              <AiOutlineSave size={"35"} />
+              <AiOutlineSave size={35} />
             </Button>
           </HStack>
           {productDetails ? (
@@ -121,15 +138,29 @@ const AddReportDashboard = () => {
               <Box width="50%">
                 <FormControl isRequired p={5}>
                   <FormLabel>Report Alias</FormLabel>
-                  <Input type="string" placeholder="Alias" />
+                  <Input
+                    type="string"
+                    placeholder="Alias"
+                    value={reportAlias}
+                    onChange={(e) => setReportAlias(e.target.value)}
+                  />
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Report Description</FormLabel>
-                  <Input type="string" placeholder="Description" />
+                  <Input
+                    type="string"
+                    placeholder="Description"
+                    value={reportDescription}
+                    onChange={(e) => setReportDescription(e.target.value)}
+                  />
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Source Connections</FormLabel>
-                  <Select placeholder="Select Source">
+                  <Select
+                    placeholder="Select Source"
+                    value={selectedSource}
+                    onChange={(e) => setSelectedSource(e.target.value)}
+                  >
                     {sourceConnections.map((sourceConnection, index) => (
                       <option key={index}>{sourceConnection}</option>
                     ))}
@@ -137,7 +168,11 @@ const AddReportDashboard = () => {
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Destination Connections</FormLabel>
-                  <Select placeholder="Select Destination">
+                  <Select
+                    placeholder="Select Destination"
+                    value={selectedDestination}
+                    onChange={(e) => setSelectedDestination(e.target.value)}
+                  >
                     {destinationConnections.map(
                       (destinationConnection, index) => (
                         <option key={index}>{destinationConnection}</option>
@@ -149,6 +184,7 @@ const AddReportDashboard = () => {
                   <FormLabel>Stored Procedures</FormLabel>
                   <Select
                     placeholder="Select Stored Procedure"
+                    value={selectedProcedure}
                     onChange={(e) => setSelectedProcedure(e.target.value)}
                   >
                     {Object.keys(storedProcedures).map(
@@ -184,6 +220,7 @@ const AddReportDashboard = () => {
                 <Input
                   type="file"
                   id="fileInput"
+                  accept=".xml"
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
@@ -217,14 +254,21 @@ const AddReportDashboard = () => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to save these changes?
+              {isSaveButtonDisabled
+                ? "Please fill all the fields"
+                : "Are you sure you want to save these changes?"}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelSaveRef} onClick={onSaveClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={onSave} ml={3}>
+              <Button
+                colorScheme="red"
+                onClick={onSave}
+                ml={3}
+                isDisabled={isSaveButtonDisabled}
+              >
                 Save
               </Button>
             </AlertDialogFooter>
