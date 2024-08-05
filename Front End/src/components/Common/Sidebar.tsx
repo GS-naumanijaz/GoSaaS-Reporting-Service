@@ -18,19 +18,19 @@ const Sidebar = ({ onSelected }: SidebarProps) => {
       borderRightWidth={2}
       bg={tertiaryColor}
     >
-      <Button onClick={() => onSelected("Dashboard")}>
+      <Button variant="ghost" onClick={() => onSelected("Dashboard")}>
         <MdDashboard size={20} color={primaryColor} />
         <Text textColor={"black"} fontWeight={"normal"} paddingLeft={2}>
           Dashboard
         </Text>
       </Button>
-      <Button onClick={() => onSelected("AuditTrail")}>
+      <Button variant="ghost" onClick={() => onSelected("AuditTrail")}>
         <AiOutlineAudit size={20} color={primaryColor} />
         <Text textColor={"black"} fontWeight={"normal"} paddingLeft={2}>
           Audit Trail
         </Text>
       </Button>
-      <Button onClick={() => onSelected("Requests")}>
+      <Button variant="ghost" onClick={() => onSelected("Requests")}>
         <TbReportAnalytics size={20} color={primaryColor} />
         <Text textColor={"black"} fontWeight={"normal"} paddingLeft={2}>
           Requests
