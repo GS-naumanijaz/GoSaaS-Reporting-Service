@@ -19,10 +19,15 @@ const TdEditButton = ({
     <Td textAlign="center">
       {isEditing ? (
         <HStack>
-          <Button onClick={handleEditToggle} isDisabled={isDisabled}>
+          <Button
+            onClick={handleEditToggle}
+            isDisabled={isDisabled}
+            variant={"ghost"}
+          >
             <FaRegSave color="green" size={20} />
           </Button>
           <Button
+            variant={"ghost"}
             onClick={() => {
               handleEditToggle();
               revertEdit();
@@ -32,7 +37,7 @@ const TdEditButton = ({
           </Button>
         </HStack>
       ) : (
-        <Button onClick={handleEditToggle}>
+        <Button variant={"ghost"} onClick={handleEditToggle}>
           <TbPencil color="blue" size={20} />
         </Button>
       )}

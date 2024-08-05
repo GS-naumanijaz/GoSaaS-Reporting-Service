@@ -169,15 +169,16 @@ const CustomTable = ({ tableManager }: Props) => {
                   />
                 ))}
 
-                {tableManager.requiresStatusToggle() && (
-                  <TdSwitch
-                    row={row}
-                    handleToggleSwitch={() => {
-                      tableManager.handleToggleSwitch(row.getId());
-                      updateState();
-                    }}
-                  />
-                )}
+                {tableManager.getTableHeader() !== "Reports" &&
+                  tableManager.requiresStatusToggle() && (
+                    <TdSwitch
+                      row={row}
+                      handleToggleSwitch={() => {
+                        tableManager.handleToggleSwitch(row.getId());
+                        updateState();
+                      }}
+                    />
+                  )}
                 <TdEditButton
                   isEditing={isEditing[rowIndex]}
                   isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
