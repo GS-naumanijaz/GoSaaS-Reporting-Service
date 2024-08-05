@@ -3,6 +3,7 @@ import Homepage from "../pages/Homepage";
 import AuthenticatedRoute from "../components/AuthenticatedRoute";
 import LoginPage from "../pages/LoginPage";
 import Application from "../pages/Application";
+import AddReportPage from "../pages/AddReportPage";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: "/application",
     element: <AuthenticatedRoute element={<Application />} />,
+  },
+  {
+    path: "/addreport",
+    element: <AuthenticatedRoute element={<AddReportPage />} />,
   },
 ]);
 
