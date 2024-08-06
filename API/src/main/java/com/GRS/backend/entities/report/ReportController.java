@@ -1,5 +1,9 @@
 package com.GRS.backend.entities.report;
 
+import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,16 +25,14 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllReports(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+    @Autowired
+    private ApplicationService applicationService;
 
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+    @GetMapping
+    public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+
+        String search = paginationParams.getSearch();
+        Pageable pageable = paginationParams.getPageable();
 
         Page<Report> allReports = reportService.getAllReports(search, pageable);
 
@@ -47,9 +49,16 @@ public class ReportController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> addReport(@RequestBody Report report) {
+    @PostMapping("/{appId}")
+    public ResponseEntity<Object> addReport(@RequestBody Report report, @PathVariable int appId) {
+        Optional<Application> reportApp = applicationService.getApplicationById(appId);
+
+        report.setApplication(reportApp.get());
+//        reportApp.get().addReport(report);
+
         Report createdReport = reportService.addReport(report);
+
+
         return Response.responseBuilder("Report added successfully", HttpStatus.OK, createdReport);
     }
 

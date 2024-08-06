@@ -1,5 +1,7 @@
 package com.GRS.backend.entities.request;
 
+import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,15 +22,10 @@ public class RequestController {
     private RequestService requestService;
 
     @GetMapping
-    public ResponseEntity<Object> getAllRequests(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+    public ResponseEntity<Object> getAllRequests(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+        String search = paginationParams.getSearch();
+        Pageable pageable = paginationParams.getPageable();
 
         Page<Request> allRequests = requestService.getAllRequests(search, pageable);
 

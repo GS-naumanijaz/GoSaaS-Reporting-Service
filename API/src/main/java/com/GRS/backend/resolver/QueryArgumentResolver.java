@@ -1,6 +1,6 @@
 package com.GRS.backend.resolver;
 
-import com.GRS.backend.annotations.PaginationParams;
+import com.GRS.backend.annotations.QueryParams;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -10,17 +10,17 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class PaginationArgumentResolver implements HandlerMethodArgumentResolver {
+public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(PaginationParams.class);
+        return parameter.hasParameterAnnotation(QueryParams.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        PaginationParams annotation = parameter.getParameterAnnotation(PaginationParams.class);
+        QueryParams annotation = parameter.getParameterAnnotation(QueryParams.class);
 
         String search = webRequest.getParameter("search") != null ? webRequest.getParameter("search") : annotation.search();
         int page = webRequest.getParameter("page") != null ? Integer.parseInt(webRequest.getParameter("page")) : annotation.page();
@@ -31,14 +31,14 @@ public class PaginationArgumentResolver implements HandlerMethodArgumentResolver
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
 
-        return new PaginationParamsContainer(search, pageable);
+        return new QueryParamsContainer(search, pageable);
     }
 
-    public static class PaginationParamsContainer {
+    public static class QueryParamsContainer {
         private final String search;
         private final Pageable pageable;
 
-        public PaginationParamsContainer(String search, Pageable pageable) {
+        public QueryParamsContainer(String search, Pageable pageable) {
             this.search = search;
             this.pageable = pageable;
         }

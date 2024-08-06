@@ -4,7 +4,9 @@ import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -13,11 +15,17 @@ import java.util.Set;
 
 @Entity
 @Table(name = "applications")
-@Data
+@Setter
+@Getter
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    //Foreign Keys
+    @JsonIgnore
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Report> reports = new HashSet<>();
 
     private String name;
     private String description;
@@ -29,9 +37,12 @@ public class Application {
     private LocalDate deletion_date;
     private LocalDate updation_date;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "report")
-//    private Set<Report> reports = new HashSet<>();
+
+
+    public void addReport(Report report) {
+        this.reports.add(report);
+        report.setApplication(this);
+    }
 
     @PrePersist
     public void prePersist() {

@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface PaginationParams {
+public @interface QueryParams {
     String search() default "";
     int page() default 0;
     int pageSize() default 10;
