@@ -26,7 +26,7 @@ public class ApplicationController {
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "app_id") String sortBy,
+            @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
 
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
@@ -35,7 +35,6 @@ public class ApplicationController {
         Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
 
         return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
-
     }
 
     @GetMapping("/{appId}")

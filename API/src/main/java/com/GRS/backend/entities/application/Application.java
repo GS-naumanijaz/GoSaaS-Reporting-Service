@@ -17,7 +17,7 @@ import java.util.Set;
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int app_id;
+    private int id;
 
     private String name;
     private String description;

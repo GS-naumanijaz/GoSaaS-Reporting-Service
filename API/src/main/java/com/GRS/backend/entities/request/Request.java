@@ -14,7 +14,7 @@ public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int log_id;
+    private int id;
 
 
 

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int report_id;
+    private int id;
 
     //FK
 //    @ManyToOne(cascade = CascadeType.ALL)
