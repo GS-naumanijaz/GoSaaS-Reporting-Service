@@ -20,11 +20,13 @@ public class PaginationArgumentResolver implements HandlerMethodArgumentResolver
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String search = webRequest.getParameter("search");
-        int page = Integer.parseInt(webRequest.getParameter("page") != null ? webRequest.getParameter("page") : "0");
-        int pageSize = Integer.parseInt(webRequest.getParameter("page_size") != null ? webRequest.getParameter("page_size") : "10");
-        String sortBy = webRequest.getParameter("sortBy") != null ? webRequest.getParameter("sortBy") : "app_id";
-        String sortOrder = webRequest.getParameter("sort_order") != null ? webRequest.getParameter("sort_order") : "asc";
+        PaginationParams annotation = parameter.getParameterAnnotation(PaginationParams.class);
+
+        String search = webRequest.getParameter("search") != null ? webRequest.getParameter("search") : annotation.search();
+        int page = webRequest.getParameter("page") != null ? Integer.parseInt(webRequest.getParameter("page")) : annotation.page();
+        int pageSize = webRequest.getParameter("page_size") != null ? Integer.parseInt(webRequest.getParameter("page_size")) : annotation.pageSize();
+        String sortBy = webRequest.getParameter("sortBy") != null ? webRequest.getParameter("sortBy") : annotation.sortBy();
+        String sortOrder = webRequest.getParameter("sort_order") != null ? webRequest.getParameter("sort_order") : annotation.sortOrder();
 
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
@@ -49,5 +51,5 @@ public class PaginationArgumentResolver implements HandlerMethodArgumentResolver
             return pageable;
         }
     }
-
 }
+

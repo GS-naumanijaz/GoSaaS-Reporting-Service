@@ -23,32 +23,33 @@ public class ApplicationController {
     @Autowired
     private ApplicationService applicationService;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllApplications(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
-
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
-
-        Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
-
-        return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
-    }
-//
 //    @GetMapping
-//    public ResponseEntity<Object> getAllApplications(@PaginationParams PaginationArgumentResolver.PaginationParamsContainer paginationParams) {
+//    public ResponseEntity<Object> getAllApplications(
+//            @RequestParam(required = false) String search,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
+//            @RequestParam(defaultValue = "id") String sortBy,
+//            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
 //
-//        String search = paginationParams.getSearch();
-//        Pageable pageable = paginationParams.getPageable();
+//        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
+//        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
 //
 //        Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
 //
 //        return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
 //    }
+//
+    @GetMapping
+    public ResponseEntity<Object> getAllApplications(
+            @PaginationParams(pageSize = 5) PaginationArgumentResolver.PaginationParamsContainer paginationParams) {
+
+        String search = paginationParams.getSearch();
+        Pageable pageable = paginationParams.getPageable();
+
+        Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
+
+        return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
+    }
 
     @GetMapping("/{appId}")
     public ResponseEntity<Object> getApplicationById(@PathVariable int appId) {

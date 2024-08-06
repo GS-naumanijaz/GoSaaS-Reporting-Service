@@ -6,4 +6,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PaginationParams {
+    String search() default "";
+    int page() default 0;
+    int pageSize() default 10;
+    String sortBy() default "id";
+    String sortOrder() default "asc";
 }
