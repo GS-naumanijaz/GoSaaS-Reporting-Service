@@ -1,12 +1,17 @@
 package com.GRS.backend.entities.destination_connection;
 
 
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.enums.DestinationConnectionType;
 import com.GRS.backend.enums.SourceConnectionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "destination_connections")
@@ -18,7 +23,13 @@ public class DestinationConnection {
     private int id;
 
     //fk
-    //app id
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "app_id", referencedColumnName = "id")
+    private Application application;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Report> reports = new HashSet<>();
 
     private String alias;
     private DestinationConnectionType type;

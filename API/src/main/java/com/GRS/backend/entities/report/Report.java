@@ -1,6 +1,8 @@
 package com.GRS.backend.entities.report;
 
 import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
+import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,10 +26,13 @@ public class Report {
     @JoinColumn(name = "app_id", referencedColumnName = "id")
     private Application application;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "destination_id", referencedColumnName = "id")
+    private DestinationConnection destination_connection;
 
-
-    //source connection id
-    //destination id
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "source_id", referencedColumnName = "id")
+    private SourceConnection source_connection;
 
     private String alias;
     private String description;

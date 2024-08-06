@@ -1,6 +1,8 @@
 package com.GRS.backend.entities.application;
 
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -26,6 +28,15 @@ public class Application {
     @JsonIgnore
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Report> reports = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DestinationConnection> destination_connections = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SourceConnection> source_connections = new HashSet<>();
+
 
     private String name;
     private String description;

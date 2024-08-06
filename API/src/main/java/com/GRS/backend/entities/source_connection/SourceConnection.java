@@ -1,11 +1,16 @@
 package com.GRS.backend.entities.source_connection;
 
 
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.enums.SourceConnectionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "source_connections")
@@ -17,7 +22,13 @@ public class SourceConnection {
     private int id;
 
     //FK's
-    //application id
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "app_id", referencedColumnName = "id")
+    private Application application;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "source_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Report> reports = new HashSet<>();
 
     private String alias;
     private SourceConnectionType type;
