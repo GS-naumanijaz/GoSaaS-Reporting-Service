@@ -11,7 +11,7 @@ public class AuditLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int request_id;
+    private int id;
 
 
 
