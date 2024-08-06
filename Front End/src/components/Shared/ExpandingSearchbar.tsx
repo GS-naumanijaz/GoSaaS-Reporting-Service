@@ -25,7 +25,6 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
       <Flex alignItems="center">
         <Button
           onClick={toggleExpand}
-          position="absolute"
           right={isExpanded ? "0" : "unset"}
           zIndex={isExpanded ? "-1" : "1"}
           transition="width 0.3s ease"
@@ -37,8 +36,8 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
         </Button>
         <Input
           placeholder="Search..."
-          pl={isExpanded ? "2.5rem" : "0"}
-          width={isExpanded ? "300px" : "0"}
+          pl={isExpanded ? "2rem" : "0"}
+          width={isExpanded ? "200px" : "0"}
           opacity={isExpanded ? "1" : "0"}
           transition="width 0.3s ease, opacity 0.3s ease"
           onBlur={() => setIsExpanded(false)}

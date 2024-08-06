@@ -1,4 +1,4 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import PageSelector from "./PageSelector";
 import ProductElement from "./ProductElement";
@@ -6,29 +6,40 @@ import { Product } from "./Products";
 
 interface Props {
   products: Product[];
+  totalPages: number;
+  totalElements: number;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   itemVariants: {
     hidden: { opacity: number; x: number };
     visible: { opacity: number; x: number };
   };
+  isEmpty: boolean;
 }
 
 const ProductsList = ({
   products,
+  totalPages,
+  totalElements,
   currentPage,
   setCurrentPage,
   itemVariants,
+  isEmpty,
 }: Props) => {
-  const productPages = chunkArray(products, 6);
-  const placeholdersNeeded = Math.max(0, 6 - productPages[currentPage].length);
-
-  return (
+  return isEmpty ? (
+    <Box marginY={10} padding={15}>
+      <Text fontSize={30}> No search item found</Text>
+    </Box>
+  ) : !products.length ? (
+    <Box marginY={10} padding={15}>
+      <Spinner />
+    </Box>
+  ) : (
     <>
       <SimpleGrid columns={{ md: 2, lg: 3 }} padding={10} spacing={10}>
-        {productPages[currentPage].map((product, index) => (
+        {products.map((product, index) => (
           <motion.div
-            key={index}
+            key={product.id} // Assuming each product has a unique 'id'
             variants={itemVariants}
             initial="hidden"
             animate="visible"
@@ -37,37 +48,25 @@ const ProductsList = ({
             <ProductElement product={product} />
           </motion.div>
         ))}
-        {Array.from({ length: placeholdersNeeded }).map((_, index) => (
-          <Box key={index} height={40} />
-        ))}
       </SimpleGrid>
-      {productPages.length > 1 && (
+
+      {totalPages > 1 && (
         <Flex alignItems="center" marginX={12}>
-          <Box flex="1">
-            {/* Empty Box to take up space and push the selector to the center */}
-          </Box>
+          <Box flex="1" />
           <Box>
             <PageSelector
               currentPage={currentPage}
-              totalPages={productPages.length}
+              totalPages={totalPages}
               setCurrentPage={setCurrentPage}
             />
           </Box>
           <Box flex="1" textAlign="right">
-            <Text>Total number of applications = {products.length}</Text>
+            <Text>Total number of applications = {totalElements}</Text>
           </Box>
         </Flex>
       )}
     </>
   );
 };
-
-function chunkArray(array: Product[], chunkSize: number): Product[][] {
-  const result: Product[][] = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    result.push(array.slice(i, i + chunkSize));
-  }
-  return result;
-}
 
 export default ProductsList;

@@ -1,5 +1,5 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
 import ProductsList from "./ProductsList";
 import { motion } from "framer-motion";
@@ -12,69 +12,76 @@ export interface Product {
   id: number;
   description: string;
   isActive: boolean;
+  creationDate: string;
+  updationDate?: string | null;
+  deletedBy?: string | null;
+  deletionDate?: string | null;
 }
 
 const Products = () => {
-  const products: Product[] = [
-    { id: 1, name: "Product 1", description: "Description 1", isActive: true },
-    { id: 2, name: "Product 2", description: "Description 2", isActive: false },
-    { id: 3, name: "Product 3", description: "Description 3", isActive: true },
-    { id: 4, name: "Product 4", description: "Description 4", isActive: false },
-    { id: 5, name: "Product 5", description: "Description 5", isActive: true },
-    { id: 6, name: "Product 6", description: "Description 6", isActive: false },
-    { id: 7, name: "Product 7", description: "Description 7", isActive: true },
-    { id: 8, name: "Product 8", description: "Description 8", isActive: false },
-    { id: 9, name: "Product 9", description: "Description 9", isActive: true },
-    {
-      id: 10,
-      name: "Product 10",
-      description: "Description 10",
-      isActive: false,
-    },
-    {
-      id: 11,
-      name: "Product 11",
-      description: "Description 11",
-      isActive: true,
-    },
-    {
-      id: 12,
-      name: "Product 12",
-      description: "Description 12",
-      isActive: false,
-    },
-    {
-      id: 13,
-      name: "Product 13",
-      description: "Description 13",
-      isActive: true,
-    },
-    {
-      id: 14,
-      name: "Product 14",
-      description: "Description 14",
-      isActive: false,
-    },
-    {
-      id: 15,
-      name: "Product 15",
-      description: "Description 15",
-      isActive: true,
-    },
-    {
-      id: 16,
-      name: "Product 16",
-      description: "Description 16",
-      isActive: false,
-    },
-  ];
-
   const allFilters = ["All", "Active", "Inactive"];
-
-  const [selectedFilter, setSelectedFilter] = useState(allFilters[0]);
-  const [currentPage, setCurrentPage] = useState(0);
-
   const navigate = useNavigate();
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1); // Start with 1 total page
+  const [totalElements, setTotalElements] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState(allFilters[0]);
+  const [isEmpty, setIsEmpty] = useState(false);
+
+  const AppsPageSize = 6;
+  useEffect(() => {
+    const fetchProducts = async (
+      page = 0,
+      size = AppsPageSize,
+      searchItem: string = searchTerm
+    ) => {
+      try {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          page_size: size.toString(),
+          search: searchItem,
+        });
+
+        const response = await fetch(
+          `http://localhost:8080/applications?${params.toString()}`,
+          {
+            method: "GET",
+            credentials: "include", // Correctly placed in the fetch options
+          }
+        );
+
+        const data = await response.json();
+        const fetchedProducts: Product[] = data.data.content.map(
+          (item: any): Product => ({
+            name: item.name,
+            id: item.id,
+            description: item.description,
+            isActive: item.is_active,
+            creationDate: item.creation_date,
+            updationDate: item.updation_date,
+            deletedBy: item.deleted_by,
+            deletionDate: item.deletion_date,
+          })
+        );
+
+        setProducts(fetchedProducts);
+        setTotalPages(data.data.totalPages);
+        setTotalElements(data.data.totalElements);
+        setIsEmpty(data.data.empty);
+      } catch (error: any) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchProducts(currentPage);
+  }, [currentPage, AppsPageSize, searchTerm]);
+
+  useEffect(() => {
+    setFilteredProducts(productsToShow());
+  }, [products, selectedFilter]);
 
   const productsToShow = () => {
     switch (selectedFilter) {
@@ -84,8 +91,9 @@ const Products = () => {
         return products.filter((product) => product.isActive);
       case "Inactive":
         return products.filter((product) => !product.isActive);
+      default:
+        return products;
     }
-    return [];
   };
 
   // Animation variants
@@ -135,10 +143,7 @@ const Products = () => {
             ))}
           </HStack>
           <HStack spacing={10}>
-            <ExpandingSearchbar
-              onSearch={(searchTerm) => console.log(searchTerm)}
-              bg="white"
-            >
+            <ExpandingSearchbar onSearch={(s) => setSearchTerm(s)} bg="white">
               <FaSearch color={primaryColor} />
             </ExpandingSearchbar>
             <Button
@@ -161,10 +166,13 @@ const Products = () => {
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <ProductsList
-            products={productsToShow()}
+            products={filteredProducts}
+            totalElements={totalElements}
+            totalPages={totalPages}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            itemVariants={itemVariants} // Pass the animation variants if needed in ProductsList
+            itemVariants={itemVariants}
+            isEmpty={isEmpty}
           />
         </motion.div>
       </Box>
