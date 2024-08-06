@@ -42,7 +42,7 @@ const FilterSortPopup = ({ heading, sortFilterOptions }: Props) => {
     <Box p={4}>
       <Popover>
         <PopoverTrigger>
-          <Button>{heading}</Button>
+          <Button variant={"ghost"}>{heading}</Button>
         </PopoverTrigger>
         <PopoverContent>
           <PopoverArrow />

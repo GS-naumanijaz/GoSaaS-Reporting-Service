@@ -10,7 +10,6 @@ export class ReportsConnection extends TableRowData {
   private stored_procedures: string;
   private parameters: string;
   // private appId: number;
-  private isActive: boolean;
 
   //Static variables
   private static tableHeader = "Reports";
@@ -22,7 +21,6 @@ export class ReportsConnection extends TableRowData {
     "Destination",
     "Stored Procedures",
     "Parameters",
-    "Active Status",
     "Edit",
     "Delete",
   ];
@@ -32,8 +30,7 @@ export class ReportsConnection extends TableRowData {
     "15%",
     "15%",
     "10%",
-    "10%",
-    "5%",
+    "15%",
     "10%",
     "5%",
   ];
@@ -107,10 +104,6 @@ export class ReportsConnection extends TableRowData {
       dropdownFilter: ["Test 4", "Get", "From", "Database"],
     },
     {
-      isEnabled: true,
-      dropdownFilter: ["Active", "Inactive"],
-    },
-    {
       isEnabled: false,
     },
     {
@@ -125,9 +118,8 @@ export class ReportsConnection extends TableRowData {
     connection_alias: string,
     destination_alias: string,
     stored_procedures: string,
-    parameters: string,
+    parameters: string
     // appId: number,
-    isActive: boolean
   ) {
     super();
     this.reportId = reportId;
@@ -138,7 +130,6 @@ export class ReportsConnection extends TableRowData {
     this.stored_procedures = stored_procedures;
     this.parameters = parameters;
     // this.appId = appId;
-    this.isActive = isActive;
   }
 
   getId(): number {
@@ -209,7 +200,7 @@ export class ReportsConnection extends TableRowData {
   }
 
   getEditAccess(): boolean[] {
-    return [true, true, true, true, true, true];
+    return [true, true, true, true, true];
   }
 
   requiresCheckBox(): boolean {
@@ -222,17 +213,5 @@ export class ReportsConnection extends TableRowData {
 
   requiresStatusToggle(): boolean {
     return true;
-  }
-
-  getSwitchStatus(): boolean {
-    return this.isActive;
-  }
-
-  setSwitchStatus(status: boolean): void {
-    this.isActive = status;
-  }
-
-  toggleSwitchStatus() {
-    this.isActive = !this.isActive;
   }
 }

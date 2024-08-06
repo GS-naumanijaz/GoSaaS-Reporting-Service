@@ -9,27 +9,64 @@ import { useNavigate } from "react-router-dom";
 
 export interface Product {
   name: string;
+  id: number;
+  description: string;
   isActive: boolean;
 }
 
 const Products = () => {
   const products: Product[] = [
-    { name: "Product 1", isActive: true },
-    { name: "Product 2", isActive: false },
-    { name: "Product 3", isActive: true },
-    { name: "Product 4", isActive: false },
-    { name: "Product 5", isActive: true },
-    { name: "Product 6", isActive: false },
-    { name: "Product 7", isActive: true },
-    { name: "Product 8", isActive: false },
-    { name: "Product 9", isActive: true },
-    { name: "Product 10", isActive: false },
-    { name: "Product 11", isActive: true },
-    { name: "Product 12", isActive: false },
-    { name: "Product 13", isActive: true },
-    { name: "Product 14", isActive: false },
-    { name: "Product 15", isActive: true },
-    { name: "Product 16", isActive: false },
+    { id: 1, name: "Product 1", description: "Description 1", isActive: true },
+    { id: 2, name: "Product 2", description: "Description 2", isActive: false },
+    { id: 3, name: "Product 3", description: "Description 3", isActive: true },
+    { id: 4, name: "Product 4", description: "Description 4", isActive: false },
+    { id: 5, name: "Product 5", description: "Description 5", isActive: true },
+    { id: 6, name: "Product 6", description: "Description 6", isActive: false },
+    { id: 7, name: "Product 7", description: "Description 7", isActive: true },
+    { id: 8, name: "Product 8", description: "Description 8", isActive: false },
+    { id: 9, name: "Product 9", description: "Description 9", isActive: true },
+    {
+      id: 10,
+      name: "Product 10",
+      description: "Description 10",
+      isActive: false,
+    },
+    {
+      id: 11,
+      name: "Product 11",
+      description: "Description 11",
+      isActive: true,
+    },
+    {
+      id: 12,
+      name: "Product 12",
+      description: "Description 12",
+      isActive: false,
+    },
+    {
+      id: 13,
+      name: "Product 13",
+      description: "Description 13",
+      isActive: true,
+    },
+    {
+      id: 14,
+      name: "Product 14",
+      description: "Description 14",
+      isActive: false,
+    },
+    {
+      id: 15,
+      name: "Product 15",
+      description: "Description 15",
+      isActive: true,
+    },
+    {
+      id: 16,
+      name: "Product 16",
+      description: "Description 16",
+      isActive: false,
+    },
   ];
 
   const allFilters = ["All", "Active", "Inactive"];

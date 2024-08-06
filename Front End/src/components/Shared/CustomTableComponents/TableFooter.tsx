@@ -19,11 +19,11 @@ const TableFooter = () => {
           Total Number of Records = 5
         </Text>
         <HStack spacing={4} justifyContent="center" flex="1">
-          <Button>
+          <Button variant={"ghost"}>
             <FaChevronLeft />
           </Button>
-          <Text>1 of 1</Text>  // Make dynamic
-          <Button>
+          <Text>1 of 1</Text> // Make dynamic
+          <Button variant={"ghost"}>
             <FaChevronRight />
           </Button>
         </HStack>

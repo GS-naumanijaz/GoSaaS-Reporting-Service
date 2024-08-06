@@ -74,7 +74,7 @@ const AddRowDialogButton: React.FC<Props> = ({
 
   return (
     <>
-      <Button onClick={handleOpen}>
+      <Button variant={"ghost"} onClick={handleOpen}>
         <FaPlus />
       </Button>
 

@@ -16,11 +16,18 @@ import {
 import { useRef, useState } from "react";
 import { primaryColor } from "../../configs";
 
-const AppHeader = () => {
+interface Props {
+  appName?: string;
+  appDescription?: string;
+}
+
+const AppHeader = ({ appName, appDescription }: Props) => {
   // usestates for the switch, description, and name
   const [isChecked, setIsChecked] = useState(true);
-  const [description, setDescription] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(appName ? appName : "");
+  const [description, setDescription] = useState(
+    appDescription ? appDescription : ""
+  );
 
   // usestates for the delete dialog
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);

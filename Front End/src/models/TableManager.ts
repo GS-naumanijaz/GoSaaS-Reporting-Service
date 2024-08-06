@@ -1,9 +1,10 @@
-import {ColumnSortFilterOptions, InputField} from "./TableManagementModels";
+import { Product } from "../components/Dashboard/Products";
+import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
 export class TableManager {
   private data: TableRowData[];
-
+  private product?: Product;
   private isEditing: boolean[];
   private preEditRows: string[][];
   private checkedState: boolean[];
@@ -11,7 +12,8 @@ export class TableManager {
   private isSelectingRows: boolean;
   private canSaveEditedRows: boolean[];
 
-  constructor(data: TableRowData[]) {
+  constructor(data: TableRowData[], product?: Product) {
+    this.product = product;
     this.data = data;
     this.isEditing = new Array(this.data.length).fill(false);
     this.preEditRows = new Array(data.length).fill([]);
@@ -53,6 +55,10 @@ export class TableManager {
     return this.data[0].getTableHeader();
   }
 
+  getTableProduct(): Product | undefined {
+    return this.product;
+  }
+
   getTableHeadings(): string[] {
     return this.data[0].getTableHeadings();
   }
@@ -91,11 +97,10 @@ export class TableManager {
   requiresStatusToggle() {
     return this.data[0].requiresStatusToggle();
   }
- 
+
   requiresCheckBox() {
     return this.data[0].requiresCheckBox();
   }
-
 
   handleToggleSwitch(id: number) {
     this.data = this.data.map((row) => {
@@ -117,14 +122,20 @@ export class TableManager {
 
   selectAllCheckBoxes() {
     this.allRowsSelected = !this.allRowsSelected;
-    this.checkedState = new Array(this.checkedState.length).fill(this.allRowsSelected);
+    this.checkedState = new Array(this.checkedState.length).fill(
+      this.allRowsSelected
+    );
     this.isSelectingRows = this.allRowsSelected;
   }
 
   selectCheckBox(rowIndex: number) {
     this.checkedState[rowIndex] = !this.checkedState[rowIndex];
-    this.isSelectingRows = this.checkedState.some((element) => element === true);
-    this.allRowsSelected = this.checkedState.every((element) => element === true);
+    this.isSelectingRows = this.checkedState.some(
+      (element) => element === true
+    );
+    this.allRowsSelected = this.checkedState.every(
+      (element) => element === true
+    );
   }
 
   handleEditToggle(index: number) {
@@ -136,21 +147,25 @@ export class TableManager {
   }
 
   revertEdit(rowIndex: number) {
-    const newRow = this.data.find((item) => item.getId() === this.data[rowIndex].getId());
+    const newRow = this.data.find(
+      (item) => item.getId() === this.data[rowIndex].getId()
+    );
     if (newRow) this.data[rowIndex].editCompleteRow(this.preEditRows[rowIndex]);
   }
 
   handleDeleteRow(rowIndex: number) {
     this.data = this.data.filter((_, index) => index !== rowIndex);
-    this.checkedState = this.checkedState.filter((_, index) => index !== rowIndex);
+    this.checkedState = this.checkedState.filter(
+      (_, index) => index !== rowIndex
+    );
     this.isEditing = this.isEditing.filter((_, index) => index !== rowIndex);
   }
 
   handleBulkDeleteRows() {
     this.data = this.data.filter((_, index) => !this.checkedState[index]);
-    this.isEditing = this.isEditing.filter((_, index) => !this.checkedState[index]);
+    this.isEditing = this.isEditing.filter(
+      (_, index) => !this.checkedState[index]
+    );
     this.checkedState = new Array(this.data.length).fill(false);
   }
-
-
 }
