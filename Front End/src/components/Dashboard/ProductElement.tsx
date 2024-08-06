@@ -22,7 +22,7 @@ const ProductElement = ({ product }: Props) => {
       transition="transform 0.2s, box-shadow 0.2s"
       _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
       onClick={() => {
-        navigate("/application", { state: product });
+        navigate("/applications", { state: product });
       }}
     >
       <Text fontSize={"xx-large"}>{product.name}</Text>

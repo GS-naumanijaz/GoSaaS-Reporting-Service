@@ -142,7 +142,7 @@ const Products = () => {
               <FaSearch color={primaryColor} />
             </ExpandingSearchbar>
             <Button
-              onClick={() => navigate("/application")}
+              onClick={() => navigate("/applications")}
               border={"1px"}
               bg={primaryColor}
               color={"white"}
