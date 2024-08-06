@@ -1,10 +1,12 @@
 package com.GRS.backend.entities.report;
 
+import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,54 +22,46 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping
-    public ResponseEntity<Page<Report>> getAllReports(
+    public ResponseEntity<Object> getAllReports(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "reportId") String sortBy,
+            @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.fromString(sortOrder), sortBy));
-        Page<Report> reports = reportService.getAllReports(search, pageable);
-        return ResponseEntity.ok(reports);
+        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+
+        Page<Report> allReports = reportService.getAllReports(search, pageable);
+
+        return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
     }
 
     @GetMapping("/{reportId}")
-    public ResponseEntity<Report> getReportById(@PathVariable int reportId) {
-        Optional<Report> report = reportService.getReportById(reportId);
-        return report.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Object> getReportById(@PathVariable int reportId) {
+        Optional<Report> reportToAdd = reportService.getReportById(reportId);
+        if (reportToAdd.isPresent()) {
+            return Response.responseBuilder("Report found successfully", HttpStatus.OK, reportToAdd);
+        } else {
+            return Response.responseBuilder("Failed to find report", HttpStatus.OK, null);
+        }
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> addReport(@RequestBody Report report) {
+    public ResponseEntity<Object> addReport(@RequestBody Report report) {
         Report createdReport = reportService.addReport(report);
-        Map<String, Object> response = createResponse("Report added successfully", createdReport);
-        return ResponseEntity.ok(response);
+        return Response.responseBuilder("Report added successfully", HttpStatus.OK, createdReport);
     }
 
     @PatchMapping("/{reportId}")
-    public ResponseEntity<Map<String, Object>> updateReport(@RequestBody Report report, @PathVariable int reportId) {
+    public ResponseEntity<Object> updateReport(@RequestBody Report report, @PathVariable int reportId) {
         Report updatedReport = reportService.updateReport(reportId, report);
-        if (updatedReport == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Map<String, Object> response = createResponse("Report updated successfully", updatedReport);
-        return ResponseEntity.ok(response);
+        return Response.responseBuilder("Report updated successfully", HttpStatus.OK, updatedReport);
     }
 
     @DeleteMapping("/{reportId}")
-    public ResponseEntity<Map<String, String>> deleteReport(@PathVariable int reportId) {
+    public ResponseEntity<Object> deleteReport(@PathVariable int reportId) {
         reportService.deleteReport(reportId);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Report deleted successfully");
-        return ResponseEntity.ok(response);
-    }
-
-    private Map<String, Object> createResponse(String message, Report report) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", message);
-        response.put("report", report);
-        return response;
+        return Response.responseBuilder("Report deleted successfully", HttpStatus.OK, null);
     }
 }

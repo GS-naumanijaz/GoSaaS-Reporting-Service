@@ -14,7 +14,7 @@ public class SourceConnection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int source_id;
+    private int id;
 
     //FK's
     //application id

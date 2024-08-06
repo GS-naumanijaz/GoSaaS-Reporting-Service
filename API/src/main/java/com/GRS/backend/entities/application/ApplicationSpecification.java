@@ -2,7 +2,7 @@ package com.GRS.backend.entities.application;
 
 import org.springframework.data.jpa.domain.Specification;
 
-public class ApplicationSpecification {
+public class    ApplicationSpecification {
 
     public static Specification<Application> containsTextInNameOrDescription(String text) {
         return (root, query, cb) -> {

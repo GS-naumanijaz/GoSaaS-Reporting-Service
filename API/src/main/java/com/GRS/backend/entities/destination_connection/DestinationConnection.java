@@ -15,7 +15,7 @@ public class DestinationConnection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int destination_id;
+    private int id;
 
 
 
