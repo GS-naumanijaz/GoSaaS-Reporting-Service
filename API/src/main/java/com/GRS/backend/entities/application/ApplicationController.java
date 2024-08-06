@@ -1,5 +1,7 @@
 package com.GRS.backend.entities.application;
 
+import com.GRS.backend.annotations.PaginationParams;
+import com.GRS.backend.resolver.PaginationArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,17 @@ public class ApplicationController {
         return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
 
     }
+//
+//    @GetMapping
+//    public ResponseEntity<Object> getAllApplications(@PaginationParams PaginationArgumentResolver.PaginationParamsContainer paginationParams) {
+//
+//        String search = paginationParams.getSearch();
+//        Pageable pageable = paginationParams.getPageable();
+//
+//        Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
+//
+//        return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
+//    }
 
     @GetMapping("/{appId}")
     public ResponseEntity<Object> getApplicationById(@PathVariable int appId) {
