@@ -3,6 +3,8 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.source_connection.SourceConnection;
+import com.GRS.backend.entities.source_connection.SourceConnectionService;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class ReportController {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private SourceConnectionService sourceConnectionService;
 
     @GetMapping
     public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
@@ -73,4 +78,18 @@ public class ReportController {
         reportService.deleteReport(reportId);
         return Response.responseBuilder("Report deleted successfully", HttpStatus.OK, null);
     }
+
+    @PutMapping("/{reportId}/source-connections/{sourceId}")
+    public ResponseEntity<Object> connectSourceToReport(@PathVariable int reportId, @PathVariable int sourceId) {
+        Report report = reportService.getReportById(reportId).get();
+        SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId).get();
+
+        sourceConnection.addReport(report);
+
+        sourceConnectionService.addSourceConnection(sourceConnection);
+        reportService.addReport(report);
+
+        return Response.responseBuilder("Source Connection connected to Report Successfully", HttpStatus.OK, null);
+    }
+
 }

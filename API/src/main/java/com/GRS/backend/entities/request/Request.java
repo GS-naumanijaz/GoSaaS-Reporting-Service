@@ -5,12 +5,16 @@ import com.GRS.backend.enums.DestinationConnectionType;
 import com.GRS.backend.enums.RequestStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "audit_log")
-@Data
+@Setter
+@Getter
 public class Request {
 
     @Id

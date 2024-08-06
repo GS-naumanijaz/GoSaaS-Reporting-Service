@@ -7,6 +7,9 @@ import com.GRS.backend.enums.SourceConnectionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -14,14 +17,15 @@ import java.util.Set;
 
 @Entity
 @Table(name = "source_connections")
-@Data
+@Getter
+@Setter
 public class SourceConnection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //FK's
+    //Foreign Key's
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "app_id", referencedColumnName = "id")
     private Application application;
@@ -45,7 +49,10 @@ public class SourceConnection {
     private LocalDate deletion_date;
     private LocalDate updation_date;
 
-
+    public void addReport(Report report) {
+        this.reports.add(report);
+        report.setSource_connection(this);
+    }
 
 
 }
