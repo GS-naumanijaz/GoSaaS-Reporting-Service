@@ -64,12 +64,26 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- H2 Database (Optional: only if needed for testing) -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope> <!-- Changed to test scope -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
+
+		<!-- Load Data from .env file -->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
+		<!-- Servlet API -->
+<!--		<dependency>-->
+<!--			<groupId>javax.servlet</groupId>-->
+<!--			<artifactId>javax.servlet-api</artifactId>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
+
+
 	</dependencies>
 
 	<build>

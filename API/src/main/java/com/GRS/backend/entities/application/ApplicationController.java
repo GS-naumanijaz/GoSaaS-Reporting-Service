@@ -3,6 +3,8 @@ package com.GRS.backend.entities.application;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,8 @@ public class ApplicationController {
     @Autowired
     private ApplicationService applicationService;
 
+    Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+
     @GetMapping
     public ResponseEntity<Object> getAllApplications(
             @QueryParams(pageSize = 6) QueryArgumentResolver.QueryParamsContainer queryParams) {
@@ -27,7 +31,7 @@ public class ApplicationController {
         Pageable pageable = queryParams.getPageable();
 
         Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
-
+        logger.info("Applications have been retrieved and response is sent");
         return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
     }
 
@@ -35,6 +39,7 @@ public class ApplicationController {
     public ResponseEntity<Object> getApplicationById(@PathVariable int appId) {
         Optional<Application> applicationToAdd = applicationService.getApplicationById(appId);
         if (applicationToAdd.isPresent()) {
+            logger.error("Application found successfully");
             return Response.responseBuilder("Application found successfully", HttpStatus.OK, applicationToAdd);
         } else {
             return Response.responseBuilder("Failed to find application", HttpStatus.OK, null);
