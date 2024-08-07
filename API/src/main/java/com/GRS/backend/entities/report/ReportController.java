@@ -42,9 +42,10 @@ public class ReportController {
     public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
+        String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<Report> allReports = reportService.getAllReports(search, pageable);
+        Page<Report> allReports = reportService.getAllReports(search, searchBy, pageable);
 
         return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
     }

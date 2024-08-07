@@ -1,8 +1,10 @@
 package com.GRS.backend.entities.destination_connection;
 
+import com.GRS.backend.base_models.BaseSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,11 +15,13 @@ public class DestinationConnectionService {
     @Autowired
     private DestinationConnectionRepository destinationConnectionRepository;
 
-    public Page<DestinationConnection> getAllDestinationConnections(String search, Pageable pageable) {
+    public Page<DestinationConnection> getAllDestinationConnections(String search, String searchBy, Pageable pageable) {
+        Specification<DestinationConnection> spec = Specification.where(null);
+
         if (search != null && !search.isEmpty()) {
-            //implement search here
+            spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
         }
-        return destinationConnectionRepository.findAll(pageable);
+        return destinationConnectionRepository.findAll(spec, pageable);
     }
 
     public Optional<DestinationConnection> getDestinationConnectionById(int destinationConnectionId) {

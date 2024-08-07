@@ -21,12 +21,13 @@ public class ApplicationController {
 
     @GetMapping
     public ResponseEntity<Object> getAllApplications(
-            @QueryParams(pageSize = 6) QueryArgumentResolver.QueryParamsContainer queryParams) {
+            @QueryParams(pageSize = 6, searchBy = "name") QueryArgumentResolver.QueryParamsContainer queryParams, @RequestParam(defaultValue = "all") String status) {
 
         String search = queryParams.getSearch();
+        String searchBy = queryParams.getSearchBy();
         Pageable pageable = queryParams.getPageable();
 
-        Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
+        Page<Application> allApplications = applicationService.getAllApplications(search, searchBy, pageable, status);
 
         return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
     }

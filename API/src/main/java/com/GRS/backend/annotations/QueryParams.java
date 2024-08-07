@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface QueryParams {
     String search() default "";
+    String searchBy() default "id";
     int page() default 0;
     int pageSize() default 10;
     String sortBy() default "id";

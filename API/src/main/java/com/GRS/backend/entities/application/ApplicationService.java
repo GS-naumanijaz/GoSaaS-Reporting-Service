@@ -3,6 +3,7 @@ package com.GRS.backend.entities.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,11 +14,19 @@ public class ApplicationService {
     @Autowired
     private ApplicationRepository applicationRepository;
 
-    public Page<Application> getAllApplications(String search, Pageable pageable) {
+    public Page<Application> getAllApplications(String search, String searchBy, Pageable pageable, String status) {
+
+        Specification<Application> spec = Specification.where(null);
+
         if (search != null && !search.isEmpty()) {
-            return applicationRepository.findAll(ApplicationSpecification.containsTextInNameOrDescription(search), pageable);
+            return applicationRepository.findAll(ApplicationSpecification.containsTextIn(searchBy, search), pageable);
         }
-        return applicationRepository.findAll(pageable);
+
+        if (status != null) {
+            spec = spec.and(ApplicationSpecification.hasStatus(status));
+        }
+
+        return applicationRepository.findAll(spec, pageable);
     }
 
     public Optional<Application> getApplicationById(int appId) {

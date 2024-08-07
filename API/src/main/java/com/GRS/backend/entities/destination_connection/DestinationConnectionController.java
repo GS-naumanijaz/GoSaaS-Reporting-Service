@@ -31,9 +31,10 @@ public class DestinationConnectionController {
     public ResponseEntity<Object> getAllDestinationConnections(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
+        String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<DestinationConnection> allDestinationConnections = destinationConnectionService.getAllDestinationConnections(search, pageable);
+        Page<DestinationConnection> allDestinationConnections = destinationConnectionService.getAllDestinationConnections(search, searchBy, pageable);
 
         return Response.responseBuilder("Destination Connections retrieved successfully", HttpStatus.OK, allDestinationConnections);
 

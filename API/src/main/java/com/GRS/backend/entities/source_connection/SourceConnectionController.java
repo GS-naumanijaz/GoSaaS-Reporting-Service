@@ -31,9 +31,10 @@ public class SourceConnectionController {
     public ResponseEntity<Object> getAllSourceConnections(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
+        String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<SourceConnection> allSourceConnections = sourceConnectionService.getAllSourceConnections(search, pageable);
+        Page<SourceConnection> allSourceConnections = sourceConnectionService.getAllSourceConnections(search, searchBy, pageable);
 
         return Response.responseBuilder("Source Connections retrieved successfully", HttpStatus.OK, allSourceConnections);
 

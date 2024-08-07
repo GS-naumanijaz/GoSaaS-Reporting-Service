@@ -42,9 +42,10 @@ public class RequestController {
     public ResponseEntity<Object> getAllRequests(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
+        String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<Request> allRequests = requestService.getAllRequests(search, pageable);
+        Page<Request> allRequests = requestService.getAllRequests(search, searchBy, pageable);
 
         return Response.responseBuilder("Requests retrieved successfully", HttpStatus.OK, allRequests);
 
