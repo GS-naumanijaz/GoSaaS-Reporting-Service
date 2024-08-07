@@ -25,3 +25,4 @@ dist-ssr
 API/src/main/resources/application.yml
 Entity Relation Diagram
 Wireframes
+API/.env
