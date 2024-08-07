@@ -70,7 +70,6 @@ const AppHeader = ({ appName, appDescription }: Props) => {
           colorScheme="red"
           isChecked={isChecked}
           onChange={() => {
-            console.log("isChecked: ", isChecked);
             setIsChecked(!isChecked);
           }}
         />
