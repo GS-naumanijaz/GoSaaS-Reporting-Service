@@ -1,5 +1,5 @@
 import { Box, HStack, Text } from "@chakra-ui/react";
-import SignInCard from "../components/LoginPage/SignInCard";
+import SignInCard from "../components/Login/SignInCard";
 
 const LoginPage = () => {
   return (

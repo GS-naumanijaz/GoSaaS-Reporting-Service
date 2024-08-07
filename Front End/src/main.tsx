@@ -4,7 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "./theme";
 import { RouterProvider } from "react-router-dom";
 import router from "./services/routes.tsx";
-import { UserProvider } from "./components/LoginPage/UserContext.tsx";
+import { UserProvider } from "./components/Login/UserContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

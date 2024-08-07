@@ -38,12 +38,7 @@ const ProductElement = ({ product }: Props) => {
         borderRadius="0 20px 0 50px"
       />
 
-      <Text
-        fontSize={["sm", "md", "lg"]}
-        sx={{ "@media screen and (min-width: 768px)": { fontSize: "3xl" } }}
-      >
-        {product.name}
-      </Text>
+      <Text fontSize={["sm", "md", "lg"]}>{product.name}</Text>
     </Box>
   );
 };
