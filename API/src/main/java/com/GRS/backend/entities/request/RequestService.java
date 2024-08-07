@@ -28,6 +28,10 @@ public class RequestService {
         return requestRepository.save(request);
     }
 
+    public Request updateRequest(Request request) {
+        return requestRepository.save(request);
+    }
+
     public Request updateRequest(int requestId, Request request) {
         Optional<Request> existingRequest = requestRepository.findById(requestId);
 
@@ -45,6 +49,8 @@ public class RequestService {
     public void deleteRequest(int requestId) {
         requestRepository.deleteById(requestId);
     }
+
+
     
     
 }

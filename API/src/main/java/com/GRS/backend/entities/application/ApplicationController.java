@@ -1,17 +1,15 @@
 package com.GRS.backend.entities.application;
 
+import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -23,14 +21,10 @@ public class ApplicationController {
 
     @GetMapping
     public ResponseEntity<Object> getAllApplications(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+            @QueryParams(pageSize = 6) QueryArgumentResolver.QueryParamsContainer queryParams) {
 
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+        String search = queryParams.getSearch();
+        Pageable pageable = queryParams.getPageable();
 
         Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
 

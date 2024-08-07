@@ -1,5 +1,10 @@
 package com.GRS.backend.entities.destination_connection;
 
+import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,16 +24,14 @@ public class DestinationConnectionController {
     @Autowired
     private DestinationConnectionService destinationConnectionService;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllDestinationConnections(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+    @Autowired
+    private ApplicationService applicationService;
 
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+    @GetMapping
+    public ResponseEntity<Object> getAllDestinationConnections(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+
+        String search = paginationParams.getSearch();
+        Pageable pageable = paginationParams.getPageable();
 
         Page<DestinationConnection> allDestinationConnections = destinationConnectionService.getAllDestinationConnections(search, pageable);
 
@@ -46,9 +49,14 @@ public class DestinationConnectionController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> addDestinationConnection(@RequestBody DestinationConnection destinationConnection) {
+    @PostMapping("/{appId}")
+    public ResponseEntity<Object> addDestinationConnection(@RequestBody DestinationConnection destinationConnection, @PathVariable int appId) {
+        Optional<Application> destinationApp = applicationService.getApplicationById(appId);
+
+        destinationConnection.setApplication(destinationApp.get());
+
         DestinationConnection createdDestinationConnection = destinationConnectionService.addDestinationConnection(destinationConnection);
+
         return Response.responseBuilder("Destination Connection added successfully", HttpStatus.OK, createdDestinationConnection);
     }
 

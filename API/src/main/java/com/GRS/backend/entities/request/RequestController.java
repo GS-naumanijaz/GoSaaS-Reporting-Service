@@ -1,5 +1,14 @@
 package com.GRS.backend.entities.request;
 
+import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
+import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
+import com.GRS.backend.entities.notification.Notification;
+import com.GRS.backend.entities.notification.NotificationService;
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -19,16 +29,20 @@ public class RequestController {
     @Autowired
     private RequestService requestService;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllRequests(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+    @Autowired
+    private ApplicationService applicationService;
 
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+    @Autowired
+    private DestinationConnectionService destinationConnectionService;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @GetMapping
+    public ResponseEntity<Object> getAllRequests(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+
+        String search = paginationParams.getSearch();
+        Pageable pageable = paginationParams.getPageable();
 
         Page<Request> allRequests = requestService.getAllRequests(search, pageable);
 
@@ -46,10 +60,36 @@ public class RequestController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> addRequest(@RequestBody Request request) {
-        Request createdRequest = requestService.addRequest(request);
-        return Response.responseBuilder("Request added successfully", HttpStatus.OK, createdRequest);
+    @PostMapping("/{appId}/destination-connections/{destinationId}")
+    public ResponseEntity<Object> addRequest(@RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
+        Optional<Application> requestApp = applicationService.getApplicationById(appId);
+        Optional<DestinationConnection> requestDestination = destinationConnectionService.getDestinationConnectionById(destinationId);
+
+        if (requestApp.isPresent() && requestDestination.isPresent()) {
+            request.setApplication(requestApp.get());
+            request.setDestination_connection(requestDestination.get());
+
+            // Save the Request first
+            Request createdRequest = requestService.addRequest(request);
+
+            // Create and set the Notification
+            Notification createdNotification = new Notification();
+            createdNotification.setMessage("Request created successfully");
+            createdNotification.setCreated_by(createdRequest.getCreated_by());
+            createdNotification.setCreation_date(LocalDate.now());
+            createdNotification.setRequest(createdRequest);
+
+            // Save the Notification
+            notificationService.addNotification(createdNotification);
+
+            // Update the Request with the Notification
+//            requestService.updateRequest(createdRequest);
+
+
+            return Response.responseBuilder("Request added successfully", HttpStatus.OK, createdRequest);
+        } else {
+            return Response.responseBuilder("Application or Destination Connection not found", HttpStatus.NOT_FOUND, null);
+        }
     }
 
     @PatchMapping("/{requestId}")

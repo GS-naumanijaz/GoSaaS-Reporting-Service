@@ -1,5 +1,13 @@
 package com.GRS.backend.entities.report;
 
+import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
+import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
+import com.GRS.backend.entities.source_connection.SourceConnection;
+import com.GRS.backend.entities.source_connection.SourceConnectionService;
+import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,16 +29,20 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllReports(
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(name = "page_size", defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+    @Autowired
+    private ApplicationService applicationService;
 
-        Sort.Direction direction = Sort.Direction.fromString(sortOrder);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
+    @Autowired
+    private SourceConnectionService sourceConnectionService;
+
+    @Autowired
+    private DestinationConnectionService destinationConnectionService;
+
+    @GetMapping
+    public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+
+        String search = paginationParams.getSearch();
+        Pageable pageable = paginationParams.getPageable();
 
         Page<Report> allReports = reportService.getAllReports(search, pageable);
 
@@ -47,9 +59,14 @@ public class ReportController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> addReport(@RequestBody Report report) {
+    @PostMapping("/{appId}")
+    public ResponseEntity<Object> addReport(@RequestBody Report report, @PathVariable int appId) {
+        Optional<Application> reportApp = applicationService.getApplicationById(appId);
+
+        report.setApplication(reportApp.get());
+
         Report createdReport = reportService.addReport(report);
+
         return Response.responseBuilder("Report added successfully", HttpStatus.OK, createdReport);
     }
 
@@ -64,4 +81,31 @@ public class ReportController {
         reportService.deleteReport(reportId);
         return Response.responseBuilder("Report deleted successfully", HttpStatus.OK, null);
     }
+
+    @PutMapping("/{reportId}/source-connections/{sourceId}")
+    public ResponseEntity<Object> connectSourceToReport(@PathVariable int reportId, @PathVariable int sourceId) {
+        Report report = reportService.getReportById(reportId).get();
+        SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId).get();
+
+        sourceConnection.addReport(report);
+
+        sourceConnectionService.addSourceConnection(sourceConnection);
+        reportService.addReport(report);
+
+        return Response.responseBuilder("Source Connection connected to Report Successfully", HttpStatus.OK, null);
+    }
+
+    @PutMapping("/{reportId}/destination-connections/{destinationId}")
+    public ResponseEntity<Object> connectDestinationToReport(@PathVariable int reportId, @PathVariable int destinationId) {
+        Report report = reportService.getReportById(reportId).get();
+        DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(destinationId).get();
+
+        destinationConnection.addReport(report);
+
+        destinationConnectionService.addDestinationConnection(destinationConnection);
+        reportService.addReport(report);
+
+        return Response.responseBuilder("Destination Connection connected to Report Successfully", HttpStatus.OK, null);
+    }
+
 }
