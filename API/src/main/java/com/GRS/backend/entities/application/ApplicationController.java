@@ -21,10 +21,10 @@ public class ApplicationController {
 
     @GetMapping
     public ResponseEntity<Object> getAllApplications(
-            @QueryParams(pageSize = 6) QueryArgumentResolver.QueryParamsContainer paginationParams) {
+            @QueryParams(pageSize = 6) QueryArgumentResolver.QueryParamsContainer queryParams) {
 
-        String search = paginationParams.getSearch();
-        Pageable pageable = paginationParams.getPageable();
+        String search = queryParams.getSearch();
+        Pageable pageable = queryParams.getPageable();
 
         Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
 
