@@ -5,6 +5,7 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,15 +36,36 @@ public class Report {
     @JoinColumn(name = "source_id", referencedColumnName = "id")
     private SourceConnection source_connection;
 
+    @NotNull(message = "Alias must not be null")
     private String alias;
-    private String description;
-    private String stored_procedure;
+
+    private String description = "";
+
+    private String stored_procedure = "";
+
     private String[] params;
-    private String xsl_template;
-    private Boolean is_deleted;
-    private Boolean is_pinned;
+
+    private String xsl_template = "";
+
+    private Boolean is_deleted = false;
+
+    private Boolean is_pinned = false;
+
     private LocalDate creation_date;
+
     private LocalDate deletion_date;
+
     private LocalDate updation_date;
+
+    @PrePersist
+    public void prePersist() {
+        this.creation_date = LocalDate.now();
+        this.updation_date = LocalDate.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updation_date = LocalDate.now();
+    }
 
 }

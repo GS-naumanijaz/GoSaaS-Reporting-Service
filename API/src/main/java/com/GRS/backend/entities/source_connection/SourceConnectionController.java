@@ -6,6 +6,7 @@ import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +52,7 @@ public class SourceConnectionController {
     }
 
     @PostMapping("/{appId}")
-    public ResponseEntity<Object> addSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int appId) {
+    public ResponseEntity<Object> addSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int appId) {
 
         Optional<Application> sourceApp = applicationService.getApplicationById(appId);
 

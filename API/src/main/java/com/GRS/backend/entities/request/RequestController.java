@@ -10,6 +10,7 @@ import com.GRS.backend.entities.notification.NotificationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,7 +63,7 @@ public class RequestController {
     }
 
     @PostMapping("/{appId}/destination-connections/{destinationId}")
-    public ResponseEntity<Object> addRequest(@RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
+    public ResponseEntity<Object> addRequest(@Valid @RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
         Optional<Application> requestApp = applicationService.getApplicationById(appId);
         Optional<DestinationConnection> requestDestination = destinationConnectionService.getDestinationConnectionById(destinationId);
 

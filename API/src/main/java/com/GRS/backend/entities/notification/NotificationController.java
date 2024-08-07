@@ -7,6 +7,7 @@ import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.request.RequestService;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class NotificationController {
     }
 
     @PostMapping("/{requestId}")
-    public ResponseEntity<Object> addNotification(@RequestBody Notification notification, @PathVariable int requestId) {
+    public ResponseEntity<Object> addNotification(@Valid @RequestBody Notification notification, @PathVariable int requestId) {
         Optional<Request> notificationApp = requestService.getRequestById(requestId);
 
 //        notification.set(notificationApp.get());

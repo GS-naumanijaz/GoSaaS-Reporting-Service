@@ -3,6 +3,7 @@ package com.GRS.backend.entities.application;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addApplication(@RequestBody Application application) {
+    public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application) {
         Application createdApplication = applicationService.addApplication(application);
         return Response.responseBuilder("Application added successfully", HttpStatus.OK, createdApplication);
     }

@@ -8,6 +8,7 @@ import com.GRS.backend.enums.DestinationConnectionType;
 import com.GRS.backend.enums.SourceConnectionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,23 +41,50 @@ public class DestinationConnection {
     @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Request> requests = new HashSet<>();
 
+    @NotNull(message = "Alias must not be null")
     private String alias;
+
+    @NotNull(message = "Type must not be null")
     private DestinationConnectionType type;
+
+    @NotNull(message = "Url must not be null")
     private String url;
+
+    @NotNull(message = "Port must not be null")
     private int port;
-    private boolean is_active;
-    private boolean is_delete;
-    private String secret_key;
-    private String access_key;
-    private String created_by;
-    private String deleted_by;
+
+    private Boolean is_active = false;
+
+    private Boolean is_deleted = false;
+
+    private String secret_key = "";
+
+    private String access_key = "";
+
+    private String created_by = "";
+
+    private String deleted_by = "";
+
     private LocalDate creation_date;
+
     private LocalDate deletion_date;
+
     private LocalDate updation_date;
 
     public void addReport(Report report) {
         this.reports.add(report);
         report.setDestination_connection(this);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.creation_date = LocalDate.now();
+        this.updation_date = LocalDate.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updation_date = LocalDate.now();
     }
 
 

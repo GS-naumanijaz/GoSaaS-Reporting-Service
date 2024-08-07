@@ -6,6 +6,7 @@ import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,18 +44,24 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Request> requests = new HashSet<>();
 
-
+    @NotNull(message = "Name must not be null")
     private String name;
-    private String description;
-    private Boolean is_active;
-    private Boolean is_deleted;
-    private String created_by;
-    private String deleted_by;
+
+    private String description = "";
+
+    private Boolean is_active = false;
+
+    private Boolean is_deleted = false;
+
+    private String created_by = "";
+
+    private String deleted_by = "";
+
     private LocalDate creation_date;
+
     private LocalDate deletion_date;
+
     private LocalDate updation_date;
-
-
 
     public void addReport(Report report) {
         this.reports.add(report);
@@ -65,12 +72,6 @@ public class Application {
     public void prePersist() {
         this.creation_date = LocalDate.now();
         this.updation_date = LocalDate.now();
-        if (this.is_active == null) {
-            this.is_active = true;
-        }
-        if (this.is_deleted == null) {
-            this.is_deleted = false;
-        }
     }
 
     @PreUpdate
