@@ -10,6 +10,7 @@ import axios from "axios";
 interface User {
   fullName: string;
   email: string;
+  accessTokenHash: string;
 }
 
 const UserContext = createContext<User | null>(null);
