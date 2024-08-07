@@ -3,6 +3,8 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
+import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.source_connection.SourceConnectionService;
 import com.GRS.backend.resolver.QueryArgumentResolver;
@@ -33,6 +35,9 @@ public class ReportController {
     @Autowired
     private SourceConnectionService sourceConnectionService;
 
+    @Autowired
+    private DestinationConnectionService destinationConnectionService;
+
     @GetMapping
     public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
@@ -59,10 +64,8 @@ public class ReportController {
         Optional<Application> reportApp = applicationService.getApplicationById(appId);
 
         report.setApplication(reportApp.get());
-//        reportApp.get().addReport(report);
 
         Report createdReport = reportService.addReport(report);
-
 
         return Response.responseBuilder("Report added successfully", HttpStatus.OK, createdReport);
     }
@@ -90,6 +93,19 @@ public class ReportController {
         reportService.addReport(report);
 
         return Response.responseBuilder("Source Connection connected to Report Successfully", HttpStatus.OK, null);
+    }
+
+    @PutMapping("/{reportId}/destination-connections/{destinationId}")
+    public ResponseEntity<Object> connectDestinationToReport(@PathVariable int reportId, @PathVariable int destinationId) {
+        Report report = reportService.getReportById(reportId).get();
+        DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(destinationId).get();
+
+        destinationConnection.addReport(report);
+
+        destinationConnectionService.addDestinationConnection(destinationConnection);
+        reportService.addReport(report);
+
+        return Response.responseBuilder("Destination Connection connected to Report Successfully", HttpStatus.OK, null);
     }
 
 }

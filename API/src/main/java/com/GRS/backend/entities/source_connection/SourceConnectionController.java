@@ -1,6 +1,9 @@
 package com.GRS.backend.entities.source_connection;
 
 import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class SourceConnectionController {
 
     @Autowired
     private SourceConnectionService sourceConnectionService;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @GetMapping
     public ResponseEntity<Object> getAllSourceConnections(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
@@ -43,9 +49,15 @@ public class SourceConnectionController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> addSourceConnection(@RequestBody SourceConnection sourceConnection) {
+    @PostMapping("/{appId}")
+    public ResponseEntity<Object> addSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int appId) {
+
+        Optional<Application> sourceApp = applicationService.getApplicationById(appId);
+
+        sourceConnection.setApplication(sourceApp.get());
+
         SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection);
+
         return Response.responseBuilder("Source Connection added successfully", HttpStatus.OK, createdSourceConnection);
     }
 

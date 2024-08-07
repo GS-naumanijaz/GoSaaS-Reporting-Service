@@ -3,6 +3,7 @@ package com.GRS.backend.entities.destination_connection;
 
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.enums.DestinationConnectionType;
 import com.GRS.backend.enums.SourceConnectionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,7 +27,7 @@ public class DestinationConnection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //fk
+    //Foreign keys
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "app_id", referencedColumnName = "id")
     private Application application;
@@ -34,6 +35,10 @@ public class DestinationConnection {
     @JsonIgnore
     @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Report> reports = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Request> requests = new HashSet<>();
 
     private String alias;
     private DestinationConnectionType type;
@@ -48,6 +53,11 @@ public class DestinationConnection {
     private LocalDate creation_date;
     private LocalDate deletion_date;
     private LocalDate updation_date;
+
+    public void addReport(Report report) {
+        this.reports.add(report);
+        report.setDestination_connection(this);
+    }
 
 
 }

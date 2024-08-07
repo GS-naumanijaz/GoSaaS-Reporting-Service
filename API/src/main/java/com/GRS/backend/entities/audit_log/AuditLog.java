@@ -12,7 +12,7 @@ import lombok.ToString;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "request")
+@Table(name = "audit_logs")
 @Setter
 @Getter
 public class AuditLog {

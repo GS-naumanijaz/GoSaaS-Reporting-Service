@@ -25,7 +25,7 @@ public class Report {
     //Foreign Keys
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "app_id", referencedColumnName = "id")
-    private Application application;
+    private Application application; //Assigned to when creating report
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "destination_id", referencedColumnName = "id")

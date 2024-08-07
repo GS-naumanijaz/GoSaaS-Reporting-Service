@@ -8,8 +8,7 @@ public class    ApplicationSpecification {
         return (root, query, cb) -> {
             String likePattern = "%" + text.toLowerCase() + "%";
             return cb.or(
-                    cb.like(cb.lower(root.get("name")), likePattern),
-                    cb.like(cb.lower(root.get("description")), likePattern)
+                    cb.like(cb.lower(root.get("name")), likePattern)
             );
         };
     }
