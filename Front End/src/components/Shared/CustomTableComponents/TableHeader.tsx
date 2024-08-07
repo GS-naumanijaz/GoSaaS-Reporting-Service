@@ -67,7 +67,7 @@ const TableHeader = ({
         ) : (
           <Button
             variant={"ghost"}
-            onClick={() => navigate("/addreport", { state: productDetails })}
+            onClick={() => navigate("/addreports", { state: productDetails })}
           >
             <FaPlus color={primaryColor} />
           </Button>

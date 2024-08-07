@@ -63,10 +63,8 @@ const AddReportDashboard = () => {
     // save changes to database
     // reload the application page
     if (isSaveButtonDisabled) {
-      console.log("Please fill all the fields");
       return;
     }
-    console.log("Changes saved");
     setIsSaveOpen(false);
     onSaveClose();
     navigate("/homepage");
@@ -79,8 +77,6 @@ const AddReportDashboard = () => {
     !selectedDestination ||
     !selectedProcedure ||
     !selectedFile;
-
-  console.log("Val of savebutton: ", isSaveButtonDisabled);
 
   return (
     <>

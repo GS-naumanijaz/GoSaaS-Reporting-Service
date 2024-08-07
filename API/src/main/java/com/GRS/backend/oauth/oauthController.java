@@ -10,6 +10,8 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collections;
 import java.util.Map;
@@ -35,6 +37,11 @@ public class oauthController {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/current-user")
+    public OAuth2User getCurrentUser(@AuthenticationPrincipal OAuth2User oauth2User) {
+        return oauth2User;
     }
 
 }

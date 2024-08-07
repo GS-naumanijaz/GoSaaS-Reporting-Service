@@ -19,11 +19,12 @@ import { primaryColor } from "../../configs";
 interface Props {
   appName?: string;
   appDescription?: string;
+  activeState?: boolean;
 }
 
-const AppHeader = ({ appName, appDescription }: Props) => {
+const AppHeader = ({ appName, appDescription, activeState}: Props) => {
   // usestates for the switch, description, and name
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState(activeState);
   const [name, setName] = useState(appName ? appName : "");
   const [description, setDescription] = useState(
     appDescription ? appDescription : ""
@@ -70,7 +71,6 @@ const AppHeader = ({ appName, appDescription }: Props) => {
           colorScheme="red"
           isChecked={isChecked}
           onChange={() => {
-            console.log("isChecked: ", isChecked);
             setIsChecked(!isChecked);
           }}
         />

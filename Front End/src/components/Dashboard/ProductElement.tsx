@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react"; // Import PseudoBox
 import { Product } from "./Products";
 import { primaryColor } from "../../configs";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,8 @@ const ProductElement = ({ product }: Props) => {
   return (
     <Box
       bg={"white"}
+      overflow={"hidden"}
+      position="relative"
       height={40}
       display="flex"
       justifyContent="center"
@@ -22,10 +24,21 @@ const ProductElement = ({ product }: Props) => {
       transition="transform 0.2s, box-shadow 0.2s"
       _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
       onClick={() => {
-        navigate("/application", { state: product });
+        navigate("/applications", { state: product });
       }}
     >
-      <Text fontSize={"xx-large"}>{product.name}</Text>
+      {/* Red Semi-circle */}
+      <Box
+        position="absolute"
+        top={0}
+        right={0}
+        bg={product.isActive ? "lightgreen" : "#ff9999"}
+        width={10}
+        height={10}
+        borderRadius="0 20px 0 50px"
+      />
+
+      <Text fontSize={["sm", "md", "lg"]}>{product.name}</Text>
     </Box>
   );
 };
