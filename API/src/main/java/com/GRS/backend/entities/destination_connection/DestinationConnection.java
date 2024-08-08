@@ -44,7 +44,7 @@ public class DestinationConnection {
     @NotNull(message = "Alias must not be null")
     private String alias;
 
-    @NotNull(message = "Type must not be null")
+//    @NotNull(message = "Type must not be null")
     private DestinationConnectionType type;
 
     @NotNull(message = "Url must not be null")

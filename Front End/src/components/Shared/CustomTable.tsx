@@ -101,7 +101,6 @@ const CustomTable = ({ tableManager }: Props) => {
   } = tableState;
 
   if (tableData.length === 0) return <Text>No data to show</Text>;
-
   return (
     <Box
       borderWidth={3}
@@ -194,7 +193,7 @@ const CustomTable = ({ tableManager }: Props) => {
           </Tbody>
         </Table>
       </TableContainer>
-      <TableFooter />
+      <TableFooter NoOfRecords={tableData.length} />
     </Box>
   );
 };

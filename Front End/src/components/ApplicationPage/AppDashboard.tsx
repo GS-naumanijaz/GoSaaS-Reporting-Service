@@ -7,19 +7,33 @@ import ReportsConnectionData from "../Data/ReportsConnectionData";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-interface AppData {
+export interface Application {
+  id: number;
   name: string;
   description: string;
   is_active: boolean;
+  is_deleted: boolean;
+  created_by: string;
+  deleted_by: string;
+  creation_date: string;
+  deletion_date: string | null;
+  updation_date: string;
 }
 
 const AppDashboard = () => {
   const location = useLocation();
   const [appId] = useState(location.state?.id ?? null);
-  const [appData, setAppData] = useState<AppData>({
+  const [appData, setAppData] = useState<Application>({
     name: "",
     description: "",
     is_active: false,
+    id: 0,
+    is_deleted: false,
+    created_by: "",
+    deleted_by: "",
+    creation_date: "",
+    deletion_date: "",
+    updation_date: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,8 +99,8 @@ const AppDashboard = () => {
           alignContent={"center"}
           justifyContent={"center"}
         >
-          <SourceConnectionData />
-          <DestinationConnectionData />
+          <SourceConnectionData appId={appId} />
+          <DestinationConnectionData appId={appId} />
           <ReportsConnectionData product={location.state} />
         </VStack>
       </Box>

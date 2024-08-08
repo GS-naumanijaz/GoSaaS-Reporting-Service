@@ -1,3 +1,4 @@
+import { Application } from "../components/ApplicationPage/AppDashboard";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
@@ -11,6 +12,7 @@ export class SourceConnection extends TableRowData {
   private username: string;
   private password: string;
   // private appId: number;
+  private application: Application;
   private isActive: boolean;
 
   //Static variables
@@ -149,6 +151,7 @@ export class SourceConnection extends TableRowData {
     username: string,
     password: string,
     // appId: number,
+    application: Application,
     isActive: boolean
   ) {
     super();
@@ -162,6 +165,7 @@ export class SourceConnection extends TableRowData {
     this.password = password;
     // this.appId = appId;
     this.isActive = isActive;
+    this.application = application;
   }
 
   getId(): number {

@@ -1,60 +1,87 @@
+import { useEffect, useState } from "react";
 import { SourceConnection } from "../../models/SourceConnection";
 import { TableManager } from "../../models/TableManager";
 import CustomTable from "../Shared/CustomTable";
+import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
+import { Application } from "../ApplicationPage/AppDashboard";
 
-const SourceConnectionData = () => {
-  const sampleData: SourceConnection[] = [
-    new SourceConnection(
-      1,
-      "Main Server",
-      "SQL",
-      "Primary Database",
-      "192.168.1.10",
-      "1424",
-      "adminuser",
-      "admin123",
-      true
-    ),
-    new SourceConnection(
-      2,
-      "Backup Server",
-      "NoSQL",
-      "Secondary Database",
-      "192.168.1.11",
-      "27018",
-      "backupuser",
-      "backup123",
-      false
-    ),
+interface SourceConnectionDataProps {
+  appId: number;
+}
 
-    new SourceConnection(
-      3,
-      "Analytics Server",
-      "SQL",
-      "Analytics Database",
-      "192.168.1.12",
-      "3307",
-      "analyticsuser",
-      "analytics123",
-      true
-    ),
+interface SourceCons {
+  forEach: any;
+  connections: SourceConnection[];
+}
 
-    new SourceConnection(
-      4,
-      "Staging Server",
-      "SQL",
-      "Staging Database",
-      "192.168.1.13",
-      "5433",
-      "staginguser",
-      "staging123",
-      false
-    ),
-  ];
+const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sourceConnections, setSourceConnections] =
+    useState<SourceCons | null>();
 
-  const manager = new TableManager(sampleData);
+  useEffect(() => {
+    const fetchSourceTables = async () => {
+      if (appId) {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            `http://localhost:8080/source-connections`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+          const data = await response.json();
+          setSourceConnections(data.data.content);
+        } catch (error) {
+          console.error(error);
+          setError("Failed to fetch source connection data.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchSourceTables();
+  }, [appId]);
 
-  return <CustomTable tableManager={manager} />;
+  // map sourceConnections to SourceConnection objects
+  const sourceConnectionsList: SourceConnection[] = [];
+  if (sourceConnections) {
+    sourceConnections.forEach((sourceConnection: any) => {
+      if (sourceConnection.application.id !== appId) return; // remove this when get app by id route is created
+      sourceConnectionsList.push(
+        new SourceConnection(
+          sourceConnection.id,
+          sourceConnection.alias,
+          sourceConnection.type ?? "",
+          sourceConnection.host,
+          sourceConnection.port.toString(),
+          sourceConnection.database_name,
+          sourceConnection.username,
+          sourceConnection.password,
+          sourceConnection.application,
+          sourceConnection.is_active
+        )
+      );
+    });
+  }
+  const manager = new TableManager(sourceConnectionsList);
+
+  return (
+    <>
+      {loading ? (
+        <Spinner size="xl" />
+      ) : error ? (
+        <Alert status="error">
+          <AlertIcon />
+          {error}
+        </Alert>
+      ) : (
+        <CustomTable tableManager={manager} />
+      )}
+    </>
+  );
 };
 
 export default SourceConnectionData;

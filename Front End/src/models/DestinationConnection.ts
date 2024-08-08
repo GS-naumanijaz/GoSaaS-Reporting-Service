@@ -1,3 +1,4 @@
+import { Application } from "../components/ApplicationPage/AppDashboard";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
@@ -10,6 +11,7 @@ export class DestinationConnection extends TableRowData {
   private access_key: string;
   private secret_key: string;
   // private appId: number;
+  private application: Application;
   private isActive: boolean;
 
   //Static variables
@@ -129,22 +131,24 @@ export class DestinationConnection extends TableRowData {
     connectionId: number,
     alias: string,
     type: string,
-    host: string,
+    url: string,
     port: string,
     access_key: string,
     secret_key: string,
     // appId: number,
+    application: Application,
     isActive: boolean
   ) {
     super();
     this.destinationId = connectionId;
     this.alias = alias;
     this.type = type;
-    this.url = host;
+    this.url = url;
     this.port = port;
     this.access_key = access_key;
     this.secret_key = secret_key;
     // this.appId = appId;
+    this.application = application;
     this.isActive = isActive;
   }
 
