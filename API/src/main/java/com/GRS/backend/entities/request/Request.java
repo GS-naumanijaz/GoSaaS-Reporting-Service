@@ -8,6 +8,7 @@ import com.GRS.backend.enums.DestinationConnectionType;
 import com.GRS.backend.enums.RequestStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,19 +38,26 @@ public class Request {
     @JoinColumn(name = "destination_id", referencedColumnName = "id")
     private DestinationConnection destination_connection;
 
-//    @JsonIgnore
-//    @OneToOne(mappedBy = "request")
-//    private Notification notification;
-
     private LocalDate date;
-    private int remore_user_id;
-    private String storedProcedure;
+
+    private int remote_user_id;
+
+    private String storedProcedure = "";
+
     private String[] params;
+
+    @NotNull(message = "Status must not be null")
     private RequestStatus status;
-    private String report_link;
-    private String created_by;
+
+    private String report_link = "";
+
+    private String created_by = "";
+
     private LocalDate creation_date;
 
-
+    @PrePersist
+    public void prePersist() {
+        this.creation_date = LocalDate.now();
+    }
 
 }

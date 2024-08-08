@@ -1,8 +1,11 @@
 package com.GRS.backend.entities.report;
 
+import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,11 +16,13 @@ public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
 
-    public Page<Report> getAllReports(String search, Pageable pageable) {
+    public Page<Report> getAllReports(String search, String searchBy, Pageable pageable) {
+        Specification<Report> spec = Specification.where(null);
+
         if (search != null && !search.isEmpty()) {
-            return reportRepository.findAll(ReportSpecification.containsTextInAliasOrDescription(search), pageable);
+            spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
         }
-        return reportRepository.findAll(pageable);
+        return reportRepository.findAll(spec, pageable);
     }
 
     public Optional<Report> getReportById(int reportId) {

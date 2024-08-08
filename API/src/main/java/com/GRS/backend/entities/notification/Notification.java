@@ -4,6 +4,7 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.request.Request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,15 @@ public class Notification {
     private Request request;
 
     private String message;
-    private String created_by;
+
+    private String created_by = "";
+
     private LocalDate creation_date;
+
+    @PrePersist
+    public void prePersist() {
+        this.creation_date = LocalDate.now();
+    }
+
 
 }

@@ -6,6 +6,7 @@ import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.enums.SourceConnectionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,24 +35,52 @@ public class SourceConnection {
     @OneToMany(mappedBy = "source_connection", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Report> reports = new HashSet<>();
 
+    @NotNull(message = "Alias must not be null")
     private String alias;
+
+    @NotNull(message = "Type must not be null")
     private SourceConnectionType type;
-    private String host;
-    private int port;
-    private Boolean is_active;
-    private Boolean is_deleted;
+
+    private String host = "";
+
+    private int port = 0;
+
+    private Boolean is_active = false;
+
+    private Boolean is_deleted = false;
+
+    @NotNull
     private String username;
+
+    @NotNull
     private String password;
-    private String database_name;
-    private String created_by;
-    private String deleted_by;
+
+    private String database_name = "";
+
+    private String created_by = "";
+
+    private String deleted_by = "";
+
     private LocalDate creation_date;
+
     private LocalDate deletion_date;
+
     private LocalDate updation_date;
 
     public void addReport(Report report) {
         this.reports.add(report);
         report.setSource_connection(this);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.creation_date = LocalDate.now();
+        this.updation_date = LocalDate.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updation_date = LocalDate.now();
     }
 
 

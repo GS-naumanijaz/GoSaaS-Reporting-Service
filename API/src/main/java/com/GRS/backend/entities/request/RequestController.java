@@ -10,6 +10,7 @@ import com.GRS.backend.entities.notification.NotificationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,9 +43,10 @@ public class RequestController {
     public ResponseEntity<Object> getAllRequests(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
+        String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<Request> allRequests = requestService.getAllRequests(search, pageable);
+        Page<Request> allRequests = requestService.getAllRequests(search, searchBy, pageable);
 
         return Response.responseBuilder("Requests retrieved successfully", HttpStatus.OK, allRequests);
 
@@ -61,7 +63,7 @@ public class RequestController {
     }
 
     @PostMapping("/{appId}/destination-connections/{destinationId}")
-    public ResponseEntity<Object> addRequest(@RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
+    public ResponseEntity<Object> addRequest(@Valid @RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
         Optional<Application> requestApp = applicationService.getApplicationById(appId);
         Optional<DestinationConnection> requestDestination = destinationConnectionService.getDestinationConnectionById(destinationId);
 

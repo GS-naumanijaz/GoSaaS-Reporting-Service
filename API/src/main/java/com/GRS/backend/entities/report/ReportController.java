@@ -9,6 +9,7 @@ import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.source_connection.SourceConnectionService;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,9 +43,10 @@ public class ReportController {
     public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
+        String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<Report> allReports = reportService.getAllReports(search, pageable);
+        Page<Report> allReports = reportService.getAllReports(search, searchBy, pageable);
 
         return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
     }
@@ -60,7 +62,7 @@ public class ReportController {
     }
 
     @PostMapping("/{appId}")
-    public ResponseEntity<Object> addReport(@RequestBody Report report, @PathVariable int appId) {
+    public ResponseEntity<Object> addReport(@Valid @RequestBody Report report, @PathVariable int appId) {
         Optional<Application> reportApp = applicationService.getApplicationById(appId);
 
         report.setApplication(reportApp.get());

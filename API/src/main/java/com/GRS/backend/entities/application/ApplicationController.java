@@ -5,6 +5,7 @@ import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,13 +26,15 @@ public class ApplicationController {
 
     @GetMapping
     public ResponseEntity<Object> getAllApplications(
-            @QueryParams(pageSize = 6) QueryArgumentResolver.QueryParamsContainer queryParams) {
+            @QueryParams(pageSize = 6, searchBy = "name") QueryArgumentResolver.QueryParamsContainer queryParams,
+            @RequestParam(defaultValue = "all") String status) {
 
         String search = queryParams.getSearch();
+        String searchBy = queryParams.getSearchBy();
         Pageable pageable = queryParams.getPageable();
 
-        Page<Application> allApplications = applicationService.getAllApplications(search, pageable);
-        logger.info("Applications have been retrieved and response is sent");
+        Page<Application> allApplications = applicationService.getAllApplications(search, searchBy, pageable, status);
+
         return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
     }
 
@@ -47,7 +50,7 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addApplication(@RequestBody Application application) {
+    public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application) {
         Application createdApplication = applicationService.addApplication(application);
         return Response.responseBuilder("Application added successfully", HttpStatus.OK, createdApplication);
     }
