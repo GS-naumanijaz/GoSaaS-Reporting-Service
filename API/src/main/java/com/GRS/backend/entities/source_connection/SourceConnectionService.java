@@ -1,7 +1,8 @@
 package com.GRS.backend.entities.source_connection;
 
 import com.GRS.backend.base_models.BaseSpecification;
-import com.GRS.backend.entities.request.Request;
+import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,17 +36,25 @@ public class SourceConnectionService {
     }
 
     public SourceConnection updateSourceConnection(int sourceConnectionId, SourceConnection sourceConnection) {
-        Optional<SourceConnection> existingSourceConnection = sourceConnectionRepository.findById(sourceConnectionId);
+        Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
 
-        if (existingSourceConnection.isPresent()) {
-            SourceConnection appToUpdate = existingSourceConnection.get();
+        if (existingSourceConnectionOpt.isPresent()) {
+            SourceConnection existingSourceConnection = existingSourceConnectionOpt.get();
 
-            //validation & updating here
+            FieldUpdater.updateField(existingSourceConnection, "alias", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "type", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "host", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "port", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "is_active", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "username", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "database_name", sourceConnection);
 
 
-            return sourceConnectionRepository.save(appToUpdate);
+            return sourceConnectionRepository.save(existingSourceConnection);
+        } else {
+            throw new EntityNotFoundException("Source Connection", sourceConnectionId);
         }
-        return null;
     }
 
     public void deleteSourceConnection(int sourceConnectionId) {

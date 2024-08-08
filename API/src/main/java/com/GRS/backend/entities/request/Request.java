@@ -42,7 +42,7 @@ public class Request {
 
     private int remote_user_id;
 
-    private String storedProcedure = "";
+    private String stored_procedure = "";
 
     private String[] params;
 

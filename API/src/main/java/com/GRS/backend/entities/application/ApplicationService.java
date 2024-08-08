@@ -1,5 +1,8 @@
 package com.GRS.backend.entities.application;
 
+import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.utilities.FieldUpdater;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,30 +41,19 @@ public class ApplicationService {
     }
 
     public Application updateApplication(int appId, Application application) {
-        Optional<Application> existingApplication = applicationRepository.findById(appId);
+        Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplication.isPresent()) {
-            Application appToUpdate = existingApplication.get();
+        if (existingApplicationOpt.isPresent()) {
+            Application existingApplication = existingApplicationOpt.get();
 
-            if (application.getName() != null) {
-                appToUpdate.setName(application.getName());
-            }
-            if (application.getDescription() != null) {
-                appToUpdate.setDescription(application.getDescription());
-            }
-            if (application.getIs_active() != null) {
-                appToUpdate.setIs_active(application.getIs_active());
-            }
-            if (application.getCreated_by() != null) {
-                appToUpdate.setCreated_by(application.getCreated_by());
-            }
-            if (application.getDeleted_by() != null) {
-                appToUpdate.setDeleted_by(application.getDeleted_by());
-            }
+            FieldUpdater.updateField(existingApplication, "name", application);
+            FieldUpdater.updateField(existingApplication, "description", application);
+            FieldUpdater.updateField(existingApplication, "is_active", application);
 
-            return applicationRepository.save(appToUpdate);
+            return applicationRepository.save(existingApplication);
+        } else {
+            throw new EntityNotFoundException("Application", appId);
         }
-        return null;
     }
 
     public void deleteApplication(int appId) {

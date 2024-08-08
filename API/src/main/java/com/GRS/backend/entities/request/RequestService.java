@@ -1,7 +1,10 @@
 package com.GRS.backend.entities.request;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,17 +42,22 @@ public class RequestService {
     }
 
     public Request updateRequest(int requestId, Request request) {
-        Optional<Request> existingRequest = requestRepository.findById(requestId);
+        Optional<Request> existingRequestOpt = requestRepository.findById(requestId);
 
-        if (existingRequest.isPresent()) {
-            Request requestToUpdate = existingRequest.get();
+        if (existingRequestOpt.isPresent()) {
+            Request existingRequest = existingRequestOpt.get();
 
-            //validation & updating here
+            FieldUpdater.updateField(existingRequest, "date", request);
+            FieldUpdater.updateField(existingRequest, "remote_user_id", request);
+            FieldUpdater.updateField(existingRequest, "stored_procedure", request);
+            FieldUpdater.updateField(existingRequest, "params", request);
+            FieldUpdater.updateField(existingRequest, "status", request);
+            FieldUpdater.updateField(existingRequest, "report_link", request);
 
-
-            return requestRepository.save(requestToUpdate);
+            return requestRepository.save(existingRequest);
+        } else {
+            throw new EntityNotFoundException("Request", requestId);
         }
-        return null;
     }
 
     public void deleteRequest(int requestId) {
