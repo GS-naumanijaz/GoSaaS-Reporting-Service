@@ -17,8 +17,8 @@ public class SourceConnectionService {
     @Autowired
     private SourceConnectionRepository sourceConnectionRepository;
 
-    public Page<SourceConnection> getAllSourceConnections(String search, String searchBy, Pageable pageable) {
-        Specification<SourceConnection> spec = Specification.where(null);
+    public Page<SourceConnection> getAllSourceConnections(int appId, String search, String searchBy, Pageable pageable) {
+        Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
         if (search != null && !search.isEmpty()) {
             spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));

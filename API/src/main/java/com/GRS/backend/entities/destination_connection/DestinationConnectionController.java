@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/destination-connections")
+@RequestMapping("/applications/{appId}/destination-connections")
 public class DestinationConnectionController {
 
     @Autowired
@@ -29,13 +29,13 @@ public class DestinationConnectionController {
     private ApplicationService applicationService;
 
     @GetMapping
-    public ResponseEntity<Object> getAllDestinationConnections(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+    public ResponseEntity<Object> getAllDestinationConnections(@PathVariable int appId, @QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
         String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<DestinationConnection> allDestinationConnections = destinationConnectionService.getAllDestinationConnections(search, searchBy, pageable);
+        Page<DestinationConnection> allDestinationConnections = destinationConnectionService.getAllDestinationConnections(appId, search, searchBy, pageable);
 
         return Response.responseBuilder("Destination Connections retrieved successfully", HttpStatus.OK, allDestinationConnections);
 
@@ -51,7 +51,7 @@ public class DestinationConnectionController {
         }
     }
 
-    @PostMapping("/{appId}")
+    @PostMapping("")
     public ResponseEntity<Object> addDestinationConnection(@Valid @RequestBody DestinationConnection destinationConnection, @PathVariable int appId) {
         Optional<Application> destinationApp = applicationService.getApplicationById(appId);
 

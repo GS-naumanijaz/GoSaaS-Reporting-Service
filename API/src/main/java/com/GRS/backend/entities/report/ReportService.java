@@ -17,8 +17,8 @@ public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
 
-    public Page<Report> getAllReports(String search, String searchBy, Pageable pageable) {
-        Specification<Report> spec = Specification.where(null);
+    public Page<Report> getAllReports(int appId, String search, String searchBy, Pageable pageable) {
+        Specification<Report> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
         if (search != null && !search.isEmpty()) {
             spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));

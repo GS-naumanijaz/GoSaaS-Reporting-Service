@@ -12,19 +12,15 @@ import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/reports")
+@RequestMapping("/applications/{appId}/reports")
 public class ReportController {
 
     @Autowired
@@ -40,13 +36,13 @@ public class ReportController {
     private DestinationConnectionService destinationConnectionService;
 
     @GetMapping
-    public ResponseEntity<Object> getAllReports(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+    public ResponseEntity<Object> getAllReports(@PathVariable int appId, @QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
         String searchBy = paginationParams.getSearchBy();
         Pageable pageable = paginationParams.getPageable();
 
-        Page<Report> allReports = reportService.getAllReports(search, searchBy, pageable);
+        Page<Report> allReports = reportService.getAllReports(appId, search, searchBy, pageable);
 
         return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
     }
@@ -61,7 +57,7 @@ public class ReportController {
         }
     }
 
-    @PostMapping("/{appId}")
+    @PostMapping("")
     public ResponseEntity<Object> addReport(@Valid @RequestBody Report report, @PathVariable int appId) {
         Optional<Application> reportApp = applicationService.getApplicationById(appId);
 

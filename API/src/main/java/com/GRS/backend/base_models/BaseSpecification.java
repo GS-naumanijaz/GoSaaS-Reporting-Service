@@ -10,4 +10,8 @@ public abstract class BaseSpecification<T> {
             return criteriaBuilder.like(root.get(searchBy), searchTerm);
         };
     }
+
+    public static <T> Specification<T> belongsTo(String identifier, int id) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(identifier).get("id"), id);
+    }
 }

@@ -18,8 +18,8 @@ public class DestinationConnectionService {
     @Autowired
     private DestinationConnectionRepository destinationConnectionRepository;
 
-    public Page<DestinationConnection> getAllDestinationConnections(String search, String searchBy, Pageable pageable) {
-        Specification<DestinationConnection> spec = Specification.where(null);
+    public Page<DestinationConnection> getAllDestinationConnections(int appId, String search, String searchBy, Pageable pageable) {
+        Specification<DestinationConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
         if (search != null && !search.isEmpty()) {
             spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
