@@ -1,9 +1,6 @@
 package com.GRS.backend.entities.request;
 
 import com.GRS.backend.base_models.BaseSpecification;
-import com.GRS.backend.entities.application.Request;
-import com.GRS.backend.entities.request.Request;
-import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;

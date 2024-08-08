@@ -1,6 +1,7 @@
 package com.GRS.backend.exceptionHandler;
 
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.exceptionHandler.exceptions.InvalidQueryParamException;
 import com.GRS.backend.response.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         return Response.responseBuilder(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidQueryParamException.class)
+    public ResponseEntity<Object> handleInvalidQueryParamException(InvalidQueryParamException ex) {
+        return Response.responseBuilder(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 
