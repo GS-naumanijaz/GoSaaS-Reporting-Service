@@ -35,5 +35,17 @@ public class Response {
         return new ResponseEntity<>(response, httpStatus);
     }
 
+    public static ResponseEntity<Object> responseBuilder(
+            String message, HttpStatus httpStatus
+    )
+    {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", message);
+        response.put("httpStatus", httpStatus);
+        response.put("timestamp", LocalDate.now());
+
+        return new ResponseEntity<>(response, httpStatus);
+    }
+
 
 }

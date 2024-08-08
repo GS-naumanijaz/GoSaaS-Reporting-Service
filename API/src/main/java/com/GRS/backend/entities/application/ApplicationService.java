@@ -59,7 +59,6 @@ public class ApplicationService {
                 appToUpdate.setDeleted_by(application.getDeleted_by());
             }
 
-
             return applicationRepository.save(appToUpdate);
         }
         return null;

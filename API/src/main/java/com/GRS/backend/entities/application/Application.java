@@ -22,6 +22,7 @@ import java.util.Set;
 @Table(name = "applications")
 @Setter
 @Getter
+@ToString
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
