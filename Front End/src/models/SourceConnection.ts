@@ -1,6 +1,6 @@
-import { Application } from "../components/ApplicationPage/AppDashboard";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
+import { Application } from "../components/ApplicationPage/AppDashboard";
 
 export class SourceConnection extends TableRowData {
   private connectionId: number;
@@ -266,5 +266,9 @@ export class SourceConnection extends TableRowData {
 
   toggleSwitchStatus() {
     this.isActive = !this.isActive;
+  }
+
+  getApplication(): Application {
+    return this.application;
   }
 }

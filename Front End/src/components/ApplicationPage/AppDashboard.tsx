@@ -5,7 +5,7 @@ import { sx } from "../../configs";
 import { Box, VStack, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
 import ReportsConnectionData from "../Data/ReportsConnectionData";
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useAppDataQuery } from "../../hooks/useAppDataQuery";
 
 export interface Application {
   id: number;
@@ -22,47 +22,9 @@ export interface Application {
 
 const AppDashboard = () => {
   const location = useLocation();
-  const [appId] = useState(location.state?.id ?? null);
-  const [appData, setAppData] = useState<Application>({
-    name: "",
-    description: "",
-    is_active: false,
-    id: 0,
-    is_deleted: false,
-    created_by: "",
-    deleted_by: "",
-    creation_date: "",
-    deletion_date: "",
-    updation_date: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const appId = location.state?.id ?? null;
 
-  useEffect(() => {
-    const fetchAppData = async () => {
-      if (appId) {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            `http://localhost:8080/applications/${appId}`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
-          const data = await response.json();
-          setAppData(data.data);
-          console.log("AppData: ", data.data);
-        } catch (error) {
-          console.error(error);
-          setError("Failed to fetch application data.");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchAppData();
-  }, [appId]);
+  const { data: appData, isLoading, isError, error } = useAppDataQuery(appId);
 
   return (
     <Box p={2}>
@@ -78,14 +40,14 @@ const AppDashboard = () => {
         overflowY="auto"
         sx={sx}
       >
-        {loading ? (
+        {isLoading ? (
           <Spinner size="xl" />
-        ) : error ? (
+        ) : isError ? (
           <Alert status="error">
             <AlertIcon />
-            {error}
+            {error.message}
           </Alert>
-        ) : appData.name === "" ? (
+        ) : !appData?.name ? (
           <AppHeader />
         ) : (
           <AppHeader

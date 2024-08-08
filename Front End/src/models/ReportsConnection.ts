@@ -218,4 +218,8 @@ export class ReportsConnection extends TableRowData {
   requiresStatusToggle(): boolean {
     return true;
   }
+
+  getApplication(): Application {
+    return this.application;
+  }
 }

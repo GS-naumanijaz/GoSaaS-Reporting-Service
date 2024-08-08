@@ -1,59 +1,27 @@
-import { useEffect, useState } from "react";
-import { DestinationConnection } from "../../models/DestinationConnection";
-import { TableManager } from "../../models/TableManager";
-import CustomTable from "../Shared/CustomTable";
 import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
-import { Application } from "../ApplicationPage/AppDashboard";
+import CustomTable from "../Shared/CustomTable";
+import { TableManager } from "../../models/TableManager";
+import { DestinationConnection } from "../../models/DestinationConnection";
+import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
 
-// Define the props for the component
 interface DestinationConnectionDataProps {
   appId: number;
-}
-
-interface DestinationCons {
-  forEach: any;
-  connections: DestinationConnection[];
 }
 
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [destinationConnections, setDestinationConnections] =
-    useState<DestinationCons | null>();
+  const {
+    data: destinationConnections,
+    isLoading,
+    isError,
+    error,
+  } = useDestinationConnectionsQuery(appId);
 
-  useEffect(() => {
-    const fetchDestinationConnections = async () => {
-      if (appId) {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            `http://localhost:8080/destination-connections`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
-          const data = await response.json();
-          setDestinationConnections(data.data.content);
-          console.log("DestinationData: ", data.data.content);
-        } catch (error) {
-          console.error(error);
-          setError("Failed to fetch destination connection data.");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchDestinationConnections();
-  }, [appId]);
-
-  // map destinationConnections to DestinationConnection objects
+  // Map destinationConnections to DestinationConnection objects
   const destinationConnectionsList: DestinationConnection[] = [];
   if (destinationConnections) {
     destinationConnections.forEach((destinationConnection: any) => {
-      if (destinationConnection.application.id !== appId) return; // remove this when get app by id route is created
       destinationConnectionsList.push(
         new DestinationConnection(
           destinationConnection.id,
@@ -70,17 +38,18 @@ const DestinationConnectionData = ({
     });
   }
 
-  console.log(destinationConnectionsList);
   const manager = new TableManager(destinationConnectionsList);
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Spinner size="xl" />
-      ) : error ? (
+      ) : isError ? (
         <Alert status="error">
           <AlertIcon />
-          {error}
+          {error instanceof Error
+            ? error.message
+            : "Failed to fetch destination connection data."}
         </Alert>
       ) : (
         <CustomTable tableManager={manager} />

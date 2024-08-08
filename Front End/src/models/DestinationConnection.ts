@@ -246,4 +246,8 @@ export class DestinationConnection extends TableRowData {
   toggleSwitchStatus() {
     this.isActive = !this.isActive;
   }
+
+  getApplication(): Application {
+    return this.application;
+  }
 }

@@ -1,55 +1,25 @@
-import { useEffect, useState } from "react";
-import { SourceConnection } from "../../models/SourceConnection";
-import { TableManager } from "../../models/TableManager";
-import CustomTable from "../Shared/CustomTable";
 import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
-import { Application } from "../ApplicationPage/AppDashboard";
+import CustomTable from "../Shared/CustomTable";
+import { TableManager } from "../../models/TableManager";
+import { SourceConnection } from "../../models/SourceConnection";
+import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 
 interface SourceConnectionDataProps {
   appId: number;
 }
 
-interface SourceCons {
-  forEach: any;
-  connections: SourceConnection[];
-}
-
 const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [sourceConnections, setSourceConnections] =
-    useState<SourceCons | null>();
+  const {
+    data: sourceConnections,
+    isLoading,
+    isError,
+    error,
+  } = useSourceConnectionsQuery(appId);
 
-  useEffect(() => {
-    const fetchSourceTables = async () => {
-      if (appId) {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            `http://localhost:8080/source-connections`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
-          const data = await response.json();
-          setSourceConnections(data.data.content);
-        } catch (error) {
-          console.error(error);
-          setError("Failed to fetch source connection data.");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchSourceTables();
-  }, [appId]);
-
-  // map sourceConnections to SourceConnection objects
+  // Map sourceConnections to SourceConnection objects
   const sourceConnectionsList: SourceConnection[] = [];
   if (sourceConnections) {
     sourceConnections.forEach((sourceConnection: any) => {
-      if (sourceConnection.application.id !== appId) return; // remove this when get app by id route is created
       sourceConnectionsList.push(
         new SourceConnection(
           sourceConnection.id,
@@ -66,16 +36,19 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
       );
     });
   }
+
   const manager = new TableManager(sourceConnectionsList);
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Spinner size="xl" />
-      ) : error ? (
+      ) : isError ? (
         <Alert status="error">
           <AlertIcon />
-          {error}
+          {error instanceof Error
+            ? error.message
+            : "Failed to fetch source connection data."}
         </Alert>
       ) : (
         <CustomTable tableManager={manager} />
