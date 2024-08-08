@@ -9,11 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
 public class SourceConnectionService {
-    
+
     @Autowired
     private SourceConnectionRepository sourceConnectionRepository;
 
@@ -58,7 +59,18 @@ public class SourceConnectionService {
     }
 
     public void deleteSourceConnection(int sourceConnectionId) {
-        sourceConnectionRepository.deleteById(sourceConnectionId);
+        Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
+
+        if (existingSourceConnectionOpt.isPresent() && !existingSourceConnectionOpt.get().getIs_deleted()) {
+            SourceConnection existingSourceConnection = existingSourceConnectionOpt.get();
+
+            existingSourceConnection.setIs_deleted(true);
+            existingSourceConnection.setDeletion_date(LocalDate.now());
+
+            sourceConnectionRepository.save(existingSourceConnection);
+        } else {
+            throw new EntityNotFoundException("SourceConnection", sourceConnectionId);
+        }
     }
     
     

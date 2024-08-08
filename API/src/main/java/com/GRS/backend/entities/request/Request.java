@@ -55,6 +55,10 @@ public class Request {
 
     private LocalDate creation_date;
 
+    private Boolean is_deleted = false;
+
+    private LocalDate deletion_date;
+
     @PrePersist
     public void prePersist() {
         this.creation_date = LocalDate.now();

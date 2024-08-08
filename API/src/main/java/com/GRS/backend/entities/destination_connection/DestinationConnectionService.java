@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -56,7 +57,18 @@ public class DestinationConnectionService {
     }
 
     public void deleteDestinationConnection(int destinationConnectionId) {
-        destinationConnectionRepository.deleteById(destinationConnectionId);
+        Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
+
+        if (existingDestinationOpt.isPresent() && !existingDestinationOpt.get().getIs_deleted()) {
+            DestinationConnection existingDestination = existingDestinationOpt.get();
+
+            existingDestination.setIs_deleted(true);
+            existingDestination.setDeletion_date(LocalDate.now());
+
+            destinationConnectionRepository.save(existingDestination);
+        } else {
+            throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
+        }
     }
     
     

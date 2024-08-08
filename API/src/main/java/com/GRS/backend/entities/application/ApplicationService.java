@@ -2,13 +2,13 @@ package com.GRS.backend.entities.application;
 
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -19,7 +19,7 @@ public class ApplicationService {
 
     public Page<Application> getAllApplications(String search, String searchBy, Pageable pageable, String status) {
 
-        Specification<Application> spec = Specification.where(null);
+        Specification<Application> spec = Specification.where(ApplicationSpecification.isNotDeleted());
 
         if (search != null && !search.isEmpty()) {
             return applicationRepository.findAll(ApplicationSpecification.containsTextIn(searchBy, search), pageable);
@@ -57,6 +57,17 @@ public class ApplicationService {
     }
 
     public void deleteApplication(int appId) {
-        applicationRepository.deleteById(appId);
+        Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
+
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIs_deleted()) {
+            Application existingApplication = existingApplicationOpt.get();
+
+            existingApplication.setIs_deleted(true);
+            existingApplication.setDeletion_date(LocalDate.now());
+
+            applicationRepository.save(existingApplication);
+        } else {
+            throw new EntityNotFoundException("Application", appId);
+        }
     }
 }

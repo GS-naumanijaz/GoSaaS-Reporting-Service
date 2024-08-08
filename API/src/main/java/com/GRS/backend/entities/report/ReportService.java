@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -54,6 +55,17 @@ public class ReportService {
     }
 
     public void deleteReport(int reportId) {
-        reportRepository.deleteById(reportId);
+        Optional<Report> existingReportOpt = reportRepository.findById(reportId);
+
+        if (existingReportOpt.isPresent() && !existingReportOpt.get().getIs_deleted()) {
+            Report existingReport = existingReportOpt.get();
+
+            existingReport.setIs_deleted(true);
+            existingReport.setDeletion_date(LocalDate.now());
+
+            reportRepository.save(existingReport);
+        } else {
+            throw new EntityNotFoundException("Report", reportId);
+        }
     }
 }

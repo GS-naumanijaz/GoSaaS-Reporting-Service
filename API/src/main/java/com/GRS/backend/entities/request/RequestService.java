@@ -1,6 +1,7 @@
 package com.GRS.backend.entities.request;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.entities.application.Request;
 import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -61,7 +63,18 @@ public class RequestService {
     }
 
     public void deleteRequest(int requestId) {
-        requestRepository.deleteById(requestId);
+        Optional<Request> existingRequestOpt = requestRepository.findById(requestId);
+
+        if (existingRequestOpt.isPresent() && !existingRequestOpt.get().getIs_deleted()) {
+            Request existingRequest = existingRequestOpt.get();
+
+            existingRequest.setIs_deleted(true);
+            existingRequest.setDeletion_date(LocalDate.now());
+
+            requestRepository.save(existingRequest);
+        } else {
+            throw new EntityNotFoundException("Request", requestId);
+        }
     }
 
 
