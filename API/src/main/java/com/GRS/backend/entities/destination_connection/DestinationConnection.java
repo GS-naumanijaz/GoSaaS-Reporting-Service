@@ -15,6 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,11 +35,11 @@ public class DestinationConnection {
     private Application application;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
     @NotNull(message = "Alias must not be null")
@@ -65,11 +66,11 @@ public class DestinationConnection {
 
     private String deleted_by = "";
 
-    private LocalDate creation_date;
+    private LocalDateTime creation_date;
 
-    private LocalDate deletion_date;
+    private LocalDateTime deletion_date;
 
-    private LocalDate updation_date;
+    private LocalDateTime updation_date;
 
     public void addReport(Report report) {
         this.reports.add(report);
@@ -78,13 +79,17 @@ public class DestinationConnection {
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDate.now();
-        this.updation_date = LocalDate.now();
+        this.creation_date = LocalDateTime.now();
+        this.updation_date = LocalDateTime.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updation_date = LocalDate.now();
+        this.updation_date = LocalDateTime.now();
     }
 
 

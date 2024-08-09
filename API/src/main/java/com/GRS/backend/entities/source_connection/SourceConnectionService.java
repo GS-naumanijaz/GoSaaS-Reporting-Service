@@ -1,6 +1,8 @@
 package com.GRS.backend.entities.source_connection;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -18,14 +21,25 @@ public class SourceConnectionService {
     @Autowired
     private SourceConnectionRepository sourceConnectionRepository;
 
-    public Page<SourceConnection> getAllSourceConnections(int appId, String search, String searchBy, Pageable pageable) {
-        Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
+    @Autowired
+    private ApplicationRepository applicationRepository;
 
-        if (search != null && !search.isEmpty()) {
-            spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
+    public Page<SourceConnection> getAllSourceConnections(int appId, String search, String searchBy, Pageable pageable) {
+
+        Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
+
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIs_deleted()) {
+            Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
+
+            if (search != null && !search.isEmpty()) {
+                spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
+            }
+
+            return sourceConnectionRepository.findAll(spec, pageable);
         }
 
-        return sourceConnectionRepository.findAll(spec, pageable);
+        throw new EntityNotFoundException("Application", appId);
+
     }
 
     public Optional<SourceConnection> getSourceConnectionById(int sourceConnectionId) {
@@ -65,7 +79,7 @@ public class SourceConnectionService {
             SourceConnection existingSourceConnection = existingSourceConnectionOpt.get();
 
             existingSourceConnection.setIs_deleted(true);
-            existingSourceConnection.setDeletion_date(LocalDate.now());
+            existingSourceConnection.setDeletion_date(LocalDateTime.now());
 
             sourceConnectionRepository.save(existingSourceConnection);
         } else {

@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -78,7 +79,7 @@ public class RequestController {
             Notification createdNotification = new Notification();
             createdNotification.setMessage("Request created successfully");
             createdNotification.setCreated_by(createdRequest.getCreated_by());
-            createdNotification.setCreation_date(LocalDate.now());
+            createdNotification.setCreation_date(LocalDateTime.now());
             createdNotification.setRequest(createdRequest);
 
             // Save the Notification

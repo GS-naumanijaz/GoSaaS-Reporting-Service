@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,19 +31,19 @@ public class Application {
 
     //Foreign Keys
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<DestinationConnection> destination_connections = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<SourceConnection> source_connections = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
     @NotNull(message = "Name must not be null")
@@ -58,11 +59,11 @@ public class Application {
 
     private String deleted_by = "";
 
-    private LocalDate creation_date;
+    private LocalDateTime creation_date;
 
-    private LocalDate deletion_date;
+    private LocalDateTime deletion_date;
 
-    private LocalDate updation_date;
+    private LocalDateTime updation_date;
 
     public void addReport(Report report) {
         this.reports.add(report);
@@ -71,13 +72,17 @@ public class Application {
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDate.now();
-        this.updation_date = LocalDate.now();
+        this.creation_date = LocalDateTime.now();
+        this.updation_date = LocalDateTime.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updation_date = LocalDate.now();
+        this.updation_date = LocalDateTime.now();
     }
 
 }

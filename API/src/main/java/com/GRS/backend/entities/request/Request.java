@@ -15,6 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,15 +54,21 @@ public class Request {
 
     private String created_by = "";
 
-    private LocalDate creation_date;
+    private String deleted_by = "";
+
+    private LocalDateTime creation_date;
 
     private Boolean is_deleted = false;
 
-    private LocalDate deletion_date;
+    private LocalDateTime deletion_date;
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDate.now();
+        this.creation_date = LocalDateTime.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
 }
