@@ -4,20 +4,20 @@ import { SourceConnection } from "../models/SourceConnection";
 const fetchSourceConnections = async (
   appId: number
 ): Promise<SourceConnection[]> => {
-  const response = await fetch(`http://localhost:8080/source-connections`, {
-    method: "GET",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/source-connections`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch source connection data.");
   }
 
   const data = await response.json();
-  return data.data.content.filter(
-    // remove once fetch source by id route is created
-    (connection: any) => connection.application.id === appId
-  );
+  return data.data.content;
 };
 
 export const useSourceConnectionsQuery = (appId: number) => {

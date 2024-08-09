@@ -5,7 +5,7 @@ const fetchDestinationConnections = async (
   appId: number
 ): Promise<DestinationConnection[]> => {
   const response = await fetch(
-    `http://localhost:8080/destination-connections`,
+    `http://localhost:8080/applications/${appId}/destination-connections`,
     {
       method: "GET",
       credentials: "include",
@@ -17,10 +17,7 @@ const fetchDestinationConnections = async (
   }
 
   const data = await response.json();
-  return data.data.content.filter(
-    // remove once fetch destination by id route is created
-    (connection: any) => connection.application.id === appId
-  );
+  return data.data.content;
 };
 
 export const useDestinationConnectionsQuery = (appId: number) => {
