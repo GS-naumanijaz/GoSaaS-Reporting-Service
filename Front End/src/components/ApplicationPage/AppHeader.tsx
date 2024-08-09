@@ -18,7 +18,7 @@ import { primaryColor } from "../../configs";
 import { Application } from "./AppDashboard";
 import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store";
 
 interface Props {
@@ -45,38 +45,43 @@ const AppHeader = ({ appData }: Props) => {
   const queryClient = useQueryClient();
   const { currentPage, searchTerm } = useProductStore();
 
-  // usestates for the delete dialog
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const onDeleteClose = () => setIsDeleteOpen(false);
-  const cancelDeleteRef = useRef<HTMLButtonElement | null>(null);
-
-  // usestates for the save dialog
   const [isSaveOpen, setIsSaveOpen] = useState(false);
+  const onDeleteClose = () => setIsDeleteOpen(false);
   const onSaveClose = () => setIsSaveOpen(false);
+  const cancelDeleteRef = useRef<HTMLButtonElement | null>(null);
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
 
-  const onDelete = () => {
-    // delete item from database
-    // navigate to homepage
-    console.log("Item deleted");
-    onDeleteClose();
-  };
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`http://localhost:8080/applications/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to delete application");
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: ["products", currentPage, searchTerm],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["application", appData?.id],
+      });
+      navigate(`/homepage`);
+    },
+    onError: (error: any) => {
+      console.error("Error deleting application", error);
+    },
+  });
 
-  const onSave = async () => {
-    setNewAppData((prev) => ({
-      ...prev,
-      created_by: user?.fullName || "",
-    }));
-
-    try {
-      const { id, ...appDataToSend } = newAppData;
-      console.log("JSON.stringify(newAppData)" + JSON.stringify(appDataToSend));
-
+  const saveMutation = useMutation({
+    mutationFn: async (appData: Application) => {
+      const { id, ...appDataToSend } = appData;
+      const method = id ? "PATCH" : "POST";
       const response = await fetch(
-        // if app already exists then send id else don't send anything
-        `http://localhost:8080/applications${appData ? `/${appData.id}` : ""}`,
+        `http://localhost:8080/applications${id ? `/${id}` : ""}`,
         {
-          method: appData ? "PATCH" : "POST",
+          method,
           headers: {
             "Content-Type": "application/json",
           },
@@ -84,26 +89,35 @@ const AppHeader = ({ appData }: Props) => {
           credentials: "include",
         }
       );
-
-      if (response.ok) {
-        const savedApplication = await response.json();
-        console.log("Application saved", savedApplication);
-        navigate(`/homepage`);
-      } else {
-        console.error("Failed to save application", response.statusText);
-      }
-    } catch (error) {
+      if (!response.ok) throw new Error("Failed to save application");
+      return response.json();
+    },
+    onSuccess: async (savedApplication) => {
+      console.log("Application saved", savedApplication);
+      await queryClient.refetchQueries({
+        queryKey: ["products", currentPage, searchTerm],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["application", appData?.id],
+      });
+      navigate(`/homepage`);
+    },
+    onError: (error: any) => {
       console.error("Error saving application", error);
-    }
+    },
+  });
 
-    // refetch queries to update the UI
-    await queryClient.refetchQueries({
-      queryKey: ["products", currentPage, searchTerm],
-    });
-    await queryClient.refetchQueries({
-      queryKey: ["application", appData?.id],
-    });
+  const handleDelete = () => {
+    if (appData?.id) deleteMutation.mutate(appData.id);
+    onDeleteClose();
+  };
 
+  const handleSave = () => {
+    setNewAppData((prev) => ({
+      ...prev,
+      created_by: user?.fullName || "",
+    }));
+    saveMutation.mutate(newAppData);
     onSaveClose();
   };
 
@@ -215,7 +229,7 @@ const AppHeader = ({ appData }: Props) => {
               <Button ref={cancelDeleteRef} onClick={onDeleteClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={onDelete} ml={3}>
+              <Button colorScheme="red" onClick={handleDelete} ml={3}>
                 Delete
               </Button>
             </AlertDialogFooter>
@@ -242,7 +256,7 @@ const AppHeader = ({ appData }: Props) => {
               <Button ref={cancelSaveRef} onClick={onSaveClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={onSave} ml={3}>
+              <Button colorScheme="red" onClick={handleSave} ml={3}>
                 Save
               </Button>
             </AlertDialogFooter>
