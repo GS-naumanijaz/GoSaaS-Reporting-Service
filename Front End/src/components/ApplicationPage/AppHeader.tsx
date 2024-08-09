@@ -18,6 +18,8 @@ import { primaryColor } from "../../configs";
 import { Application } from "./AppDashboard";
 import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import useProductStore from "../../store";
 
 interface Props {
   appData?: Application;
@@ -40,6 +42,8 @@ const AppHeader = ({ appData }: Props) => {
   );
   const user = useUser(); // for created by
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { currentPage, searchTerm } = useProductStore();
 
   // usestates for the delete dialog
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -63,29 +67,42 @@ const AppHeader = ({ appData }: Props) => {
       ...prev,
       created_by: user?.fullName || "",
     }));
+
     try {
       const { id, ...appDataToSend } = newAppData;
       console.log("JSON.stringify(newAppData)" + JSON.stringify(appDataToSend));
-      const response = await fetch("http://localhost:8080/applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(appDataToSend),
-        credentials: "include",
-      });
+
+      const response = await fetch(
+        // if app already exists then send id else don't send anything
+        `http://localhost:8080/applications${appData ? `/${appData.id}` : ""}`,
+        {
+          method: appData ? "PATCH" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(appDataToSend),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
-        const createdApplication = await response.json();
-        console.log("Application saved", createdApplication);
+        const savedApplication = await response.json();
+        console.log("Application saved", savedApplication);
         navigate(`/homepage`);
-        // You might want to update the UI or navigate to another page
       } else {
         console.error("Failed to save application", response.statusText);
       }
     } catch (error) {
       console.error("Error saving application", error);
     }
+
+    // refetch queries to update the UI
+    await queryClient.refetchQueries({
+      queryKey: ["products", currentPage, searchTerm],
+    });
+    await queryClient.refetchQueries({
+      queryKey: ["application", appData?.id],
+    });
 
     onSaveClose();
   };

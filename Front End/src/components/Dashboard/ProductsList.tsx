@@ -15,6 +15,7 @@ interface Props {
     visible: { opacity: number; x: number };
   };
   isEmpty: boolean;
+  isFetching: boolean; // Added prop for loading state
 }
 
 const ProductsList = ({
@@ -25,16 +26,28 @@ const ProductsList = ({
   setCurrentPage,
   itemVariants,
   isEmpty,
+  isFetching, // Destructure the isFetching prop
 }: Props) => {
-  return isEmpty ? (
-    <Box marginY={10} padding={15}>
-      <Text fontSize={30}> No search item found</Text>
-    </Box>
-  ) : !products.length ? (
-    <Box marginY={10} padding={15}>
-      <Spinner />
-    </Box>
-  ) : (
+  if (isFetching) {
+    return (
+      <Box marginY={10} padding={15} textAlign="center">
+        <Spinner size="xl" />
+        <Text fontSize={20} mt={4}>
+          Loading products...
+        </Text>
+      </Box>
+    );
+  }
+
+  if (isEmpty) {
+    return (
+      <Box marginY={10} padding={15} textAlign="center">
+        <Text fontSize={30}>No search items found</Text>
+      </Box>
+    );
+  }
+
+  return (
     <>
       <SimpleGrid columns={{ md: 2, lg: 3 }} padding={10} spacing={10}>
         {products.map((product, index) => (
@@ -51,7 +64,7 @@ const ProductsList = ({
       </SimpleGrid>
 
       {totalPages > 1 && (
-        <Flex alignItems="center" marginX={12}>
+        <Flex alignItems="center" marginX={12} mt={6}>
           <Box flex="1" />
           <Box>
             <PageSelector

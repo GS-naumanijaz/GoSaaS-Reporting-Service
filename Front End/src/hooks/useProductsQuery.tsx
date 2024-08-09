@@ -37,5 +37,7 @@ export const useProductsQuery = () => {
   return useQuery({
     queryKey: ["products", currentPage, searchTerm],
     queryFn: () => fetchProducts(currentPage, searchTerm),
+    refetchOnWindowFocus: true,
+    // gcTime: 0, // cache time
   });
 };

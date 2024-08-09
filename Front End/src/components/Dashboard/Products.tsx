@@ -19,6 +19,12 @@ export interface Product {
   deletionDate?: string | null;
 }
 
+// Animation variants
+const itemVariants = {
+  hidden: { opacity: 0, x: -50 },
+  visible: { opacity: 1, x: 0 },
+};
+
 const Products = () => {
   const allFilters = ["All", "Active", "Inactive"];
   const navigate = useNavigate();
@@ -30,8 +36,7 @@ const Products = () => {
     setSearchTerm,
   } = useProductStore();
 
-  const { data } = useProductsQuery();
-
+  const { data, isFetching, isError } = useProductsQuery();
   const filteredProducts =
     data?.content.filter((product: Product) => {
       switch (selectedFilter) {
@@ -43,12 +48,6 @@ const Products = () => {
           return true;
       }
     }) || [];
-
-  // Animation variants
-  const itemVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: { opacity: 1, x: 0 },
-  };
 
   return (
     <Box height={mainDashboardHeight} p={2}>
@@ -108,21 +107,26 @@ const Products = () => {
             </Button>
           </HStack>
         </Box>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <ProductsList
-            products={filteredProducts}
-            totalElements={data?.totalElements ?? 0}
-            totalPages={data?.totalPages ?? 1}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            itemVariants={itemVariants}
-            isEmpty={data?.empty ?? false}
-          />
-        </motion.div>
+        {isError ? (
+          <div>Error loading products...</div>
+        ) : (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <ProductsList
+              products={filteredProducts}
+              totalElements={data?.totalElements ?? 0}
+              totalPages={data?.totalPages ?? 1}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemVariants={itemVariants}
+              isEmpty={data?.empty ?? false}
+              isFetching={isFetching}
+            />
+          </motion.div>
+        )}
       </Box>
     </Box>
   );
