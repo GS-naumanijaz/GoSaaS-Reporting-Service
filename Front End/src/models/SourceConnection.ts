@@ -29,6 +29,7 @@ export class SourceConnection extends TableRowData {
     "Active Status",
     "Edit",
     "Delete",
+    "",
   ];
   private static columnWidths = [
     "2.5%",
@@ -40,7 +41,8 @@ export class SourceConnection extends TableRowData {
     "10%",
     "12.5%",
     "5%",
-    "10%",
+    "5%",
+    "5%",
     "5%",
   ];
 
@@ -139,6 +141,9 @@ export class SourceConnection extends TableRowData {
     {
       isEnabled: false,
     },
+    {
+      isEnabled: false,
+    }
   ];
 
   constructor(
@@ -253,6 +258,10 @@ export class SourceConnection extends TableRowData {
   }
 
   requiresStatusToggle(): boolean {
+    return true;
+  }
+
+  requiresTestButton(): boolean {
     return true;
   }
 

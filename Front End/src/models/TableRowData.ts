@@ -21,6 +21,9 @@ export abstract class TableRowData {
   requiresStatusToggle(): boolean {
     return false;
   }
+  requiresTestButton(): boolean {
+    return false;
+  }
   getSwitchStatus(): boolean {
     throw new Error("This componnent does not have a switch");
   }

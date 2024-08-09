@@ -27,6 +27,7 @@ export class DestinationConnection extends TableRowData {
     "Active Status",
     "Edit",
     "Delete",
+    "",
   ];
   private static columnWidths = [
     "5%",
@@ -37,8 +38,9 @@ export class DestinationConnection extends TableRowData {
     "10%",
     "10%",
     "5%",
-    "10%",
     "5%",
+    "5%",
+    "5",
   ];
 
   private static inputFields: InputField[] = [
@@ -125,6 +127,9 @@ export class DestinationConnection extends TableRowData {
     {
       isEnabled: false,
     },
+    {
+      isEnabled: false,
+    }
   ];
 
   constructor(
@@ -232,6 +237,10 @@ export class DestinationConnection extends TableRowData {
   }
 
   requiresStatusToggle(): boolean {
+    return true;
+  }
+
+  requiresTestButton(): boolean {
     return true;
   }
 

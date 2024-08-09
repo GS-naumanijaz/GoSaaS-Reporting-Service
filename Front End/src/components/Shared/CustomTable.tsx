@@ -20,6 +20,7 @@ import TdDeleteButton from "./CustomTableComponents/TdDeleteButton";
 import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
+import TdTestButton from "./CustomTableComponents/TdTestButton";
 
 interface Props {
   tableManager: TableManager;
@@ -193,6 +194,9 @@ const CustomTable = ({ tableManager }: Props) => {
                 <TdDeleteButton
                   handleDeleteRow={() => handleDeleteRow(rowIndex)}
                 />
+                {tableManager.requiresTestButton() && (
+                  <TdTestButton onClick={() => console.log("testing")} />
+                )}
               </Tr>
             ))}
           </Tbody>

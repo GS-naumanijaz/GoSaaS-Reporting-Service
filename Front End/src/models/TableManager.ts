@@ -102,6 +102,10 @@ export class TableManager {
     return this.data[0].requiresCheckBox();
   }
 
+  requiresTestButton() {
+    return this.data[0].requiresTestButton();
+  }
+
   handleToggleSwitch(id: number) {
     this.data = this.data.map((row) => {
       if (row.getId() === id) {
