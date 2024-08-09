@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -65,7 +66,7 @@ public class SourceConnectionService {
             SourceConnection existingSourceConnection = existingSourceConnectionOpt.get();
 
             existingSourceConnection.setIs_deleted(true);
-            existingSourceConnection.setDeletion_date(LocalDate.now());
+            existingSourceConnection.setDeletion_date(LocalDateTime.now());
 
             sourceConnectionRepository.save(existingSourceConnection);
         } else {

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -66,7 +67,7 @@ public class RequestService {
             Request existingRequest = existingRequestOpt.get();
 
             existingRequest.setIs_deleted(true);
-            existingRequest.setDeletion_date(LocalDate.now());
+            existingRequest.setDeletion_date(LocalDateTime.now());
 
             requestRepository.save(existingRequest);
         } else {

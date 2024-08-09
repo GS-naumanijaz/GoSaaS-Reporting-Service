@@ -13,6 +13,7 @@ import lombok.ToString;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reports")
@@ -51,11 +52,11 @@ public class Report {
 
     private Boolean is_pinned = false;
 
-    private LocalDate creation_date;
+    private LocalDateTime creation_date;
 
-    private LocalDate deletion_date;
+    private LocalDateTime deletion_date;
 
-    private LocalDate updation_date;
+    private LocalDateTime updation_date;
 
     private String created_by = "";
 
@@ -64,8 +65,8 @@ public class Report {
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDate.now();
-        this.updation_date = LocalDate.now();
+        this.creation_date = LocalDateTime.now();
+        this.updation_date = LocalDateTime.now();
         this.created_by = "";
         this.deleted_by = "";
         this.is_deleted = false;
@@ -74,7 +75,7 @@ public class Report {
 
     @PreUpdate
     public void preUpdate() {
-        this.updation_date = LocalDate.now();
+        this.updation_date = LocalDateTime.now();
     }
 
 }

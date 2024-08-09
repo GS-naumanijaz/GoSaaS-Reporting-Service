@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -63,7 +64,7 @@ public class ApplicationService {
             Application existingApplication = existingApplicationOpt.get();
 
             existingApplication.setIs_deleted(true);
-            existingApplication.setDeletion_date(LocalDate.now());
+            existingApplication.setDeletion_date(LocalDateTime.now());
 
             applicationRepository.save(existingApplication);
         } else {

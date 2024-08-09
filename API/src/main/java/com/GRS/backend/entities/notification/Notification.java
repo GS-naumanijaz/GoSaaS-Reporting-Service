@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,11 +34,11 @@ public class Notification {
 
     private String created_by = "";
 
-    private LocalDate creation_date;
+    private LocalDateTime creation_date;
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDate.now();
+        this.creation_date = LocalDateTime.now();
         this.created_by = "";
     }
 

@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "audit_logs")
@@ -29,7 +30,7 @@ public class AuditLog {
 
     private AuditLogModule module;
     private AuditLogAction action;
-    private LocalDate timestamp;
+    private LocalDateTime timestamp;
     private String details;
 
 }

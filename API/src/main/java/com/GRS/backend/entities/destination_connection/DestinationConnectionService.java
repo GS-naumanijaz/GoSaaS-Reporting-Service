@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -63,7 +64,7 @@ public class DestinationConnectionService {
             DestinationConnection existingDestination = existingDestinationOpt.get();
 
             existingDestination.setIs_deleted(true);
-            existingDestination.setDeletion_date(LocalDate.now());
+            existingDestination.setDeletion_date(LocalDateTime.now());
 
             destinationConnectionRepository.save(existingDestination);
         } else {
