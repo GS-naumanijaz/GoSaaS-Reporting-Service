@@ -7,6 +7,7 @@ import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
 import useProductStore from "../../store";
 import { useProductsQuery } from "../../hooks/useProductsQuery";
+import { useEffect } from "react";
 
 export interface Product {
   name: string;
@@ -31,12 +32,19 @@ const Products = () => {
   const {
     currentPage,
     selectedFilter,
+    searchTerm,
     setCurrentPage,
     setSelectedFilter,
     setSearchTerm,
   } = useProductStore();
 
   const { data, isFetching, isError } = useProductsQuery();
+
+  // Effect to reset page number when filter or search term changes
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [selectedFilter, searchTerm, setCurrentPage]);
+
   const filteredProducts =
     data?.content.filter((product: Product) => {
       switch (selectedFilter) {
@@ -74,7 +82,6 @@ const Products = () => {
               <Button
                 key={index}
                 onClick={() => {
-                  setCurrentPage(0);
                   setSelectedFilter(filter);
                 }}
                 border={"1px"}
