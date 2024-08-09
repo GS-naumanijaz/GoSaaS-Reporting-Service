@@ -59,10 +59,17 @@ public class Report {
 
     private String created_by = "";
 
+    private String deleted_by = "";
+
+
     @PrePersist
     public void prePersist() {
         this.creation_date = LocalDate.now();
         this.updation_date = LocalDate.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
     @PreUpdate

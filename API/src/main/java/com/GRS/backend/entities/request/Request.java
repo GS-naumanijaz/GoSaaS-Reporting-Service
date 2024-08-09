@@ -53,6 +53,8 @@ public class Request {
 
     private String created_by = "";
 
+    private String deleted_by = "";
+
     private LocalDate creation_date;
 
     private Boolean is_deleted = false;
@@ -62,6 +64,10 @@ public class Request {
     @PrePersist
     public void prePersist() {
         this.creation_date = LocalDate.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
 }

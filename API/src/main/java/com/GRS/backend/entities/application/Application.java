@@ -30,19 +30,19 @@ public class Application {
 
     //Foreign Keys
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<DestinationConnection> destination_connections = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<SourceConnection> source_connections = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
     @NotNull(message = "Name must not be null")
@@ -73,6 +73,10 @@ public class Application {
     public void prePersist() {
         this.creation_date = LocalDate.now();
         this.updation_date = LocalDate.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
     @PreUpdate

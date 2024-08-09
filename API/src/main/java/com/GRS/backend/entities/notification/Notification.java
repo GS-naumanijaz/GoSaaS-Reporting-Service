@@ -38,6 +38,7 @@ public class Notification {
     @PrePersist
     public void prePersist() {
         this.creation_date = LocalDate.now();
+        this.created_by = "";
     }
 
 

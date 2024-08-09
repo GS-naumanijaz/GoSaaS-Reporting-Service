@@ -34,11 +34,11 @@ public class DestinationConnection {
     private Application application;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
     @NotNull(message = "Alias must not be null")
@@ -80,6 +80,10 @@ public class DestinationConnection {
     public void prePersist() {
         this.creation_date = LocalDate.now();
         this.updation_date = LocalDate.now();
+        this.created_by = "";
+        this.deleted_by = "";
+        this.is_deleted = false;
+        this.deletion_date = null;
     }
 
     @PreUpdate
