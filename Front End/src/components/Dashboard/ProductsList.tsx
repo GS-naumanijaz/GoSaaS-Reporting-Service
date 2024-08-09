@@ -49,23 +49,25 @@ const ProductsList = ({
 
   return (
     <>
-      <SimpleGrid columns={{ md: 2, lg: 3 }} padding={10} spacing={10}>
-        {products.map((product, index) => (
-          <motion.div
-            key={product.id} // Assuming each product has a unique 'id'
-            variants={itemVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-          >
-            <ProductElement product={product} />
-          </motion.div>
-        ))}
-      </SimpleGrid>
+      <Box height={420}>
+        <SimpleGrid columns={{ lg: 3 }} padding={10} spacing={10}>
+          {products.map((product, index) => (
+            <motion.div
+              key={product.id} // Assuming each product has a unique 'id'
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+            >
+              <ProductElement product={product} />
+            </motion.div>
+          ))}
+        </SimpleGrid>
+      </Box>
 
-      {totalPages > 1 && (
-        <Flex alignItems="center" marginX={12} mt={6}>
-          <Box flex="1" />
+      <Flex alignItems="center" marginX={12} mt={6}>
+        <Box flex="1" />
+        {totalPages > 1 && (
           <Box>
             <PageSelector
               currentPage={currentPage}
@@ -73,11 +75,12 @@ const ProductsList = ({
               setCurrentPage={setCurrentPage}
             />
           </Box>
-          <Box flex="1" textAlign="right">
-            <Text>Total number of applications = {totalElements}</Text>
-          </Box>
-        </Flex>
-      )}
+        )}
+
+        <Box flex="1" textAlign="right">
+          <Text>Total number of applications = {totalElements}</Text>
+        </Box>
+      </Flex>
     </>
   );
 };
