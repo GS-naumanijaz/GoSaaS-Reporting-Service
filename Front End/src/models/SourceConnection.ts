@@ -147,17 +147,27 @@ export class SourceConnection extends TableRowData {
   ];
 
   constructor(
-    connectionId: number,
-    alias: string,
-    connection_type: string,
-    database_name: string,
-    host: string,
-    port: string,
-    username: string,
-    password: string,
-    // appId: number,
-    application: Application,
-    isActive: boolean
+    connectionId: number = 0,
+    alias: string = '',
+    connection_type: string = '',
+    database_name: string = '',
+    host: string = '',
+    port: string = '',
+    username: string = '',
+    password: string = '',
+    application: Application = {
+      id: 0,
+      name: '',
+      description: '',
+      is_active: false,
+      is_deleted: false,
+      created_by: '',
+      deleted_by: '',
+      creation_date: '',
+      deletion_date: null,
+      updation_date: ''
+    },
+    isActive: boolean = false
   ) {
     super();
     this.connectionId = connectionId;

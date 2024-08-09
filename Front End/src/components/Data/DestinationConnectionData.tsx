@@ -38,7 +38,7 @@ const DestinationConnectionData = ({
     });
   }
 
-  const manager = new TableManager(destinationConnectionsList);
+  const manager = new TableManager(new DestinationConnection, destinationConnectionsList);
 
   return (
     <>
