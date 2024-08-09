@@ -5,50 +5,32 @@ import { sx } from "../../configs";
 import { Box, VStack, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
 import ReportsConnectionData from "../Data/ReportsConnectionData";
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useAppDataQuery } from "../../hooks/useAppDataQuery";
 
-interface AppData {
+export interface Application {
+  id: number;
   name: string;
   description: string;
   is_active: boolean;
+  is_deleted: boolean;
+  created_by: string;
+  deleted_by: string;
+  creation_date: string;
+  deletion_date: string | null;
+  updation_date: string;
 }
-
 const AppDashboard = () => {
   const location = useLocation();
-  const [appId] = useState(location.state?.id ?? null);
-  const [appData, setAppData] = useState<AppData>({
-    name: "",
-    description: "",
-    is_active: false,
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const timestamp = Date.now();
+  const isNewApplication = !location.state?.id;
+  const appId = location.state?.id ?? timestamp;
 
-  useEffect(() => {
-    const fetchAppData = async () => {
-      if (appId) {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            `http://localhost:8080/applications/${appId}`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
-          const data = await response.json();
-          setAppData(data.data);
-          console.log("AppData: ", data.data);
-        } catch (error) {
-          console.error(error);
-          setError("Failed to fetch application data.");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchAppData();
-  }, [appId]);
+  const {
+    data: appData,
+    isLoading,
+    isError,
+    error,
+  } = useAppDataQuery(isNewApplication ? null : appId);
 
   return (
     <Box p={2}>
@@ -64,30 +46,26 @@ const AppDashboard = () => {
         overflowY="auto"
         sx={sx}
       >
-        {loading ? (
+        {isLoading ? (
           <Spinner size="xl" />
-        ) : error ? (
+        ) : isError ? (
           <Alert status="error">
             <AlertIcon />
-            {error}
+            {error.message}
           </Alert>
-        ) : appData.name === "" ? (
+        ) : isNewApplication ? (
           <AppHeader />
         ) : (
-          <AppHeader
-            appName={appData.name}
-            appDescription={appData.description}
-            activeState={appData.is_active}
-          />
+          <AppHeader appData={appData} />
         )}
         <VStack
           display="flex"
           alignContent={"center"}
           justifyContent={"center"}
         >
-          <SourceConnectionData />
-          <DestinationConnectionData />
-          <ReportsConnectionData product={location.state} />
+          <SourceConnectionData appId={appId} />
+          <DestinationConnectionData appId={appId} />
+          <ReportsConnectionData product={location?.state} />
         </VStack>
       </Box>
     </Box>

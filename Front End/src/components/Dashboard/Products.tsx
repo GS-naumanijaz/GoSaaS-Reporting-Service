@@ -1,17 +1,18 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { mainDashboardHeight, primaryColor, sx } from "../../configs";
-import ProductsList from "./ProductsList";
 import { motion } from "framer-motion";
-import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import ProductsList from "./ProductsList";
+import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
+import { mainDashboardHeight, primaryColor, sx } from "../../configs";
+import useProductStore from "../../store";
+import { useProductsQuery } from "../../hooks/useProductsQuery";
 
 export interface Product {
   name: string;
   id: number;
   description: string;
-  isActive: boolean;
+  is_active: boolean;
   creationDate: string;
   updationDate?: string | null;
   deletedBy?: string | null;
@@ -21,80 +22,27 @@ export interface Product {
 const Products = () => {
   const allFilters = ["All", "Active", "Inactive"];
   const navigate = useNavigate();
+  const {
+    currentPage,
+    selectedFilter,
+    setCurrentPage,
+    setSelectedFilter,
+    setSearchTerm,
+  } = useProductStore();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(1); // Start with 1 total page
-  const [totalElements, setTotalElements] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState(allFilters[0]);
-  const [isEmpty, setIsEmpty] = useState(false);
+  const { data } = useProductsQuery();
 
-  const AppsPageSize = 6;
-  useEffect(() => {
-    const fetchProducts = async (
-      page = 0,
-      size = AppsPageSize,
-      searchItem: string = searchTerm
-    ) => {
-      try {
-        const params = new URLSearchParams({
-          page: page.toString(),
-          page_size: size.toString(),
-          search: searchItem,
-        });
-
-        const response = await fetch(
-          `http://localhost:8080/applications?${params.toString()}`,
-          {
-            method: "GET",
-            credentials: "include", // Correctly placed in the fetch options
-          }
-        );
-
-        const data = await response.json();
-        const fetchedProducts: Product[] = data.data.content.map(
-          (item: any): Product => ({
-            name: item.name,
-            id: item.id,
-            description: item.description,
-            isActive: item.is_active,
-            creationDate: item.creation_date,
-            updationDate: item.updation_date,
-            deletedBy: item.deleted_by,
-            deletionDate: item.deletion_date,
-          })
-        );
-
-        setProducts(fetchedProducts);
-        setTotalPages(data.data.totalPages);
-        setTotalElements(data.data.totalElements);
-        setIsEmpty(data.data.empty);
-      } catch (error: any) {
-        console.error("Error fetching data:", error);
+  const filteredProducts =
+    data?.content.filter((product: Product) => {
+      switch (selectedFilter) {
+        case "Active":
+          return product.is_active;
+        case "Inactive":
+          return !product.is_active;
+        default:
+          return true;
       }
-    };
-
-    fetchProducts(currentPage);
-  }, [currentPage, AppsPageSize, searchTerm]);
-
-  useEffect(() => {
-    setFilteredProducts(productsToShow());
-  }, [products, selectedFilter]);
-
-  const productsToShow = () => {
-    switch (selectedFilter) {
-      case "All":
-        return products;
-      case "Active":
-        return products.filter((product) => product.isActive);
-      case "Inactive":
-        return products.filter((product) => !product.isActive);
-      default:
-        return products;
-    }
-  };
+    }) || [];
 
   // Animation variants
   const itemVariants = {
@@ -167,12 +115,12 @@ const Products = () => {
         >
           <ProductsList
             products={filteredProducts}
-            totalElements={totalElements}
-            totalPages={totalPages}
+            totalElements={data?.totalElements ?? 0}
+            totalPages={data?.totalPages ?? 1}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             itemVariants={itemVariants}
-            isEmpty={isEmpty}
+            isEmpty={data?.empty ?? false}
           />
         </motion.div>
       </Box>

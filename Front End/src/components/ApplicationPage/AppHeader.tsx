@@ -15,20 +15,31 @@ import {
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { primaryColor } from "../../configs";
+import { Application } from "./AppDashboard";
+import { useUser } from "../Login/UserContext";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  appName?: string;
-  appDescription?: string;
-  activeState?: boolean;
+  appData?: Application;
 }
 
-const AppHeader = ({ appName, appDescription, activeState}: Props) => {
-  // usestates for the switch, description, and name
-  const [isChecked, setIsChecked] = useState(activeState);
-  const [name, setName] = useState(appName ? appName : "");
-  const [description, setDescription] = useState(
-    appDescription ? appDescription : ""
+const AppHeader = ({ appData }: Props) => {
+  const [newAppData, setNewAppData] = useState<Application>(
+    appData || {
+      id: Date.now(),
+      name: "",
+      description: "",
+      is_active: false,
+      is_deleted: false,
+      created_by: "",
+      deleted_by: "",
+      creation_date: "",
+      deletion_date: null,
+      updation_date: "",
+    }
   );
+  const user = useUser(); // for created by
+  const navigate = useNavigate();
 
   // usestates for the delete dialog
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -47,10 +58,35 @@ const AppHeader = ({ appName, appDescription, activeState}: Props) => {
     onDeleteClose();
   };
 
-  const onSave = () => {
-    // save changes to database
-    // reload the application page
-    console.log("Changes saved");
+  const onSave = async () => {
+    setNewAppData((prev) => ({
+      ...prev,
+      created_by: user?.fullName || "",
+    }));
+    try {
+      const { id, ...appDataToSend } = newAppData;
+      console.log("JSON.stringify(newAppData)" + JSON.stringify(appDataToSend));
+      const response = await fetch("http://localhost:8080/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appDataToSend),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const createdApplication = await response.json();
+        console.log("Application saved", createdApplication);
+        navigate(`/homepage`);
+        // You might want to update the UI or navigate to another page
+      } else {
+        console.error("Failed to save application", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving application", error);
+    }
+
     onSaveClose();
   };
 
@@ -69,9 +105,12 @@ const AppHeader = ({ appName, appDescription, activeState}: Props) => {
         <Switch
           size="lg"
           colorScheme="red"
-          isChecked={isChecked}
+          isChecked={newAppData.is_active}
           onChange={() => {
-            setIsChecked(!isChecked);
+            setNewAppData((prev) => ({
+              ...prev,
+              is_active: !prev.is_active,
+            }));
           }}
         />
         <Spacer />
@@ -109,9 +148,15 @@ const AppHeader = ({ appName, appDescription, activeState}: Props) => {
           variant="outline"
           focusBorderColor={primaryColor}
           placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        ></Input>
+          value={newAppData.name}
+          onChange={(e) => {
+            const name = e.target.value;
+            setNewAppData((prev) => ({
+              ...prev,
+              name: name,
+            }));
+          }}
+        />
       </HStack>
 
       <HStack spacing={5} pt={5} pl={10}>
@@ -122,9 +167,15 @@ const AppHeader = ({ appName, appDescription, activeState}: Props) => {
           variant="outline"
           focusBorderColor={primaryColor}
           placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        ></Input>
+          value={newAppData.description}
+          onChange={(e) => {
+            const description = e.target.value;
+            setNewAppData((prev) => ({
+              ...prev,
+              description: description,
+            }));
+          }}
+        />
       </HStack>
 
       <AlertDialog

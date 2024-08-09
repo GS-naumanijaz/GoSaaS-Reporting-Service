@@ -1,60 +1,60 @@
-import { SourceConnection } from "../../models/SourceConnection";
-import { TableManager } from "../../models/TableManager";
+import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
+import { TableManager } from "../../models/TableManager";
+import { SourceConnection } from "../../models/SourceConnection";
+import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 
-const SourceConnectionData = () => {
-  const sampleData: SourceConnection[] = [
-    new SourceConnection(
-      1,
-      "Main Server",
-      "SQL",
-      "Primary Database",
-      "192.168.1.10",
-      "1424",
-      "adminuser",
-      "admin123",
-      true
-    ),
-    new SourceConnection(
-      2,
-      "Backup Server",
-      "NoSQL",
-      "Secondary Database",
-      "192.168.1.11",
-      "27018",
-      "backupuser",
-      "backup123",
-      false
-    ),
+interface SourceConnectionDataProps {
+  appId: number;
+}
 
-    new SourceConnection(
-      3,
-      "Analytics Server",
-      "SQL",
-      "Analytics Database",
-      "192.168.1.12",
-      "3307",
-      "analyticsuser",
-      "analytics123",
-      true
-    ),
+const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
+  const {
+    data: sourceConnections,
+    isLoading,
+    isError,
+    error,
+  } = useSourceConnectionsQuery(appId);
 
-    new SourceConnection(
-      4,
-      "Staging Server",
-      "SQL",
-      "Staging Database",
-      "192.168.1.13",
-      "5433",
-      "staginguser",
-      "staging123",
-      false
-    ),
-  ];
+  // Map sourceConnections to SourceConnection objects
+  const sourceConnectionsList: SourceConnection[] = [];
+  if (sourceConnections) {
+    sourceConnections.forEach((sourceConnection: any) => {
+      sourceConnectionsList.push(
+        new SourceConnection(
+          sourceConnection.id,
+          sourceConnection.alias,
+          sourceConnection.type ?? "",
+          sourceConnection.host,
+          sourceConnection.port.toString(),
+          sourceConnection.database_name,
+          sourceConnection.username,
+          sourceConnection.password,
+          sourceConnection.application,
+          sourceConnection.is_active
+        )
+      );
+    });
+  }
 
-  const manager = new TableManager(sampleData);
+  const manager = new TableManager(sourceConnectionsList);
 
-  return <CustomTable tableManager={manager} />;
+  return (
+    <>
+      {isLoading ? (
+        <Spinner size="xl" />
+      ) : isError ? (
+        <Alert status="error">
+          <AlertIcon />
+          {error instanceof Error
+            ? error.message
+            : "Failed to fetch source connection data."}
+        </Alert>
+      ) : (
+        <CustomTable tableManager={manager} />
+      )}
+    </>
+  );
 };
 
 export default SourceConnectionData;

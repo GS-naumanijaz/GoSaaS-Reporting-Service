@@ -57,6 +57,8 @@ public class Report {
 
     private LocalDate updation_date;
 
+    private String created_by = "";
+
     @PrePersist
     public void prePersist() {
         this.creation_date = LocalDate.now();

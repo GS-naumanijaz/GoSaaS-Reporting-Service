@@ -1,53 +1,67 @@
-import { ReportsConnection } from "../../models/ReportsConnection";
-import { TableManager } from "../../models/TableManager";
-import { Product } from "../Dashboard/Products";
+import { Alert, AlertIcon, Spinner, Text } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
+import { TableManager } from "../../models/TableManager";
+import { ReportsConnection } from "../../models/ReportsConnection";
+import { Product } from "../Dashboard/Products";
+import { useReportsQuery } from "../../hooks/useReportsQuery";
 
-const ReportsConnectionData = ({ product }: { product: Product }) => {
-  const sampleData: ReportsConnection[] = [
-    new ReportsConnection(
-      1,
-      "Initial Report",
-      "This is the first report",
-      "Main Server",
-      "Spring Boot",
-      "Procedure 1",
-      "Parameter 1, Parameter 2"
-    ),
-    new ReportsConnection(
-      2,
-      "Sales Report",
-      "Quarterly sales report",
-      "Sales Server",
-      "Node.js",
-      "Procedure 2",
-      "Parameter A, Parameter B"
-    ),
+interface ReportsConnectionDataProps {
+  product: Product | null;
+}
 
-    new ReportsConnection(
-      3,
-      "Inventory Report",
-      "Monthly inventory status",
-      "Inventory Server",
-      "Django",
-      "Procedure 3",
-      "Parameter X, Parameter Y, Parameter Z"
-    ),
+const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
+  const productId = product?.id ?? null;
 
-    new ReportsConnection(
-      4,
-      "Customer Feedback Report",
-      "Customer feedback summary",
-      "Feedback Server",
-      "Flask",
-      "Procedure 4",
-      "Parameter 1, Parameter 2, Parameter 3"
-    ),
-  ];
+  const {
+    data: reportsConnections,
+    isLoading,
+    isError,
+    error,
+  } = useReportsQuery(productId);
 
-  const manager = new TableManager(sampleData, product);
+  // Map reportsConnections to ReportsConnection objects
+  const reportsConnectionsList: ReportsConnection[] = [];
+  if (reportsConnections) {
+    reportsConnections.forEach((reportConnection: any) => {
+      reportsConnectionsList.push(
+        new ReportsConnection(
+          reportConnection.id,
+          reportConnection.alias,
+          reportConnection.description,
+          reportConnection.source_connection.alias,
+          reportConnection.destination_connection.alias,
+          reportConnection.stored_procedure,
+          reportConnection.params,
+          reportConnection.application
+        )
+      );
+    });
+  }
 
-  return <CustomTable tableManager={manager} />;
+  // Pass 'undefined' if 'product' is null
+  const manager = new TableManager(
+    reportsConnectionsList,
+    product ?? undefined
+  );
+
+  return (
+    <>
+      {isLoading ? (
+        <Spinner size="xl" />
+      ) : isError ? (
+        <Alert status="error">
+          <AlertIcon />
+          {error instanceof Error
+            ? error.message
+            : "Failed to fetch reports connection data."}
+        </Alert>
+      ) : productId && reportsConnectionsList.length > 0 ? (
+        <CustomTable tableManager={manager} />
+      ) : (
+        <Text>Implement case where reports data doesnt exist</Text>
+      )}
+    </>
+  );
 };
 
 export default ReportsConnectionData;

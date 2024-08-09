@@ -46,7 +46,7 @@ public class Request {
 
     private String[] params;
 
-    @NotNull(message = "Status must not be null")
+//    @NotNull(message = "Status must not be null")
     private RequestStatus status;
 
     private String report_link = "";

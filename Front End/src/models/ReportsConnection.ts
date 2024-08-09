@@ -1,3 +1,4 @@
+import { Application } from "../components/ApplicationPage/AppDashboard";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
@@ -10,6 +11,7 @@ export class ReportsConnection extends TableRowData {
   private stored_procedures: string;
   private parameters: string;
   // private appId: number;
+  private application: Application;
 
   //Static variables
   private static tableHeader = "Reports";
@@ -118,8 +120,9 @@ export class ReportsConnection extends TableRowData {
     connection_alias: string,
     destination_alias: string,
     stored_procedures: string,
-    parameters: string
+    parameters: string,
     // appId: number,
+    application: Application
   ) {
     super();
     this.reportId = reportId;
@@ -130,6 +133,7 @@ export class ReportsConnection extends TableRowData {
     this.stored_procedures = stored_procedures;
     this.parameters = parameters;
     // this.appId = appId;
+    this.application = application;
   }
 
   getId(): number {
@@ -213,5 +217,9 @@ export class ReportsConnection extends TableRowData {
 
   requiresStatusToggle(): boolean {
     return true;
+  }
+
+  getApplication(): Application {
+    return this.application;
   }
 }

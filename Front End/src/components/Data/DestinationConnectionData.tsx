@@ -1,56 +1,61 @@
-import { DestinationConnection } from "../../models/DestinationConnection";
-import { TableManager } from "../../models/TableManager";
+import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
+import { TableManager } from "../../models/TableManager";
+import { DestinationConnection } from "../../models/DestinationConnection";
+import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
 
-const DestinationConnectionData = () => {
-  const sampleData: DestinationConnection[] = [
-    new DestinationConnection(
-      1,
-      "Spring Boot",
-      "SQL",
-      "192.168.1.1",
-      "8080",
-      "Key1",
-      "Key2",
-      true
-    ),
-    new DestinationConnection(
-      2,
-      "Node.js",
-      "MongoDB",
-      "192.168.1.2",
-      "27017",
-      "Key3",
-      "Key4",
-      false
-    ),
+interface DestinationConnectionDataProps {
+  appId: number;
+}
 
-    new DestinationConnection(
-      3,
-      "Django",
-      "PostgreSQL",
-      "192.168.1.3",
-      "5432",
-      "Key5",
-      "Key6",
-      true
-    ),
+const DestinationConnectionData = ({
+  appId,
+}: DestinationConnectionDataProps) => {
+  const {
+    data: destinationConnections,
+    isLoading,
+    isError,
+    error,
+  } = useDestinationConnectionsQuery(appId);
 
-    new DestinationConnection(
-      4,
-      "Flask",
-      "MySQL",
-      "192.168.1.4",
-      "3306",
-      "Key7",
-      "Key8",
-      false
-    ),
-  ];
+  // Map destinationConnections to DestinationConnection objects
+  const destinationConnectionsList: DestinationConnection[] = [];
+  if (destinationConnections) {
+    destinationConnections.forEach((destinationConnection: any) => {
+      destinationConnectionsList.push(
+        new DestinationConnection(
+          destinationConnection.id,
+          destinationConnection.alias,
+          destinationConnection.type ?? "",
+          destinationConnection.url,
+          destinationConnection.port,
+          destinationConnection.secret_key,
+          destinationConnection.access_key,
+          destinationConnection.application,
+          destinationConnection.is_active
+        )
+      );
+    });
+  }
 
-  const manager = new TableManager(sampleData);
+  const manager = new TableManager(destinationConnectionsList);
 
-  return <CustomTable tableManager={manager} />;
+  return (
+    <>
+      {isLoading ? (
+        <Spinner size="xl" />
+      ) : isError ? (
+        <Alert status="error">
+          <AlertIcon />
+          {error instanceof Error
+            ? error.message
+            : "Failed to fetch destination connection data."}
+        </Alert>
+      ) : (
+        <CustomTable tableManager={manager} />
+      )}
+    </>
+  );
 };
 
 export default DestinationConnectionData;

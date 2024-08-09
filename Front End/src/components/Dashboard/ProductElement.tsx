@@ -32,7 +32,7 @@ const ProductElement = ({ product }: Props) => {
         position="absolute"
         top={0}
         right={0}
-        bg={product.isActive ? "lightgreen" : "#ff9999"}
+        bg={product.is_active ? "lightgreen" : "#ff9999"}
         width={10}
         height={10}
         borderRadius="0 20px 0 50px"

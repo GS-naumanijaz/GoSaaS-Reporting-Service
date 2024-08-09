@@ -11,12 +11,16 @@ import {
 } from "@chakra-ui/react";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const TableFooter = () => {
+interface Props {
+  NoOfRecords: number;
+}
+
+const TableFooter = ({ NoOfRecords }: Props) => {
   return (
     <Box margin={4}>
       <Flex justifyContent="space-between" alignItems="center">
         <Text flex="1" textAlign="left">
-          Total Number of Records = 5
+          {`Total Number of Records = ${NoOfRecords}`}
         </Text>
         <HStack spacing={4} justifyContent="center" flex="1">
           <Button variant={"ghost"}>
