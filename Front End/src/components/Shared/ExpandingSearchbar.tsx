@@ -10,14 +10,24 @@ interface Props {
 
 const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(e.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.length >= 3) {
+      onSearch(value);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      onSearch(searchTerm);
+    }
   };
 
   return (
@@ -42,8 +52,10 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
           transition="width 0.3s ease, opacity 0.3s ease"
           onBlur={() => setIsExpanded(false)}
           autoFocus={isExpanded}
-          onChange={handleSearch}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
           focusBorderColor={primaryColor}
+          value={searchTerm}
         />
       </Flex>
     </Box>

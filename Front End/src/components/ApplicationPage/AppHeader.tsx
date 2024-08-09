@@ -12,18 +12,35 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
+  Stack,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
-import { primaryColor } from "../../configs";
+import {
+  maximumAppDescription,
+  maximumAppName,
+  minimumAppDescription,
+  primaryColor,
+  secondaryColor,
+} from "../../configs";
 import { Application } from "./AppDashboard";
 import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store";
+import { minimumAppName } from "../../configs";
 
 interface Props {
   appData?: Application;
 }
+
+const validationCheck = ({ name, description }: Application) => {
+  return (
+    name.length >= minimumAppName &&
+    name.length <= maximumAppName &&
+    description.length >= minimumAppDescription &&
+    description.length <= maximumAppDescription
+  );
+};
 
 const AppHeader = ({ appData }: Props) => {
   const [newAppData, setNewAppData] = useState<Application>(
@@ -40,7 +57,10 @@ const AppHeader = ({ appData }: Props) => {
       updation_date: "",
     }
   );
-  const user = useUser(); // for created by
+
+  const [touched, setTouched] = useState({ name: false, description: false });
+
+  const user = useUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { currentPage, searchTerm } = useProductStore();
@@ -113,6 +133,7 @@ const AppHeader = ({ appData }: Props) => {
   };
 
   const handleSave = () => {
+    // First, update the state with the created_by field
     setNewAppData((prev) => ({
       ...prev,
       created_by: user?.fullName || "",
@@ -153,9 +174,15 @@ const AppHeader = ({ appData }: Props) => {
           <Button
             variant="link"
             p={0}
-            _active={{ color: primaryColor }}
-            color={primaryColor}
-            onClick={() => setIsSaveOpen(true)}
+            _active={
+              validationCheck(newAppData)
+                ? { color: primaryColor }
+                : { color: secondaryColor }
+            }
+            color={validationCheck(newAppData) ? primaryColor : secondaryColor}
+            onClick={() => {
+              validationCheck(newAppData) ? setIsSaveOpen(true) : null;
+            }}
           >
             <AiOutlineSave size={"35"} />
           </Button>
@@ -171,42 +198,76 @@ const AppHeader = ({ appData }: Props) => {
         </HStack>
       </HStack>
 
-      <HStack spacing={5} pt={5} pl={10}>
-        <Text fontSize={20}>Application Name: </Text>
-        <Input
-          size="md"
-          width="15%"
-          variant="outline"
-          focusBorderColor={primaryColor}
-          placeholder="Name"
-          value={newAppData.name}
-          onChange={(e) => {
-            const name = e.target.value;
-            setNewAppData((prev) => ({
-              ...prev,
-              name: name,
-            }));
-          }}
-        />
+      <HStack spacing={5} mt={5} mb={10} pl={10} alignItems="center">
+        <Text fontSize="lg" fontWeight="semibold">
+          Name:
+        </Text>
+        <Stack spacing={2} width="100%" position="relative">
+          <Input
+            size="md"
+            variant="outline"
+            width={"20%"}
+            focusBorderColor={primaryColor}
+            placeholder="Enter application name"
+            value={newAppData.name}
+            onChange={(e) => {
+              const name = e.target.value;
+              setTouched((prev) => ({ ...prev, name: true }));
+              setNewAppData((prev) => ({
+                ...prev,
+                name,
+              }));
+            }}
+          />
+          {touched.name &&
+            (newAppData.name.length < minimumAppName ||
+              newAppData.name.length > maximumAppName) && (
+              <Text
+                color="red"
+                fontSize="sm"
+                position="absolute"
+                bottom="-25px"
+              >
+                {`Application name must be between ${minimumAppName} and ${maximumAppName} characters`}
+              </Text>
+            )}
+        </Stack>
       </HStack>
 
-      <HStack spacing={5} pt={5} pl={10}>
-        <Text fontSize={20}>Application Description: </Text>
-        <Input
-          size="md"
-          width="50%"
-          variant="outline"
-          focusBorderColor={primaryColor}
-          placeholder="Description"
-          value={newAppData.description}
-          onChange={(e) => {
-            const description = e.target.value;
-            setNewAppData((prev) => ({
-              ...prev,
-              description: description,
-            }));
-          }}
-        />
+      <HStack spacing={5} mt={10} mb={10} pl={10} position="relative">
+        <Text fontSize="lg" fontWeight="semibold">
+          Description:
+        </Text>
+        <Stack spacing={2} width="100%">
+          <Input
+            size="md"
+            width="50%"
+            variant="outline"
+            focusBorderColor={primaryColor}
+            placeholder="Enter Application Description"
+            value={newAppData.description}
+            onChange={(e) => {
+              const description = e.target.value;
+              setTouched((prev) => ({ ...prev, description: true }));
+              setNewAppData((prev) => ({
+                ...prev,
+                description,
+              }));
+            }}
+          />
+          {touched.description &&
+            (newAppData.description.length < minimumAppDescription ||
+              newAppData.description.length > maximumAppDescription) && (
+              <Text
+                color="red"
+                fontSize="sm"
+                position="absolute"
+                bottom="-25px"
+              >
+                {`Application description must be between ${minimumAppDescription} and ${maximumAppDescription} characters`}
+              </Text>
+            )}
+        </Stack>
       </HStack>
 
       <AlertDialog
