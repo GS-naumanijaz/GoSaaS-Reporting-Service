@@ -18,7 +18,6 @@ const fetchReportsConnections = async (
     (report: any) => report.application.id === productId
   );
 };
-
 export const useReportsQuery = (productId: number | null) => {
   return useQuery({
     queryKey: ["reportsConnections", productId],

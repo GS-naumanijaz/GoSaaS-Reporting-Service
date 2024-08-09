@@ -100,7 +100,12 @@ const CustomTable = ({ tableManager }: Props) => {
     isSelectingRows,
   } = tableState;
 
-  if (tableData.length === 0) return <Text>No data to show</Text>;
+  if (tableData.length === 0)
+    return (
+      <Box padding={2}>
+        <Text>{`Implement case where data doesnt exist`}</Text>
+      </Box>
+    );
   return (
     <Box
       borderWidth={3}

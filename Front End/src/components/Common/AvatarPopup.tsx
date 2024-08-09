@@ -13,7 +13,6 @@ import { RiLogoutBoxRLine } from "react-icons/ri";
 const AvatarPopup = () => {
   const handleLogout = async () => {
     try {
-      console.log("Logging out Called");
       const response = await fetch("http://localhost:8080/logout", {
         method: "POST",
         credentials: "include",
@@ -37,7 +36,6 @@ const AvatarPopup = () => {
           p={0}
           _active={{ color: primaryColor }}
           color={primaryColor}
-          onClick={() => console.log("Avatar Clicked")}
         >
           <RxAvatar size={36} />
         </Button>

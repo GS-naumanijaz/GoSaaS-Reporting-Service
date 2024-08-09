@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
+import { Alert, AlertIcon, Spinner, Text } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
@@ -6,16 +6,18 @@ import { Product } from "../Dashboard/Products";
 import { useReportsQuery } from "../../hooks/useReportsQuery";
 
 interface ReportsConnectionDataProps {
-  product: Product;
+  product: Product | null;
 }
 
 const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
+  const productId = product?.id ?? null;
+
   const {
     data: reportsConnections,
     isLoading,
     isError,
     error,
-  } = useReportsQuery(product.id);
+  } = useReportsQuery(productId);
 
   // Map reportsConnections to ReportsConnection objects
   const reportsConnectionsList: ReportsConnection[] = [];
@@ -36,7 +38,11 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     });
   }
 
-  const manager = new TableManager(reportsConnectionsList, product);
+  // Pass 'undefined' if 'product' is null
+  const manager = new TableManager(
+    reportsConnectionsList,
+    product ?? undefined
+  );
 
   return (
     <>
@@ -49,8 +55,10 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
             ? error.message
             : "Failed to fetch reports connection data."}
         </Alert>
-      ) : (
+      ) : productId && reportsConnectionsList.length > 0 ? (
         <CustomTable tableManager={manager} />
+      ) : (
+        <Text>Implement case where reports data doesnt exist</Text>
       )}
     </>
   );

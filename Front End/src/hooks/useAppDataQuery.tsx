@@ -23,6 +23,6 @@ export const useAppDataQuery = (appId: number | null) => {
       }
       return fetchAppData(appId);
     },
-    enabled: !!appId, // Only fetch if appId is provided
+    enabled: !!appId, // Only fetch if appId is provided and not for new application
   });
 };

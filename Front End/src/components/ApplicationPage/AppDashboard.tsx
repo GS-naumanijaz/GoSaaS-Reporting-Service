@@ -19,12 +19,18 @@ export interface Application {
   deletion_date: string | null;
   updation_date: string;
 }
-
 const AppDashboard = () => {
   const location = useLocation();
-  const appId = location.state?.id ?? null;
+  const timestamp = Date.now();
+  const isNewApplication = !location.state?.id;
+  const appId = location.state?.id ?? timestamp;
 
-  const { data: appData, isLoading, isError, error } = useAppDataQuery(appId);
+  const {
+    data: appData,
+    isLoading,
+    isError,
+    error,
+  } = useAppDataQuery(isNewApplication ? null : appId);
 
   return (
     <Box p={2}>
@@ -47,14 +53,10 @@ const AppDashboard = () => {
             <AlertIcon />
             {error.message}
           </Alert>
-        ) : !appData?.name ? (
+        ) : isNewApplication ? (
           <AppHeader />
         ) : (
-          <AppHeader
-            appName={appData.name}
-            appDescription={appData.description}
-            activeState={appData.is_active}
-          />
+          <AppHeader appData={appData} />
         )}
         <VStack
           display="flex"
@@ -63,7 +65,7 @@ const AppDashboard = () => {
         >
           <SourceConnectionData appId={appId} />
           <DestinationConnectionData appId={appId} />
-          <ReportsConnectionData product={location.state} />
+          <ReportsConnectionData product={location?.state} />
         </VStack>
       </Box>
     </Box>
