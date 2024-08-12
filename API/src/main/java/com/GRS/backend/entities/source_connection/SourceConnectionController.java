@@ -4,6 +4,7 @@ import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.enums.SourceConnectionType;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
@@ -50,9 +51,29 @@ public class SourceConnectionController {
         if (connectionToAdd.isPresent()) {
             return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, connectionToAdd);
         } else {
-            return Response.responseBuilder("Failed to find source connection", HttpStatus.OK, null);
+            return Response.responseBuilder("Failed to find source connection", HttpStatus.OK);
         }
     }
+
+    @GetMapping("/{sourceId}/test")
+    public ResponseEntity<Object> testSourceConnection(@PathVariable int sourceId) {
+        Optional<SourceConnection> connectionToTest = sourceConnectionService.getSourceConnectionById(sourceId);
+        if (connectionToTest.isPresent()) {
+            if (sourceConnectionService.testSourceConnection(connectionToTest.get())) {
+                return Response.responseBuilder("Source Connection was tested successfully", HttpStatus.OK);
+            } else {
+                return Response.responseBuilder("Source Connection failed test", HttpStatus.OK);
+            }
+        } else {
+            return Response.responseBuilder("Failed to find source connection", HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<Object> getSourceConnectionTypes() {
+        return Response.responseBuilder("Source Connection types returned successfully", HttpStatus.OK, SourceConnectionType.getDbTypes());
+    }
+
 
     @PostMapping("")
     public ResponseEntity<Object> addSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int appId) {

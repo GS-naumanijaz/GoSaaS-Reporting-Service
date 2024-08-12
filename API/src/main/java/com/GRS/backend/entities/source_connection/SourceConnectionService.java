@@ -4,6 +4,7 @@ import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.utilities.DatabaseConnectionTester;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,6 +45,22 @@ public class SourceConnectionService {
 
     public Optional<SourceConnection> getSourceConnectionById(int sourceConnectionId) {
         return sourceConnectionRepository.findById(sourceConnectionId);
+    }
+
+    public Boolean testSourceConnection(SourceConnection sourceConnection) {
+//        "jdbc:postgresql://localhost:5432/gosaas_reporting_service";
+
+        String type = sourceConnection.getType().getDbType();
+        String host = sourceConnection.getHost();
+        int port = sourceConnection.getPort();
+        String dbName = sourceConnection.getDatabase_name();
+
+        String url = "jdbc:" + type + "://" + host + ":" + port + "/" + dbName;
+        String username = sourceConnection.getUsername();
+        String password = sourceConnection.getPassword();
+        String driverClassName  = sourceConnection.getType().getDriverClassName();
+
+        return DatabaseConnectionTester.tryConnect(url, username, password, driverClassName);
     }
 
     public SourceConnection addSourceConnection(SourceConnection sourceConnection) {
