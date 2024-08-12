@@ -29,6 +29,7 @@ export class SourceConnection extends TableRowData {
     "Active Status",
     "Edit",
     "Delete",
+    "",
   ];
   private static columnWidths = [
     "2.5%",
@@ -40,7 +41,8 @@ export class SourceConnection extends TableRowData {
     "10%",
     "12.5%",
     "5%",
-    "10%",
+    "5%",
+    "5%",
     "5%",
   ];
 
@@ -139,20 +141,33 @@ export class SourceConnection extends TableRowData {
     {
       isEnabled: false,
     },
+    {
+      isEnabled: false,
+    }
   ];
 
   constructor(
-    connectionId: number,
-    alias: string,
-    connection_type: string,
-    database_name: string,
-    host: string,
-    port: string,
-    username: string,
-    password: string,
-    // appId: number,
-    application: Application,
-    isActive: boolean
+    connectionId: number = 0,
+    alias: string = '',
+    connection_type: string = '',
+    database_name: string = '',
+    host: string = '',
+    port: string = '',
+    username: string = '',
+    password: string = '',
+    application: Application = {
+      id: 0,
+      name: '',
+      description: '',
+      is_active: false,
+      is_deleted: false,
+      created_by: '',
+      deleted_by: '',
+      creation_date: '',
+      deletion_date: null,
+      updation_date: ''
+    },
+    isActive: boolean = false
   ) {
     super();
     this.connectionId = connectionId;
@@ -253,6 +268,10 @@ export class SourceConnection extends TableRowData {
   }
 
   requiresStatusToggle(): boolean {
+    return true;
+  }
+
+  requiresTestButton(): boolean {
     return true;
   }
 

@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Spinner, Text } from "@chakra-ui/react";
+import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
@@ -40,6 +40,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   // Pass 'undefined' if 'product' is null
   const manager = new TableManager(
+    new ReportsConnection(),
     reportsConnectionsList,
     product ?? undefined
   );
@@ -55,10 +56,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
             ? error.message
             : "Failed to fetch reports connection data."}
         </Alert>
-      ) : productId && reportsConnectionsList.length > 0 ? (
-        <CustomTable tableManager={manager} />
       ) : (
-        <Text>Implement case where reports data doesnt exist</Text>
+        <CustomTable tableManager={manager} />
       )}
     </>
   );

@@ -20,6 +20,7 @@ import TdDeleteButton from "./CustomTableComponents/TdDeleteButton";
 import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
+import TdTestButton from "./CustomTableComponents/TdTestButton";
 
 interface Props {
   tableManager: TableManager;
@@ -100,12 +101,12 @@ const CustomTable = ({ tableManager }: Props) => {
     isSelectingRows,
   } = tableState;
 
-  if (tableData.length === 0)
-    return (
-      <Box padding={2}>
-        <Text>{`Implement case where data doesnt exist`}</Text>
-      </Box>
-    );
+  // if (tableData.length === 0)
+  //   return (
+  //     <Box padding={2}>
+  //       <Text>{`Implement case where data doesnt exist`}</Text>
+  //     </Box>
+  //   );
   return (
     <Box
       borderWidth={3}
@@ -152,50 +153,57 @@ const CustomTable = ({ tableManager }: Props) => {
               ))}
             </Tr>
           </Thead>
-          <Tbody>
-            {tableData.map((row, rowIndex) => (
-              <Tr key={row.getId()}>
-                {tableManager.requiresCheckBox() && (
-                  <TdCheckBox
-                    checkedState={checkedState[rowIndex]}
-                    selectCheckBox={() => selectCheckBox(rowIndex)}
-                  />
-                )}
-                {row.getTableData().map((d, index) => (
-                  <TdData
-                    key={index}
-                    isEditing={isEditing[rowIndex]}
-                    isEditable={tableManager.getEditAccess(index)}
-                    data={d}
-                    inputField={tableManager.getInputFields()[index]}
-                    handleInputChange={(value, error) =>
-                      handleInputChange(rowIndex, index, value, error)
-                    }
-                  />
-                ))}
-
-                {tableManager.getTableHeader() !== "Reports" &&
-                  tableManager.requiresStatusToggle() && (
-                    <TdSwitch
-                      row={row}
-                      handleToggleSwitch={() => {
-                        tableManager.handleToggleSwitch(row.getId());
-                        updateState();
-                      }}
+          {tableData.length !== 0 ? (
+            <Tbody>
+              {tableData.map((row, rowIndex) => (
+                <Tr key={row.getId()}>
+                  {tableManager.requiresCheckBox() && (
+                    <TdCheckBox
+                      checkedState={checkedState[rowIndex]}
+                      selectCheckBox={() => selectCheckBox(rowIndex)}
                     />
                   )}
-                <TdEditButton
-                  isEditing={isEditing[rowIndex]}
-                  isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
-                  handleEditToggle={() => handleEditToggle(rowIndex)}
-                  revertEdit={() => revertEdit(rowIndex)}
-                />
-                <TdDeleteButton
-                  handleDeleteRow={() => handleDeleteRow(rowIndex)}
-                />
-              </Tr>
-            ))}
-          </Tbody>
+                  {row.getTableData().map((d, index) => (
+                    <TdData
+                      key={index}
+                      isEditing={isEditing[rowIndex]}
+                      isEditable={tableManager.getEditAccess(index)}
+                      data={d}
+                      inputField={tableManager.getInputFields()[index]}
+                      handleInputChange={(value, error) =>
+                        handleInputChange(rowIndex, index, value, error)
+                      }
+                    />
+                  ))}
+
+                  {tableManager.getTableHeader() !== "Reports" &&
+                    tableManager.requiresStatusToggle() && (
+                      <TdSwitch
+                        row={row}
+                        handleToggleSwitch={() => {
+                          tableManager.handleToggleSwitch(row.getId());
+                          updateState();
+                        }}
+                      />
+                    )}
+                  <TdEditButton
+                    isEditing={isEditing[rowIndex]}
+                    isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
+                    handleEditToggle={() => handleEditToggle(rowIndex)}
+                    revertEdit={() => revertEdit(rowIndex)}
+                  />
+                  <TdDeleteButton
+                    handleDeleteRow={() => handleDeleteRow(rowIndex)}
+                  />
+                  {tableManager.requiresTestButton() && (
+                    <TdTestButton onClick={() => console.log("testing")} />
+                  )}
+                </Tr>
+              ))}
+            </Tbody>
+          ) : (
+            <Text>No data to show</Text>
+          )}
         </Table>
       </TableContainer>
       <TableFooter NoOfRecords={tableData.length} />

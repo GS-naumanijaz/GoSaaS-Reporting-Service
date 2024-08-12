@@ -37,7 +37,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     });
   }
 
-  const manager = new TableManager(sourceConnectionsList);
+  const manager = new TableManager(
+    new SourceConnection(),
+    sourceConnectionsList
+  );
 
   return (
     <>

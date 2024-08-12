@@ -3,6 +3,7 @@ import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
 export class TableManager {
+  private defaultData: TableRowData;
   private data: TableRowData[];
   private product?: Product;
   private isEditing: boolean[];
@@ -12,7 +13,8 @@ export class TableManager {
   private isSelectingRows: boolean;
   private canSaveEditedRows: boolean[];
 
-  constructor(data: TableRowData[], product?: Product) {
+  constructor(dataType: TableRowData, data: TableRowData[], product?: Product) {
+    this.defaultData = dataType;
     this.product = product;
     this.data = data;
     this.isEditing = new Array(this.data.length).fill(false);
@@ -52,7 +54,7 @@ export class TableManager {
   }
 
   getTableHeader(): string {
-    return this.data[0].getTableHeader();
+    return this.defaultData.getTableHeader();
   }
 
   getTableProduct(): Product | undefined {
@@ -60,27 +62,27 @@ export class TableManager {
   }
 
   getTableHeadings(): string[] {
-    return this.data[0].getTableHeadings();
+    return this.defaultData.getTableHeadings();
   }
 
   getCheckBoxWidth(): string {
-    return this.data[0].getCheckBoxWidth();
+    return this.defaultData.getCheckBoxWidth();
   }
 
   getColumnWidths(): string[] {
-    return this.data[0].getColumnWidths();
+    return this.defaultData.getColumnWidths();
   }
 
   getInputFields(): InputField[] {
-    return this.data[0].getInputFields();
+    return this.defaultData.getInputFields();
   }
 
   getSortFilterOptions(): ColumnSortFilterOptions[] {
-    return this.data[0].getSortFilterOptions();
+    return this.defaultData.getSortFilterOptions();
   }
 
   getEditAccess(index: number): boolean {
-    return this.data[0].getEditAccess()[index];
+    return this.defaultData.getEditAccess()[index];
   }
 
   setEditSaveOnRow(index: number, newValue: boolean) {
@@ -95,11 +97,15 @@ export class TableManager {
   }
 
   requiresStatusToggle() {
-    return this.data[0].requiresStatusToggle();
+    return this.defaultData.requiresStatusToggle();
   }
 
   requiresCheckBox() {
-    return this.data[0].requiresCheckBox();
+    return this.defaultData.requiresCheckBox();
+  }
+
+  requiresTestButton() {
+    return this.defaultData.requiresTestButton();
   }
 
   handleToggleSwitch(id: number) {
