@@ -6,6 +6,7 @@ import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import com.GRS.backend.utilities.S3BucketTester;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,21 @@ public class DestinationConnectionController {
         if (connectionToAdd.isPresent()) {
             return Response.responseBuilder("Destination Connection found successfully", HttpStatus.OK, connectionToAdd);
         } else {
-            return Response.responseBuilder("Failed to find destination connection", HttpStatus.OK, null);
+            return Response.responseBuilder("Failed to find destination connection", HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+    @GetMapping("/{destinationId}/test")
+    public ResponseEntity<Object> testDestinationConnection(@PathVariable int destinationId) {
+        Optional<DestinationConnection> connectionToTest = destinationConnectionService.getDestinationConnectionById(destinationId);
+        if (connectionToTest.isPresent()) {
+            if (destinationConnectionService.testDestinationConnection(connectionToTest.get())) {
+                return Response.responseBuilder("Destination Connection was tested successfully", HttpStatus.OK);
+            } else {
+                return Response.responseBuilder("Destination Connection failed test", HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return Response.responseBuilder("Failed to find destination connection", HttpStatus.BAD_REQUEST, null);
         }
     }
 

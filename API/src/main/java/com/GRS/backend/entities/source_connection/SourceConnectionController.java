@@ -51,7 +51,7 @@ public class SourceConnectionController {
         if (connectionToAdd.isPresent()) {
             return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, connectionToAdd);
         } else {
-            return Response.responseBuilder("Failed to find source connection", HttpStatus.OK);
+            return Response.responseBuilder("Failed to find source connection", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -62,10 +62,10 @@ public class SourceConnectionController {
             if (sourceConnectionService.testSourceConnection(connectionToTest.get())) {
                 return Response.responseBuilder("Source Connection was tested successfully", HttpStatus.OK);
             } else {
-                return Response.responseBuilder("Source Connection failed test", HttpStatus.OK);
+                return Response.responseBuilder("Source Connection failed test", HttpStatus.BAD_REQUEST);
             }
         } else {
-            return Response.responseBuilder("Failed to find source connection", HttpStatus.OK);
+            return Response.responseBuilder("Failed to find source connection", HttpStatus.BAD_REQUEST);
         }
     }
 

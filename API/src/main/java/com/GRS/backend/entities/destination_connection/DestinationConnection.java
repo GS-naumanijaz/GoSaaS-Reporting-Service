@@ -41,14 +41,14 @@ public class DestinationConnection {
     @NotNull(message = "Alias must not be null")
     private String alias;
 
-//    @NotNull(message = "Type must not be null")
-    private DestinationConnectionType type;
-
-    @NotNull(message = "Url must not be null")
-    private String url;
-
-    @NotNull(message = "Port must not be null")
-    private int port;
+////    @NotNull(message = "Type must not be null")
+//    private DestinationConnectionType type;
+//
+//    @NotNull(message = "Url must not be null")
+//    private String url;
+//
+//    @NotNull(message = "Port must not be null")
+//    private int port;
 
     private Boolean isActive = false;
 
@@ -57,6 +57,10 @@ public class DestinationConnection {
     private String secretKey = "";
 
     private String accessKey = "";
+
+    private String bucketName = "";
+
+    private String region = "";
 
     private String createdBy = "";
 

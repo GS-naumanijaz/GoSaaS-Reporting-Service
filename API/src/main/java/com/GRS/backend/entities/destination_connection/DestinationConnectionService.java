@@ -5,6 +5,7 @@ import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
+import com.GRS.backend.utilities.S3BucketTester;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,17 @@ public class DestinationConnectionService {
 
     public Optional<DestinationConnection> getDestinationConnectionById(int destinationConnectionId) {
         return destinationConnectionRepository.findById(destinationConnectionId);
+    }
+
+    public boolean testDestinationConnection(DestinationConnection destinationConnection) {
+//
+        String accessKey = destinationConnection.getAccessKey();
+        String secretKey = destinationConnection.getSecretKey();
+
+        String bucketName = destinationConnection.getBucketName();
+        String region = destinationConnection.getRegion();
+
+        return S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
     }
 
     public DestinationConnection addDestinationConnection(DestinationConnection destinationConnection) {
@@ -82,6 +94,7 @@ public class DestinationConnectionService {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
         }
     }
-    
-    
+
+
+
 }
