@@ -4,20 +4,11 @@ import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 import { useState } from "react";
+import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
 interface SourceConnectionDataProps {
   appId: number;
 }
-
-export type FieldMappingKey = keyof typeof fieldMapping;
-export const fieldMapping = {
-  Alias: "alias",
-  "Connection Type": "type",
-  Host: "host",
-  Port: "port",
-  "Database Name": "databaseName",
-  Username: "username",
-} as const;
 
 const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const [sortField, setSortField] = useState("alias");

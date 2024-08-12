@@ -3,6 +3,8 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
+import { useState } from "react";
+import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -11,12 +13,21 @@ interface DestinationConnectionDataProps {
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
+  const [sortField, setSortField] = useState("alias");
+  const [sortOrder, setSortOrder] = useState("desc");
+
+  // Update the query hook to accept sorting parameters
   const {
     data: destinationConnections,
     isLoading,
     isError,
     error,
-  } = useDestinationConnectionsQuery(appId);
+  } = useDestinationConnectionsQuery(appId, sortField, sortOrder);
+
+  const handleSort = (field: FieldMappingKey, order: string) => {
+    setSortField(fieldMapping[field]);
+    setSortOrder(order);
+  };
 
   // Map destinationConnections to DestinationConnection objects
   const destinationConnectionsList: DestinationConnection[] = [];
@@ -38,7 +49,10 @@ const DestinationConnectionData = ({
     });
   }
 
-  const manager = new TableManager(new DestinationConnection, destinationConnectionsList);
+  const manager = new TableManager(
+    new DestinationConnection(),
+    destinationConnectionsList
+  );
 
   return (
     <>
@@ -52,7 +66,7 @@ const DestinationConnectionData = ({
             : "Failed to fetch destination connection data."}
         </Alert>
       ) : (
-        <CustomTable tableManager={manager} />
+        <CustomTable tableManager={manager} onSort={handleSort} />
       )}
     </>
   );

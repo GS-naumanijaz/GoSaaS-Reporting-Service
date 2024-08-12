@@ -21,7 +21,7 @@ import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
 import TdTestButton from "./CustomTableComponents/TdTestButton";
-import { FieldMappingKey } from "../Data/SourceConnectionData";
+import { FieldMappingKey } from "../../services/sortMappings";
 
 interface Props {
   tableManager: TableManager;

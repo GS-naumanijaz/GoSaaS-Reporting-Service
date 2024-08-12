@@ -40,6 +40,6 @@ export const useProductsQuery = () => {
     queryKey: ["products", currentPage, searchTerm, selectedFilter],
     queryFn: () => fetchProducts(currentPage, searchTerm, selectedFilter),
     refetchOnWindowFocus: true,
-    // gcTime: 0, // cache time
+    gcTime: 0, // cache time
   });
 };

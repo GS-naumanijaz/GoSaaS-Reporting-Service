@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { FieldMappingKey } from "../../Data/SourceConnectionData";
+import { FieldMappingKey } from "../../../services/sortMappings";
 
 interface Props {
   heading: string;
@@ -62,7 +62,7 @@ const FilterSortPopup = ({ heading, sortFilterOptions, onSort }: Props) => {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => onSort(heading as FieldMappingKey, "asc")}
+                    onClick={() => onSort(heading as FieldMappingKey, "desc")}
                   >
                     Descending
                   </Button>

@@ -4,6 +4,7 @@ import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { Product } from "../Dashboard/Products";
 import { useReportsQuery } from "../../hooks/useReportsQuery";
+import { useState } from "react";
 
 interface ReportsConnectionDataProps {
   product: Product | null;
@@ -11,13 +12,15 @@ interface ReportsConnectionDataProps {
 
 const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const productId = product?.id ?? null;
+  const [sortField, setSortField] = useState("alias"); // Default sort field
+  const [sortOrder, setSortOrder] = useState("desc"); // Default sort order
 
   const {
     data: reportsConnections,
     isLoading,
     isError,
     error,
-  } = useReportsQuery(productId);
+  } = useReportsQuery(productId, sortField, sortOrder);
 
   // Map reportsConnections to ReportsConnection objects
   const reportsConnectionsList: ReportsConnection[] = [];
@@ -38,12 +41,16 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     });
   }
 
-  // Pass 'undefined' if 'product' is null
   const manager = new TableManager(
     new ReportsConnection(),
     reportsConnectionsList,
     product ?? undefined
   );
+
+  const handleSort = (field: string, order: string) => {
+    setSortField(field);
+    setSortOrder(order);
+  };
 
   return (
     <>
@@ -57,7 +64,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
             : "Failed to fetch reports connection data."}
         </Alert>
       ) : (
-        <CustomTable tableManager={manager} />
+        <CustomTable tableManager={manager} onSort={handleSort} />
       )}
     </>
   );
