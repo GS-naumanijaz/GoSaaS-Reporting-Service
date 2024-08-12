@@ -23,7 +23,7 @@ public class ApplicationService {
         Specification<Application> spec = Specification.where(ApplicationSpecification.isNotDeleted());
 
         if (search != null && !search.isEmpty()) {
-            return applicationRepository.findAll(ApplicationSpecification.containsTextIn(searchBy, search), pageable);
+            spec = spec.and(ApplicationSpecification.containsTextIn(searchBy, search));
         }
 
         if (status != null) {

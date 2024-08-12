@@ -12,8 +12,8 @@ public abstract class BaseSpecification<T> {
             if (!doesFieldExist(root.getJavaType(), searchBy)) {
                 throw new InvalidQueryParamException(searchBy, "search_by");
             }
-            String searchTerm = "%" + search + "%";
-            return criteriaBuilder.like(root.get(searchBy), searchTerm);
+            String searchTerm = "%" + search.toLowerCase() + "%";
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get(searchBy)), searchTerm);
         };
     }
 
