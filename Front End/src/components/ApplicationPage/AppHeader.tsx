@@ -33,10 +33,10 @@ interface Props {
   appData?: Application;
 }
 
-const validationCheck = ({ name, description }: Application) => {
+const validationCheck = ({ alias, description }: Application) => {
   return (
-    name.length >= minimumAppName &&
-    name.length <= maximumAppName &&
+    alias.length >= minimumAppName &&
+    alias.length <= maximumAppName &&
     description.length >= minimumAppDescription &&
     description.length <= maximumAppDescription
   );
@@ -46,7 +46,7 @@ const AppHeader = ({ appData }: Props) => {
   const [newAppData, setNewAppData] = useState<Application>(
     appData || {
       id: Date.now(),
-      name: "",
+      alias: "",
       description: "",
       is_active: false,
       is_deleted: false,
@@ -58,7 +58,7 @@ const AppHeader = ({ appData }: Props) => {
     }
   );
 
-  const [touched, setTouched] = useState({ name: false, description: false });
+  const [touched, setTouched] = useState({ alias: false, description: false });
 
   const user = useUser();
   const navigate = useNavigate();
@@ -209,19 +209,19 @@ const AppHeader = ({ appData }: Props) => {
             width={"20%"}
             focusBorderColor={primaryColor}
             placeholder="Enter application name"
-            value={newAppData.name}
+            value={newAppData.alias}
             onChange={(e) => {
-              const name = e.target.value;
-              setTouched((prev) => ({ ...prev, name: true }));
+              const alias = e.target.value;
+              setTouched((prev) => ({ ...prev, alias: true }));
               setNewAppData((prev) => ({
                 ...prev,
-                name,
+                alias,
               }));
             }}
           />
-          {touched.name &&
-            (newAppData.name.length < minimumAppName ||
-              newAppData.name.length > maximumAppName) && (
+          {touched.alias &&
+            (newAppData.alias.length < minimumAppName ||
+              newAppData.alias.length > maximumAppName) && (
               <Text
                 color="red"
                 fontSize="sm"

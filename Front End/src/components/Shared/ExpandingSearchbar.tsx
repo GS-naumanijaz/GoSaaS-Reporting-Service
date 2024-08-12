@@ -19,7 +19,9 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if (value.length >= 3) {
+    if (value.length === 0) {
+      onSearch("");
+    } else if (value.length >= 3) {
       onSearch(value);
     }
   };

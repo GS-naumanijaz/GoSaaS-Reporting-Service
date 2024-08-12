@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ public class SourceConnectionService {
 
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIs_deleted()) {
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
             if (search != null && !search.isEmpty()) {
@@ -53,7 +52,7 @@ public class SourceConnectionService {
         String type = sourceConnection.getType().getDbType();
         String host = sourceConnection.getHost();
         int port = sourceConnection.getPort();
-        String dbName = sourceConnection.getDatabase_name();
+        String dbName = sourceConnection.getDatabaseName();
 
         String url = "jdbc:" + type + "://" + host + ":" + port + "/" + dbName;
         String username = sourceConnection.getUsername();
@@ -77,7 +76,7 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "type", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "host", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "port", sourceConnection);
-            FieldUpdater.updateField(existingSourceConnection, "is_active", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "isActive", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "username", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "database_name", sourceConnection);
@@ -92,11 +91,11 @@ public class SourceConnectionService {
     public void deleteSourceConnection(int sourceConnectionId) {
         Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
 
-        if (existingSourceConnectionOpt.isPresent() && !existingSourceConnectionOpt.get().getIs_deleted()) {
+        if (existingSourceConnectionOpt.isPresent() && !existingSourceConnectionOpt.get().getIsDeleted()) {
             SourceConnection existingSourceConnection = existingSourceConnectionOpt.get();
 
-            existingSourceConnection.setIs_deleted(true);
-            existingSourceConnection.setDeletion_date(LocalDateTime.now());
+            existingSourceConnection.setIsDeleted(true);
+            existingSourceConnection.setDeletionDate(LocalDateTime.now());
 
             sourceConnectionRepository.save(existingSourceConnection);
         } else {

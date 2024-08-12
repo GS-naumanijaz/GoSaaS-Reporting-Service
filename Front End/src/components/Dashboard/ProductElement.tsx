@@ -38,7 +38,7 @@ const ProductElement = ({ product }: Props) => {
         borderRadius="0 20px 0 50px"
       />
 
-      <Text fontSize={["sm", "md", "lg"]}>{product.name}</Text>
+      <Text fontSize={["sm", "md", "lg"]}>{product.alias}</Text>
     </Box>
   );
 };

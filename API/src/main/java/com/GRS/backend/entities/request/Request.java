@@ -3,21 +3,14 @@ package com.GRS.backend.entities.request;
 
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
-import com.GRS.backend.entities.notification.Notification;
-import com.GRS.backend.enums.DestinationConnectionType;
 import com.GRS.backend.enums.RequestStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "requests")
@@ -41,34 +34,34 @@ public class Request {
 
     private LocalDate date;
 
-    private int remote_user_id;
+    private int remoteUserId;
 
-    private String stored_procedure = "";
+    private String storedProcedure = "";
 
     private String[] params;
 
 //    @NotNull(message = "Status must not be null")
     private RequestStatus status;
 
-    private String report_link = "";
+    private String reportLink = "";
 
-    private String created_by = "";
+    private String createdBy = "";
 
-    private String deleted_by = "";
+    private String deletedBy = "";
 
-    private LocalDateTime creation_date;
+    private LocalDateTime creationDate;
 
-    private Boolean is_deleted = false;
+    private Boolean isDeleted = false;
 
-    private LocalDateTime deletion_date;
+    private LocalDateTime deletionDate;
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDateTime.now();
-        this.created_by = "";
-        this.deleted_by = "";
-        this.is_deleted = false;
-        this.deletion_date = null;
+        this.creationDate = LocalDateTime.now();
+        this.createdBy = "";
+        this.deletedBy = "";
+        this.isDeleted = false;
+        this.deletionDate = null;
     }
 
 }

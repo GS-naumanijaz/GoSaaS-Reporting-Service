@@ -129,31 +129,31 @@ export class DestinationConnection extends TableRowData {
     },
     {
       isEnabled: false,
-    }
+    },
   ];
 
   constructor(
     connectionId: number = 0,
-    alias: string = '',
-    type: string = '',
-    url: string = '',
-    port: string = '',
-    access_key: string = '',
-    secret_key: string = '',
+    alias: string = "",
+    type: string = "",
+    url: string = "",
+    port: string = "",
+    access_key: string = "",
+    secret_key: string = "",
     // appId: number,
     application: Application = {
       id: 0,
-      name: '',
-      description: '',
+      alias: "",
+      description: "",
       is_active: false,
       is_deleted: false,
-      created_by: '',
-      deleted_by: '',
-      creation_date: '',
+      created_by: "",
+      deleted_by: "",
+      creation_date: "",
       deletion_date: null,
-      updation_date: ''
+      updation_date: "",
     },
-    isActive: boolean = false,
+    isActive: boolean = false
   ) {
     super();
     this.destinationId = connectionId;

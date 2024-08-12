@@ -143,29 +143,29 @@ export class SourceConnection extends TableRowData {
     },
     {
       isEnabled: false,
-    }
+    },
   ];
 
   constructor(
     connectionId: number = 0,
-    alias: string = '',
-    connection_type: string = '',
-    database_name: string = '',
-    host: string = '',
-    port: string = '',
-    username: string = '',
-    password: string = '',
+    alias: string = "",
+    connection_type: string = "",
+    database_name: string = "",
+    host: string = "",
+    port: string = "",
+    username: string = "",
+    password: string = "",
     application: Application = {
       id: 0,
-      name: '',
-      description: '',
+      alias: "",
+      description: "",
       is_active: false,
       is_deleted: false,
-      created_by: '',
-      deleted_by: '',
-      creation_date: '',
+      created_by: "",
+      deleted_by: "",
+      creation_date: "",
       deletion_date: null,
-      updation_date: ''
+      updation_date: "",
     },
     isActive: boolean = false
   ) {

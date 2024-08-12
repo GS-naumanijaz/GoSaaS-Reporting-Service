@@ -27,7 +27,7 @@ public class DestinationConnectionService {
     public Page<DestinationConnection> getAllDestinationConnections(int appId, String search, String searchBy, Pageable pageable) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIs_deleted()) {
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<DestinationConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
             if (search != null && !search.isEmpty()) {
@@ -58,9 +58,9 @@ public class DestinationConnectionService {
             FieldUpdater.updateField(existingDestination, "type", existingDestination);
             FieldUpdater.updateField(existingDestination, "url", existingDestination);
             FieldUpdater.updateField(existingDestination, "port", existingDestination);
-            FieldUpdater.updateField(existingDestination, "is_active", existingDestination);
-            FieldUpdater.updateField(existingDestination, "secret_key", existingDestination);
-            FieldUpdater.updateField(existingDestination, "access_key", existingDestination);
+            FieldUpdater.updateField(existingDestination, "isActive", existingDestination);
+            FieldUpdater.updateField(existingDestination, "secretKey", existingDestination);
+            FieldUpdater.updateField(existingDestination, "accessKey", existingDestination);
 
             return destinationConnectionRepository.save(existingDestination);
         } else {
@@ -71,11 +71,11 @@ public class DestinationConnectionService {
     public void deleteDestinationConnection(int destinationConnectionId) {
         Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
 
-        if (existingDestinationOpt.isPresent() && !existingDestinationOpt.get().getIs_deleted()) {
+        if (existingDestinationOpt.isPresent() && !existingDestinationOpt.get().getIsDeleted()) {
             DestinationConnection existingDestination = existingDestinationOpt.get();
 
-            existingDestination.setIs_deleted(true);
-            existingDestination.setDeletion_date(LocalDateTime.now());
+            existingDestination.setIsDeleted(true);
+            existingDestination.setDeletionDate(LocalDateTime.now());
 
             destinationConnectionRepository.save(existingDestination);
         } else {

@@ -26,7 +26,7 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
         String searchBy = webRequest.getParameter("search_by") != null ? webRequest.getParameter("search_by") : annotation.searchBy();
         int page = webRequest.getParameter("page") != null ? Integer.parseInt(webRequest.getParameter("page")) : annotation.page();
         int pageSize = webRequest.getParameter("page_size") != null ? Integer.parseInt(webRequest.getParameter("page_size")) : annotation.pageSize();
-        String sortBy = webRequest.getParameter("sort_by") != null ? webRequest.getParameter("sort_byy") : annotation.sortBy();
+        String sortBy = webRequest.getParameter("sort_by") != null ? webRequest.getParameter("sort_by") : annotation.sortBy();
         String sortOrder = webRequest.getParameter("sort_order") != null ? webRequest.getParameter("sort_order") : annotation.sortOrder();
 
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);

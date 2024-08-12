@@ -26,7 +26,7 @@ public class ApplicationController {
 
     @GetMapping
     public ResponseEntity<Object> getAllApplications(
-            @QueryParams(pageSize = 6, searchBy = "name") QueryArgumentResolver.QueryParamsContainer queryParams,
+            @QueryParams(pageSize = 6, searchBy = "alias") QueryArgumentResolver.QueryParamsContainer queryParams,
             @RequestParam(defaultValue = "all") String status) {
 
         String search = queryParams.getSearch();

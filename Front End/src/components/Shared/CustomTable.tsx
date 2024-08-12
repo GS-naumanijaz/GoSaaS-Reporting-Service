@@ -21,12 +21,14 @@ import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
 import TdTestButton from "./CustomTableComponents/TdTestButton";
+import { FieldMappingKey } from "../Data/SourceConnectionData";
 
 interface Props {
   tableManager: TableManager;
+  onSort: (field: FieldMappingKey, order: string) => void;
 }
 
-const CustomTable = ({ tableManager }: Props) => {
+const CustomTable = ({ tableManager, onSort }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
     checkedState: tableManager.getCheckedState(),
@@ -148,6 +150,7 @@ const CustomTable = ({ tableManager }: Props) => {
                     sortFilterOptions={
                       tableManager.getSortFilterOptions()[index]
                     }
+                    onSort={onSort}
                   />
                 </Th>
               ))}

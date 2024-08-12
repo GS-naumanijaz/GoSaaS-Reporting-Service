@@ -47,9 +47,9 @@ public class ApplicationService {
         if (existingApplicationOpt.isPresent()) {
             Application existingApplication = existingApplicationOpt.get();
 
-            FieldUpdater.updateField(existingApplication, "name", application);
+            FieldUpdater.updateField(existingApplication, "alias", application);
             FieldUpdater.updateField(existingApplication, "description", application);
-            FieldUpdater.updateField(existingApplication, "is_active", application);
+            FieldUpdater.updateField(existingApplication, "isActive", application);
 
             return applicationRepository.save(existingApplication);
         } else {
@@ -60,11 +60,11 @@ public class ApplicationService {
     public void deleteApplication(int appId) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIs_deleted()) {
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Application existingApplication = existingApplicationOpt.get();
 
-            existingApplication.setIs_deleted(true);
-            existingApplication.setDeletion_date(LocalDateTime.now());
+            existingApplication.setIsDeleted(true);
+            existingApplication.setDeletionDate(LocalDateTime.now());
 
             applicationRepository.save(existingApplication);
         } else {

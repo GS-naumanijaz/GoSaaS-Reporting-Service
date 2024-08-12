@@ -46,24 +46,24 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
-    @NotNull(message = "Name must not be null")
-    private String name;
+    @NotNull(message = "Alias must not be null")
+    private String alias;
 
     private String description = "";
 
-    private Boolean is_active = false;
+    private Boolean isActive = false;
 
-    private Boolean is_deleted = false;
+    private Boolean isDeleted = false;
 
-    private String created_by = "";
+    private String createdBy = "";
 
-    private String deleted_by = "";
+    private String deletedBy = "";
 
-    private LocalDateTime creation_date;
+    private LocalDateTime creationDate;
 
-    private LocalDateTime deletion_date;
+    private LocalDateTime deletionDate;
 
-    private LocalDateTime updation_date;
+    private LocalDateTime updatedAt;
 
     public void addReport(Report report) {
         this.reports.add(report);
@@ -72,17 +72,17 @@ public class Application {
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDateTime.now();
-        this.updation_date = LocalDateTime.now();
-        this.created_by = "";
-        this.deleted_by = "";
-        this.is_deleted = false;
-        this.deletion_date = null;
+        this.creationDate = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.createdBy = "";
+        this.deletedBy = "";
+        this.isDeleted = false;
+        this.deletionDate = null;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updation_date = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
 }

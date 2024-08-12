@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -63,11 +62,11 @@ public class RequestService {
     public void deleteRequest(int requestId) {
         Optional<Request> existingRequestOpt = requestRepository.findById(requestId);
 
-        if (existingRequestOpt.isPresent() && !existingRequestOpt.get().getIs_deleted()) {
+        if (existingRequestOpt.isPresent() && !existingRequestOpt.get().getIsDeleted()) {
             Request existingRequest = existingRequestOpt.get();
 
-            existingRequest.setIs_deleted(true);
-            existingRequest.setDeletion_date(LocalDateTime.now());
+            existingRequest.setIsDeleted(true);
+            existingRequest.setDeletionDate(LocalDateTime.now());
 
             requestRepository.save(existingRequest);
         } else {

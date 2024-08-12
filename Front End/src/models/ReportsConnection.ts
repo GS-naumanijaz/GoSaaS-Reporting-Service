@@ -115,25 +115,25 @@ export class ReportsConnection extends TableRowData {
 
   constructor(
     reportId: number = 0,
-    alias: string = '',
-    description: string = '',
-    connection_alias: string = '',
-    destination_alias: string = '',
-    stored_procedures: string = '',
-    parameters: string = '',
+    alias: string = "",
+    description: string = "",
+    connection_alias: string = "",
+    destination_alias: string = "",
+    stored_procedures: string = "",
+    parameters: string = "",
     // appId: number,
     application: Application = {
       id: 0,
-      name: '',
-      description: '',
+      alias: "",
+      description: "",
       is_active: false,
       is_deleted: false,
-      created_by: '',
-      deleted_by: '',
-      creation_date: '',
+      created_by: "",
+      deleted_by: "",
+      creation_date: "",
       deletion_date: null,
-      updation_date: ''
-    },
+      updation_date: "",
+    }
   ) {
     super();
     this.reportId = reportId;

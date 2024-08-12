@@ -1,10 +1,8 @@
 package com.GRS.backend.entities.user;
 
-import com.GRS.backend.entities.application.Application;
 import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "users") // Ensure this matches your database table name
@@ -14,8 +12,8 @@ public class    User {
     private Long id;
     private String name;
     private String email;
-    private Date created_at;
-    private Date last_login;
+    private Date createdAt;
+    private Date lastLogin;
 
 //    @OneToMany
 //    @JoinColumn(name = "app_id")
@@ -27,8 +25,8 @@ public class    User {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.created_at = new Date();
-        this.last_login = new Date();
+        this.createdAt = new Date();
+        this.lastLogin = new Date();
 
     }
 
@@ -41,11 +39,11 @@ public class    User {
     }
 
     public Date getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
     public Date getLastLogin() {
-        return last_login;
+        return lastLogin;
     }
 
     public void setName(String name) {
@@ -58,11 +56,11 @@ public class    User {
 
 
     public void setCreatedAt(Date created_at) {
-        this.created_at = created_at;
+        this.createdAt = created_at;
     }
 
     public void setLastLogin(Date last_login) {
-        this.last_login = last_login;
+        this.lastLogin = last_login;
     }
 
     public Long getId() {

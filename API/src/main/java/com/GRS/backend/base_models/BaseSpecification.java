@@ -20,13 +20,13 @@ public abstract class BaseSpecification<T> {
     public static <T> Specification<T> belongsTo(String identifier, int id) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(identifier).get("id"), id),
-                criteriaBuilder.isFalse(root.get("is_deleted"))
+                criteriaBuilder.isFalse(root.get("isDeleted"))
         );
     }
 
     public static <T> Specification<T> isNotDeleted() {
         return (root, query, criteriaBuilder) -> criteriaBuilder.and(
-                criteriaBuilder.isFalse(root.get("is_deleted"))
+                criteriaBuilder.isFalse(root.get("isDeleted"))
         );
     }
 

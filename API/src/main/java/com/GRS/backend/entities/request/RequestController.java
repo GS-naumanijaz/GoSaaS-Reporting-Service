@@ -7,20 +7,16 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
 import com.GRS.backend.entities.notification.Notification;
 import com.GRS.backend.entities.notification.NotificationService;
-import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -78,8 +74,8 @@ public class RequestController {
             // Create and set the Notification
             Notification createdNotification = new Notification();
             createdNotification.setMessage("Request created successfully");
-            createdNotification.setCreated_by(createdRequest.getCreated_by());
-            createdNotification.setCreation_date(LocalDateTime.now());
+            createdNotification.setCreatedBy(createdRequest.getCreatedBy());
+            createdNotification.setCreationDate(LocalDateTime.now());
             createdNotification.setRequest(createdRequest);
 
             // Save the Notification

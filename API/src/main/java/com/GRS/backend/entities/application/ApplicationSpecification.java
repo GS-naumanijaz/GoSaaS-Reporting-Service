@@ -19,10 +19,10 @@ public class ApplicationSpecification extends BaseSpecification<Application> {
                 return criteriaBuilder.conjunction(); // No filter for "all"
             }
             if ("active".equalsIgnoreCase(status)) {
-                return criteriaBuilder.isTrue(root.get("is_active"));
+                return criteriaBuilder.isTrue(root.get("isActive"));
             }
             if ("inactive".equalsIgnoreCase(status)) {
-                return criteriaBuilder.isFalse(root.get("is_active"));
+                return criteriaBuilder.isFalse(root.get("isActive"));
             }
             throw new IllegalArgumentException("Invalid status value");
         };

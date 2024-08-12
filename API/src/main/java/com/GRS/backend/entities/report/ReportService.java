@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class ReportService {
 
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIs_deleted()) {
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<Report> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
             if (search != null && !search.isEmpty()) {
@@ -72,11 +71,11 @@ public class ReportService {
     public void deleteReport(int reportId) {
         Optional<Report> existingReportOpt = reportRepository.findById(reportId);
 
-        if (existingReportOpt.isPresent() && !existingReportOpt.get().getIs_deleted()) {
+        if (existingReportOpt.isPresent() && !existingReportOpt.get().getIsDeleted()) {
             Report existingReport = existingReportOpt.get();
 
-            existingReport.setIs_deleted(true);
-            existingReport.setDeletion_date(LocalDateTime.now());
+            existingReport.setIsDeleted(true);
+            existingReport.setDeletionDate(LocalDateTime.now());
 
             reportRepository.save(existingReport);
         } else {

@@ -3,16 +3,12 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.source_connection.SourceConnection;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -42,40 +38,40 @@ public class Report {
 
     private String description = "";
 
-    private String stored_procedure = "";
+    private String storedProcedure = "";
 
     private String[] params;
 
-    private String xsl_template = "";
+    private String xslTemplate = "";
 
-    private Boolean is_deleted = false;
+    private Boolean isDeleted = false;
 
-    private Boolean is_pinned = false;
+    private Boolean isPinned = false;
 
-    private LocalDateTime creation_date;
+    private LocalDateTime creationDate;
 
-    private LocalDateTime deletion_date;
+    private LocalDateTime deletionDate;
 
-    private LocalDateTime updation_date;
+    private LocalDateTime updatedAt;
 
-    private String created_by = "";
+    private String createdBy = "";
 
-    private String deleted_by = "";
+    private String deletedBy = "";
 
 
     @PrePersist
     public void prePersist() {
-        this.creation_date = LocalDateTime.now();
-        this.updation_date = LocalDateTime.now();
-        this.created_by = "";
-        this.deleted_by = "";
-        this.is_deleted = false;
-        this.deletion_date = null;
+        this.creationDate = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.createdBy = "";
+        this.deletedBy = "";
+        this.isDeleted = false;
+        this.deletionDate = null;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updation_date = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
 }

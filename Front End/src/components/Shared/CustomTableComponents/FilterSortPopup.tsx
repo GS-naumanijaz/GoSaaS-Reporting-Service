@@ -19,13 +19,15 @@ import {
 } from "@chakra-ui/react";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
+import { FieldMappingKey } from "../../Data/SourceConnectionData";
 
 interface Props {
   heading: string;
   sortFilterOptions: ColumnSortFilterOptions;
+  onSort: (field: FieldMappingKey, order: string) => void;
 }
 
-const FilterSortPopup = ({ heading, sortFilterOptions }: Props) => {
+const FilterSortPopup = ({ heading, sortFilterOptions, onSort }: Props) => {
   if (!sortFilterOptions.isEnabled)
     return (
       <Text
@@ -52,8 +54,18 @@ const FilterSortPopup = ({ heading, sortFilterOptions }: Props) => {
               <PopoverHeader>Sort by</PopoverHeader>
               <PopoverBody>
                 <Stack spacing={2}>
-                  <Button variant="outline">Ascending</Button>
-                  <Button variant="outline">Descending</Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => onSort(heading as FieldMappingKey, "asc")}
+                  >
+                    Ascending
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => onSort(heading as FieldMappingKey, "asc")}
+                  >
+                    Descending
+                  </Button>
                 </Stack>
               </PopoverBody>
             </Box>
@@ -63,7 +75,11 @@ const FilterSortPopup = ({ heading, sortFilterOptions }: Props) => {
               <PopoverHeader>Search</PopoverHeader>
               <PopoverBody>
                 <HStack>
-                  <Input />
+                  <Input
+                    onChange={(e) =>
+                      console.log("Search box: ", e.target.value)
+                    }
+                  />
                   <Button>
                     <FaSearch />
                   </Button>

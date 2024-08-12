@@ -9,7 +9,7 @@ import { useAppDataQuery } from "../../hooks/useAppDataQuery";
 
 export interface Application {
   id: number;
-  name: string;
+  alias: string;
   description: string;
   is_active: boolean;
   is_deleted: boolean;
@@ -64,8 +64,8 @@ const AppDashboard = () => {
           justifyContent={"center"}
         >
           <SourceConnectionData appId={appId} />
-          <DestinationConnectionData appId={appId} />
-          <ReportsConnectionData product={location?.state} />
+          {/* <DestinationConnectionData appId={appId} />
+          <ReportsConnectionData product={location?.state} /> */}
         </VStack>
       </Box>
     </Box>

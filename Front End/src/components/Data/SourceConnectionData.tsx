@@ -3,19 +3,39 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
+import { useState } from "react";
 
 interface SourceConnectionDataProps {
   appId: number;
 }
 
+export type FieldMappingKey = keyof typeof fieldMapping;
+export const fieldMapping = {
+  Alias: "alias",
+  "Connection Type": "type",
+  Host: "host",
+  Port: "port",
+  "Database Name": "databaseName",
+  Username: "username",
+} as const;
+
 const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
+  const [sortField, setSortField] = useState("alias");
+  const [sortOrder, setSortOrder] = useState("desc");
+
   const {
     data: sourceConnections,
     isLoading,
     isError,
     error,
-  } = useSourceConnectionsQuery(appId);
+  } = useSourceConnectionsQuery(appId, sortField, sortOrder);
 
+  const handleSort = (field: FieldMappingKey, order: string) => {
+    console.log(fieldMapping[field], order);
+    setSortField(fieldMapping[field]);
+    setSortOrder(order);
+    console.log("Updated: ", field, order);
+  };
   // Map sourceConnections to SourceConnection objects
   const sourceConnectionsList: SourceConnection[] = [];
   if (sourceConnections) {
@@ -54,7 +74,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
             : "Failed to fetch source connection data."}
         </Alert>
       ) : (
-        <CustomTable tableManager={manager} />
+        <CustomTable tableManager={manager} onSort={handleSort} />
       )}
     </>
   );

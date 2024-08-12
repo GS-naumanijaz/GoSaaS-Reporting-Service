@@ -10,7 +10,7 @@ import { useProductsQuery } from "../../hooks/useProductsQuery";
 import { useEffect } from "react";
 
 export interface Product {
-  name: string;
+  alias: string;
   id: number;
   description: string;
   is_active: boolean;
