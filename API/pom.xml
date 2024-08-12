@@ -52,6 +52,14 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Amazon s3 bucket -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.20.28</version>
+		</dependency>
+
+
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
