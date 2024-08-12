@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,6 +81,22 @@ public class DestinationConnectionService {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
         }
     }
+
+    public List<DestinationConnection> bulkUpdateIsActive(List<Integer> destinationConnectionIds, boolean isActive) {
+        List<DestinationConnection> updatedConnections = new ArrayList<>();
+
+        for (Integer id : destinationConnectionIds) {
+            Optional<DestinationConnection> optionalConnection = destinationConnectionRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                DestinationConnection connection = optionalConnection.get();
+                connection.setIsActive(isActive);
+                updatedConnections.add(destinationConnectionRepository.save(connection));
+            }
+        }
+
+        return updatedConnections;
+    }
+
 
     public void deleteDestinationConnection(int destinationConnectionId) {
         Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
