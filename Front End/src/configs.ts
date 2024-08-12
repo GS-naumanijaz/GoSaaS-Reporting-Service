@@ -28,3 +28,9 @@ export const sx = {
     borderRadius: "4px",
   },
 };
+
+// App Validations
+export const minimumAppName = 3;
+export const maximumAppName = 20;
+export const minimumAppDescription = 20;
+export const maximumAppDescription = 250;

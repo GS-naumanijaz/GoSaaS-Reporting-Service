@@ -29,7 +29,6 @@ const fetchProducts = async (
   );
 
   const data = await response.json();
-  console.log("Data returned: ", data.data);
   return data.data;
 };
 
