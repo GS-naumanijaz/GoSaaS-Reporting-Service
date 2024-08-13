@@ -220,19 +220,19 @@ export class SourceConnection extends TableRowData {
         this.connection_type = newValue;
         break;
       case 2:
-        this.host = newValue;
+        this.database_name = newValue;
         break;
       case 3:
-        this.port = newValue;
-        break;
-      case 4:
-        this.connection_type = newValue;
-        break;
-      case 5:
         this.host = newValue;
         break;
-      case 6:
+      case 4:
         this.port = newValue;
+        break;
+      case 5:
+        this.username = newValue;
+        break;
+      case 6:
+        this.password = newValue;
         break;
     }
   }

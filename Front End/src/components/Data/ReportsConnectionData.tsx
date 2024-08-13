@@ -33,7 +33,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
           reportConnection.description,
           reportConnection.source_connection.alias,
           reportConnection.destination_connection.alias,
-          reportConnection.stored_procedure,
+          reportConnection.storedProcedure,
           reportConnection.params,
           reportConnection.application
         )

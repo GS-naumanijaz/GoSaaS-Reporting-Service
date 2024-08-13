@@ -108,12 +108,8 @@ const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
     isSelectingRows,
   } = tableState;
 
-  // if (tableData.length === 0)
-  //   return (
-  //     <Box padding={2}>
-  //       <Text>{`Implement case where data doesnt exist`}</Text>
-  //     </Box>
-  //   );
+  console.log(tableManager);
+
   return (
     <Box
       borderWidth={3}

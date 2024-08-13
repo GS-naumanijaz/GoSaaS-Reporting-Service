@@ -5,11 +5,10 @@ import { TableRowData } from "./TableRowData";
 export class DestinationConnection extends TableRowData {
   private destinationId: number;
   private alias: string;
-  private type: string;
-  private url: string;
-  private port: string;
-  private access_key: string;
-  private secret_key: string;
+  private accessKey: string;
+  private secretKey: string;
+  private bucketName: string;
+  private region: string;
   // private appId: number;
   private application: Application;
   private isActive: boolean;
@@ -19,9 +18,8 @@ export class DestinationConnection extends TableRowData {
   private static tableHeadings = [
     "",
     "Alias",
-    "Type",
-    "URL",
-    "Port",
+    "Bucket Name",
+    "Region",
     "Access Key",
     "Secret Key",
     "Active Status",
@@ -32,8 +30,7 @@ export class DestinationConnection extends TableRowData {
   private static columnWidths = [
     "5%",
     "25%",
-    "10%",
-    "10%",
+    "20%",
     "10%",
     "10%",
     "10%",
@@ -52,24 +49,18 @@ export class DestinationConnection extends TableRowData {
       validation: { required: true, minLength: 2, maxLength: 20 },
     },
     {
-      name: "Type",
-      label: "type",
-      isSelectable: true,
-      options: ["SQL", "NoSQL"],
-    },
-    {
-      name: "Url",
-      label: "url",
+      name: "Bucket Name",
+      label: "bucket name",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {required: true, minLength: 2, maxLength: 100},
     },
     {
-      name: "Port",
-      label: "port",
+      name: "Region",
+      label: "region",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {required: true, minLength: 2, maxLength: 100},
     },
     {
       name: "Access Key",
@@ -96,10 +87,7 @@ export class DestinationConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["SQL", "NoSQL"],
-    },
-    {
-      isEnabled: true,
+      isSortable: true,
       isSearchable: true,
     },
     {
@@ -135,12 +123,10 @@ export class DestinationConnection extends TableRowData {
   constructor(
     connectionId: number = 0,
     alias: string = "",
-    type: string = "",
-    url: string = "",
-    port: string = "",
     access_key: string = "",
     secret_key: string = "",
-    // appId: number,
+    bucketName: string = "",
+    region: string = "",
     application: Application = {
       id: 0,
       alias: "",
@@ -158,11 +144,10 @@ export class DestinationConnection extends TableRowData {
     super();
     this.destinationId = connectionId;
     this.alias = alias;
-    this.type = type;
-    this.url = url;
-    this.port = port;
-    this.access_key = access_key;
-    this.secret_key = secret_key;
+    this.bucketName = bucketName;
+    this.region = region;
+    this.accessKey = access_key;
+    this.secretKey = secret_key;
     // this.appId = appId;
     this.application = application;
     this.isActive = isActive;
@@ -175,11 +160,10 @@ export class DestinationConnection extends TableRowData {
   getTableData(): string[] {
     return [
       this.alias,
-      this.type,
-      this.url,
-      this.port,
-      this.access_key,
-      this.secret_key,
+      this.bucketName,
+      this.region,
+      this.accessKey,
+      this.secretKey,
     ];
   }
 
@@ -201,30 +185,26 @@ export class DestinationConnection extends TableRowData {
         this.alias = newValue;
         break;
       case 1:
-        this.type = newValue;
+        this.bucketName = newValue;
         break;
       case 2:
-        this.url = newValue;
+        this.region = newValue;
         break;
       case 3:
-        this.port = newValue;
+        this.accessKey = newValue;
         break;
       case 4:
-        this.access_key = newValue;
-        break;
-      case 5:
-        this.secret_key = newValue;
+        this.secretKey = newValue;
         break;
     }
   }
 
   editCompleteRow(newValue: string[]) {
     this.alias = newValue[0];
-    this.type = newValue[1];
-    this.url = newValue[2];
-    this.port = newValue[3];
-    this.access_key = newValue[4];
-    this.secret_key = newValue[5];
+    this.bucketName = newValue[1];
+    this.region = newValue[2];
+    this.accessKey = newValue[3];
+    this.secretKey = newValue[4];
   }
 
   getInputFields(): InputField[] {
@@ -236,7 +216,7 @@ export class DestinationConnection extends TableRowData {
   }
 
   getEditAccess(): boolean[] {
-    return [true, true, true, true, true, true];
+    return [true, true, true, true, true];
   }
 
   requiresCheckBox(): boolean {

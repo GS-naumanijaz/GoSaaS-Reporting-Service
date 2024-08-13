@@ -37,17 +37,18 @@ const DestinationConnectionData = ({
         new DestinationConnection(
           destinationConnection.id,
           destinationConnection.alias,
-          destinationConnection.type ?? "",
-          destinationConnection.url,
-          destinationConnection.port,
-          destinationConnection.secret_key,
-          destinationConnection.access_key,
+          destinationConnection.secretKey,
+          destinationConnection.accessKey,
+          destinationConnection.bucketName,
+          destinationConnection.region,
           destinationConnection.application,
           destinationConnection.is_active
         )
       );
     });
   }
+
+  console.log(destinationConnections)
 
   const manager = new TableManager(
     new DestinationConnection(),
@@ -66,7 +67,13 @@ const DestinationConnectionData = ({
             : "Failed to fetch destination connection data."}
         </Alert>
       ) : (
-        <CustomTable tableManager={manager} onSort={handleSort} />
+        <CustomTable
+          tableManager={manager}
+          onSort={handleSort}
+          onSearch={() => {
+            throw new Error("search implement karo destination connection me");
+          }}
+        />
       )}
     </>
   );

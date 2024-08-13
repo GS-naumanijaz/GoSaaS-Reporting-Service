@@ -23,6 +23,8 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     error,
   } = useSourceConnectionsQuery(appId, sortField, sortOrder);
 
+
+
   // Apply filtering based on searchTerm and
   sourceConnections?.forEach((sourceConnection: any) => {
     console.log(sourceConnection[searchField], searchTerm);
@@ -43,9 +45,9 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           sourceConnection.id,
           sourceConnection.alias,
           sourceConnection.type ?? "",
+          sourceConnection.database_name,
           sourceConnection.host,
           sourceConnection.port.toString(),
-          sourceConnection.database_name,
           sourceConnection.username,
           sourceConnection.password,
           sourceConnection.application,

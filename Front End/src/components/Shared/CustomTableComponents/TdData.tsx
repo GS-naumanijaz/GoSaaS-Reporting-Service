@@ -50,7 +50,7 @@ const TdData = ({
     setError(error);
     handleInputChange(value, error); // Always apply changes
   };
-
+  
   return (
     <Td textAlign="center">
       {isEditing && isEditable ? (
