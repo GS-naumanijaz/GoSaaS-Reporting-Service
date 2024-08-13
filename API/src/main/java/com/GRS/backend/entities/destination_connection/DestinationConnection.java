@@ -4,13 +4,11 @@ package com.GRS.backend.entities.destination_connection;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.request.Request;
-import com.GRS.backend.enums.DestinationConnectionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;

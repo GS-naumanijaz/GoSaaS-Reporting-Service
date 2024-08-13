@@ -1,7 +1,5 @@
 package com.GRS.backend.utilities;
 
-import com.GRS.backend.enums.SourceConnectionType;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

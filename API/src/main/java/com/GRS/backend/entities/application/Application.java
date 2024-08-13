@@ -4,19 +4,14 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.source_connection.SourceConnection;
-import com.GRS.backend.entities.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity

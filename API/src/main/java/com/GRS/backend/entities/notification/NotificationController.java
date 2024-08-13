@@ -1,8 +1,6 @@
 package com.GRS.backend.entities.notification;
 
 import com.GRS.backend.annotations.QueryParams;
-import com.GRS.backend.entities.application.Application;
-import com.GRS.backend.entities.notification.Notification;
 import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.request.RequestService;
 import com.GRS.backend.resolver.QueryArgumentResolver;
@@ -14,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
 
 @RestController
