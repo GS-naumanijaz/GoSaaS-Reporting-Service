@@ -42,7 +42,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           sourceConnection.id,
           sourceConnection.alias,
           sourceConnection.type ?? "",
-          sourceConnection.database_name,
+          sourceConnection.databaseName,
           sourceConnection.host,
           sourceConnection.port.toString(),
           sourceConnection.username,
