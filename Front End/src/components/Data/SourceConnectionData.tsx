@@ -48,7 +48,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           sourceConnection.username,
           sourceConnection.password,
           sourceConnection.application,
-          sourceConnection.is_active
+          sourceConnection.isActive
         )
     );
 
