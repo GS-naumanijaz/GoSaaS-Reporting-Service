@@ -4,15 +4,17 @@ import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 import { useState } from "react";
-import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import { FieldMappingKey } from "../../services/sortMappings";
 
 interface SourceConnectionDataProps {
   appId: number;
 }
 
 const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
-  const [sortField, setSortField] = useState("alias");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortField, setSortField] = useState<FieldMappingKey>("Alias");
+  const [sortOrder, setSortOrder] = useState<string>("desc");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchField, setSearchField] = useState<string>("");
 
   const {
     data: sourceConnections,
@@ -21,17 +23,22 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     error,
   } = useSourceConnectionsQuery(appId, sortField, sortOrder);
 
-  const handleSort = (field: FieldMappingKey, order: string) => {
-    console.log(fieldMapping[field], order);
-    setSortField(fieldMapping[field]);
-    setSortOrder(order);
-    console.log("Updated: ", field, order);
-  };
+  // Apply filtering based on searchTerm and
+  sourceConnections?.forEach((sourceConnection: any) => {
+    console.log(sourceConnection[searchField], searchTerm);
+  });
+
+  const filteredSourceConnections =
+    sourceConnections?.filter((sourceConnection: any) =>
+      searchField && searchTerm
+        ? sourceConnection[searchField].toString().includes(searchTerm)
+        : true
+    ) || [];
+
   // Map sourceConnections to SourceConnection objects
-  const sourceConnectionsList: SourceConnection[] = [];
-  if (sourceConnections) {
-    sourceConnections.forEach((sourceConnection: any) => {
-      sourceConnectionsList.push(
+  const sourceConnectionsList: SourceConnection[] =
+    filteredSourceConnections.map(
+      (sourceConnection: any) =>
         new SourceConnection(
           sourceConnection.id,
           sourceConnection.alias,
@@ -44,14 +51,23 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           sourceConnection.application,
           sourceConnection.is_active
         )
-      );
-    });
-  }
+    );
 
   const manager = new TableManager(
     new SourceConnection(),
     sourceConnectionsList
   );
+
+  console.log("sourceConnectionsList", sourceConnectionsList);
+  const handleSort = (field: FieldMappingKey, order: string) => {
+    setSortField(field);
+    setSortOrder(order);
+  };
+
+  const handleSearch = (searchTerm: string, field: string) => {
+    setSearchTerm(searchTerm);
+    setSearchField(field);
+  };
 
   return (
     <>
@@ -65,7 +81,11 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
             : "Failed to fetch source connection data."}
         </Alert>
       ) : (
-        <CustomTable tableManager={manager} onSort={handleSort} />
+        <CustomTable
+          tableManager={manager}
+          onSort={handleSort}
+          onSearch={handleSearch}
+        />
       )}
     </>
   );
