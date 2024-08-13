@@ -36,7 +36,7 @@ public class RequestService {
         if (request.isPresent()) {
             return request.get();
         } else {
-            throw new EntityNotFoundException("Application", requestId);
+            throw new EntityNotFoundException("Request", requestId);
         }
     }
 

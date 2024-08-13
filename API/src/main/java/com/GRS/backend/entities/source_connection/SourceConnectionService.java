@@ -51,7 +51,7 @@ public class SourceConnectionService {
         if (connection.isPresent()) {
             return connection.get();
         } else {
-            throw new EntityNotFoundException("Application", sourceConnectionId);
+            throw new EntityNotFoundException("Source Connection", sourceConnectionId);
         }
     }
 

@@ -74,30 +74,35 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String extractFieldName(String message) {
-        // Pattern to match the field name after "Key (field_name)="
+        // Pattern to match the field name after "Key (field_name1, field_name2, ...)="
         String patternString = "Key \\((.*?)\\)=";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) {
-            return matcher.group(1); // Return the field name part
+            String fieldNames = matcher.group(1); // Get the full list of field names
+            String[] fieldNamesArray = fieldNames.split(","); // Split by comma
+            return fieldNamesArray[fieldNamesArray.length - 1].trim(); // Return the last field name, trimmed of any whitespace
         }
 
         return null;
     }
 
     private String extractKeyValue(String message) {
-        // Pattern to match the key value after "Detail: Key (field_name)=(value)"
-        String patternString = "Detail: Key \\((.*?)\\)=\\((.*?)\\)";
+        // Pattern to match the key value after "Detail: Key (field_name)=(value1, value2, ...)"
+        String patternString = "Detail: Key \\(.*?\\)=\\((.*?)\\)";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) {
-            return matcher.group(2); // Return the value part
+            String keyValues = matcher.group(1); // Get the full list of key values
+            String[] keyValuesArray = keyValues.split(","); // Split by comma
+            return keyValuesArray[keyValuesArray.length - 1].trim(); // Return the last key value, trimmed of any whitespace
         }
 
         return null;
     }
+
 
 
 

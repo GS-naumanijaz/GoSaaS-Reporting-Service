@@ -48,7 +48,7 @@ public class ReportService {
         if (report.isPresent()) {
             return report.get();
         } else {
-            throw new EntityNotFoundException("Application", reportId);
+            throw new EntityNotFoundException("Report", reportId);
         }
     }
 
