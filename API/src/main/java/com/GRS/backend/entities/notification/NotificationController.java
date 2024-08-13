@@ -47,7 +47,7 @@ public class NotificationController {
 
     @PostMapping("/{requestId}")
     public ResponseEntity<Object> addNotification(@Valid @RequestBody Notification notification, @PathVariable int requestId) {
-        Optional<Request> notificationApp = requestService.getRequestById(requestId);
+        Request notificationApp = requestService.getRequestById(requestId);
 
 //        notification.set(notificationApp.get());
 

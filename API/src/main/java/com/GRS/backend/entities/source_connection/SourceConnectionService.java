@@ -3,6 +3,7 @@ package com.GRS.backend.entities.source_connection;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.DatabaseConnectionTester;
 import com.GRS.backend.utilities.FieldUpdater;
@@ -12,7 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.Source;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,8 +46,13 @@ public class SourceConnectionService {
 
     }
 
-    public Optional<SourceConnection> getSourceConnectionById(int sourceConnectionId) {
-        return sourceConnectionRepository.findById(sourceConnectionId);
+    public SourceConnection getSourceConnectionById(int sourceConnectionId) {
+        Optional<SourceConnection> connection = sourceConnectionRepository.findById(sourceConnectionId);
+        if (connection.isPresent()) {
+            return connection.get();
+        } else {
+            throw new EntityNotFoundException("Source Connection", sourceConnectionId);
+        }
     }
 
     public Boolean testSourceConnection(SourceConnection sourceConnection) {
@@ -88,6 +97,21 @@ public class SourceConnectionService {
         }
     }
 
+    public List<SourceConnection> bulkUpdateIsActive(List<Integer> sourceConnectionIds, boolean isActive) {
+        List<SourceConnection> updatedConnections = new ArrayList<>();
+
+        for (Integer id : sourceConnectionIds) {
+            Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                SourceConnection connection = optionalConnection.get();
+                connection.setIsActive(isActive);
+                updatedConnections.add(sourceConnectionRepository.save(connection));
+            }
+        }
+
+        return updatedConnections;
+    }
+
     public void deleteSourceConnection(int sourceConnectionId) {
         Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
 
@@ -102,6 +126,28 @@ public class SourceConnectionService {
             throw new EntityNotFoundException("SourceConnection", sourceConnectionId);
         }
     }
+
+    public Integer bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
+        Integer deletedCount = 0;
+
+        for (Integer id : sourceConnectionIds) {
+            Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                SourceConnection existingSourceConnection = optionalConnection.get();
+
+                if (!existingSourceConnection.getIsDeleted()) {
+                    existingSourceConnection.setIsDeleted(true);
+                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+
+                    sourceConnectionRepository.save(existingSourceConnection);
+                    deletedCount++;
+                }
+
+            }
+        }
+        return deletedCount;
+    }
+
     
     
 }

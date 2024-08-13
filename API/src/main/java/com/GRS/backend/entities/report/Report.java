@@ -12,7 +12,9 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reports")
+@Table(name = "reports", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"app_id", "alias"}, name = "unique_report_alias_per_application")
+})
 @Setter
 @Getter
 public class Report {
@@ -22,8 +24,8 @@ public class Report {
 
     //Foreign Keys
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "app_id", referencedColumnName = "id")
-    private Application application; //Assigned to when creating report
+    @JoinColumn(name = "app_id", referencedColumnName = "id", nullable = false)
+    private Application application;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "destination_id", referencedColumnName = "id")

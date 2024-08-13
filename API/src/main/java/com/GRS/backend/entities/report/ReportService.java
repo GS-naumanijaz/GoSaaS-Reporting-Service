@@ -3,6 +3,7 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,8 +43,13 @@ public class ReportService {
         throw new EntityNotFoundException("Application", appId);
     }
 
-    public Optional<Report> getReportById(int reportId) {
-        return reportRepository.findById(reportId);
+    public Report getReportById(int reportId) {
+        Optional<Report> report = reportRepository.findById(reportId);
+        if (report.isPresent()) {
+            return report.get();
+        } else {
+            throw new EntityNotFoundException("Report", reportId);
+        }
     }
 
     public Report addReport(Report report) {
@@ -82,4 +89,25 @@ public class ReportService {
             throw new EntityNotFoundException("Report", reportId);
         }
     }
+
+    public Integer bulkDeleteReports(List<Integer> reportIds) {
+        Integer deletedCount = 0;
+
+        for (Integer id : reportIds) {
+            Optional<Report> optionalConnection = reportRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                Report existingSourceConnection = optionalConnection.get();
+
+                if (!existingSourceConnection.getIsDeleted()) {
+                    existingSourceConnection.setIsDeleted(true);
+                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+
+                    reportRepository.save(existingSourceConnection);
+                    deletedCount++;
+                }
+            }
+        }
+        return deletedCount;
+    }
+
 }

@@ -40,13 +40,8 @@ public class ApplicationController {
 
     @GetMapping("/{appId}")
     public ResponseEntity<Object> getApplicationById(@PathVariable int appId) {
-        Optional<Application> applicationToAdd = applicationService.getApplicationById(appId);
-        if (applicationToAdd.isPresent()) {
-            logger.error("Application found successfully");
-            return Response.responseBuilder("Application found successfully", HttpStatus.OK, applicationToAdd);
-        } else {
-            return Response.responseBuilder("Failed to find application", HttpStatus.OK, null);
-        }
+        Application applicationToAdd = applicationService.getApplicationById(appId);
+        return Response.responseBuilder("Application found successfully", HttpStatus.OK, applicationToAdd);
     }
 
     @PostMapping

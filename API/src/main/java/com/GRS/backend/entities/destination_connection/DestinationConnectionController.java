@@ -40,33 +40,28 @@ public class DestinationConnectionController {
 
     @GetMapping("/{destinationId}")
     public ResponseEntity<Object> getDestinationConnectionById(@PathVariable int destinationId) {
-        Optional<DestinationConnection> connectionToAdd = destinationConnectionService.getDestinationConnectionById(destinationId);
-        if (connectionToAdd.isPresent()) {
-            return Response.responseBuilder("Destination Connection found successfully", HttpStatus.OK, connectionToAdd);
-        } else {
-            return Response.responseBuilder("Failed to find destination connection", HttpStatus.BAD_REQUEST, null);
-        }
+        DestinationConnection connectionToAdd = destinationConnectionService.getDestinationConnectionById(destinationId);
+        return Response.responseBuilder("Destination Connection found successfully", HttpStatus.OK, connectionToAdd);
+
     }
 
     @GetMapping("/{destinationId}/test")
     public ResponseEntity<Object> testDestinationConnection(@PathVariable int destinationId) {
-        Optional<DestinationConnection> connectionToTest = destinationConnectionService.getDestinationConnectionById(destinationId);
-        if (connectionToTest.isPresent()) {
-            if (destinationConnectionService.testDestinationConnection(connectionToTest.get())) {
-                return Response.responseBuilder("Destination Connection was tested successfully", HttpStatus.OK);
-            } else {
-                return Response.responseBuilder("Destination Connection failed test", HttpStatus.BAD_REQUEST);
-            }
+        DestinationConnection connectionToTest = destinationConnectionService.getDestinationConnectionById(destinationId);
+
+        if (destinationConnectionService.testDestinationConnection(connectionToTest)) {
+            return Response.responseBuilder("Destination Connection was tested successfully", HttpStatus.OK);
         } else {
-            return Response.responseBuilder("Failed to find destination connection", HttpStatus.BAD_REQUEST, null);
+            return Response.responseBuilder("Destination Connection failed test", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @PostMapping("")
     public ResponseEntity<Object> addDestinationConnection(@Valid @RequestBody DestinationConnection destinationConnection, @PathVariable int appId) {
-        Optional<Application> destinationApp = applicationService.getApplicationById(appId);
+        Application destinationApp = applicationService.getApplicationById(appId);
 
-        destinationConnection.setApplication(destinationApp.get());
+        destinationConnection.setApplication(destinationApp);
 
         DestinationConnection createdDestinationConnection = destinationConnectionService.addDestinationConnection(destinationConnection);
 
@@ -98,6 +93,18 @@ public class DestinationConnectionController {
     public ResponseEntity<Object> deleteDestinationConnection(@PathVariable int destinationId) {
         destinationConnectionService.deleteDestinationConnection(destinationId);
         return Response.responseBuilder("Destination Connection deleted successfully", HttpStatus.OK, null);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteDestinationConnections(@RequestBody List<Integer> destinationIds) {
+        Integer deletedCount = destinationConnectionService.bulkDeleteDestinationConnections(destinationIds);
+        if (deletedCount == destinationIds.size()) {
+            return Response.responseBuilder("All Destination Connections deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Destination Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Destination Connections could not be deleted", HttpStatus.BAD_REQUEST);
+        }
     }
     
 }

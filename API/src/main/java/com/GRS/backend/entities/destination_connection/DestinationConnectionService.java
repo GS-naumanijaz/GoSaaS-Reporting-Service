@@ -3,6 +3,7 @@ package com.GRS.backend.entities.destination_connection;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import com.GRS.backend.utilities.S3BucketTester;
@@ -41,8 +42,13 @@ public class DestinationConnectionService {
 
     }
 
-    public Optional<DestinationConnection> getDestinationConnectionById(int destinationConnectionId) {
-        return destinationConnectionRepository.findById(destinationConnectionId);
+    public DestinationConnection getDestinationConnectionById(int destinationConnectionId) {
+        Optional<DestinationConnection> connection = destinationConnectionRepository.findById(destinationConnectionId);
+        if (connection.isPresent()) {
+            return connection.get();
+        } else {
+            throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
+        }
     }
 
     public boolean testDestinationConnection(DestinationConnection destinationConnection) {
@@ -109,6 +115,26 @@ public class DestinationConnectionService {
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
         }
+    }
+
+    public Integer bulkDeleteDestinationConnections(List<Integer> destinationIds) {
+        Integer deletedCount = 0;
+
+        for (Integer id : destinationIds) {
+            Optional<DestinationConnection> optionalConnection = destinationConnectionRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                DestinationConnection existingSourceConnection = optionalConnection.get();
+
+                if (!existingSourceConnection.getIsDeleted()) {
+                    existingSourceConnection.setIsDeleted(true);
+                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+
+                    destinationConnectionRepository.save(existingSourceConnection);
+                    deletedCount++;
+                }
+            }
+        }
+        return deletedCount;
     }
 
 

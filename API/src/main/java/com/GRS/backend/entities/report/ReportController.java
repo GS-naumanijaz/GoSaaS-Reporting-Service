@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -50,24 +51,22 @@ public class ReportController {
 
     @GetMapping("/{reportId}")
     public ResponseEntity<Object> getReportById(@PathVariable int reportId) {
-        Optional<Report> reportToAdd = reportService.getReportById(reportId);
-        if (reportToAdd.isPresent()) {
-            return Response.responseBuilder("Report found successfully", HttpStatus.OK, reportToAdd);
-        } else {
-            return Response.responseBuilder("Failed to find report", HttpStatus.OK, null);
-        }
+        Report reportToAdd = reportService.getReportById(reportId);
+
+        return Response.responseBuilder("Report found successfully", HttpStatus.OK, reportToAdd);
+
     }
 
     @PostMapping("")
     public ResponseEntity<Object> addReport(@Valid @RequestBody ReportRequestBody reportRequest, @PathVariable int appId) {
-        Optional<Application> reportApp = applicationService.getApplicationById(appId);
+        Application reportApp = applicationService.getApplicationById(appId);
 
         Report report = reportRequest.report;
 
-        report.setApplication(reportApp.get());
+        report.setApplication(reportApp);
 
         if (reportRequest.sourceId != null) {
-            SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId).get();
+            SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
 
             sourceConnection.addReport(report);
 
@@ -76,7 +75,7 @@ public class ReportController {
         }
 
         if (reportRequest.destinationId != null) {
-            DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId).get();
+            DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId);
 
             destinationConnection.addReport(report);
 
@@ -94,14 +93,14 @@ public class ReportController {
         Report updatedReport = reportService.updateReport(reportId, reportRequest.report);
 
         if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSource_connection().getId()) {
-            SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId).get();
+            SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
 
             sourceConnection.addReport(updatedReport);
             sourceConnectionService.addSourceConnection(sourceConnection);
         }
 
         if (reportRequest.destinationId != null && reportRequest.destinationId != updatedReport.getDestination_connection().getId()) {
-            DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId).get();
+            DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId);
 
             destinationConnection.addReport(updatedReport);
             destinationConnectionService.addDestinationConnection(destinationConnection);
@@ -120,8 +119,8 @@ public class ReportController {
 
     @PutMapping("/{reportId}/source-connections/{sourceId}")
     public ResponseEntity<Object> connectSourceToReport(@PathVariable int reportId, @PathVariable int sourceId) {
-        Report report = reportService.getReportById(reportId).get();
-        SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId).get();
+        Report report = reportService.getReportById(reportId);
+        SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId);
 
         sourceConnection.addReport(report);
 
@@ -133,8 +132,8 @@ public class ReportController {
 
     @PutMapping("/{reportId}/destination-connections/{destinationId}")
     public ResponseEntity<Object> connectDestinationToReport(@PathVariable int reportId, @PathVariable int destinationId) {
-        Report report = reportService.getReportById(reportId).get();
-        DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(destinationId).get();
+        Report report = reportService.getReportById(reportId);
+        DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(destinationId);
 
         destinationConnection.addReport(report);
 
@@ -142,6 +141,18 @@ public class ReportController {
         reportService.addReport(report);
 
         return Response.responseBuilder("Destination Connection connected to Report Successfully", HttpStatus.OK, null);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteReports(@RequestBody List<Integer> reportIds) {
+        Integer deletedCount = reportService.bulkDeleteReports(reportIds);
+        if (deletedCount == reportIds.size()) {
+            return Response.responseBuilder("All Reports deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Reports could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Reports could not be deleted", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

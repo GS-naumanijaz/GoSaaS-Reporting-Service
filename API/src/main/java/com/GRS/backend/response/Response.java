@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class Response {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         response.put("httpStatus", httpStatus);
-        response.put("timestamp", LocalDate.now());
+        response.put("timestamp", LocalDateTime.now());
         response.put("data", responseObject);
 
         return new ResponseEntity<>(response, httpStatus);
@@ -29,7 +30,7 @@ public class Response {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         response.put("httpStatus", httpStatus);
-        response.put("timestamp", LocalDate.now());
+        response.put("timestamp", LocalDateTime.now());
         response.put("data", responseObject);
 
         return new ResponseEntity<>(response, httpStatus);
@@ -42,7 +43,7 @@ public class Response {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         response.put("httpStatus", httpStatus);
-        response.put("timestamp", LocalDate.now());
+        response.put("timestamp", LocalDateTime.now());
 
         return new ResponseEntity<>(response, httpStatus);
     }
