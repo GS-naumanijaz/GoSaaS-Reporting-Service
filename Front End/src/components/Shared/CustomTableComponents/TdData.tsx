@@ -50,7 +50,7 @@ const TdData = ({
     setError(error);
     handleInputChange(value, error); // Always apply changes
   };
-  
+
   return (
     <Td textAlign="center">
       {isEditing && isEditable ? (
@@ -92,8 +92,10 @@ const TdData = ({
             </FormControl>
           )}
         </Box>
+      ) : inputField.isHidden ? (
+        "*".repeat(data.length)
       ) : (
-        inputField.isHidden ? "*".repeat(data.length) : data
+        data
       )}
     </Td>
   );

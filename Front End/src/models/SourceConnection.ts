@@ -106,7 +106,7 @@ export class SourceConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["SQL", "NoSQL"],
+      dropdownFilter: ["All", "MYSQL", "ORACLE"],
     },
     {
       isEnabled: true,
@@ -133,7 +133,7 @@ export class SourceConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["Active", "Inactive"],
+      dropdownFilter: ["All", "Active", "Inactive"],
     },
     {
       isEnabled: false,

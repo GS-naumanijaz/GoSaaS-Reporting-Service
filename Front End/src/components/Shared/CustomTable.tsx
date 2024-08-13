@@ -108,8 +108,6 @@ const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
     isSelectingRows,
   } = tableState;
 
-  console.log(tableManager);
-
   return (
     <Box
       borderWidth={3}

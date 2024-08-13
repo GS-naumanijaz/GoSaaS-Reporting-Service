@@ -4,7 +4,7 @@ import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 import { useState } from "react";
-import { FieldMappingKey } from "../../services/sortMappings";
+import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
 interface SourceConnectionDataProps {
   appId: number;
@@ -23,16 +23,33 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     error,
   } = useSourceConnectionsQuery(appId, sortField, sortOrder);
 
+  // Determine the actual field to search by, using fieldMapping if it exists
+  const actualSearchField =
+    fieldMapping[searchField as FieldMappingKey] || searchField;
+
   // Apply filtering based on searchTerm and searchField
   const filteredSourceConnections =
-    sourceConnections?.filter((sourceConnection: any) =>
-      searchField && searchTerm
-        ? sourceConnection[searchField]
-            .toLowerCase()
-            .toString()
-            .includes(searchTerm)
-        : true
-    ) || [];
+    sourceConnections?.filter((sourceConnection: any) => {
+      if (actualSearchField && searchTerm) {
+        const fieldValue = sourceConnection[actualSearchField];
+        // Compare in lowercase if both are strings
+        if (typeof fieldValue === "string" && typeof searchTerm === "string") {
+          return fieldValue.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+        if (typeof fieldValue === "number" && typeof searchTerm === "string") {
+          return fieldValue.toString().includes(searchTerm);
+        }
+        if (typeof fieldValue === "boolean" && typeof searchTerm === "string") {
+          console.log("Bool: ", fieldValue, searchTerm);
+          const searchBoolean = searchTerm.toLowerCase() === "active";
+          return fieldValue === searchBoolean;
+        }
+        // console.log(sourceConnection[actualSearchField]);
+        // Fall back to normal comparison
+        return fieldValue.includes(searchTerm);
+      }
+      return true;
+    }) || [];
 
   // Map sourceConnections to SourceConnection objects
   const sourceConnectionsList: SourceConnection[] =
@@ -57,7 +74,6 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     sourceConnectionsList
   );
 
-  console.log("sourceConnectionsList", sourceConnectionsList);
   const handleSort = (field: FieldMappingKey, order: string) => {
     setSortField(field);
     setSortOrder(order);
@@ -68,7 +84,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     setSearchField(field);
   };
 
-  return (
+   return (
     <>
       {isLoading ? (
         <Spinner size="xl" />

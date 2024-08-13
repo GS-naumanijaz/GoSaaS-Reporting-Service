@@ -55,26 +55,30 @@ export class ReportsConnection extends TableRowData {
     {
       name: "Connection",
       label: "connection",
-      isSelectable: true,
-      options: ["Test 1", "Get", "From", "Database"],
+      isSelectable: false,
+      type: "text",
+      validation: { required: true },
     },
     {
       name: "Destination",
       label: "destination",
-      isSelectable: true,
-      options: ["Test 2", "Get", "From", "Database"],
+      isSelectable: false,
+      type: "text",
+      validation: { required: true },
     },
     {
       name: "Stored Procedures",
       label: "stored_pocedures",
-      isSelectable: true,
-      options: ["Test 3", "Get", "From", "Database"],
+      isSelectable: false,
+      type: "text",
+      validation: { required: true },
     },
     {
       name: "Parameters",
       label: "parameters",
-      isSelectable: true,
-      options: ["Test 2", "Get", "From", "Database"],
+      isSelectable: false,
+      type: "text",
+      validation: { required: true },
     },
   ];
 
@@ -91,19 +95,23 @@ export class ReportsConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["Test 1", "Get", "From", "Database"],
+      isSortable: true,
+      isSearchable: true,
     },
     {
       isEnabled: true,
-      dropdownFilter: ["Test 2", "Get", "From", "Database"],
+      isSortable: true,
+      isSearchable: true,
     },
     {
       isEnabled: true,
-      dropdownFilter: ["Test 3", "Get", "From", "Database"],
+      isSortable: true,
+      isSearchable: true,
     },
     {
       isEnabled: true,
-      dropdownFilter: ["Test 4", "Get", "From", "Database"],
+      isSortable: true,
+      isSearchable: true,
     },
     {
       isEnabled: false,
