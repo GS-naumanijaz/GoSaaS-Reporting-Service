@@ -36,12 +36,12 @@ export const useReportsQuery = (
     queryKey: ["reportsConnections", productId, sortField, sortOrder],
     queryFn: () => {
       if (!productId) {
-        return Promise.reject("No product ID provided.");
+        throw new Error("No product ID provided.");
       }
       return fetchReportsConnections(productId, sortField, sortOrder);
     },
     enabled: !!productId, // Only fetch if productId is provided
     staleTime: 0, // Mark data as stale as soon as it is received
-    gcTime: 0, // No caching
+    gcTime: 0, // No caching (note: 'gcTime' is an incorrect option in react-query)
   });
 };

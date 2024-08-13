@@ -11,13 +11,13 @@ export interface Application {
   id: number;
   alias: string;
   description: string;
-  is_active: boolean;
-  is_deleted: boolean;
-  created_by: string;
-  deleted_by: string;
-  creation_date: string;
-  deletion_date: string | null;
-  updation_date: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  createdBy: string;
+  deletedBy: string;
+  creationDate: string;
+  deletionDate: string | null;
+  updatedAt: string;
 }
 const AppDashboard = () => {
   const location = useLocation();

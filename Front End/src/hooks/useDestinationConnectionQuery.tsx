@@ -37,6 +37,6 @@ export const useDestinationConnectionsQuery = (
     queryFn: () => fetchDestinationConnections(appId, sortingBy, sortingOrder),
     enabled: !!appId, // Only fetch if appId is provided
     staleTime: 0, // Mark data as stale as soon as it is received
-    gcTime: 0, // no caching
+    gcTime: 0, // No caching
   });
 };

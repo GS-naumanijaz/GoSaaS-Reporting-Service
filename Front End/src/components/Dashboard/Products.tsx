@@ -13,7 +13,7 @@ export interface Product {
   alias: string;
   id: number;
   description: string;
-  is_active: boolean;
+  isActive: boolean;
   creationDate: string;
   updationDate?: string | null;
   deletedBy?: string | null;
@@ -49,9 +49,9 @@ const Products = () => {
     data?.content.filter((product: Product) => {
       switch (selectedFilter) {
         case "Active":
-          return product.is_active;
+          return product.isActive;
         case "Inactive":
-          return !product.is_active;
+          return !product.isActive;
         default:
           return true;
       }

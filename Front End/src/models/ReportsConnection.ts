@@ -126,13 +126,13 @@ export class ReportsConnection extends TableRowData {
       id: 0,
       alias: "",
       description: "",
-      is_active: false,
-      is_deleted: false,
-      created_by: "",
-      deleted_by: "",
-      creation_date: "",
-      deletion_date: null,
-      updation_date: "",
+      isActive: false,
+      isDeleted: false,
+      createdBy: "",
+      deletedBy: "",
+      creationDate: "",
+      deletionDate: null,
+      updatedAt: "",
     }
   ) {
     super();
