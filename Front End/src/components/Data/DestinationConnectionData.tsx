@@ -4,7 +4,7 @@ import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
 import { useState } from "react";
-import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import { FieldMappingKey } from "../../services/sortMappings";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -13,10 +13,11 @@ interface DestinationConnectionDataProps {
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
-  const [sortField, setSortField] = useState("alias");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortField, setSortField] = useState<FieldMappingKey>("Alias"); // Assuming "Alias" as default sort field
+  const [sortOrder, setSortOrder] = useState<string>("desc");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchField, setSearchField] = useState<string>("");
 
-  // Update the query hook to accept sorting parameters
   const {
     data: destinationConnections,
     isLoading,
@@ -24,16 +25,21 @@ const DestinationConnectionData = ({
     error,
   } = useDestinationConnectionsQuery(appId, sortField, sortOrder);
 
-  const handleSort = (field: FieldMappingKey, order: string) => {
-    setSortField(fieldMapping[field]);
-    setSortOrder(order);
-  };
+  // Apply filtering based on searchTerm and searchField
+  const filteredDestinationConnections =
+    destinationConnections?.filter((destinationConnection: any) =>
+      searchField && searchTerm
+        ? destinationConnection[searchField]
+            .toLowerCase()
+            .toString()
+            .includes(searchTerm)
+        : true
+    ) || [];
 
   // Map destinationConnections to DestinationConnection objects
-  const destinationConnectionsList: DestinationConnection[] = [];
-  if (destinationConnections) {
-    destinationConnections.forEach((destinationConnection: any) => {
-      destinationConnectionsList.push(
+  const destinationConnectionsList: DestinationConnection[] =
+    filteredDestinationConnections.map(
+      (destinationConnection: any) =>
         new DestinationConnection(
           destinationConnection.id,
           destinationConnection.alias,
@@ -45,14 +51,22 @@ const DestinationConnectionData = ({
           destinationConnection.application,
           destinationConnection.is_active
         )
-      );
-    });
-  }
+    );
 
   const manager = new TableManager(
     new DestinationConnection(),
     destinationConnectionsList
   );
+
+  const handleSort = (field: FieldMappingKey, order: string) => {
+    setSortField(field);
+    setSortOrder(order);
+  };
+
+  const handleSearch = (searchTerm: string, field: string) => {
+    setSearchTerm(searchTerm);
+    setSearchField(field);
+  };
 
   return (
     <>
@@ -66,7 +80,11 @@ const DestinationConnectionData = ({
             : "Failed to fetch destination connection data."}
         </Alert>
       ) : (
-        <CustomTable tableManager={manager} onSort={handleSort} />
+        <CustomTable
+          tableManager={manager}
+          onSort={handleSort}
+          onSearch={handleSearch}
+        />
       )}
     </>
   );

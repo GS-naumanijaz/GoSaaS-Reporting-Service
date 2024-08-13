@@ -23,15 +23,14 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     error,
   } = useSourceConnectionsQuery(appId, sortField, sortOrder);
 
-  // Apply filtering based on searchTerm and
-  sourceConnections?.forEach((sourceConnection: any) => {
-    console.log(sourceConnection[searchField], searchTerm);
-  });
-
+  // Apply filtering based on searchTerm and searchField
   const filteredSourceConnections =
     sourceConnections?.filter((sourceConnection: any) =>
       searchField && searchTerm
-        ? sourceConnection[searchField].toString().includes(searchTerm)
+        ? sourceConnection[searchField]
+            .toLowerCase()
+            .toString()
+            .includes(searchTerm)
         : true
     ) || [];
 
