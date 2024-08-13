@@ -4,15 +4,17 @@ import { TableRowData } from "../../../models/TableRowData";
 
 interface Props {
   row: TableRowData;
+  isEditable: boolean;
   handleToggleSwitch: (id: number) => void;
 }
 
-const TdSwitch = ({ row, handleToggleSwitch }: Props) => {
+const TdSwitch = ({ row, isEditable, handleToggleSwitch }: Props) => {
   return (
     <Td textAlign="center">
       <Switch
         isChecked={row.getSwitchStatus()}
         onChange={() => handleToggleSwitch(row.getId())}
+        isDisabled={!isEditable}
         // size="lg"
         sx={{
           "& .chakra-switch__track": {

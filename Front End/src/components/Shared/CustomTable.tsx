@@ -181,16 +181,16 @@ const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
                     />
                   ))}
 
-                  {tableManager.getTableHeader() !== "Reports" &&
-                    tableManager.requiresStatusToggle() && (
-                      <TdSwitch
-                        row={row}
-                        handleToggleSwitch={() => {
-                          tableManager.handleToggleSwitch(row.getId());
-                          updateState();
-                        }}
-                      />
-                    )}
+                  {tableManager.requiresStatusToggle() && (
+                    <TdSwitch
+                      row={row}
+                      isEditable={isEditing[rowIndex]}
+                      handleToggleSwitch={() => {
+                        tableManager.handleToggleSwitch(row.getId());
+                        updateState();
+                      }}
+                    />
+                  )}
                   <TdEditButton
                     isEditing={isEditing[rowIndex]}
                     isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}

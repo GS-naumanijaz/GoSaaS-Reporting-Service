@@ -227,7 +227,7 @@ export class ReportsConnection extends TableRowData {
   }
 
   requiresStatusToggle(): boolean {
-    return true;
+    return false;
   }
 
   getApplication(): Application {
