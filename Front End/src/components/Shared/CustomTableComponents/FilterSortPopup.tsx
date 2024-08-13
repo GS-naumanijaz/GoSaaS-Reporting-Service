@@ -1,12 +1,7 @@
 import {
   Box,
   Button,
-  HStack,
   Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -17,17 +12,30 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { FaChevronDown, FaSearch } from "react-icons/fa";
+import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { FieldMappingKey } from "../../Data/SourceConnectionData";
 
 interface Props {
   heading: string;
   sortFilterOptions: ColumnSortFilterOptions;
   onSort: (field: FieldMappingKey, order: string) => void;
+  onSearch: (searchTerm: string, field: string) => void;
 }
 
-const FilterSortPopup = ({ heading, sortFilterOptions, onSort }: Props) => {
+const FilterSortPopup = ({
+  heading,
+  sortFilterOptions,
+  onSort,
+  onSearch,
+}: Props) => {
+  const handleChange = (value: string, field: FieldMappingKey) => {
+    if (value.length === 0) {
+      onSearch("", fieldMapping[field]);
+    } else if (value.length >= 3) {
+      onSearch(value, fieldMapping[field]);
+    }
+  };
+
   if (!sortFilterOptions.isEnabled)
     return (
       <Text
@@ -42,7 +50,7 @@ const FilterSortPopup = ({ heading, sortFilterOptions, onSort }: Props) => {
 
   return (
     <Box p={4}>
-      <Popover>
+      <Popover placement="top">
         <PopoverTrigger>
           <Button variant={"ghost"}>{heading}</Button>
         </PopoverTrigger>
@@ -62,7 +70,7 @@ const FilterSortPopup = ({ heading, sortFilterOptions, onSort }: Props) => {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => onSort(heading as FieldMappingKey, "asc")}
+                    onClick={() => onSort(heading as FieldMappingKey, "desc")}
                   >
                     Descending
                   </Button>
@@ -72,45 +80,15 @@ const FilterSortPopup = ({ heading, sortFilterOptions, onSort }: Props) => {
           )}
           {sortFilterOptions.isSearchable && (
             <Box>
-              <PopoverHeader>Search</PopoverHeader>
+              <PopoverHeader>Search by {heading}</PopoverHeader>
               <PopoverBody>
-                <HStack>
-                  <Input
-                    onChange={(e) =>
-                      console.log("Search box: ", e.target.value)
-                    }
-                  />
-                  <Button>
-                    <FaSearch />
-                  </Button>
-                </HStack>
-              </PopoverBody>
-            </Box>
-          )}
-          {sortFilterOptions.dropdownFilter && (
-            <Box>
-              <PopoverHeader>Select</PopoverHeader>
-              <PopoverBody>
-                <Menu>
-                  <MenuButton
-                    width={"100%"}
-                    bg="white"
-                    border="1px"
-                    borderColor="gray.200"
-                    as={Button}
-                    fontWeight="normal"
-                    rightIcon={<FaChevronDown />}
-                  >
-                    {heading}
-                  </MenuButton>
-                  <MenuList>
-                    {sortFilterOptions.dropdownFilter.map((item, index) => (
-                      <MenuItem key={index} fontSize={16}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
+                <Input
+                  placeholder={`Enter ${heading}`}
+                  size="sm"
+                  onChange={(e) =>
+                    handleChange(e.target.value, heading as FieldMappingKey)
+                  }
+                />
               </PopoverBody>
             </Box>
           )}

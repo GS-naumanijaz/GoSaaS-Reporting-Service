@@ -1,11 +1,11 @@
 import SourceConnectionData from "../Data/SourceConnectionData";
-import DestinationConnectionData from "../Data/DestinationConnectionData";
 import AppHeader from "./AppHeader";
 import { sx } from "../../configs";
 import { Box, VStack, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
 import ReportsConnectionData from "../Data/ReportsConnectionData";
 import { useLocation } from "react-router-dom";
 import { useAppDataQuery } from "../../hooks/useAppDataQuery";
+import DestinationConnectionData from "../Data/DestinationConnectionData";
 
 export interface Application {
   id: number;
@@ -64,8 +64,8 @@ const AppDashboard = () => {
           justifyContent={"center"}
         >
           <SourceConnectionData appId={appId} />
-          {/* <DestinationConnectionData appId={appId} />
-          <ReportsConnectionData product={location?.state} /> */}
+          <DestinationConnectionData appId={appId} />
+          <ReportsConnectionData product={location?.state} />
         </VStack>
       </Box>
     </Box>

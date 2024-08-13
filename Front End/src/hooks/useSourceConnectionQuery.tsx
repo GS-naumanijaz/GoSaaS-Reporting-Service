@@ -36,6 +36,7 @@ export const useSourceConnectionsQuery = (
     queryKey: ["sourceConnections", appId, sortingBy, sortingOrder],
     queryFn: () => fetchSourceConnections(appId, sortingBy, sortingOrder),
     enabled: !!appId, // Only fetch if appId is provided
+    staleTime: 0, // Mark data as stale as soon as it is received
     gcTime: 0, // no caching
   });
 };

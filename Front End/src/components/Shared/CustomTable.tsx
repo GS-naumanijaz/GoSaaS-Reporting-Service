@@ -9,7 +9,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TableManager } from "../../models/TableManager";
 import FilterSortPopup from "./CustomTableComponents/FilterSortPopup";
 import TableFooter from "./CustomTableComponents/TableFooter";
@@ -21,14 +21,15 @@ import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
 import TdTestButton from "./CustomTableComponents/TdTestButton";
-import { FieldMappingKey } from "../Data/SourceConnectionData";
+import { FieldMappingKey } from "../../services/sortMappings";
 
 interface Props {
   tableManager: TableManager;
   onSort: (field: FieldMappingKey, order: string) => void;
+  onSearch: (searchTerm: string, field: string) => void;
 }
 
-const CustomTable = ({ tableManager, onSort }: Props) => {
+const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
     checkedState: tableManager.getCheckedState(),
@@ -48,6 +49,10 @@ const CustomTable = ({ tableManager, onSort }: Props) => {
       canSaveEditedRows: tableManager.getCanSaveEditedRows(),
     });
   };
+
+  useEffect(() => {
+    updateState();
+  }, [tableManager]);
 
   const handleBulkSwitchActions = (newStatus: boolean) => {
     tableManager.handleBulkSwitchActions(newStatus);
@@ -151,6 +156,7 @@ const CustomTable = ({ tableManager, onSort }: Props) => {
                       tableManager.getSortFilterOptions()[index]
                     }
                     onSort={onSort}
+                    onSearch={onSearch}
                   />
                 </Th>
               ))}
