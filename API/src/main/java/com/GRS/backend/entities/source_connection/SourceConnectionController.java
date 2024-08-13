@@ -41,26 +41,22 @@ public class SourceConnectionController {
 
     @GetMapping("/{sourceId}")
     public ResponseEntity<Object> getSourceConnectionById(@PathVariable int sourceId) {
-        Optional<SourceConnection> connectionToAdd = sourceConnectionService.getSourceConnectionById(sourceId);
-        if (connectionToAdd.isPresent()) {
-            return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, connectionToAdd);
-        } else {
-            return Response.responseBuilder("Failed to find source connection", HttpStatus.BAD_REQUEST);
-        }
+        SourceConnection connectionToAdd = sourceConnectionService.getSourceConnectionById(sourceId);
+
+        return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, connectionToAdd);
+
     }
 
     @GetMapping("/{sourceId}/test")
     public ResponseEntity<Object> testSourceConnection(@PathVariable int sourceId) {
-        Optional<SourceConnection> connectionToTest = sourceConnectionService.getSourceConnectionById(sourceId);
-        if (connectionToTest.isPresent()) {
-            if (sourceConnectionService.testSourceConnection(connectionToTest.get())) {
-                return Response.responseBuilder("Source Connection was tested successfully", HttpStatus.OK);
-            } else {
-                return Response.responseBuilder("Source Connection failed test", HttpStatus.BAD_REQUEST);
-            }
+        SourceConnection connectionToTest = sourceConnectionService.getSourceConnectionById(sourceId);
+
+        if (sourceConnectionService.testSourceConnection(connectionToTest)) {
+            return Response.responseBuilder("Source Connection was tested successfully", HttpStatus.OK);
         } else {
-            return Response.responseBuilder("Failed to find source connection", HttpStatus.BAD_REQUEST);
+            return Response.responseBuilder("Source Connection failed test", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @GetMapping("/types")
@@ -72,9 +68,9 @@ public class SourceConnectionController {
     @PostMapping("")
     public ResponseEntity<Object> addSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int appId) {
 
-        Optional<Application> sourceApp = applicationService.getApplicationById(appId);
+        Application sourceApp = applicationService.getApplicationById(appId);
 
-        sourceConnection.setApplication(sourceApp.get());
+        sourceConnection.setApplication(sourceApp);
 
         SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection);
 

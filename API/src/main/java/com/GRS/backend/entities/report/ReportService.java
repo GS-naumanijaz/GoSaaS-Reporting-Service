@@ -41,8 +41,13 @@ public class ReportService {
         throw new EntityNotFoundException("Application", appId);
     }
 
-    public Optional<Report> getReportById(int reportId) {
-        return reportRepository.findById(reportId);
+    public Report getReportById(int reportId) {
+        Optional<Report> report = reportRepository.findById(reportId);
+        if (report.isPresent()) {
+            return report.get();
+        } else {
+            throw new EntityNotFoundException("Application", reportId);
+        }
     }
 
     public Report addReport(Report report) {

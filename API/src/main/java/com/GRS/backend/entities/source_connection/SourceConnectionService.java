@@ -42,8 +42,13 @@ public class SourceConnectionService {
 
     }
 
-    public Optional<SourceConnection> getSourceConnectionById(int sourceConnectionId) {
-        return sourceConnectionRepository.findById(sourceConnectionId);
+    public SourceConnection getSourceConnectionById(int sourceConnectionId) {
+        Optional<SourceConnection> connection = sourceConnectionRepository.findById(sourceConnectionId);
+        if (connection.isPresent()) {
+            return connection.get();
+        } else {
+            throw new EntityNotFoundException("Application", sourceConnectionId);
+        }
     }
 
     public Boolean testSourceConnection(SourceConnection sourceConnection) {

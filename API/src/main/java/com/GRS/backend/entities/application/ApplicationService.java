@@ -31,8 +31,13 @@ public class ApplicationService {
         return applicationRepository.findAll(spec, pageable);
     }
 
-    public Optional<Application> getApplicationById(int appId) {
-        return applicationRepository.findById(appId);
+    public Application getApplicationById(int appId) {
+        Optional<Application> app = applicationRepository.findById(appId);
+        if (app.isPresent()) {
+            return app.get();
+        } else {
+            throw new EntityNotFoundException("Application", appId);
+        }
     }
 
     public Application addApplication(Application application) {

@@ -51,44 +51,40 @@ public class RequestController {
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(@PathVariable int requestId) {
-        Optional<Request> requestToAdd = requestService.getRequestById(requestId);
-        if (requestToAdd.isPresent()) {
-            return Response.responseBuilder("Request found successfully", HttpStatus.OK, requestToAdd);
-        } else {
-            return Response.responseBuilder("Failed to find request", HttpStatus.OK, null);
-        }
+        Request requestToAdd = requestService.getRequestById(requestId);
+
+        return Response.responseBuilder("Request found successfully", HttpStatus.OK, requestToAdd);
+
     }
 
     @PostMapping("/{appId}/destination-connections/{destinationId}")
     public ResponseEntity<Object> addRequest(@Valid @RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
-        Optional<Application> requestApp = applicationService.getApplicationById(appId);
-        Optional<DestinationConnection> requestDestination = destinationConnectionService.getDestinationConnectionById(destinationId);
+        Application requestApp = applicationService.getApplicationById(appId);
+        DestinationConnection requestDestination = destinationConnectionService.getDestinationConnectionById(destinationId);
 
-        if (requestApp.isPresent() && requestDestination.isPresent()) {
-            request.setApplication(requestApp.get());
-            request.setDestination_connection(requestDestination.get());
 
-            // Save the Request first
-            Request createdRequest = requestService.addRequest(request);
+        request.setApplication(requestApp);
+        request.setDestination_connection(requestDestination);
 
-            // Create and set the Notification
-            Notification createdNotification = new Notification();
-            createdNotification.setMessage("Request created successfully");
-            createdNotification.setCreatedBy(createdRequest.getCreatedBy());
-            createdNotification.setCreationDate(LocalDateTime.now());
-            createdNotification.setRequest(createdRequest);
+        // Save the Request first
+        Request createdRequest = requestService.addRequest(request);
 
-            // Save the Notification
-            notificationService.addNotification(createdNotification);
+        // Create and set the Notification
+        Notification createdNotification = new Notification();
+        createdNotification.setMessage("Request created successfully");
+        createdNotification.setCreatedBy(createdRequest.getCreatedBy());
+        createdNotification.setCreationDate(LocalDateTime.now());
+        createdNotification.setRequest(createdRequest);
 
-            // Update the Request with the Notification
+        // Save the Notification
+        notificationService.addNotification(createdNotification);
+
+        // Update the Request with the Notification
 //            requestService.updateRequest(createdRequest);
 
 
-            return Response.responseBuilder("Request added successfully", HttpStatus.OK, createdRequest);
-        } else {
-            return Response.responseBuilder("Application or Destination Connection not found", HttpStatus.NOT_FOUND, null);
-        }
+        return Response.responseBuilder("Request added successfully", HttpStatus.OK, createdRequest);
+
     }
 
     @PatchMapping("/{requestId}")

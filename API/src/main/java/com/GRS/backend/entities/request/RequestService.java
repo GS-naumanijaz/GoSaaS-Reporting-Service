@@ -1,6 +1,7 @@
 package com.GRS.backend.entities.request;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,13 @@ public class RequestService {
         return requestRepository.findAll(spec, pageable);
     }
 
-    public Optional<Request> getRequestById(int requestId) {
-        return requestRepository.findById(requestId);
+    public Request getRequestById(int requestId) {
+        Optional<Request> request = requestRepository.findById(requestId);
+        if (request.isPresent()) {
+            return request.get();
+        } else {
+            throw new EntityNotFoundException("Application", requestId);
+        }
     }
 
     public Request addRequest(Request request) {

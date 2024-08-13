@@ -41,8 +41,13 @@ public class DestinationConnectionService {
 
     }
 
-    public Optional<DestinationConnection> getDestinationConnectionById(int destinationConnectionId) {
-        return destinationConnectionRepository.findById(destinationConnectionId);
+    public DestinationConnection getDestinationConnectionById(int destinationConnectionId) {
+        Optional<DestinationConnection> connection = destinationConnectionRepository.findById(destinationConnectionId);
+        if (connection.isPresent()) {
+            return connection.get();
+        } else {
+            throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
+        }
     }
 
     public boolean testDestinationConnection(DestinationConnection destinationConnection) {
