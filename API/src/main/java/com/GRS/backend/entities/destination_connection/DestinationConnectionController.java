@@ -94,5 +94,17 @@ public class DestinationConnectionController {
         destinationConnectionService.deleteDestinationConnection(destinationId);
         return Response.responseBuilder("Destination Connection deleted successfully", HttpStatus.OK, null);
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteDestinationConnections(@RequestBody List<Integer> destinationIds) {
+        Integer deletedCount = destinationConnectionService.bulkDeleteDestinationConnections(destinationIds);
+        if (deletedCount == destinationIds.size()) {
+            return Response.responseBuilder("All Destination Connections deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Destination Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Destination Connections could not be deleted", HttpStatus.BAD_REQUEST);
+        }
+    }
     
 }

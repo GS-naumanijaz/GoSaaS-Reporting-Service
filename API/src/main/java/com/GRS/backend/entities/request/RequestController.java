@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -98,5 +99,18 @@ public class RequestController {
         requestService.deleteRequest(requestId);
         return Response.responseBuilder("Request deleted successfully", HttpStatus.OK, null);
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteRequests(@RequestBody List<Integer> requestIds) {
+        Integer deletedCount = requestService.bulkDeleteRequests(requestIds);
+        if (deletedCount == requestIds.size()) {
+            return Response.responseBuilder("All Requests deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Requests could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Requests could not be deleted", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     
 }

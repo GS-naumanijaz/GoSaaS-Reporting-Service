@@ -143,4 +143,16 @@ public class ReportController {
         return Response.responseBuilder("Destination Connection connected to Report Successfully", HttpStatus.OK, null);
     }
 
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteReports(@RequestBody List<Integer> reportIds) {
+        Integer deletedCount = reportService.bulkDeleteReports(reportIds);
+        if (deletedCount == reportIds.size()) {
+            return Response.responseBuilder("All Reports deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Reports could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Reports could not be deleted", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

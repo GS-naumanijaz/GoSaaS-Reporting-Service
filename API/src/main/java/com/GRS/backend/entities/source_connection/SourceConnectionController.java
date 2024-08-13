@@ -103,7 +103,19 @@ public class SourceConnectionController {
     @DeleteMapping("/{sourceId}")
     public ResponseEntity<Object> deleteSourceConnection(@PathVariable int sourceId) {
         sourceConnectionService.deleteSourceConnection(sourceId);
-        return Response.responseBuilder("Source Connection deleted successfully", HttpStatus.OK, null);
+        return Response.responseBuilder("Source Connection deleted successfully", HttpStatus.OK);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteSourceConnection(@RequestBody List<Integer> sourceIds) {
+        Integer deletedCount = sourceConnectionService.bulkDeleteSourceConnections(sourceIds);
+        if (deletedCount == sourceIds.size()) {
+            return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);
+        }
     }
 
     

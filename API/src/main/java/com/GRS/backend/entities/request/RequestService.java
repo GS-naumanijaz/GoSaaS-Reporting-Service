@@ -2,6 +2,7 @@ package com.GRS.backend.entities.request;
 
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -78,6 +80,26 @@ public class RequestService {
         } else {
             throw new EntityNotFoundException("Request", requestId);
         }
+    }
+
+    public Integer bulkDeleteRequests(List<Integer> requestIds) {
+        Integer deletedCount = 0;
+
+        for (Integer id : requestIds) {
+            Optional<Request> optionalConnection = requestRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                Request existingSourceConnection = optionalConnection.get();
+
+                if (!existingSourceConnection.getIsDeleted()) {
+                    existingSourceConnection.setIsDeleted(true);
+                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+
+                    requestRepository.save(existingSourceConnection);
+                    deletedCount++;
+                }
+            }
+        }
+        return deletedCount;
     }
 
 

@@ -126,6 +126,28 @@ public class SourceConnectionService {
             throw new EntityNotFoundException("SourceConnection", sourceConnectionId);
         }
     }
+
+    public Integer bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
+        Integer deletedCount = 0;
+
+        for (Integer id : sourceConnectionIds) {
+            Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                SourceConnection existingSourceConnection = optionalConnection.get();
+
+                if (!existingSourceConnection.getIsDeleted()) {
+                    existingSourceConnection.setIsDeleted(true);
+                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+
+                    sourceConnectionRepository.save(existingSourceConnection);
+                    deletedCount++;
+                }
+
+            }
+        }
+        return deletedCount;
+    }
+
     
     
 }
