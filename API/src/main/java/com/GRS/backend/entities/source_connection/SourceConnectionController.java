@@ -3,6 +3,7 @@ package com.GRS.backend.entities.source_connection;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.enums.SourceConnectionType;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -81,6 +83,21 @@ public class SourceConnectionController {
     public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId) {
         SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection);
         return Response.responseBuilder("Source Connection updated successfully", HttpStatus.OK, updatedSourceConnection);
+    }
+
+    @PatchMapping("")
+    public ResponseEntity<Object> bulkUpdateSourceConnections(@RequestBody List<Integer> sourceIds, @RequestParam boolean isActive) {
+
+        List<SourceConnection> updatedSources = sourceConnectionService.bulkUpdateIsActive(sourceIds, isActive);
+
+        if (updatedSources.size() == sourceIds.size()) {
+            return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedSources);
+        } else if (updatedSources.size() != 0){
+            return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedSources);
+        } else {
+            return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedSources);
+        }
+
     }
 
     @DeleteMapping("/{sourceId}")

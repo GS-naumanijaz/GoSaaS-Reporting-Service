@@ -3,6 +3,7 @@ package com.GRS.backend.entities.source_connection;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.DatabaseConnectionTester;
 import com.GRS.backend.utilities.FieldUpdater;
@@ -12,7 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.Source;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,6 +95,21 @@ public class SourceConnectionService {
         } else {
             throw new EntityNotFoundException("Source Connection", sourceConnectionId);
         }
+    }
+
+    public List<SourceConnection> bulkUpdateIsActive(List<Integer> sourceConnectionIds, boolean isActive) {
+        List<SourceConnection> updatedConnections = new ArrayList<>();
+
+        for (Integer id : sourceConnectionIds) {
+            Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                SourceConnection connection = optionalConnection.get();
+                connection.setIsActive(isActive);
+                updatedConnections.add(sourceConnectionRepository.save(connection));
+            }
+        }
+
+        return updatedConnections;
     }
 
     public void deleteSourceConnection(int sourceConnectionId) {
