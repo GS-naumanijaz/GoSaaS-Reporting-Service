@@ -53,14 +53,14 @@ export class DestinationConnection extends TableRowData {
       label: "bucket name",
       isSelectable: false,
       type: "text",
-      validation: {required: true, minLength: 2, maxLength: 100},
+      validation: { required: true, minLength: 2, maxLength: 100 },
     },
     {
       name: "Region",
       label: "region",
       isSelectable: false,
       type: "text",
-      validation: {required: true, minLength: 2, maxLength: 100},
+      validation: { required: true, minLength: 2, maxLength: 100 },
     },
     {
       name: "Access Key",
@@ -73,8 +73,6 @@ export class DestinationConnection extends TableRowData {
       name: "Secret Key",
       label: "secret_key",
       isSelectable: false,
-      type: "text",
-      validation: { required: true },
       isHidden: true,
     },
   ];
@@ -101,13 +99,11 @@ export class DestinationConnection extends TableRowData {
       isSearchable: true,
     },
     {
-      isEnabled: true,
-      isSortable: true,
-      isSearchable: true,
+      isEnabled: false,
     },
     {
       isEnabled: true,
-      dropdownFilter: ["Active", "Inactive"],
+      dropdownFilter: ["All", "Active", "Inactive"],
     },
     {
       isEnabled: false,

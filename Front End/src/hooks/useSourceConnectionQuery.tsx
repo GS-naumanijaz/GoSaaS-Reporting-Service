@@ -10,7 +10,6 @@ const fetchSourceConnections = async (
     sort_by: sortingBy,
     sort_order: sortingOrder,
   });
-  console.log("Params: ", params.toString());
   const response = await fetch(
     `http://localhost:8080/applications/${appId}/source-connections?${params.toString()}`,
     {

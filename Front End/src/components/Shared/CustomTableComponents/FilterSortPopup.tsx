@@ -2,6 +2,10 @@ import {
   Box,
   Button,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -14,6 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
+import { FaChevronDown } from "react-icons/fa";
+import { useState } from "react";
 
 interface Props {
   heading: string;
@@ -28,12 +34,24 @@ const FilterSortPopup = ({
   onSort,
   onSearch,
 }: Props) => {
+  const [selectedItem, setSelectedItem] = useState("All");
+
   const handleChange = (value: string, field: FieldMappingKey) => {
     if (value.length === 0) {
       onSearch("", fieldMapping[field]);
     } else if (value.length >= 3) {
       onSearch(value, fieldMapping[field]);
     }
+    console.log("button: ", value, field);
+  };
+
+  const handleDropdown = (selected: string) => {
+    if (selected === "All") {
+      onSearch("", heading as FieldMappingKey);
+    } else {
+      onSearch(selected, heading as FieldMappingKey);
+    }
+    setSelectedItem(selected);
   };
 
   if (!sortFilterOptions.isEnabled)
@@ -89,6 +107,37 @@ const FilterSortPopup = ({
                     handleChange(e.target.value, heading as FieldMappingKey)
                   }
                 />
+              </PopoverBody>
+            </Box>
+          )}
+          {sortFilterOptions.dropdownFilter && (
+            <Box>
+              <PopoverHeader>Filter By Options</PopoverHeader>
+              <PopoverBody>
+                <Menu>
+                  <MenuButton
+                    width={"100%"}
+                    bg="white"
+                    border="1px"
+                    borderColor="gray.200"
+                    as={Button}
+                    fontWeight="normal"
+                    rightIcon={<FaChevronDown />}
+                  >
+                    {selectedItem}
+                  </MenuButton>
+                  <MenuList>
+                    {sortFilterOptions.dropdownFilter.map((item, index) => (
+                      <MenuItem
+                        key={index}
+                        fontSize={16}
+                        onClick={() => handleDropdown(item)}
+                      >
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
               </PopoverBody>
             </Box>
           )}

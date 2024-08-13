@@ -4,7 +4,7 @@ import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
 import { useState } from "react";
-import { FieldMappingKey } from "../../services/sortMappings";
+import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -13,7 +13,7 @@ interface DestinationConnectionDataProps {
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
-  const [sortField, setSortField] = useState<FieldMappingKey>("Alias"); // Assuming "Alias" as default sort field
+  const [sortField, setSortField] = useState<FieldMappingKey>("Alias");
   const [sortOrder, setSortOrder] = useState<string>("desc");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchField, setSearchField] = useState<string>("");
@@ -25,16 +25,30 @@ const DestinationConnectionData = ({
     error,
   } = useDestinationConnectionsQuery(appId, sortField, sortOrder);
 
+  // Determine the actual field to search by, using fieldMapping if it exists
+  const actualSearchField =
+    fieldMapping[searchField as FieldMappingKey] || searchField;
+
   // Apply filtering based on searchTerm and searchField
   const filteredDestinationConnections =
-    destinationConnections?.filter((destinationConnection: any) =>
-      searchField && searchTerm
-        ? destinationConnection[searchField]
-            .toLowerCase()
-            .toString()
-            .includes(searchTerm)
-        : true
-    ) || [];
+    destinationConnections?.filter((destinationConnection: any) => {
+      if (actualSearchField && searchTerm) {
+        const fieldValue = destinationConnection[actualSearchField];
+        // Compare in lowercase if both are strings
+        if (typeof fieldValue === "string" && typeof searchTerm === "string") {
+          return fieldValue.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+        if (typeof fieldValue === "number" && typeof searchTerm === "string") {
+          return fieldValue.toString().includes(searchTerm);
+        }
+        if (typeof fieldValue === "boolean" && typeof searchTerm === "string") {
+          const searchBoolean = searchTerm.toLowerCase() === "active";
+          return fieldValue === searchBoolean;
+        }
+        return fieldValue.includes(searchTerm);
+      }
+      return true;
+    }) || [];
 
   // Map destinationConnections to DestinationConnection objects
   const destinationConnectionsList: DestinationConnection[] =
@@ -48,7 +62,7 @@ const DestinationConnectionData = ({
           destinationConnection.bucketName,
           destinationConnection.region,
           destinationConnection.application,
-          destinationConnection.is_active
+          destinationConnection.isActive
         )
     );
 
