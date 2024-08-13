@@ -7,6 +7,7 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.source_connection.SourceConnectionService;
+import com.GRS.backend.models.ReportRequestBody;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
@@ -58,10 +59,30 @@ public class ReportController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addReport(@Valid @RequestBody Report report, @PathVariable int appId) {
+    public ResponseEntity<Object> addReport(@Valid @RequestBody ReportRequestBody reportRequest, @PathVariable int appId) {
         Optional<Application> reportApp = applicationService.getApplicationById(appId);
 
+        Report report = reportRequest.report;
+
         report.setApplication(reportApp.get());
+
+        if (reportRequest.sourceId != null) {
+            SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId).get();
+
+            sourceConnection.addReport(report);
+
+            sourceConnectionService.addSourceConnection(sourceConnection);
+            reportService.addReport(report);
+        }
+
+        if (reportRequest.destinationId != null) {
+            DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId).get();
+
+            destinationConnection.addReport(report);
+
+            destinationConnectionService.addDestinationConnection(destinationConnection);
+            reportService.addReport(report);
+        }
 
         Report createdReport = reportService.addReport(report);
 
@@ -69,8 +90,25 @@ public class ReportController {
     }
 
     @PatchMapping("/{reportId}")
-    public ResponseEntity<Object> updateReport(@RequestBody Report report, @PathVariable int reportId) {
-        Report updatedReport = reportService.updateReport(reportId, report);
+    public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId) {
+        Report updatedReport = reportService.updateReport(reportId, reportRequest.report);
+
+        if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSource_connection().getId()) {
+            SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId).get();
+
+            sourceConnection.addReport(updatedReport);
+            sourceConnectionService.addSourceConnection(sourceConnection);
+        }
+
+        if (reportRequest.destinationId != null && reportRequest.destinationId != updatedReport.getDestination_connection().getId()) {
+            DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId).get();
+
+            destinationConnection.addReport(updatedReport);
+            destinationConnectionService.addDestinationConnection(destinationConnection);
+        }
+
+        reportService.addReport(updatedReport);
+
         return Response.responseBuilder("Report updated successfully", HttpStatus.OK, updatedReport);
     }
 
