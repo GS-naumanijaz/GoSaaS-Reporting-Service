@@ -48,13 +48,13 @@ const AppHeader = ({ appData }: Props) => {
       id: Date.now(),
       alias: "",
       description: "",
-      is_active: false,
-      is_deleted: false,
-      created_by: "",
-      deleted_by: "",
-      creation_date: "",
-      deletion_date: null,
-      updation_date: "",
+      isActive: false,
+      isDeleted: false,
+      createdBy: "",
+      deletedBy: "",
+      creationDate: "",
+      deletionDate: null,
+      updatedAt: "",
     }
   );
 
@@ -136,7 +136,7 @@ const AppHeader = ({ appData }: Props) => {
     // First, update the state with the created_by field
     setNewAppData((prev) => ({
       ...prev,
-      created_by: user?.fullName || "",
+      createdBy: user?.fullName || "",
     }));
     saveMutation.mutate(newAppData);
     onSaveClose();
@@ -157,11 +157,11 @@ const AppHeader = ({ appData }: Props) => {
         <Switch
           size="lg"
           colorScheme="red"
-          isChecked={newAppData.is_active}
+          isChecked={newAppData.isActive}
           onChange={() => {
             setNewAppData((prev) => ({
               ...prev,
-              is_active: !prev.is_active,
+              isActive: !prev.isActive,
             }));
           }}
         />
