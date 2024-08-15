@@ -12,15 +12,18 @@ const router = createBrowserRouter([
   },
   {
     path: "/homepage",
-    element: <AuthenticatedRoute element={<Homepage />} />,
+    // element: <AuthenticatedRoute element={<Homepage />} />,
+    element: <Homepage />,
   },
   {
     path: "/applications",
-    element: <AuthenticatedRoute element={<Application />} />,
+    // element: <AuthenticatedRoute element={<Application />} />,
+    element: <Application />,
   },
   {
     path: "/addreports",
-    element: <AuthenticatedRoute element={<AddReportPage />} />,
+    // element: <AuthenticatedRoute element={<AddReportPage />} />,
+    element: <AddReportPage />,
   },
 ]);
 
