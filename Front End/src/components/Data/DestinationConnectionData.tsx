@@ -13,17 +13,26 @@ interface DestinationConnectionDataProps {
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
-  const [sortField, setSortField] = useState<FieldMappingKey>("Alias");
+  const [sortField, setSortField] = useState<string>("updatedAt");
   const [sortOrder, setSortOrder] = useState<string>("desc");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchField, setSearchField] = useState<string>("");
+  const [page, setPage] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(5);
 
   const {
-    data: destinationConnections,
+    data: { content: destinationConnections } = {},
+    data: { totalElements = 0 } = {},
     isLoading,
     isError,
     error,
-  } = useDestinationConnectionsQuery(appId, sortField, sortOrder);
+  } = useDestinationConnectionsQuery(
+    appId,
+    sortField,
+    sortOrder,
+    page,
+    pageSize
+  );
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -34,7 +43,6 @@ const DestinationConnectionData = ({
     destinationConnections?.filter((destinationConnection: any) => {
       if (actualSearchField && searchTerm) {
         const fieldValue = destinationConnection[actualSearchField];
-        // Compare in lowercase if both are strings
         if (typeof fieldValue === "string" && typeof searchTerm === "string") {
           return fieldValue.toLowerCase().includes(searchTerm.toLowerCase());
         }
@@ -50,7 +58,6 @@ const DestinationConnectionData = ({
       return true;
     }) || [];
 
-  // Map destinationConnections to DestinationConnection objects
   const destinationConnectionsList: DestinationConnection[] =
     filteredDestinationConnections.map(
       (destinationConnection: any) =>
@@ -66,13 +73,9 @@ const DestinationConnectionData = ({
         )
     );
 
-  const manager = new TableManager(
-    new DestinationConnection(),
-    destinationConnectionsList
-  );
-
   const handleSort = (field: FieldMappingKey, order: string) => {
-    setSortField(field);
+    const mappedField = fieldMapping[field];
+    setSortField(mappedField);
     setSortOrder(order);
   };
 
@@ -80,6 +83,20 @@ const DestinationConnectionData = ({
     setSearchTerm(searchTerm);
     setSearchField(field);
   };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(0);
+  };
+
+  const manager = new TableManager(
+    new DestinationConnection(),
+    destinationConnectionsList
+  );
 
   return (
     <>
@@ -97,6 +114,11 @@ const DestinationConnectionData = ({
           tableManager={manager}
           onSort={handleSort}
           onSearch={handleSearch}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          page={page}
+          pageSize={pageSize}
+          totalElements={totalElements}
         />
       )}
     </>

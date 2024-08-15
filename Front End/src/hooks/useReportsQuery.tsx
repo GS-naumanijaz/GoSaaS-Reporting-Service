@@ -1,14 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { ReportsConnection } from "../models/ReportsConnection";
 
 const fetchReportsConnections = async (
   productId: number,
   sortField: string,
-  sortOrder: string
-): Promise<ReportsConnection[]> => {
+  sortOrder: string,
+  page: number,
+  pageSize: number
+) => {
   const params = new URLSearchParams({
     sort_by: sortField,
     sort_order: sortOrder,
+    page: page.toString(),
+    page_size: pageSize.toString(),
   });
 
   const response = await fetch(
@@ -24,21 +27,36 @@ const fetchReportsConnections = async (
   }
 
   const data = await response.json();
-  return data.data.content;
+  return data.data;
 };
 
 export const useReportsQuery = (
   productId: number | null,
   sortField: string,
-  sortOrder: string
+  sortOrder: string,
+  page: number,
+  pageSize: number
 ) => {
   return useQuery({
-    queryKey: ["reportsConnections", productId, sortField, sortOrder],
+    queryKey: [
+      "reportsConnections",
+      productId,
+      sortField,
+      sortOrder,
+      page,
+      pageSize,
+    ],
     queryFn: () => {
       if (!productId) {
         throw new Error("No product ID provided.");
       }
-      return fetchReportsConnections(productId, sortField, sortOrder);
+      return fetchReportsConnections(
+        productId,
+        sortField,
+        sortOrder,
+        page,
+        pageSize
+      );
     },
     enabled: !!productId, // Only fetch if productId is provided
     staleTime: 0, // Mark data as stale as soon as it is received

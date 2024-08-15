@@ -27,9 +27,23 @@ interface Props {
   tableManager: TableManager;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
+  page: number;
+  pageSize: number;
+  onPageChange: (newPage: number) => void;
+  onPageSizeChange: (newPageSize: number) => void;
+  totalElements: number;
 }
 
-const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
+const CustomTable = ({
+  tableManager,
+  onSort,
+  onSearch,
+  page,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
+  totalElements,
+}: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
     checkedState: tableManager.getCheckedState(),
@@ -209,7 +223,13 @@ const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
           )}
         </Table>
       </TableContainer>
-      <TableFooter NoOfRecords={tableData.length} />
+      <TableFooter
+        NoOfRecords={totalElements}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+      />
     </Box>
   );
 };

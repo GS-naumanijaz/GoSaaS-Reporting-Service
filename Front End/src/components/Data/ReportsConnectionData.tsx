@@ -13,17 +13,20 @@ interface ReportsConnectionDataProps {
 
 const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const productId = product?.id ?? null;
-  const [sortField, setSortField] = useState<FieldMappingKey>("Alias");
+  const [sortField, setSortField] = useState<string>("updatedAt");
   const [sortOrder, setSortOrder] = useState<string>("desc");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchField, setSearchField] = useState<string>("");
+  const [page, setPage] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(5);
 
   const {
-    data: reportsConnections,
+    data: { content: reportsConnections } = {},
+    data: { totalElements = 0 } = {},
     isLoading,
     isError,
     error,
-  } = useReportsQuery(productId, sortField, sortOrder);
+  } = useReportsQuery(productId, sortField, sortOrder, page, pageSize);
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -34,18 +37,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     reportsConnections?.filter((reportConnection: any) => {
       if (actualSearchField && searchTerm) {
         const searchTermLower = searchTerm.toLowerCase();
-
-        if (
-          ["source_connection", "destination_connection"].includes(
-            actualSearchField
-          )
-        ) {
-          const connectionField = reportConnection[actualSearchField];
-          return connectionField.alias.toLowerCase().includes(searchTermLower);
-        }
-
         const fieldValue = reportConnection[actualSearchField];
-
         if (typeof fieldValue === "string") {
           return fieldValue.toLowerCase().includes(searchTermLower);
         }
@@ -64,12 +56,9 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
           return searchArray.includes(searchTermLower);
         }
       }
-
-      // If actualSearchField or searchTerm is not set, include this item
       return true;
     }) || [];
 
-  // Map reportsConnections to ReportsConnection objects
   const reportsConnectionsList: ReportsConnection[] =
     filteredReportsConnections.map(
       (reportConnection: any) =>
@@ -77,22 +66,17 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
           reportConnection.id,
           reportConnection.alias,
           reportConnection.description,
-          reportConnection.source_connection.alias,
-          reportConnection.destination_connection.alias,
+          reportConnection.sourceConnection.alias,
+          reportConnection.destinationConnection.alias,
           reportConnection.storedProcedure,
           reportConnection.params,
           reportConnection.application
         )
     );
 
-  const manager = new TableManager(
-    new ReportsConnection(),
-    reportsConnectionsList,
-    product ?? undefined
-  );
-
   const handleSort = (field: FieldMappingKey, order: string) => {
-    setSortField(field);
+    const mappedField = fieldMapping[field];
+    setSortField(mappedField);
     setSortOrder(order);
   };
 
@@ -100,6 +84,21 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setSearchTerm(searchTerm);
     setSearchField(field);
   };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(0);
+  };
+
+  const manager = new TableManager(
+    new ReportsConnection(),
+    reportsConnectionsList,
+    product ?? undefined
+  );
 
   return (
     <>
@@ -117,6 +116,11 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
           tableManager={manager}
           onSort={handleSort}
           onSearch={handleSearch}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          page={page}
+          pageSize={pageSize}
+          totalElements={totalElements}
         />
       )}
     </>
