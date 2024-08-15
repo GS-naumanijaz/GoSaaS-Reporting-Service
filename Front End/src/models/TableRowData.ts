@@ -12,6 +12,8 @@ export abstract class TableRowData {
   abstract getSortFilterOptions(): ColumnSortFilterOptions[];
   abstract getEditAccess(): boolean[];
   
+  // abstract handleBulkDelete(deleteIds: number[]): void;
+
   requiresCheckBox(): boolean {
     return false
   }

@@ -100,6 +100,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setSearchTerm(searchTerm);
     setSearchField(field);
   };
+  
+  const handleDelete = () => {}
 
   return (
     <>
@@ -117,6 +119,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
           tableManager={manager}
           onSort={handleSort}
           onSearch={handleSearch}
+          onDelete={handleDelete}
         />
       )}
     </>

@@ -81,6 +81,8 @@ const DestinationConnectionData = ({
     setSearchField(field);
   };
 
+  const handleDelete = () => {}
+
   return (
     <>
       {isLoading ? (
@@ -97,6 +99,7 @@ const DestinationConnectionData = ({
           tableManager={manager}
           onSort={handleSort}
           onSearch={handleSearch}
+          onDelete={handleDelete}
         />
       )}
     </>

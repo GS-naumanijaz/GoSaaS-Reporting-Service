@@ -2,7 +2,7 @@ import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
-import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
+import { useDeleteSourceConnectionMutation, useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 import { useState } from "react";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
@@ -22,6 +22,8 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     isError,
     error,
   } = useSourceConnectionsQuery(appId, sortField, sortOrder);
+
+  const { mutate: deleteSourceConnection } = useDeleteSourceConnectionMutation()
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -84,6 +86,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     setSearchField(field);
   };
 
+  const handleDelete = (sourceId: number) => {
+    deleteSourceConnection({appId, sourceId});
+  }
+
    return (
     <>
       {isLoading ? (
@@ -100,6 +106,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           tableManager={manager}
           onSort={handleSort}
           onSearch={handleSearch}
+          onDelete={handleDelete}
         />
       )}
     </>

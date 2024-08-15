@@ -15,6 +15,7 @@ export class SourceConnection extends TableRowData {
   private application: Application;
   private isActive: boolean;
 
+
   //Static variables
   private static tableHeader = "Source Connections";
   private static tableHeadings = [
@@ -290,4 +291,5 @@ export class SourceConnection extends TableRowData {
   getApplication(): Application {
     return this.application;
   }
+
 }

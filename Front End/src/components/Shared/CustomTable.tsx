@@ -27,9 +27,10 @@ interface Props {
   tableManager: TableManager;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
+  onDelete: (deleteId: number) => void;
 }
 
-const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
+const CustomTable = ({ tableManager, onSort, onSearch, onDelete }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
     checkedState: tableManager.getCheckedState(),
@@ -90,9 +91,10 @@ const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
     updateState();
   };
 
-  const handleDeleteRow = (rowIndex: number) => {
-    tableManager.handleDeleteRow(rowIndex);
-    updateState();
+  const handleDeleteRow = (rowIndex: number, id: number) => {
+    // tableManager.handleDeleteRow(rowIndex);
+    onDelete(id);
+    // updateState();
   };
 
   const handleBulkDeleteRows = () => {
@@ -196,7 +198,7 @@ const CustomTable = ({ tableManager, onSort, onSearch }: Props) => {
                     revertEdit={() => revertEdit(rowIndex)}
                   />
                   <TdDeleteButton
-                    handleDeleteRow={() => handleDeleteRow(rowIndex)}
+                    handleDeleteRow={() => handleDeleteRow(rowIndex, row.getId())}
                   />
                   {tableManager.requiresTestButton() && (
                     <TdTestButton onClick={() => console.log("testing")} />
