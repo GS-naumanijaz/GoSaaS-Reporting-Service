@@ -42,7 +42,6 @@ export const useSourceConnectionsQuery = (
 
 
 //delete source connection
-
 const deleteSourceConnection = async (
   appId: number,
   sourceId: number
@@ -69,6 +68,50 @@ export const useDeleteSourceConnectionMutation = () => {
   return useMutation({
     mutationFn: ({ appId, sourceId }: { appId: number; sourceId: number; }) =>
       deleteSourceConnection(appId, sourceId),
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch source connections query after successful deletion
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error deleting source connection:", error);
+    },
+  });
+};
+
+
+//bulk delete source connections
+const bulkDeleteSourceConnection = async (
+  appId: number,
+  sourceIds: number[]
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/source-connections`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sourceIds),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to delete the source connection.");
+  }
+};
+
+export const useBulkDeleteSourceConnectionMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ appId, sourceIds }: { appId: number; sourceIds: number[]; }) =>
+      bulkDeleteSourceConnection(appId, sourceIds),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({

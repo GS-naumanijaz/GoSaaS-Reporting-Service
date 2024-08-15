@@ -2,7 +2,7 @@ import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
-import { useDeleteSourceConnectionMutation, useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
+import { useBulkDeleteSourceConnectionMutation, useDeleteSourceConnectionMutation, useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
 import { useState } from "react";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
@@ -23,7 +23,8 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     error,
   } = useSourceConnectionsQuery(appId, sortField, sortOrder);
 
-  const { mutate: deleteSourceConnection } = useDeleteSourceConnectionMutation()
+  const { mutate: deleteSourceConnection } = useDeleteSourceConnectionMutation();
+  const { mutate: bulkDeleteSourceConnection } = useBulkDeleteSourceConnectionMutation();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -90,6 +91,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     deleteSourceConnection({appId, sourceId});
   }
 
+  const handleBulkDelete = (sourceIds: number[]) => {
+    bulkDeleteSourceConnection({appId, sourceIds})
+  }
+
    return (
     <>
       {isLoading ? (
@@ -107,6 +112,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           onSort={handleSort}
           onSearch={handleSearch}
           onDelete={handleDelete}
+          onBulkDelete={handleBulkDelete}
         />
       )}
     </>

@@ -83,6 +83,8 @@ const DestinationConnectionData = ({
 
   const handleDelete = () => {}
 
+  const handleBulkDelete = () => {}
+
   return (
     <>
       {isLoading ? (
@@ -100,6 +102,7 @@ const DestinationConnectionData = ({
           onSort={handleSort}
           onSearch={handleSearch}
           onDelete={handleDelete}
+          onBulkDelete={handleBulkDelete}
         />
       )}
     </>

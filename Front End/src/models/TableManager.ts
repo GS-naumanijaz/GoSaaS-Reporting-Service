@@ -174,4 +174,10 @@ export class TableManager {
     );
     this.checkedState = new Array(this.data.length).fill(false);
   }
+
+  getCheckedIds(): number[] {
+    return this
+            .data.map((item, index) => (this.checkedState[index] ? item.getId() : null))
+              .filter((id) => id !== null) as number[];
+  } 
 }

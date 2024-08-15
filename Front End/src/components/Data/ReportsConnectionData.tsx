@@ -103,6 +103,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   
   const handleDelete = () => {}
 
+  const handleBulkDelete = () => {}
+  
   return (
     <>
       {isLoading ? (
@@ -120,6 +122,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
           onSort={handleSort}
           onSearch={handleSearch}
           onDelete={handleDelete}
+          onBulkDelete={handleBulkDelete}
         />
       )}
     </>
