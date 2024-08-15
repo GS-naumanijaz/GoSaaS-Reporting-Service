@@ -71,7 +71,6 @@ public class ReportController {
             sourceConnection.addReport(report);
 
             sourceConnectionService.addSourceConnection(sourceConnection);
-            reportService.addReport(report);
         }
 
         if (reportRequest.destinationId != null) {
@@ -80,7 +79,6 @@ public class ReportController {
             destinationConnection.addReport(report);
 
             destinationConnectionService.addDestinationConnection(destinationConnection);
-            reportService.addReport(report);
         }
 
         Report createdReport = reportService.addReport(report);

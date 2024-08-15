@@ -2,7 +2,7 @@ import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
-import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
+import { useBulkDeleteDestinationConnectionMutation, useDeleteDestinationConnectionMutation, useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
 import { useState } from "react";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
@@ -24,6 +24,10 @@ const DestinationConnectionData = ({
     isError,
     error,
   } = useDestinationConnectionsQuery(appId, sortField, sortOrder);
+
+  const { mutate: deleteDestinationConnection } = useDeleteDestinationConnectionMutation();
+  const { mutate: bulkDeleteDestinationConnection } = useBulkDeleteDestinationConnectionMutation();
+
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -81,9 +85,13 @@ const DestinationConnectionData = ({
     setSearchField(field);
   };
 
-  const handleDelete = () => {}
+  const handleDelete = (destinationId: number) => {
+    deleteDestinationConnection({appId, destinationId});
+  }
 
-  const handleBulkDelete = () => {}
+  const handleBulkDelete = (destinationIds: number[]) => {
+    bulkDeleteDestinationConnection({appId, destinationIds});
+  }
 
   return (
     <>
