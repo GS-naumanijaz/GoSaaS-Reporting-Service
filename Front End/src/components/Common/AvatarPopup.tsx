@@ -6,14 +6,14 @@ import {
   PopoverTrigger,
   Portal,
 } from "@chakra-ui/react";
-import { primaryColor, tertiaryColor } from "../../configs";
+import { primaryColor, tertiaryColor, BackendURL} from "../../configs";
 import { RxAvatar } from "react-icons/rx";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 
 const AvatarPopup = () => {
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:8080/logout", {
+      const response = await fetch(`${BackendURL}/logout`, {
         method: "POST",
         credentials: "include",
       });

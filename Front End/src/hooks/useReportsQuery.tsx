@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BackendURL } from "../configs";
 
 const fetchReportsConnections = async (
   productId: number,
@@ -19,7 +20,7 @@ const fetchReportsConnections = async (
   });
 
   const response = await fetch(
-    `http://localhost:8080/applications/${productId}/reports?${params.toString()}`,
+    `${BackendURL}/applications/${productId}/reports?${params.toString()}`,
     {
       method: "GET",
       credentials: "include",
@@ -74,15 +75,10 @@ export const useReportsQuery = (
   });
 };
 
-
-
 //delete report
-const deleteReport = async (
-  appId: number,
-  reportId: number
-): Promise<void> => {
+const deleteReport = async (appId: number, reportId: number): Promise<void> => {
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/reports/${reportId}`,
+    `${BackendURL}/applications/${appId}/reports/${reportId}`,
     {
       method: "DELETE",
       credentials: "include",
@@ -101,14 +97,17 @@ export const useDeleteReportMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, reportId }: { appId: number; reportId: number; }) =>
+    mutationFn: ({ appId, reportId }: { appId: number; reportId: number }) =>
       deleteReport(appId, reportId),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "reportsConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -118,23 +117,19 @@ export const useDeleteReportMutation = () => {
   });
 };
 
-
 //bulk delete source connections
 const bulkDeleteReport = async (
   appId: number,
   reportIds: number[]
 ): Promise<void> => {
-  const response = await fetch(
-    `http://localhost:8080/applications/${appId}/reports`,
-    {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reportIds),
-    }
-  );
+  const response = await fetch(`${BackendURL}/applications/${appId}/reports`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reportIds),
+  });
 
   if (!response.ok) {
     throw new Error("Failed to delete the report.");
@@ -145,14 +140,22 @@ export const useBulkDeleteReportMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, reportIds }: { appId: number; reportIds: number[]; }) =>
-      bulkDeleteReport(appId, reportIds),
+    mutationFn: ({
+      appId,
+      reportIds,
+    }: {
+      appId: number;
+      reportIds: number[];
+    }) => bulkDeleteReport(appId, reportIds),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "reportsConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },

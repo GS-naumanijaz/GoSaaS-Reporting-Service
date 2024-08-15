@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BackendURL } from "../configs";
 
 const fetchDestinationConnections = async (
   appId: number,
@@ -18,7 +19,7 @@ const fetchDestinationConnections = async (
     search_by: searchField,
   });
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/destination-connections?${params.toString()}`,
+    `${BackendURL}/applications/${appId}/destination-connections?${params.toString()}`,
     {
       method: "GET",
       credentials: "include",
@@ -75,7 +76,7 @@ const deleteDestinationConnection = async (
   destinationId: number
 ): Promise<void> => {
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/destination-connections/${destinationId}`,
+    `${BackendURL}/applications/${appId}/destination-connections/${destinationId}`,
     {
       method: "DELETE",
       credentials: "include",
@@ -94,14 +95,22 @@ export const useDeleteDestinationConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, destinationId }: { appId: number; destinationId: number; }) =>
-      deleteDestinationConnection(appId, destinationId),
+    mutationFn: ({
+      appId,
+      destinationId,
+    }: {
+      appId: number;
+      destinationId: number;
+    }) => deleteDestinationConnection(appId, destinationId),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "destinationConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -111,14 +120,13 @@ export const useDeleteDestinationConnectionMutation = () => {
   });
 };
 
-
 //bulk delete destination connections
 const bulkDeleteDestinationConnection = async (
   appId: number,
   destinationIds: number[]
 ): Promise<void> => {
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/destination-connections`,
+    `${BackendURL}/applications/${appId}/destination-connections`,
     {
       method: "DELETE",
       credentials: "include",
@@ -138,14 +146,22 @@ export const useBulkDeleteDestinationConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, destinationIds }: { appId: number; destinationIds: number[]; }) =>
-      bulkDeleteDestinationConnection(appId, destinationIds),
+    mutationFn: ({
+      appId,
+      destinationIds,
+    }: {
+      appId: number;
+      destinationIds: number[];
+    }) => bulkDeleteDestinationConnection(appId, destinationIds),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "destinationConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -162,7 +178,7 @@ const updateDestinationConnectionStatus = async (
   status: boolean
 ): Promise<void> => {
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/destination-connections?isActive=${status}`,
+    `${BackendURL}/applications/${appId}/destination-connections?isActive=${status}`,
     {
       method: "PATCH",
       credentials: "include",
@@ -182,14 +198,24 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, destinationIds, status }: { appId: number; destinationIds: number[]; status: boolean }) =>
-      updateDestinationConnectionStatus(appId, destinationIds, status),
+    mutationFn: ({
+      appId,
+      destinationIds,
+      status,
+    }: {
+      appId: number;
+      destinationIds: number[];
+      status: boolean;
+    }) => updateDestinationConnectionStatus(appId, destinationIds, status),
     onSuccess: (_, variables) => {
       // Invalidate queries that start with ["sourceConnections", appId]
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "destinationConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -198,4 +224,3 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
     },
   });
 };
-

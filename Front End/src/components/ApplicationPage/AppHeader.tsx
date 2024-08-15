@@ -27,7 +27,7 @@ import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
-import { minimumAppName } from "../../configs";
+import { minimumAppName, BackendURL } from "../../configs";
 
 interface Props {
   appData?: Application;
@@ -58,7 +58,6 @@ const AppHeader = ({ appData }: Props) => {
   );
 
   const [touched, setTouched] = useState({ alias: false, description: false });
-
   const user = useUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -73,7 +72,7 @@ const AppHeader = ({ appData }: Props) => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`http://localhost:8080/applications/${id}`, {
+      const response = await fetch(`http://${BackendURL}/applications/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -98,7 +97,7 @@ const AppHeader = ({ appData }: Props) => {
       const { id, ...appDataToSend } = appData;
       const method = id ? "PATCH" : "POST";
       const response = await fetch(
-        `http://localhost:8080/applications${id ? `/${id}` : ""}`,
+        `http://${BackendURL}/applications${id ? `/${id}` : ""}`,
         {
           method,
           headers: {

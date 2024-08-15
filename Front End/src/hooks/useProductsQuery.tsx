@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import useProductStore from "../store/ProductStore";
 import { Product } from "../components/Dashboard/Products";
+import { BackendURL } from "../configs";
 
 // Define the fetch function
 const fetchProducts = async (
@@ -19,9 +20,8 @@ const fetchProducts = async (
     search: searchTerm,
     status: status ?? "All",
   });
-
   const response = await fetch(
-    `http://localhost:8080/applications?${params.toString()}`,
+    `${BackendURL}/applications?${params.toString()}`,
     {
       method: "GET",
       credentials: "include",

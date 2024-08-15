@@ -1,11 +1,17 @@
 import { Box, Button, Image, VStack } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
-import { GoSaaSLabsLogo, primaryColor, secondaryColor } from "../../configs";
+import {
+  GoSaaSLabsLogo,
+  primaryColor,
+  secondaryColor,
+  FrontendURL,
+} from "../../configs";
 
 const SignInCard = () => {
   const handleClick = async () => {
     // redirect to google oauth
-    window.open("http://localhost:8080", "_self");
+    // window.open(`${BackendURL}`, "_self");
+    window.open(`${FrontendURL}/homepage`, "_self");
   };
 
   return (

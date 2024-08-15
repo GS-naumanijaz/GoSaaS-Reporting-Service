@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { BackendURL } from "../configs";
 
 const fetchAppData = async (appId: number) => {
-  const response = await fetch(`http://localhost:8080/applications/${appId}`, {
+  const response = await fetch(`${BackendURL}/applications/${appId}`, {
     method: "GET",
     credentials: "include",
   });
@@ -23,7 +24,7 @@ export const useAppDataQuery = (appId: number | null) => {
       }
       return fetchAppData(appId);
     },
-  
+
     enabled: !!appId, // Only fetch if appId is provided and not for new application
   });
 };

@@ -6,6 +6,7 @@ import {
   ReactNode,
 } from "react";
 import axios from "axios";
+import { BackendURL } from "../../configs";
 
 interface User {
   fullName: string;
@@ -25,7 +26,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/current-user", {
+        const response = await axios.get(`${BackendURL}/current-user`, {
           withCredentials: true,
         });
         setUser(response.data);

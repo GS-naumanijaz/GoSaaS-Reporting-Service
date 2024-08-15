@@ -1,15 +1,14 @@
 import { Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { primaryColor } from "../configs";
+import { primaryColor, BackendURL } from "../configs";
 
 const AuthenticatedRoute = ({ element }: any) => {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch("http://localhost:8080/check-auth", {
+        const response = await fetch(`${BackendURL}/check-auth`, {
           method: "GET",
           credentials: "include",
         });

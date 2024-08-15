@@ -1,3 +1,7 @@
+// URLS
+export const FrontendURL = "http://10.8.0.32:5173";
+export const BackendURL = "http://10.8.0.32:8080";
+
 // Color palette
 export const primaryColor = "#D40B0B";
 export const secondaryColor = "#D4C7B0";
