@@ -199,3 +199,28 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
   });
 };
 
+const testDestinationConnection = async (
+  appId: number,
+  testId: number
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/destination-connections/${testId}/test`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to test the destination connection.");
+  }
+
+  return response.json();
+};
+
+export const useTestDestinationConnectionMutation = () => {
+  return useMutation({
+    mutationFn: ({ appId, testId }: { appId: number; testId: number }) =>
+      testDestinationConnection(appId, testId),
+  });
+};

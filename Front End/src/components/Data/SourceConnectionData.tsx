@@ -5,6 +5,7 @@ import {
   useBulkDeleteSourceConnectionMutation,
   useDeleteSourceConnectionMutation,
   useSourceConnectionsQuery,
+  useTestSourceConnectionMutation,
   useUpdateSourceConnectionStatusMutation,
 } from "../../hooks/useSourceConnectionQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
@@ -35,6 +36,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     useBulkDeleteSourceConnectionMutation();
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatusMutation();
+  const testSourceConnection = useTestSourceConnectionMutation();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -90,6 +92,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     updateSourceConnectionStatus({ appId, sourceIds, status });
   };
 
+  const handleTest = async (appId: number, testId: number) => {
+    return testSourceConnection.mutateAsync({ appId, testId });
+  };
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -106,11 +112,13 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   return (
     <CustomTable
       tableManager={manager}
+      appId={appId}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}
       onBulkDelete={handleBulkDelete}
       onBulkUpdateStatus={handleBulkStatusUpdate}
+      onTestConnection={handleTest}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}
