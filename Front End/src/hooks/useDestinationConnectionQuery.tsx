@@ -89,7 +89,7 @@ const bulkDeleteDestinationConnection = async (
   destinationIds: number[]
 ): Promise<void> => {
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/source-connections`,
+    `http://localhost:8080/applications/${appId}/destination-connections`,
     {
       method: "DELETE",
       credentials: "include",
@@ -101,7 +101,7 @@ const bulkDeleteDestinationConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to delete the source connection.");
+    throw new Error("Failed to delete the destination connection.");
   }
 };
 
@@ -125,3 +125,48 @@ export const useBulkDeleteDestinationConnectionMutation = () => {
     },
   });
 };
+
+//bulk update status
+const updateDestinationConnectionStatus = async (
+  appId: number,
+  destinationIds: number[],
+  status: boolean
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/destination-connections?isActive=${status}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(destinationIds),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update the destination connection status.");
+  }
+};
+
+export const useUpdateDestinationConnectionStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ appId, destinationIds, status }: { appId: number; destinationIds: number[]; status: boolean }) =>
+      updateDestinationConnectionStatus(appId, destinationIds, status),
+    onSuccess: (_, variables) => {
+      // Invalidate queries that start with ["sourceConnections", appId]
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error updating source destination status:", error);
+    },
+  });
+};
+

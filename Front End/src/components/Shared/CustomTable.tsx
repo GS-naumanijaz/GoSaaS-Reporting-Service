@@ -29,9 +29,10 @@ interface Props {
   onSearch: (searchTerm: string, field: string) => void;
   onDelete: (deleteId: number) => void;
   onBulkDelete: (deleteIds: number[]) => void;
+  onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
 }
 
-const CustomTable = ({ tableManager, onSort, onSearch, onDelete, onBulkDelete }: Props) => {
+const CustomTable = ({ tableManager, onSort, onSearch, onDelete, onBulkDelete, onBulkUpdateStatus }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
     checkedState: tableManager.getCheckedState(),
@@ -57,8 +58,9 @@ const CustomTable = ({ tableManager, onSort, onSearch, onDelete, onBulkDelete }:
   }, [tableManager]);
 
   const handleBulkSwitchActions = (newStatus: boolean) => {
-    tableManager.handleBulkSwitchActions(newStatus);
-    updateState();
+    if (onBulkUpdateStatus) {
+      onBulkUpdateStatus(tableManager.getCheckedIds(), newStatus);
+    }
   };
 
   const selectAllCheckBoxes = () => {

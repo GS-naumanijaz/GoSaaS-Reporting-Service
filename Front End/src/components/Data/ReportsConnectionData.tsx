@@ -3,7 +3,7 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { Product } from "../Dashboard/Products";
-import { useReportsQuery } from "../../hooks/useReportsQuery";
+import { useBulkDeleteReportMutation, useDeleteReportMutation, useReportsQuery } from "../../hooks/useReportsQuery";
 import { useState } from "react";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 
@@ -24,6 +24,9 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     isError,
     error,
   } = useReportsQuery(productId, sortField, sortOrder);
+
+  const { mutate: deleteReport } = useDeleteReportMutation();
+  const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -101,9 +104,15 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setSearchField(field);
   };
   
-  const handleDelete = () => {}
+  const handleDelete = (reportId: number) => {
+    let appId = product!.id;
+    deleteReport({ appId, reportId });
+  }
 
-  const handleBulkDelete = () => {}
+  const handleBulkDelete = (reportIds: number[]) => {
+    let appId = product!.id;
+    bulkDeleteReport({appId, reportIds})
+  }
   
   return (
     <>

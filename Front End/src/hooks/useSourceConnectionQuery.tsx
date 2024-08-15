@@ -126,3 +126,47 @@ export const useBulkDeleteSourceConnectionMutation = () => {
     },
   });
 };
+
+//bulk update status
+const updateSourceConnectionStatus = async (
+  appId: number,
+  sourceIds: number[],
+  status: boolean
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/source-connections?isActive=${status}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sourceIds),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update the source connection status.");
+  }
+};
+
+export const useUpdateSourceConnectionStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ appId, sourceIds, status }: { appId: number; sourceIds: number[]; status: boolean }) =>
+      updateSourceConnectionStatus(appId, sourceIds, status),
+    onSuccess: (_, variables) => {
+      // Invalidate queries that start with ["sourceConnections", appId]
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error updating source connection status:", error);
+    },
+  });
+};
