@@ -1,6 +1,7 @@
 import {
   Box,
   Checkbox,
+  HStack,
   Table,
   TableContainer,
   Tbody,
@@ -32,6 +33,7 @@ interface Props {
   onPageChange: (newPage: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
   totalElements: number;
+  searchObject?: { searchField: string; searchTerm: string }; // Optional prop
 }
 
 const CustomTable = ({
@@ -43,6 +45,7 @@ const CustomTable = ({
   onPageChange,
   onPageSizeChange,
   totalElements,
+  searchObject,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -131,6 +134,19 @@ const CustomTable = ({
       my={10}
       width={"90%"}
     >
+      {searchObject?.searchTerm && (
+        <Box mb={4} p={2} borderWidth={1} borderColor="gray.200">
+          <Text fontWeight="bold">Search Results:</Text>
+          <HStack justifyContent={"center"} spacing={5}>
+            <Text>
+              <strong>Field:</strong> {searchObject.searchField}
+            </Text>
+            <Text>
+              <strong>Term:</strong> {searchObject.searchTerm}
+            </Text>
+          </HStack>
+        </Box>
+      )}
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}

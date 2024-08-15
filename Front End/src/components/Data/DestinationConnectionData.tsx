@@ -3,8 +3,8 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import { useDestinationConnectionsQuery } from "../../hooks/useDestinationConnectionQuery";
-import { useState } from "react";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import useDestinationConnectionStore from "../../store/DestinationConnStore";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -13,15 +13,27 @@ interface DestinationConnectionDataProps {
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
-  const [sortField, setSortField] = useState<string>("updatedAt");
-  const [sortOrder, setSortOrder] = useState<string>("desc");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("");
-  const [page, setPage] = useState<number>(0);
-  const [pageSize, setPageSize] = useState<number>(5);
+  const {
+    sortField,
+    sortOrder,
+    searchTerm,
+    searchField,
+    page,
+    pageSize,
+    setSortField,
+    setSortOrder,
+    setSearchTerm,
+    setSearchField,
+    setPage,
+    setPageSize,
+  } = useDestinationConnectionStore();
+
+  // Determine the actual field to search by, using fieldMapping if it exists
+  const actualSearchField =
+    fieldMapping[searchField as FieldMappingKey] || searchField;
 
   const {
-    data: { content: destinationConnections } = {},
+    data: { content: destinationConnections = [] } = {},
     data: { totalElements = 0 } = {},
     isLoading,
     isError,
@@ -31,35 +43,13 @@ const DestinationConnectionData = ({
     sortField,
     sortOrder,
     page,
-    pageSize
+    pageSize,
+    searchTerm,
+    actualSearchField
   );
 
-  // Determine the actual field to search by, using fieldMapping if it exists
-  const actualSearchField =
-    fieldMapping[searchField as FieldMappingKey] || searchField;
-
-  // Apply filtering based on searchTerm and searchField
-  const filteredDestinationConnections =
-    destinationConnections?.filter((destinationConnection: any) => {
-      if (actualSearchField && searchTerm) {
-        const fieldValue = destinationConnection[actualSearchField];
-        if (typeof fieldValue === "string" && typeof searchTerm === "string") {
-          return fieldValue.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-        if (typeof fieldValue === "number" && typeof searchTerm === "string") {
-          return fieldValue.toString().includes(searchTerm);
-        }
-        if (typeof fieldValue === "boolean" && typeof searchTerm === "string") {
-          const searchBoolean = searchTerm.toLowerCase() === "active";
-          return fieldValue === searchBoolean;
-        }
-        return fieldValue.includes(searchTerm);
-      }
-      return true;
-    }) || [];
-
   const destinationConnectionsList: DestinationConnection[] =
-    filteredDestinationConnections.map(
+    destinationConnections.map(
       (destinationConnection: any) =>
         new DestinationConnection(
           destinationConnection.id,
@@ -90,7 +80,6 @@ const DestinationConnectionData = ({
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
-    setPage(0);
   };
 
   const manager = new TableManager(
@@ -119,6 +108,10 @@ const DestinationConnectionData = ({
           page={page}
           pageSize={pageSize}
           totalElements={totalElements}
+          searchObject={{
+            searchField: actualSearchField,
+            searchTerm: searchTerm,
+          }}
         />
       )}
     </>

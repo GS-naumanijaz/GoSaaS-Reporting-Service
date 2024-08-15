@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ProductsList from "./ProductsList";
 import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
-import useProductStore from "../../store";
+import useProductStore from "../../store/ProductStore";
 import { useProductsQuery } from "../../hooks/useProductsQuery";
 import { useEffect } from "react";
 

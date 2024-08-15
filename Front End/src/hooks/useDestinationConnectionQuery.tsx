@@ -5,13 +5,17 @@ const fetchDestinationConnections = async (
   sortingBy: string,
   sortingOrder: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  searchTerm: string,
+  searchField: string
 ) => {
   const params = new URLSearchParams({
     sort_by: sortingBy,
     sort_order: sortingOrder,
     page: page.toString(),
     page_size: pageSize.toString(),
+    search: searchTerm,
+    search_by: searchField,
   });
   const response = await fetch(
     `http://localhost:8080/applications/${appId}/destination-connections?${params.toString()}`,
@@ -34,7 +38,9 @@ export const useDestinationConnectionsQuery = (
   sortingBy: string,
   sortingOrder: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  searchTerm: string,
+  searchField: string
 ) => {
   return useQuery({
     queryKey: [
@@ -44,6 +50,8 @@ export const useDestinationConnectionsQuery = (
       sortingOrder,
       page,
       pageSize,
+      searchTerm,
+      searchField,
     ],
     queryFn: () =>
       fetchDestinationConnections(
@@ -51,7 +59,9 @@ export const useDestinationConnectionsQuery = (
         sortingBy,
         sortingOrder,
         page,
-        pageSize
+        pageSize,
+        searchTerm,
+        searchField
       ),
     enabled: !!appId, // Only fetch if appId is provided
     staleTime: 0, // Mark data as stale as soon as it is received

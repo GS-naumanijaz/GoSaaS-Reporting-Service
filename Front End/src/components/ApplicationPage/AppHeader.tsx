@@ -26,7 +26,7 @@ import { Application } from "./AppDashboard";
 import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import useProductStore from "../../store";
+import useProductStore from "../../store/ProductStore";
 import { minimumAppName } from "../../configs";
 
 interface Props {

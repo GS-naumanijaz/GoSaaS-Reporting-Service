@@ -5,13 +5,17 @@ const fetchReportsConnections = async (
   sortField: string,
   sortOrder: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  searchTerm: string,
+  searchField: string
 ) => {
   const params = new URLSearchParams({
     sort_by: sortField,
     sort_order: sortOrder,
     page: page.toString(),
     page_size: pageSize.toString(),
+    search: searchTerm,
+    search_by: searchField,
   });
 
   const response = await fetch(
@@ -35,7 +39,9 @@ export const useReportsQuery = (
   sortField: string,
   sortOrder: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  searchTerm: string,
+  searchField: string
 ) => {
   return useQuery({
     queryKey: [
@@ -45,6 +51,8 @@ export const useReportsQuery = (
       sortOrder,
       page,
       pageSize,
+      searchTerm,
+      searchField,
     ],
     queryFn: () => {
       if (!productId) {
@@ -55,7 +63,9 @@ export const useReportsQuery = (
         sortField,
         sortOrder,
         page,
-        pageSize
+        pageSize,
+        searchTerm,
+        searchField
       );
     },
     enabled: !!productId, // Only fetch if productId is provided

@@ -3,69 +3,62 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import { useSourceConnectionsQuery } from "../../hooks/useSourceConnectionQuery";
-import { useState } from "react";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
-
+import useSourceConnectionStore from "../../store/SourceConnStore";
 interface SourceConnectionDataProps {
   appId: number;
 }
 
 const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
-  const [sortField, setSortField] = useState<string>("updatedAt");
-  const [sortOrder, setSortOrder] = useState<string>("desc");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("");
-  const [page, setPage] = useState<number>(0);
-  const [pageSize, setPageSize] = useState<number>(5);
-
   const {
-    data: { content: sourceConnections } = {},
-    data: { totalElements = 0 } = {},
-    isLoading,
-    isError,
-    error,
-  } = useSourceConnectionsQuery(appId, sortField, sortOrder, page, pageSize);
+    sortField,
+    sortOrder,
+    searchTerm,
+    searchField,
+    page,
+    pageSize,
+    setSortField,
+    setSortOrder,
+    setSearchTerm,
+    setSearchField,
+    setPage,
+    setPageSize,
+  } = useSourceConnectionStore();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  // Apply filtering based on searchTerm and searchField
-  const filteredSourceConnections =
-    sourceConnections?.filter((sourceConnection: any) => {
-      if (actualSearchField && searchTerm) {
-        const fieldValue = sourceConnection[actualSearchField];
-        if (typeof fieldValue === "string" && typeof searchTerm === "string") {
-          return fieldValue.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-        if (typeof fieldValue === "number" && typeof searchTerm === "string") {
-          return fieldValue.toString().includes(searchTerm);
-        }
-        if (typeof fieldValue === "boolean" && typeof searchTerm === "string") {
-          const searchBoolean = searchTerm.toLowerCase() === "active";
-          return fieldValue === searchBoolean;
-        }
-        return fieldValue.includes(searchTerm);
-      }
-      return true;
-    }) || [];
+  const {
+    data: { content: sourceConnections = [], totalElements = 0 } = {},
+    isLoading,
+    isError,
+    error,
+  } = useSourceConnectionsQuery(
+    appId,
+    sortField,
+    sortOrder,
+    page,
+    pageSize,
+    searchTerm,
+    actualSearchField
+  );
 
-  const sourceConnectionsList: SourceConnection[] =
-    filteredSourceConnections.map(
-      (sourceConnection: any) =>
-        new SourceConnection(
-          sourceConnection.id,
-          sourceConnection.alias,
-          sourceConnection.type ?? "",
-          sourceConnection.databaseName,
-          sourceConnection.host,
-          sourceConnection.port.toString(),
-          sourceConnection.username,
-          sourceConnection.password,
-          sourceConnection.application,
-          sourceConnection.isActive
-        )
-    );
+  const sourceConnectionsList: SourceConnection[] = sourceConnections!.map(
+    (sourceConnection: any) =>
+      new SourceConnection(
+        sourceConnection.id,
+        sourceConnection.alias,
+        sourceConnection.type ?? "",
+        sourceConnection.databaseName,
+        sourceConnection.host,
+        sourceConnection.port.toString(),
+        sourceConnection.username,
+        sourceConnection.password,
+        sourceConnection.application,
+        sourceConnection.isActive
+      )
+  );
 
   const handleSort = (field: FieldMappingKey, order: string) => {
     const mappedField = fieldMapping[field];
@@ -84,7 +77,6 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
-    setPage(0);
   };
 
   const manager = new TableManager(
@@ -113,6 +105,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           page={page}
           pageSize={pageSize}
           totalElements={totalElements}
+          searchObject={{
+            searchField: actualSearchField,
+            searchTerm: searchTerm,
+          }}
         />
       )}
     </>

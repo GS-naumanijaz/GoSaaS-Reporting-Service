@@ -36,10 +36,16 @@ const FilterSortPopup = ({
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState("All");
 
-  const handleChange = (value: string, field: FieldMappingKey) => {
-    if (value.length === 0) {
-      onSearch("", fieldMapping[field]);
-    } else if (value.length >= 3) {
+  const handleChange = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    value: string,
+    field: FieldMappingKey
+  ) => {
+    if (event.key === "Enter") {
+      if (value.length === 0) {
+        onSearch("", fieldMapping[field]);
+        return;
+      }
       onSearch(value, fieldMapping[field]);
     }
   };
@@ -102,8 +108,12 @@ const FilterSortPopup = ({
                 <Input
                   placeholder={`Enter ${heading}`}
                   size="sm"
-                  onChange={(e) =>
-                    handleChange(e.target.value, heading as FieldMappingKey)
+                  onKeyDown={(e) =>
+                    handleChange(
+                      e,
+                      (e.target as HTMLInputElement).value,
+                      heading as FieldMappingKey
+                    )
                   }
                 />
               </PopoverBody>

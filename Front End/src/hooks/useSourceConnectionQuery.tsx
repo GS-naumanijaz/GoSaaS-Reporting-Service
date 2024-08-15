@@ -5,13 +5,17 @@ const fetchSourceConnections = async (
   sortingBy: string,
   sortingOrder: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  searchTerm: string,
+  searchField: string
 ) => {
   const params = new URLSearchParams({
     sort_by: sortingBy,
     sort_order: sortingOrder,
     page: page.toString(),
     page_size: pageSize.toString(),
+    search: searchTerm,
+    search_by: searchField,
   });
 
   const response = await fetch(
@@ -32,7 +36,9 @@ export const useSourceConnectionsQuery = (
   sortingBy: string,
   sortingOrder: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  searchTerm: string,
+  searchField: string
 ) => {
   return useQuery({
     queryKey: [
@@ -42,9 +48,19 @@ export const useSourceConnectionsQuery = (
       sortingOrder,
       page,
       pageSize,
+      searchTerm,
+      searchField,
     ],
     queryFn: () =>
-      fetchSourceConnections(appId, sortingBy, sortingOrder, page, pageSize),
+      fetchSourceConnections(
+        appId,
+        sortingBy,
+        sortingOrder,
+        page,
+        pageSize,
+        searchTerm,
+        searchField
+      ),
     enabled: !!appId,
     staleTime: 0,
     gcTime: 0,
