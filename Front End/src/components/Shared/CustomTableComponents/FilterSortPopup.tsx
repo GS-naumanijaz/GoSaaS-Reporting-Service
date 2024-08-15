@@ -42,7 +42,6 @@ const FilterSortPopup = ({
     } else if (value.length >= 3) {
       onSearch(value, fieldMapping[field]);
     }
-    console.log("button: ", value, field);
   };
 
   const handleDropdown = (selected: string) => {

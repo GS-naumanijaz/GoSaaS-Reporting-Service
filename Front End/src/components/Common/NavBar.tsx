@@ -8,8 +8,8 @@ const NavBar = () => {
     <HStack
       justify={"space-between"}
       height={navbarHeight}
-      borderBottomColor={"lightgrey"}
-      borderBottomWidth={1}
+      borderBottomColor={"red"}
+      borderBottomWidth={3}
     >
       <Image marginLeft={3} padding={2} width={200} src={GoSaaSLabsLogo} />
       <HStack marginRight={5} spacing={8}>

@@ -8,7 +8,7 @@ import { useAppDataQuery } from "../../hooks/useAppDataQuery";
 import DestinationConnectionData from "../Data/DestinationConnectionData";
 
 export interface Application {
-  id: number;
+  id?: number;
   alias: string;
   description: string;
   isActive: boolean;
