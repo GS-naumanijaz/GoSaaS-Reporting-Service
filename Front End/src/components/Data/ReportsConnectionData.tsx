@@ -1,11 +1,14 @@
-import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { Product } from "../Dashboard/Products";
-import { useBulkDeleteReportMutation, useDeleteReportMutation, useReportsQuery } from "../../hooks/useReportsQuery";
-import { useState } from "react";
+import {
+  useBulkDeleteReportMutation,
+  useDeleteReportMutation,
+  useReportsQuery,
+} from "../../hooks/useReportsQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import useReportsConnectionStore from "../../store/ReportsStore";
 
 interface ReportsConnectionDataProps {
   product: Product | null;
@@ -13,17 +16,20 @@ interface ReportsConnectionDataProps {
 
 const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const productId = product?.id ?? null;
-  const [sortField, setSortField] = useState<FieldMappingKey>("Alias");
-  const [sortOrder, setSortOrder] = useState<string>("desc");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("");
-
   const {
-    data: reportsConnections,
-    isLoading,
-    isError,
-    error,
-  } = useReportsQuery(productId, sortField, sortOrder);
+    sortField,
+    sortOrder,
+    searchTerm,
+    searchField,
+    page,
+    pageSize,
+    setSortField,
+    setSortOrder,
+    setSearchTerm,
+    setSearchField,
+    setPage,
+    setPageSize,
+  } = useReportsConnectionStore();
 
   const { mutate: deleteReport } = useDeleteReportMutation();
   const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
@@ -32,70 +38,34 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  // Apply filtering based on searchTerm and searchField
-  const filteredReportsConnections =
-    reportsConnections?.filter((reportConnection: any) => {
-      if (actualSearchField && searchTerm) {
-        const searchTermLower = searchTerm.toLowerCase();
-
-        if (
-          ["source_connection", "destination_connection"].includes(
-            actualSearchField
-          )
-        ) {
-          const connectionField = reportConnection[actualSearchField];
-          return connectionField.alias.toLowerCase().includes(searchTermLower);
-        }
-
-        const fieldValue = reportConnection[actualSearchField];
-
-        if (typeof fieldValue === "string") {
-          return fieldValue.toLowerCase().includes(searchTermLower);
-        }
-
-        if (typeof fieldValue === "number") {
-          return fieldValue.toString().includes(searchTermLower);
-        }
-
-        if (typeof fieldValue === "boolean") {
-          const searchBoolean = searchTermLower === "active";
-          return fieldValue === searchBoolean;
-        }
-
-        if (Array.isArray(fieldValue)) {
-          const searchArray = fieldValue.join(" ").toLowerCase();
-          return searchArray.includes(searchTermLower);
-        }
-      }
-
-      // If actualSearchField or searchTerm is not set, include this item
-      return true;
-    }) || [];
-
-  // Map reportsConnections to ReportsConnection objects
-  const reportsConnectionsList: ReportsConnection[] =
-    filteredReportsConnections.map(
-      (reportConnection: any) =>
-        new ReportsConnection(
-          reportConnection.id,
-          reportConnection.alias,
-          reportConnection.description,
-          reportConnection.source_connection.alias,
-          reportConnection.destination_connection.alias,
-          reportConnection.storedProcedure,
-          reportConnection.params,
-          reportConnection.application
-        )
+  const { data: { content: reportsConnections = [], totalElements = 0 } = {} } =
+    useReportsQuery(
+      productId,
+      sortField,
+      sortOrder,
+      page,
+      pageSize,
+      searchTerm,
+      actualSearchField
     );
 
-  const manager = new TableManager(
-    new ReportsConnection(),
-    reportsConnectionsList,
-    product ?? undefined
+  const reportsConnectionsList: ReportsConnection[] = reportsConnections.map(
+    (reportConnection: any) =>
+      new ReportsConnection(
+        reportConnection.id,
+        reportConnection.alias,
+        reportConnection.description,
+        reportConnection.sourceConnection.alias,
+        reportConnection.destinationConnection.alias,
+        reportConnection.storedProcedure,
+        reportConnection.params,
+        reportConnection.application
+      )
   );
 
   const handleSort = (field: FieldMappingKey, order: string) => {
-    setSortField(field);
+    const mappedField = fieldMapping[field];
+    setSortField(mappedField);
     setSortOrder(order);
   };
 
@@ -103,38 +73,48 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setSearchTerm(searchTerm);
     setSearchField(field);
   };
-  
+
   const handleDelete = (reportId: number) => {
     let appId = product!.id;
     deleteReport({ appId, reportId });
-  }
+  };
 
   const handleBulkDelete = (reportIds: number[]) => {
     let appId = product!.id;
-    bulkDeleteReport({appId, reportIds})
-  }
-  
+    bulkDeleteReport({ appId, reportIds });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+  };
+
+  const manager = new TableManager(
+    new ReportsConnection(),
+    reportsConnectionsList,
+    product ?? undefined
+  );
+
   return (
-    <>
-      {isLoading ? (
-        <Spinner size="xl" />
-      ) : isError ? (
-        <Alert status="error">
-          <AlertIcon />
-          {error instanceof Error
-            ? error.message
-            : "Failed to fetch reports connection data."}
-        </Alert>
-      ) : (
-        <CustomTable
-          tableManager={manager}
-          onSort={handleSort}
-          onSearch={handleSearch}
-          onDelete={handleDelete}
-          onBulkDelete={handleBulkDelete}
-        />
-      )}
-    </>
+    <CustomTable
+      tableManager={manager}
+      onSort={handleSort}
+      onSearch={handleSearch}
+      onDelete={handleDelete}
+      onBulkDelete={handleBulkDelete}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
+      page={page}
+      pageSize={pageSize}
+      totalElements={totalElements}
+      searchObject={{
+        searchField: actualSearchField,
+        searchTerm: searchTerm,
+      }}
+    />
   );
 };
 

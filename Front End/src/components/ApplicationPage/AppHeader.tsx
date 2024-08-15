@@ -26,7 +26,7 @@ import { Application } from "./AppDashboard";
 import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import useProductStore from "../../store";
+import useProductStore from "../../store/ProductStore";
 import { minimumAppName } from "../../configs";
 
 interface Props {
@@ -45,7 +45,6 @@ const validationCheck = ({ alias, description }: Application) => {
 const AppHeader = ({ appData }: Props) => {
   const [newAppData, setNewAppData] = useState<Application>(
     appData || {
-      id: Date.now(),
       alias: "",
       description: "",
       isActive: false,
@@ -109,7 +108,9 @@ const AppHeader = ({ appData }: Props) => {
           credentials: "include",
         }
       );
-      if (!response.ok) throw new Error("Failed to save application");
+      if (!response.ok) {
+        throw new Error("Failed to save application");
+      }
       return response.json();
     },
     onSuccess: async (savedApplication) => {

@@ -14,8 +14,8 @@ export const fieldMapping = {
   "Access Key": "accessKey",
   Description: "description",
   // reports
-  Connection: "source_connection",
-  Destination: "destination_connection",
+  Connection: "sourceConnection",
+  Destination: "destinationConnection",
   "Stored Procedures": "storedProcedure",
   Parameters: "params",
 } as const;

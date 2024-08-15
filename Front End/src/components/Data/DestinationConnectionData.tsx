@@ -1,10 +1,14 @@
-import { Alert, AlertIcon, Spinner } from "@chakra-ui/react";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
-import { useBulkDeleteDestinationConnectionMutation, useDeleteDestinationConnectionMutation, useDestinationConnectionsQuery, useUpdateDestinationConnectionStatusMutation } from "../../hooks/useDestinationConnectionQuery";
-import { useState } from "react";
+import {
+  useBulkDeleteDestinationConnectionMutation,
+  useDeleteDestinationConnectionMutation,
+  useDestinationConnectionsQuery,
+  useUpdateDestinationConnectionStatusMutation,
+} from "../../hooks/useDestinationConnectionQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import useDestinationConnectionStore from "../../store/DestinationConnStore";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -13,51 +17,47 @@ interface DestinationConnectionDataProps {
 const DestinationConnectionData = ({
   appId,
 }: DestinationConnectionDataProps) => {
-  const [sortField, setSortField] = useState<FieldMappingKey>("Alias");
-  const [sortOrder, setSortOrder] = useState<string>("desc");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("");
-
   const {
-    data: destinationConnections,
-    isLoading,
-    isError,
-    error,
-  } = useDestinationConnectionsQuery(appId, sortField, sortOrder);
+    sortField,
+    sortOrder,
+    searchTerm,
+    searchField,
+    page,
+    pageSize,
+    setSortField,
+    setSortOrder,
+    setSearchTerm,
+    setSearchField,
+    setPage,
+    setPageSize,
+  } = useDestinationConnectionStore();
 
-  const { mutate: deleteDestinationConnection } = useDeleteDestinationConnectionMutation();
-  const { mutate: bulkDeleteDestinationConnection } = useBulkDeleteDestinationConnectionMutation();
-  
-  const { mutate: updateDestinationConnectionStatus } = useUpdateDestinationConnectionStatusMutation();
+  const { mutate: deleteDestinationConnection } =
+    useDeleteDestinationConnectionMutation();
+  const { mutate: bulkDeleteDestinationConnection } =
+    useBulkDeleteDestinationConnectionMutation();
+
+  const { mutate: updateDestinationConnectionStatus } =
+    useUpdateDestinationConnectionStatusMutation();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  // Apply filtering based on searchTerm and searchField
-  const filteredDestinationConnections =
-    destinationConnections?.filter((destinationConnection: any) => {
-      if (actualSearchField && searchTerm) {
-        const fieldValue = destinationConnection[actualSearchField];
-        // Compare in lowercase if both are strings
-        if (typeof fieldValue === "string" && typeof searchTerm === "string") {
-          return fieldValue.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-        if (typeof fieldValue === "number" && typeof searchTerm === "string") {
-          return fieldValue.toString().includes(searchTerm);
-        }
-        if (typeof fieldValue === "boolean" && typeof searchTerm === "string") {
-          const searchBoolean = searchTerm.toLowerCase() === "active";
-          return fieldValue === searchBoolean;
-        }
-        return fieldValue.includes(searchTerm);
-      }
-      return true;
-    }) || [];
+  const {
+    data: { content: destinationConnections = [], totalElements = 0 } = {},
+  } = useDestinationConnectionsQuery(
+    appId,
+    sortField,
+    sortOrder,
+    page,
+    pageSize,
+    searchTerm,
+    actualSearchField
+  );
 
-  // Map destinationConnections to DestinationConnection objects
   const destinationConnectionsList: DestinationConnection[] =
-    filteredDestinationConnections.map(
+    destinationConnections.map(
       (destinationConnection: any) =>
         new DestinationConnection(
           destinationConnection.id,
@@ -71,13 +71,9 @@ const DestinationConnectionData = ({
         )
     );
 
-  const manager = new TableManager(
-    new DestinationConnection(),
-    destinationConnectionsList
-  );
-
   const handleSort = (field: FieldMappingKey, order: string) => {
-    setSortField(field);
+    const mappedField = fieldMapping[field];
+    setSortField(mappedField);
     setSortOrder(order);
   };
 
@@ -87,39 +83,50 @@ const DestinationConnectionData = ({
   };
 
   const handleDelete = (destinationId: number) => {
-    deleteDestinationConnection({appId, destinationId});
-  }
+    deleteDestinationConnection({ appId, destinationId });
+  };
 
   const handleBulkDelete = (destinationIds: number[]) => {
-    bulkDeleteDestinationConnection({appId, destinationIds});
-  }
+    bulkDeleteDestinationConnection({ appId, destinationIds });
+  };
 
-  const handleBulkStatusUpdate = (destinationIds: number[], status: boolean) => {
-    updateDestinationConnectionStatus({appId, destinationIds, status});
-  }
+  const handleBulkStatusUpdate = (
+    destinationIds: number[],
+    status: boolean
+  ) => {
+    updateDestinationConnectionStatus({ appId, destinationIds, status });
+  };
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+  };
+
+  const manager = new TableManager(
+    new DestinationConnection(),
+    destinationConnectionsList
+  );
   return (
-    <>
-      {isLoading ? (
-        <Spinner size="xl" />
-      ) : isError ? (
-        <Alert status="error">
-          <AlertIcon />
-          {error instanceof Error
-            ? error.message
-            : "Failed to fetch destination connection data."}
-        </Alert>
-      ) : (
-        <CustomTable
-          tableManager={manager}
-          onSort={handleSort}
-          onSearch={handleSearch}
-          onDelete={handleDelete}
-          onBulkDelete={handleBulkDelete}
-          onBulkUpdateStatus={handleBulkStatusUpdate}
-        />
-      )}
-    </>
+    <CustomTable
+      tableManager={manager}
+      onSort={handleSort}
+      onSearch={handleSearch}
+      onDelete={handleDelete}
+      onBulkDelete={handleBulkDelete}
+      onBulkUpdateStatus={handleBulkStatusUpdate}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
+      page={page}
+      pageSize={pageSize}
+      totalElements={totalElements}
+      searchObject={{
+        searchField: actualSearchField,
+        searchTerm: searchTerm,
+      }}
+    />
   );
 };
 

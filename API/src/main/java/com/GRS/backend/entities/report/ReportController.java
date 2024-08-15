@@ -90,16 +90,15 @@ public class ReportController {
     public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId) {
         Report updatedReport = reportService.updateReport(reportId, reportRequest.report);
 
-        if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSource_connection().getId()) {
+        if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSourceConnection().getId()) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
 
             sourceConnection.addReport(updatedReport);
             sourceConnectionService.addSourceConnection(sourceConnection);
         }
 
-        if (reportRequest.destinationId != null && reportRequest.destinationId != updatedReport.getDestination_connection().getId()) {
+        if (reportRequest.destinationId != null && reportRequest.destinationId != updatedReport.getDestinationConnection().getId()) {
             DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId);
-
             destinationConnection.addReport(updatedReport);
             destinationConnectionService.addDestinationConnection(destinationConnection);
         }

@@ -1,6 +1,7 @@
 import {
   Box,
   Checkbox,
+  HStack,
   Table,
   TableContainer,
   Tbody,
@@ -30,9 +31,25 @@ interface Props {
   onDelete: (deleteId: number) => void;
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
+  page: number;
+  pageSize: number;
+  onPageChange: (newPage: number) => void;
+  onPageSizeChange: (newPageSize: number) => void;
+  totalElements: number;
+  searchObject?: { searchField: string; searchTerm: string }; // Optional prop
 }
 
-const CustomTable = ({ tableManager, onSort, onSearch, onDelete, onBulkDelete, onBulkUpdateStatus }: Props) => {
+const CustomTable = ({
+  tableManager,
+  onSort,
+  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus,
+  page,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
+  totalElements,
+  searchObject,
+}: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
     checkedState: tableManager.getCheckedState(),
@@ -119,6 +136,19 @@ const CustomTable = ({ tableManager, onSort, onSearch, onDelete, onBulkDelete, o
       my={10}
       width={"90%"}
     >
+      {searchObject?.searchTerm && (
+        <Box mb={4} p={2} borderWidth={1} borderColor="gray.200">
+          <Text fontWeight="bold">Search Results:</Text>
+          <HStack justifyContent={"center"} spacing={5}>
+            <Text>
+              <strong>Field:</strong> {searchObject.searchField}
+            </Text>
+            <Text>
+              <strong>Term:</strong> {searchObject.searchTerm}
+            </Text>
+          </HStack>
+        </Box>
+      )}
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}
@@ -211,7 +241,13 @@ const CustomTable = ({ tableManager, onSort, onSearch, onDelete, onBulkDelete, o
           )}
         </Table>
       </TableContainer>
-      <TableFooter NoOfRecords={tableData.length} />
+      <TableFooter
+        NoOfRecords={totalElements}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+      />
     </Box>
   );
 };

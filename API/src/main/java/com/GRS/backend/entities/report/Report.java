@@ -29,11 +29,11 @@ public class Report {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "destination_id", referencedColumnName = "id")
-    private DestinationConnection destination_connection;
+    private DestinationConnection destinationConnection;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "source_id", referencedColumnName = "id")
-    private SourceConnection source_connection;
+    private SourceConnection sourceConnection;
 
     @NotNull(message = "Alias must not be null")
     private String alias;

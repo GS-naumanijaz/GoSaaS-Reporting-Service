@@ -31,7 +31,7 @@ public class DestinationConnection {
     private Application application;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "destinationConnection", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @JsonIgnore
@@ -74,7 +74,7 @@ public class DestinationConnection {
 
     public void addReport(Report report) {
         this.reports.add(report);
-        report.setDestination_connection(this);
+        report.setDestinationConnection(this);
     }
 
     @PrePersist

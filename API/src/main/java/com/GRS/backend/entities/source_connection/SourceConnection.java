@@ -32,7 +32,7 @@ public class SourceConnection {
     private Application application;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "source_connection", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sourceConnection", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @NotNull(message = "Alias must not be null")
@@ -69,7 +69,7 @@ public class SourceConnection {
 
     public void addReport(Report report) {
         this.reports.add(report);
-        report.setSource_connection(this);
+        report.setSourceConnection(this);
     }
 
     @PrePersist
