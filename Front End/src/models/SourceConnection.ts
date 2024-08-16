@@ -4,7 +4,7 @@ import { Application } from "../components/ApplicationPage/AppDashboard";
 
 export class SourceConnection extends TableRowData {
   private connectionId: number;
-  private alias: string;
+  public  alias: string;
   private type: string;
   private host: string;
   private port: string;
@@ -14,6 +14,8 @@ export class SourceConnection extends TableRowData {
   // private appId: number;
   private application: Application;
   private isActive: boolean;
+
+  private static dbTypes = ["SQL", "POSTGRES", "MYSQL", "MARIADB", "ORACLE", "SQLSERVER", "SQLITE", "H2", "DB2", "DERBY", "HSQLDB", "FIREBIRD", "CASSANDRA", "MONGO", "INFORMIX", "SYBASE", "AWSATHENA", "NEO4J", "SNOWFLAKE", "REDSHIFT", "PRESTO"];
 
   //Static variables
   private static tableHeader = "Source Connections";
@@ -65,7 +67,7 @@ export class SourceConnection extends TableRowData {
       name: "Connection Type",
       label: "connection type",
       isSelectable: true,
-      options: ["POSTGRES", "MYSQL"],
+      options: this.dbTypes,
       validation: {
         required: true,
         customErrorMessage: "Connection type is required.",
@@ -149,7 +151,7 @@ export class SourceConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["All", "MYSQL", "ORACLE"],
+      dropdownFilter: this.dbTypes,
     },
     {
       isEnabled: true,
@@ -228,6 +230,34 @@ export class SourceConnection extends TableRowData {
 
   getId(): number {
     return this.connectionId;
+  }
+
+  getAlias(): string {
+    return this.alias;
+  }
+
+  getType(): string {
+    return this.type;
+  }
+
+  getHost(): string {
+    return this.host;
+  }
+
+  getPort(): string {
+    return this.port;
+  }
+
+  getDatabaseName(): string {
+    return this.databaseName;
+  }
+
+  getUsername(): string {
+    return this.databaseName;
+  }
+
+  getPassword(): string {
+    return this.password;
   }
 
   getTableData(): string[] {

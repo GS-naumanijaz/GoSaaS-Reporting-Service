@@ -88,7 +88,7 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "isActive", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "username", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
-            FieldUpdater.updateField(existingSourceConnection, "database_name", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "databaseName", sourceConnection);
 
 
             return sourceConnectionRepository.save(existingSourceConnection);

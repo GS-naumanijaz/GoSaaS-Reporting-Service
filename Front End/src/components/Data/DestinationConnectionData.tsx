@@ -5,6 +5,7 @@ import {
   useBulkDeleteDestinationConnectionMutation,
   useDeleteDestinationConnectionMutation,
   useDestinationConnectionsQuery,
+  useEditDestinationConnectionMutation,
   useTestDestinationConnectionMutation,
   useUpdateDestinationConnectionStatusMutation,
   useAddDestinationonnectionMutation,
@@ -47,6 +48,9 @@ const DestinationConnectionData = ({
   const testDestinationMutation = useTestDestinationConnectionMutation();
   const { mutate: addDestinationConnection } =
     useAddDestinationonnectionMutation();
+  const { mutate: editDestinationConnection } =
+    useEditDestinationConnectionMutation();
+
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
@@ -123,6 +127,10 @@ const DestinationConnectionData = ({
     });
   };
 
+  const handleEdit = (editId: number, editedItem: any) => {
+    editDestinationConnection({ appId, editId, editedItem });
+  };
+
   const manager = new TableManager(
     new DestinationConnection(),
     destinationConnectionsList
@@ -137,6 +145,7 @@ const DestinationConnectionData = ({
       onBulkDelete={handleBulkDelete}
       onBulkUpdateStatus={handleBulkStatusUpdate}
       onTestConnection={handleTest}
+      onEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}

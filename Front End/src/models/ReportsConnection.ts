@@ -1,4 +1,6 @@
 import { Application } from "../components/ApplicationPage/AppDashboard";
+import { DestinationConnection } from "./DestinationConnection";
+import { SourceConnection } from "./SourceConnection";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
@@ -8,6 +10,8 @@ export class ReportsConnection extends TableRowData {
   private description: string;
   private connection_alias: string;
   private destination_alias: string;
+  private sourceConnection?: SourceConnection;
+  private destinationConnection?: DestinationConnection;
   private stored_procedures: string;
   private parameters: string;
   // private appId: number;
@@ -127,6 +131,8 @@ export class ReportsConnection extends TableRowData {
     description: string = "",
     connection_alias: string = "",
     destination_alias: string = "",
+    sourceConnection?: SourceConnection,
+    destinationConnection?: DestinationConnection,
     stored_procedures: string = "",
     parameters: string = "",
     // appId: number,
@@ -149,6 +155,8 @@ export class ReportsConnection extends TableRowData {
     this.description = description;
     this.connection_alias = connection_alias;
     this.destination_alias = destination_alias;
+    this.sourceConnection = sourceConnection;
+    this.destinationConnection = destinationConnection;
     this.stored_procedures = stored_procedures;
     this.parameters = parameters;
     // this.appId = appId;
@@ -157,6 +165,38 @@ export class ReportsConnection extends TableRowData {
 
   getId(): number {
     return this.reportId;
+  }
+
+  getAlias(): string {
+    return this.alias;
+  }
+
+  getDescription(): string {
+    return this.description;
+  }
+  
+  getConnectionAlias(): string {
+    return this.connection_alias;
+  }
+
+  getDestinationAlias(): string {
+    return this.destination_alias;
+  }
+
+  getSourceConnection(): SourceConnection {
+    return this.sourceConnection!;
+  }
+
+  getDestinationConnection(): DestinationConnection {
+    return this.destinationConnection!;
+  }
+
+  getStoredProcedures(): string {
+    return this.stored_procedures;
+  }
+
+  getParameters(): string {
+    return this.parameters;
   }
 
   getTableData(): string[] {

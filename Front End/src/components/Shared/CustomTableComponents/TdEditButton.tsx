@@ -3,24 +3,31 @@ import { FaRegSave } from "react-icons/fa";
 import { TbPencil, TbPencilCancel } from "react-icons/tb";
 
 interface Props {
+  isEditingMode: boolean;
   isEditing: boolean;
   isDisabled: boolean;
   handleEditToggle: () => void;
   revertEdit: () => void;
+  saveEdit: () => void;
 }
 
 const TdEditButton = ({
+  isEditingMode,
   isEditing,
   isDisabled,
   handleEditToggle,
   revertEdit,
+  saveEdit,
 }: Props) => {
   return (
     <Td textAlign="center">
       {isEditing ? (
         <HStack>
           <Button
-            onClick={handleEditToggle}
+            onClick={() => {
+              handleEditToggle();
+              saveEdit();
+            }}
             isDisabled={isDisabled}
             variant={"ghost"}
           >
@@ -37,7 +44,11 @@ const TdEditButton = ({
           </Button>
         </HStack>
       ) : (
-        <Button variant={"ghost"} onClick={handleEditToggle}>
+        <Button
+          variant={"ghost"}
+          onClick={handleEditToggle}
+          isDisabled={isEditingMode}
+        >
           <TbPencil color="blue" size={20} />
         </Button>
       )}

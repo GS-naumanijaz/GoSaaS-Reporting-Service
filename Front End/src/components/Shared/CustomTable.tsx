@@ -23,6 +23,7 @@ import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
 import TdTestButton from "./CustomTableComponents/TdTestButton";
 import { FieldMappingKey } from "../../services/sortMappings";
+import { ReportsConnection } from "../../models/ReportsConnection";
 
 interface Props {
   tableManager: TableManager;
@@ -33,6 +34,8 @@ interface Props {
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
   onTestConnection?: (appId: number, connectionId: number) => void;
+  onEdit?: (itemId: number, editedItem: any) => void;
+  onClickEdit?: (report: ReportsConnection) => void;
   page: number;
   pageSize: number;
   onPageChange: (newPage: number) => void;
@@ -50,7 +53,7 @@ const CustomTable = ({
   onDelete,
   onBulkDelete,
   onBulkUpdateStatus,
-  onTestConnection,
+  onTestConnection, onEdit, onClickEdit,
   page,
   pageSize,
   onPageChange,
@@ -101,8 +104,15 @@ const CustomTable = ({
 
   const handleEditToggle = (index: number) => {
     tableManager.handleEditToggle(index);
+    
     updateState();
   };
+
+  const handleEditSave = (rowIndex: number) => {
+    let itemId = tableManager.getRowId(rowIndex);
+    let editedItem = tableManager.getRowItem(rowIndex);
+    onEdit!(itemId, editedItem);
+  }
 
   const handleInputChange = (
     rowIndex: number,
@@ -135,6 +145,10 @@ const CustomTable = ({
     allRowsSelected,
     isSelectingRows,
   } = tableState;
+
+  const isEditingMode = () => {
+    return isEditing.some(value => value);
+  }
 
   return (
     <Box
@@ -232,10 +246,13 @@ const CustomTable = ({
                     />
                   )}
                   <TdEditButton
+                    isEditingMode={isEditingMode()}
                     isEditing={isEditing[rowIndex]}
                     isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
-                    handleEditToggle={() => handleEditToggle(rowIndex)}
+                    // handleEditToggle={() => handleEditToggle(rowIndex)}
+                    handleEditToggle={onClickEdit ? () => onClickEdit(tableManager.getRowItem(rowIndex)) : () => handleEditToggle(rowIndex)}
                     revertEdit={() => revertEdit(rowIndex)}
+                    saveEdit={() => handleEditSave(rowIndex)}
                   />
                   <TdDeleteButton
                     handleDeleteRow={() => handleDeleteRow(row.getId())}
