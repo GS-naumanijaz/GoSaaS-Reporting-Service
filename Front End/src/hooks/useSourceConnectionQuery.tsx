@@ -217,3 +217,32 @@ export const useUpdateSourceConnectionStatusMutation = () => {
     },
   });
 };
+
+
+const testSourceConnection = async (
+  appId: number,
+  testId: number
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/source-connections/${testId}/test`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to test the source connection.");
+  }
+
+  return response.json();
+};
+
+export const useTestSourceConnectionMutation = () => {
+  return useMutation({
+    mutationFn: ({ appId, testId }: { appId: number; testId: number }) =>
+      testSourceConnection(appId, testId),
+  });
+};
+
+

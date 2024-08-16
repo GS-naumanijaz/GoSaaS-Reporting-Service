@@ -5,6 +5,7 @@ import {
   useBulkDeleteDestinationConnectionMutation,
   useDeleteDestinationConnectionMutation,
   useDestinationConnectionsQuery,
+  useTestDestinationConnectionMutation,
   useUpdateDestinationConnectionStatusMutation,
 } from "../../hooks/useDestinationConnectionQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
@@ -39,7 +40,7 @@ const DestinationConnectionData = ({
 
   const { mutate: updateDestinationConnectionStatus } =
     useUpdateDestinationConnectionStatusMutation();
-
+  const testDestinationMutation = useTestDestinationConnectionMutation();
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
@@ -97,6 +98,10 @@ const DestinationConnectionData = ({
     updateDestinationConnectionStatus({ appId, destinationIds, status });
   };
 
+  const handleTest = async (appId: number, testId: number) => {
+    return testDestinationMutation.mutateAsync({ appId, testId });
+  };
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -112,11 +117,13 @@ const DestinationConnectionData = ({
   return (
     <CustomTable
       tableManager={manager}
+      appId={appId}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}
       onBulkDelete={handleBulkDelete}
       onBulkUpdateStatus={handleBulkStatusUpdate}
+      onTestConnection={handleTest}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}

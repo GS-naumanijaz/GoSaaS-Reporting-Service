@@ -26,11 +26,13 @@ import { FieldMappingKey } from "../../services/sortMappings";
 
 interface Props {
   tableManager: TableManager;
+  appId: number;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
   onDelete: (deleteId: number) => void;
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
+  onTestConnection?: (appId: number, connectionId: number) => void;
   page: number;
   pageSize: number;
   onPageChange: (newPage: number) => void;
@@ -40,9 +42,9 @@ interface Props {
 }
 
 const CustomTable = ({
-  tableManager,
+  tableManager, appId,
   onSort,
-  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus,
+  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus, onTestConnection,
   page,
   pageSize,
   onPageChange,
@@ -231,7 +233,7 @@ const CustomTable = ({
                     handleDeleteRow={() => handleDeleteRow(row.getId())}
                   />
                   {tableManager.requiresTestButton() && (
-                    <TdTestButton onClick={() => console.log("testing")} />
+                    <TdTestButton onClick={() => onTestConnection!(appId, row.getId())} />
                   )}
                 </Tr>
               ))}
