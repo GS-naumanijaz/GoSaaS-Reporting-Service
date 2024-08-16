@@ -26,8 +26,7 @@ const AddReportDashboard = () => {
   const location = useLocation();
   const productDetails = location.state.productDetails;
   const reportDetails = location.state.report as ReportsConnection | undefined;
-  console.log(productDetails);
-  console.log(reportDetails);
+
 
   const sourceConnections = [
     "Main Server",
@@ -43,8 +42,8 @@ const AddReportDashboard = () => {
 
   const [reportAlias, setReportAlias] = useState(reportDetails?.getAlias() ?? "");
   const [reportDescription, setReportDescription] = useState(reportDetails?.getDescription() ?? "");
-  const [selectedSource, setSelectedSource] = useState(reportDetails?.getConnectionAlias() ?? "");
-  const [selectedDestination, setSelectedDestination] = useState(reportDetails?.getDestinationAlias() ?? "");
+  const [selectedSource, setSelectedSource] = useState(reportDetails?.getSourceConnection().alias ?? "");
+  const [selectedDestination, setSelectedDestination] = useState(reportDetails?.getDestinationConnection().alias ?? "");
   const [selectedProcedure, setSelectedProcedure] = useState(reportDetails?.getStoredProcedures() ?? "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -157,7 +156,7 @@ const AddReportDashboard = () => {
                 <FormControl isRequired p={5}>
                   <FormLabel>Source Connections</FormLabel>
                   <Select
-                    placeholder="Select Source"
+                    // placeholder="Select Source"
                     value={selectedSource}
                     onChange={(e) => setSelectedSource(e.target.value)}
                   >
@@ -169,7 +168,7 @@ const AddReportDashboard = () => {
                 <FormControl isRequired p={5}>
                   <FormLabel>Destination Connections</FormLabel>
                   <Select
-                    placeholder="Select Destination"
+                    // placeholder="Select Destination"
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
                   >

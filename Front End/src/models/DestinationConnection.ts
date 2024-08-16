@@ -4,12 +4,11 @@ import { TableRowData } from "./TableRowData";
 
 export class DestinationConnection extends TableRowData {
   private destinationId: number;
-  private alias: string;
+  public alias: string;
   private accessKey: string;
   private secretKey: string;
   private bucketName: string;
   private region: string;
-  // private appId: number;
   private application: Application;
   private isActive: boolean;
 
@@ -151,6 +150,26 @@ export class DestinationConnection extends TableRowData {
 
   getId(): number {
     return this.destinationId;
+  }
+
+  getAlias(): string {
+    return this.alias;
+  }
+
+  getAccessKey(): string {
+    return this.accessKey;
+  }
+
+  getSecretKey(): string {
+    return this.secretKey;
+  }
+
+  getBucketName(): string {
+    return this.bucketName;
+  }
+
+  getRegion(): string {
+    return this.region;
   }
 
   getTableData(): string[] {

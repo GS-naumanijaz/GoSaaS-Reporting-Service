@@ -4,7 +4,7 @@ import { Application } from "../components/ApplicationPage/AppDashboard";
 
 export class SourceConnection extends TableRowData {
   private connectionId: number;
-  private alias: string;
+  public  alias: string;
   private type: string;
   private host: string;
   private port: string;
@@ -187,6 +187,34 @@ export class SourceConnection extends TableRowData {
 
   getId(): number {
     return this.connectionId;
+  }
+
+  getAlias(): string {
+    return this.alias;
+  }
+
+  getType(): string {
+    return this.type;
+  }
+
+  getHost(): string {
+    return this.host;
+  }
+
+  getPort(): string {
+    return this.port;
+  }
+
+  getDatabaseName(): string {
+    return this.databaseName;
+  }
+
+  getUsername(): string {
+    return this.databaseName;
+  }
+
+  getPassword(): string {
+    return this.password;
   }
 
   getTableData(): string[] {

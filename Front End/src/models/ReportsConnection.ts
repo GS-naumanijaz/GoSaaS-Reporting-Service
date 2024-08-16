@@ -183,6 +183,14 @@ export class ReportsConnection extends TableRowData {
     return this.destination_alias;
   }
 
+  getSourceConnection(): SourceConnection {
+    return this.sourceConnection!;
+  }
+
+  getDestinationConnection(): DestinationConnection {
+    return this.destinationConnection!;
+  }
+
   getStoredProcedures(): string {
     return this.stored_procedures;
   }
