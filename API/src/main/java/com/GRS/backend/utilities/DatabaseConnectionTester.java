@@ -23,7 +23,6 @@ public class DatabaseConnectionTester {
         } catch (SQLException | ClassNotFoundException e) {
             // Connection failed
             e.printStackTrace();
-            System.out.println("hello darkness my old friend");
             return false;
         } finally {
             // Ensure the connection is closed if it was opened

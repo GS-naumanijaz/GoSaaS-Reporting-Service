@@ -33,9 +33,9 @@ public class RequestInterceptor implements HandlerInterceptor {
         int status = response.getStatus();
 
         if (status >= 200 && status < 300) {
-            logger.info("API call completed successfully. METHOD: " + request.getMethod() + ", URI: " + request.getRequestURI() + ", Status: " + status);
+            logger.info("API call completed successfully. METHOD: {}, URI: {}, Status: {}", request.getMethod(), request.getRequestURI(), status);
         } else {
-            logger.error("API call completed with failure. METHOD: " + request.getMethod() + ", URI: " + request.getRequestURI() + ", Status: " + status);
+            logger.error("API call completed with failure. METHOD: {}, URI: {}, Status: {}", request.getMethod(), request.getRequestURI(), status);
         }
     }
 }

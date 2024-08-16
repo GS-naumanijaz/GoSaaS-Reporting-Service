@@ -58,7 +58,8 @@ const AppHeader = ({ appData }: Props) => {
   );
 
   const [touched, setTouched] = useState({ alias: false, description: false });
-  const user = useUser();
+  // const user = useUser();
+  const user = { fullName: "testUser" };
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { currentPage, searchTerm } = useProductStore();
@@ -71,8 +72,9 @@ const AppHeader = ({ appData }: Props) => {
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
 
   const deleteMutation = useMutation({
+    // refactor later into useAppData
     mutationFn: async (id: number) => {
-      const response = await fetch(`http://${BackendURL}/applications/${id}`, {
+      const response = await fetch(`${BackendURL}/applications/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -93,11 +95,12 @@ const AppHeader = ({ appData }: Props) => {
   });
 
   const saveMutation = useMutation({
+    // refactor later into useAppData
     mutationFn: async (appData: Application) => {
       const { id, ...appDataToSend } = appData;
       const method = id ? "PATCH" : "POST";
       const response = await fetch(
-        `http://${BackendURL}/applications${id ? `/${id}` : ""}`,
+        `${BackendURL}/applications${id ? `/${id}` : ""}`,
         {
           method,
           headers: {
@@ -107,6 +110,7 @@ const AppHeader = ({ appData }: Props) => {
           credentials: "include",
         }
       );
+      console.log("response", response);
       if (!response.ok) {
         throw new Error("Failed to save application");
       }
