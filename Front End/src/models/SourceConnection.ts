@@ -5,16 +5,15 @@ import { Application } from "../components/ApplicationPage/AppDashboard";
 export class SourceConnection extends TableRowData {
   private connectionId: number;
   private alias: string;
-  private connection_type: string;
+  private type: string;
   private host: string;
   private port: string;
-  private database_name: string;
+  private databaseName: string;
   private username: string;
   private password: string;
   // private appId: number;
   private application: Application;
   private isActive: boolean;
-
 
   //Static variables
   private static tableHeader = "Source Connections";
@@ -53,49 +52,92 @@ export class SourceConnection extends TableRowData {
       label: "alias",
       isSelectable: false,
       type: "text",
-      validation: { required: true, minLength: 2, maxLength: 20 },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 20,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Alias must be 3-20 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
     {
       name: "Connection Type",
       label: "connection type",
       isSelectable: true,
-      options: ["SQL", "NoSQL"],
+      options: ["POSTGRES", "MYSQL"],
+      validation: {
+        required: true,
+        customErrorMessage: "Connection type is required.",
+      },
     },
     {
       name: "Database Name",
       label: "database name",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 50,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Database Name must be 3-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
     {
       name: "Host",
       label: "host",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 4,
+        maxLength: 255,
+        pattern: /^[a-zA-Z0-9 .-]+$/,
+        customErrorMessage:
+          "Host must be 4-255 characters long and contain only letters, numbers, dots, spaces, or hyphens.",
+      },
     },
     {
       name: "Port",
       label: "port",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        pattern: /^[0-9]+$/,
+        customErrorMessage: "Port must contain only numbers.",
+      },
     },
     {
       name: "Username",
       label: "username",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 30,
+        pattern: /^[a-zA-Z0-9 ._-]+$/,
+        customErrorMessage:
+          "Username must be 3-30 characters long and contain only letters, numbers, spaces, dots, underscores, or hyphens.",
+      },
     },
     {
       name: "Password",
       label: "password",
       isSelectable: false,
-      isHidden: true,
+      isHidden: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 8,
+        maxLength: 100,
+        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).*$/,
+        customErrorMessage:
+          "Password must be 8-100 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+      },
     },
   ];
 
@@ -173,10 +215,10 @@ export class SourceConnection extends TableRowData {
     super();
     this.connectionId = connectionId;
     this.alias = alias;
-    this.connection_type = connection_type;
+    this.type = connection_type;
     this.host = host;
     this.port = port;
-    this.database_name = database_name;
+    this.databaseName = database_name;
     this.username = username;
     this.password = password;
     // this.appId = appId;
@@ -191,8 +233,8 @@ export class SourceConnection extends TableRowData {
   getTableData(): string[] {
     return [
       this.alias,
-      this.connection_type,
-      this.database_name,
+      this.type,
+      this.databaseName,
       this.host,
       this.port,
       this.username,
@@ -218,10 +260,10 @@ export class SourceConnection extends TableRowData {
         this.alias = newValue;
         break;
       case 1:
-        this.connection_type = newValue;
+        this.type = newValue;
         break;
       case 2:
-        this.database_name = newValue;
+        this.databaseName = newValue;
         break;
       case 3:
         this.host = newValue;
@@ -240,8 +282,8 @@ export class SourceConnection extends TableRowData {
 
   editCompleteRow(newValue: string[]) {
     this.alias = newValue[0];
-    this.connection_type = newValue[1];
-    this.database_name = newValue[2];
+    this.type = newValue[1];
+    this.databaseName = newValue[2];
     this.host = newValue[3];
     this.port = newValue[4];
     this.username = newValue[5];
@@ -291,5 +333,4 @@ export class SourceConnection extends TableRowData {
   getApplication(): Application {
     return this.application;
   }
-
 }

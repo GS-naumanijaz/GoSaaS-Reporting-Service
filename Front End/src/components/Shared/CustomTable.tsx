@@ -38,19 +38,26 @@ interface Props {
   onPageChange: (newPage: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
   totalElements: number;
-  searchObject?: { searchField: string; searchTerm: string }; // Optional prop
+  searchObject?: { searchField: string; searchTerm: string };
+  onAddNew: any;
 }
 
 const CustomTable = ({
-  tableManager, appId,
+  tableManager,
+  appId,
   onSort,
-  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus, onTestConnection,
+  onSearch,
+  onDelete,
+  onBulkDelete,
+  onBulkUpdateStatus,
+  onTestConnection,
   page,
   pageSize,
   onPageChange,
   onPageSizeChange,
   totalElements,
   searchObject,
+  onAddNew,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -118,7 +125,7 @@ const CustomTable = ({
   };
 
   const handleBulkDeleteRows = () => {
-    onBulkDelete(tableManager.getCheckedIds())
+    onBulkDelete(tableManager.getCheckedIds());
   };
 
   const {
@@ -158,6 +165,7 @@ const CustomTable = ({
         handleBulkSwitchActions={handleBulkSwitchActions}
         handleBulkDeleteRows={handleBulkDeleteRows}
         productDetails={tableManager.getTableProduct()}
+        onAddNew={onAddNew}
       />
       <TableContainer sx={sx}>
         <Table variant="simple" size="sm">
@@ -233,7 +241,9 @@ const CustomTable = ({
                     handleDeleteRow={() => handleDeleteRow(row.getId())}
                   />
                   {tableManager.requiresTestButton() && (
-                    <TdTestButton onClick={() => onTestConnection!(appId, row.getId())} />
+                    <TdTestButton
+                      onClick={() => onTestConnection!(appId, row.getId())}
+                    />
                   )}
                 </Tr>
               ))}

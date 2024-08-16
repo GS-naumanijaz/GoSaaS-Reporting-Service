@@ -1,13 +1,15 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { FaSearch } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaSearch, FaPlus } from "react-icons/fa";
 import ProductsList from "./ProductsList";
 import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
 import useProductStore from "../../store/ProductStore";
 import { useProductsQuery } from "../../hooks/useProductsQuery";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AddApplicationDialog from "../ApplicationPage/AddApplicationDialog";
+import { useAppDataMutation } from "../../hooks/useAppDataQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface Product {
   alias: string;
@@ -28,7 +30,6 @@ const itemVariants = {
 
 const Products = () => {
   const allFilters = ["All", "Active", "Inactive"];
-  const navigate = useNavigate();
   const {
     currentPage,
     selectedFilter,
@@ -40,10 +41,43 @@ const Products = () => {
 
   const { data, isFetching, isError } = useProductsQuery();
 
+  // State to control the Add Application popup
+  const [isAddApplicationOpen, setAddApplicationOpen] = useState(false);
+
   // Effect to reset page number when filter or search term changes
   useEffect(() => {
     setCurrentPage(0);
   }, [selectedFilter, searchTerm, setCurrentPage]);
+
+  const addProduct = () => {
+    setAddApplicationOpen(true);
+  };
+
+  const handleAddApplicationClose = () => {
+    setAddApplicationOpen(false);
+  };
+
+  const saveAppMutation = useAppDataMutation();
+  const queryClient = useQueryClient();
+
+  const handleAddApplicationSubmit = async (
+    formData: Record<string, string>
+  ) => {
+    try {
+      await saveAppMutation.mutateAsync({
+        applicationName: formData.applicationName,
+        applicationDescription: formData.applicationDescription,
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: ["products", currentPage, searchTerm],
+      });
+    } catch (error) {
+      console.error("Failed to save application:", error);
+    } finally {
+      handleAddApplicationClose();
+    }
+  };
 
   const filteredProducts =
     data?.content.filter((product: Product) => {
@@ -101,7 +135,7 @@ const Products = () => {
               <FaSearch color={primaryColor} />
             </ExpandingSearchbar>
             <Button
-              onClick={() => navigate("/applications")}
+              onClick={addProduct}
               border={"1px"}
               bg={primaryColor}
               color={"white"}
@@ -110,7 +144,7 @@ const Products = () => {
                 color: primaryColor,
               }}
             >
-              Add Application
+              <FaPlus /> Add Application
             </Button>
           </HStack>
         </Box>
@@ -135,6 +169,14 @@ const Products = () => {
           </motion.div>
         )}
       </Box>
+
+      {isAddApplicationOpen && (
+        <AddApplicationDialog
+          isOpen={isAddApplicationOpen}
+          onClose={handleAddApplicationClose}
+          onSubmit={handleAddApplicationSubmit}
+        />
+      )}
     </Box>
   );
 };

@@ -16,7 +16,6 @@ import {
   MenuItem,
   MenuList,
   useDisclosure,
-  Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaChevronDown, FaPlus } from "react-icons/fa";
@@ -26,7 +25,7 @@ import { validateField } from "../../../models/ValidationRule";
 interface Props {
   header: string;
   inputFields: InputField[];
-  onSubmit: () => void;
+  onSubmit: (formData: Record<string, string>) => void;
 }
 
 const AddRowDialogButton: React.FC<Props> = ({
@@ -53,6 +52,7 @@ const AddRowDialogButton: React.FC<Props> = ({
 
   const handleSubmit = () => {
     const newErrors: Record<string, string> = {};
+
     inputFields.forEach((field) => {
       const error = validateField(formData[field.name], field.validation);
       if (error) newErrors[field.name] = error;
@@ -61,7 +61,7 @@ const AddRowDialogButton: React.FC<Props> = ({
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
     } else {
-      onSubmit();
+      onSubmit(formData);
       onClose();
     }
   };
@@ -94,8 +94,8 @@ const AddRowDialogButton: React.FC<Props> = ({
               {inputFields.map((field, index) => (
                 <Box key={index} mb={4}>
                   {field.isSelectable ? (
-                    <Box>
-                      <Text>{field.name}</Text>
+                    <FormControl isInvalid={!!formErrors[field.name]}>
+                      <FormLabel>{field.name}</FormLabel>
                       <Menu>
                         <MenuButton
                           width={"100%"}
@@ -107,25 +107,38 @@ const AddRowDialogButton: React.FC<Props> = ({
                           fontWeight="normal"
                           rightIcon={<FaChevronDown />}
                         >
-                          {field.name}
+                          {formData[field.name] || `Select ${field.name}`}
                         </MenuButton>
                         <MenuList>
                           {field.options!.map((item, index) => (
-                            <MenuItem key={index} fontSize={16}>
+                            <MenuItem
+                              key={index}
+                              fontSize={16}
+                              onClick={() =>
+                                setFormData({ ...formData, [field.name]: item })
+                              }
+                            >
                               {item}
                             </MenuItem>
                           ))}
                         </MenuList>
                       </Menu>
-                    </Box>
+                      <FormErrorMessage>
+                        {formErrors[field.name]}
+                      </FormErrorMessage>
+                    </FormControl>
                   ) : (
                     <FormControl isInvalid={!!formErrors[field.name]}>
                       <FormLabel>{field.name}</FormLabel>
                       <Input
-                        type={inputFields[index].type}
-                        value={formData[field.name]}
+                        type={field.type || "text"}
+                        value={
+                          field.isHidden
+                            ? "*".repeat(formData[field.name].length)
+                            : formData[field.name]
+                        }
                         onChange={handleChange(field.name)}
-                        placeholder={`Enter ${field.label.toLowerCase()}`}
+                        placeholder={`Enter ${field.name.toLowerCase()}`}
                       />
                       <FormErrorMessage>
                         {formErrors[field.name]}

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 
 const fetchAppData = async (appId: number) => {
@@ -26,5 +26,40 @@ export const useAppDataQuery = (appId: number | null) => {
     },
 
     enabled: !!appId, // Only fetch if appId is provided and not for new application
+  });
+};
+
+const saveApp = async (name: string, description: string) => {
+  const response = await fetch(`${BackendURL}/applications`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ alias: name, description }),
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to save application");
+  }
+
+  return response.json();
+};
+
+// useAppDataMutation hook
+export const useAppDataMutation = () => {
+  return useMutation({
+    mutationFn: (formData: {
+      applicationName: string;
+      applicationDescription: string;
+    }) => {
+      return saveApp(formData.applicationName, formData.applicationDescription);
+    },
+    onSuccess: (data) => {
+      console.log("Application saved successfully:", data);
+    },
+    onError: (error) => {
+      console.error("Failed to save application:", error);
+    },
   });
 };

@@ -2,14 +2,20 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import {
+  useAddSourceConnectionMutation,
   useBulkDeleteSourceConnectionMutation,
   useDeleteSourceConnectionMutation,
   useSourceConnectionsQuery,
   useTestSourceConnectionMutation,
   useUpdateSourceConnectionStatusMutation,
 } from "../../hooks/useSourceConnectionQuery";
-import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import {
+  fieldMapping,
+  FieldMappingKey,
+  mapFormDataKeys,
+} from "../../services/sortMappings";
 import useSourceConnectionStore from "../../store/SourceConnStore";
+
 interface SourceConnectionDataProps {
   appId: number;
 }
@@ -37,6 +43,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatusMutation();
   const testSourceConnection = useTestSourceConnectionMutation();
+  const { mutate: addSourceConnection } = useAddSourceConnectionMutation();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -104,31 +111,41 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     setPageSize(newPageSize);
   };
 
+  const handleAddNew = (formData: Record<string, string>) => {
+    addSourceConnection({
+      appId,
+      data: mapFormDataKeys(formData),
+    });
+  };
+
   const manager = new TableManager(
     new SourceConnection(),
     sourceConnectionsList
   );
 
   return (
-    <CustomTable
-      tableManager={manager}
-      appId={appId}
-      onSort={handleSort}
-      onSearch={handleSearch}
-      onDelete={handleDelete}
-      onBulkDelete={handleBulkDelete}
-      onBulkUpdateStatus={handleBulkStatusUpdate}
-      onTestConnection={handleTest}
-      onPageChange={handlePageChange}
-      onPageSizeChange={handlePageSizeChange}
-      page={page}
-      pageSize={pageSize}
-      totalElements={totalElements}
-      searchObject={{
-        searchField: actualSearchField,
-        searchTerm: searchTerm,
-      }}
-    />
+    <>
+      <CustomTable
+        tableManager={manager}
+        appId={appId}
+        onSort={handleSort}
+        onSearch={handleSearch}
+        onDelete={handleDelete}
+        onBulkDelete={handleBulkDelete}
+        onBulkUpdateStatus={handleBulkStatusUpdate}
+        onTestConnection={handleTest}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        page={page}
+        pageSize={pageSize}
+        totalElements={totalElements}
+        searchObject={{
+          searchField: actualSearchField,
+          searchTerm: searchTerm,
+        }}
+        onAddNew={handleAddNew}
+      />
+    </>
   );
 };
 

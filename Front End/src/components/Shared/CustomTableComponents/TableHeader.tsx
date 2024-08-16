@@ -15,6 +15,7 @@ interface Props {
   handleBulkSwitchActions: (status: boolean) => void;
   handleBulkDeleteRows: () => void;
   productDetails?: Product;
+  onAddNew: () => void;
 }
 
 const TableHeader = ({
@@ -24,6 +25,7 @@ const TableHeader = ({
   handleBulkSwitchActions,
   handleBulkDeleteRows,
   productDetails,
+  onAddNew,
 }: Props) => {
   const navigate = useNavigate();
   return (
@@ -58,11 +60,9 @@ const TableHeader = ({
 
         {tableHeading !== "Reports" ? (
           <AddRowDialogButton
-            header={"Add New"}
+            header={"Add New " + tableHeading}
             inputFields={inputFields}
-            onSubmit={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onSubmit={onAddNew}
           />
         ) : (
           <Button

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
+import { DestinationConnection } from "../models/DestinationConnection";
 
 const fetchDestinationConnections = async (
   appId: number,
@@ -230,7 +231,7 @@ const testDestinationConnection = async (
   testId: number
 ): Promise<void> => {
   const response = await fetch(
-    `http://localhost:8080/applications/${appId}/destination-connections/${testId}/test`,
+    `${BackendURL}/applications/${appId}/destination-connections/${testId}/test`,
     {
       method: "GET",
       credentials: "include",
@@ -248,5 +249,45 @@ export const useTestDestinationConnectionMutation = () => {
   return useMutation({
     mutationFn: ({ appId, testId }: { appId: number; testId: number }) =>
       testDestinationConnection(appId, testId),
+  });
+};
+
+const addDestinationConnection = async (
+  appId: number,
+  data: DestinationConnection
+): Promise<void> => {
+  const response = await fetch(
+    `${BackendURL}/applications/${appId}/destination-connections`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to add the source connection.");
+  }
+};
+
+export const useAddDestinationonnectionMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ appId, data }: { appId: number; data: any }) => {
+      return addDestinationConnection(appId, data);
+    },
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch the source connections query after successful addition
+      queryClient.invalidateQueries({
+        queryKey: ["destinationConnections", variables.appId],
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error adding source connection:", error);
+    },
   });
 };

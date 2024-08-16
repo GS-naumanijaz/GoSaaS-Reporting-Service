@@ -7,8 +7,13 @@ import {
   useDestinationConnectionsQuery,
   useTestDestinationConnectionMutation,
   useUpdateDestinationConnectionStatusMutation,
+  useAddDestinationonnectionMutation,
 } from "../../hooks/useDestinationConnectionQuery";
-import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
+import {
+  fieldMapping,
+  FieldMappingKey,
+  mapFormDataKeys,
+} from "../../services/sortMappings";
 import useDestinationConnectionStore from "../../store/DestinationConnStore";
 
 interface DestinationConnectionDataProps {
@@ -37,10 +42,11 @@ const DestinationConnectionData = ({
     useDeleteDestinationConnectionMutation();
   const { mutate: bulkDeleteDestinationConnection } =
     useBulkDeleteDestinationConnectionMutation();
-
   const { mutate: updateDestinationConnectionStatus } =
     useUpdateDestinationConnectionStatusMutation();
   const testDestinationMutation = useTestDestinationConnectionMutation();
+  const { mutate: addDestinationConnection } =
+    useAddDestinationonnectionMutation();
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
@@ -110,6 +116,13 @@ const DestinationConnectionData = ({
     setPageSize(newPageSize);
   };
 
+  const handleAddNew = (formData: Record<string, string>) => {
+    addDestinationConnection({
+      appId,
+      data: mapFormDataKeys(formData),
+    });
+  };
+
   const manager = new TableManager(
     new DestinationConnection(),
     destinationConnectionsList
@@ -133,6 +146,7 @@ const DestinationConnectionData = ({
         searchField: actualSearchField,
         searchTerm: searchTerm,
       }}
+      onAddNew={handleAddNew}
     />
   );
 };
