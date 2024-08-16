@@ -19,11 +19,15 @@ import { primaryColor, secondaryColor, sx } from "../../configs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { AiOutlineSave } from "react-icons/ai";
+import { ReportsConnection } from "../../models/ReportsConnection";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const productDetails = location.state;
+  const productDetails = location.state.productDetails;
+  const reportDetails = location.state.report as ReportsConnection | undefined;
+  console.log(productDetails);
+  console.log(reportDetails);
 
   const sourceConnections = [
     "Main Server",
@@ -37,11 +41,11 @@ const AddReportDashboard = () => {
     Analytics: ["Procedure 5", "Procedure 6"],
   };
 
-  const [reportAlias, setReportAlias] = useState("");
-  const [reportDescription, setReportDescription] = useState("");
-  const [selectedSource, setSelectedSource] = useState("");
-  const [selectedDestination, setSelectedDestination] = useState("");
-  const [selectedProcedure, setSelectedProcedure] = useState("");
+  const [reportAlias, setReportAlias] = useState(reportDetails?.getAlias() ?? "");
+  const [reportDescription, setReportDescription] = useState(reportDetails?.getDescription() ?? "");
+  const [selectedSource, setSelectedSource] = useState(reportDetails?.getConnectionAlias() ?? "");
+  const [selectedDestination, setSelectedDestination] = useState(reportDetails?.getDestinationAlias() ?? "");
+  const [selectedProcedure, setSelectedProcedure] = useState(reportDetails?.getStoredProcedures() ?? "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -9,13 +9,15 @@ import {
 } from "../../hooks/useReportsQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useReportsConnectionStore from "../../store/ReportsStore";
-import { useEditSourceConnectionMutation } from "../../hooks/useSourceConnectionQuery";
+import { useNavigate } from "react-router-dom";
 
 interface ReportsConnectionDataProps {
   product: Product | null;
 }
 
 const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
+  const navigate = useNavigate();
+
   const productId = product?.id ?? null;
   const {
     sortField,
@@ -34,7 +36,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const { mutate: deleteReport } = useDeleteReportMutation();
   const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
-  const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
+  // const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
 
 
   // Determine the actual field to search by, using fieldMapping if it exists
@@ -60,6 +62,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         reportConnection.description,
         reportConnection.sourceConnection.alias,
         reportConnection.destinationConnection.alias,
+        reportConnection.sourceConnection,
+        reportConnection.destinationConnection,
         reportConnection.storedProcedure,
         reportConnection.params,
         reportConnection.application
@@ -95,10 +99,11 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setPageSize(newPageSize);
   };
 
-  const handleEdit = (editId: number, editedItem: any) => {
-    let appId = product!.id
-    editSourceConnection({appId, editId, editedItem})
+  const handleEdit = (report: ReportsConnection) => {
+    let productDetails = product;
+    navigate("/addreports", { state: { productDetails , report} });  
   }
+
   const manager = new TableManager(
     new ReportsConnection(),
     reportsConnectionsList,
@@ -113,7 +118,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       onSearch={handleSearch}
       onDelete={handleDelete}
       onBulkDelete={handleBulkDelete}
-      onEdit={handleEdit}
+      onClickEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}

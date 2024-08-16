@@ -23,6 +23,7 @@ import TdSwitch from "./CustomTableComponents/TdSwitch";
 import { sx } from "../../configs";
 import TdTestButton from "./CustomTableComponents/TdTestButton";
 import { FieldMappingKey } from "../../services/sortMappings";
+import { ReportsConnection } from "../../models/ReportsConnection";
 
 interface Props {
   tableManager: TableManager;
@@ -33,7 +34,8 @@ interface Props {
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
   onTestConnection?: (appId: number, connectionId: number) => void;
-  onEdit: (itemId: number, editedItem: any) => void;
+  onEdit?: (itemId: number, editedItem: any) => void;
+  onClickEdit?: (report: ReportsConnection) => void;
   page: number;
   pageSize: number;
   onPageChange: (newPage: number) => void;
@@ -45,7 +47,7 @@ interface Props {
 const CustomTable = ({
   tableManager, appId,
   onSort,
-  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus, onTestConnection, onEdit,
+  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus, onTestConnection, onEdit, onClickEdit,
   page,
   pageSize,
   onPageChange,
@@ -102,7 +104,7 @@ const CustomTable = ({
   const handleEditSave = (rowIndex: number) => {
     let itemId = tableManager.getRowId(rowIndex);
     let editedItem = tableManager.getRowItem(rowIndex);
-    onEdit(itemId, editedItem);
+    onEdit!(itemId, editedItem);
   }
 
   const handleInputChange = (
@@ -239,7 +241,8 @@ const CustomTable = ({
                     isEditingMode={isEditingMode()}
                     isEditing={isEditing[rowIndex]}
                     isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
-                    handleEditToggle={() => handleEditToggle(rowIndex)}
+                    // handleEditToggle={() => handleEditToggle(rowIndex)}
+                    handleEditToggle={onClickEdit ? () => onClickEdit(tableManager.getRowItem(rowIndex)) : () => handleEditToggle(rowIndex)}
                     revertEdit={() => revertEdit(rowIndex)}
                     saveEdit={() => handleEditSave(rowIndex)}
                   />
