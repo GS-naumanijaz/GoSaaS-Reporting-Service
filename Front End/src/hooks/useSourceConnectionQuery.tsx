@@ -151,13 +151,6 @@ export const useBulkDeleteSourceConnectionMutation = () => {
       appId: number;
       sourceIds: number[];
     }) => bulkDeleteSourceConnection(appId, sourceIds),
-    mutationFn: ({
-      appId,
-      sourceIds,
-    }: {
-      appId: number;
-      sourceIds: number[];
-    }) => bulkDeleteSourceConnection(appId, sourceIds),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
@@ -207,15 +200,6 @@ export const useUpdateSourceConnectionStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      appId,
-      sourceIds,
-      status,
-    }: {
-      appId: number;
-      sourceIds: number[];
-      status: boolean;
-    }) => updateSourceConnectionStatus(appId, sourceIds, status),
     mutationFn: ({
       appId,
       sourceIds,
@@ -311,7 +295,7 @@ export const useAddSourceConnectionMutation = () => {
       console.error("Error adding source connection:", error);
     },
   });
-};//edit source connection
+}; //edit source connection
 const editSourceConnection = async (
   appId: number,
   editId: number,
@@ -338,14 +322,24 @@ export const useEditSourceConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
-      editSourceConnection(appId, editId, editedItem),
+    mutationFn: ({
+      appId,
+      editId,
+      editedItem,
+    }: {
+      appId: number;
+      editId: number;
+      editedItem: any;
+    }) => editSourceConnection(appId, editId, editedItem),
     onSuccess: (_, variables) => {
       // Invalidate queries that start with ["sourceConnections", appId]
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "sourceConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -403,6 +397,6 @@ export const useEditSourceConnectionMutation = () => {
 //           );
 //         },
 //       });
-//     },  
+//     },
 //   });
 // };

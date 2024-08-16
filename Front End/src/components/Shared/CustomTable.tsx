@@ -53,7 +53,9 @@ const CustomTable = ({
   onDelete,
   onBulkDelete,
   onBulkUpdateStatus,
-  onTestConnection, onEdit, onClickEdit,
+  onTestConnection,
+  onEdit,
+  onClickEdit,
   page,
   pageSize,
   onPageChange,
@@ -104,7 +106,7 @@ const CustomTable = ({
 
   const handleEditToggle = (index: number) => {
     tableManager.handleEditToggle(index);
-    
+
     updateState();
   };
 
@@ -112,7 +114,7 @@ const CustomTable = ({
     let itemId = tableManager.getRowId(rowIndex);
     let editedItem = tableManager.getRowItem(rowIndex);
     onEdit!(itemId, editedItem);
-  }
+  };
 
   const handleInputChange = (
     rowIndex: number,
@@ -147,8 +149,8 @@ const CustomTable = ({
   } = tableState;
 
   const isEditingMode = () => {
-    return isEditing.some(value => value);
-  }
+    return isEditing.some((value) => value);
+  };
 
   return (
     <Box
@@ -250,7 +252,11 @@ const CustomTable = ({
                     isEditing={isEditing[rowIndex]}
                     isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
                     // handleEditToggle={() => handleEditToggle(rowIndex)}
-                    handleEditToggle={onClickEdit ? () => onClickEdit(tableManager.getRowItem(rowIndex)) : () => handleEditToggle(rowIndex)}
+                    handleEditToggle={
+                      onClickEdit
+                        ? () => onClickEdit(tableManager.getRowItem(rowIndex))
+                        : () => handleEditToggle(rowIndex)
+                    }
                     revertEdit={() => revertEdit(rowIndex)}
                     saveEdit={() => handleEditSave(rowIndex)}
                   />

@@ -31,7 +31,9 @@ const TableFooter = ({
     <Box margin={4}>
       <Flex justifyContent="space-between" alignItems="center">
         <Text flex="1" textAlign="left">
-          {`Total Number of Records = ${NoOfRecords}`}
+          {NoOfRecords > pageSize
+            ? pageSize + " of " + NoOfRecords + " Records"
+            : NoOfRecords + " of " + NoOfRecords + " Records"}
         </Text>
         <HStack spacing={4} justifyContent="center" flex="1">
           <Button
