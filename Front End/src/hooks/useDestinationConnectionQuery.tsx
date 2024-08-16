@@ -185,7 +185,6 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
     mutationFn: ({ appId, destinationIds, status }: { appId: number; destinationIds: number[]; status: boolean }) =>
       updateDestinationConnectionStatus(appId, destinationIds, status),
     onSuccess: (_, variables) => {
-      // Invalidate queries that start with ["sourceConnections", appId]
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
@@ -224,3 +223,48 @@ export const useTestDestinationConnectionMutation = () => {
       testDestinationConnection(appId, testId),
   });
 };
+
+//edit destination connection
+const editDestinationConnection = async (
+  appId: number,
+  editId: number,
+  editedItem: any
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/destination-connections/${editId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedItem),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update the destination connection status.");
+  }
+};
+
+export const useEditDestinationConnectionMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
+      editDestinationConnection(appId, editId, editedItem),
+    onSuccess: (_, variables) => {
+      
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error updating destination connection status:", error);
+    },
+  });
+};
+

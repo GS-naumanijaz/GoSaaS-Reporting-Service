@@ -67,7 +67,6 @@ export const useSourceConnectionsQuery = (
   });
 };
 
-
 //delete source connection
 const deleteSourceConnection = async (
   appId: number,
@@ -93,14 +92,17 @@ export const useDeleteSourceConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, sourceId }: { appId: number; sourceId: number; }) =>
+    mutationFn: ({ appId, sourceId }: { appId: number; sourceId: number }) =>
       deleteSourceConnection(appId, sourceId),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "sourceConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -109,7 +111,6 @@ export const useDeleteSourceConnectionMutation = () => {
     },
   });
 };
-
 
 //bulk delete source connections
 const bulkDeleteSourceConnection = async (
@@ -137,14 +138,22 @@ export const useBulkDeleteSourceConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, sourceIds }: { appId: number; sourceIds: number[]; }) =>
-      bulkDeleteSourceConnection(appId, sourceIds),
+    mutationFn: ({
+      appId,
+      sourceIds,
+    }: {
+      appId: number;
+      sourceIds: number[];
+    }) => bulkDeleteSourceConnection(appId, sourceIds),
     onSuccess: (_, variables) => {
       // Invalidate and refetch source connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "sourceConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -181,14 +190,24 @@ export const useUpdateSourceConnectionStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, sourceIds, status }: { appId: number; sourceIds: number[]; status: boolean }) =>
-      updateSourceConnectionStatus(appId, sourceIds, status),
+    mutationFn: ({
+      appId,
+      sourceIds,
+      status,
+    }: {
+      appId: number;
+      sourceIds: number[];
+      status: boolean;
+    }) => updateSourceConnectionStatus(appId, sourceIds, status),
     onSuccess: (_, variables) => {
       // Invalidate queries that start with ["sourceConnections", appId]
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "sourceConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -197,7 +216,6 @@ export const useUpdateSourceConnectionStatusMutation = () => {
     },
   });
 };
-
 
 const testSourceConnection = async (
   appId: number,
@@ -224,7 +242,6 @@ export const useTestSourceConnectionMutation = () => {
       testSourceConnection(appId, testId),
   });
 };
-
 
 //edit source connection
 const editSourceConnection = async (
@@ -269,3 +286,55 @@ export const useEditSourceConnectionMutation = () => {
     },
   });
 };
+
+// export const useEditSourceConnectionMutation = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
+//       editSourceConnection(appId, editId, editedItem),
+//     onMutate: async (variables) => {
+//       // Cancel any outgoing refetches that match the beginning of the query key
+//       await queryClient.cancelQueries({
+//         predicate: (query) => {
+//           const queryKey = query.queryKey;
+//           return (
+//             queryKey[0] === "sourceConnections" &&
+//             queryKey[1] === variables.appId
+//           );
+//         },
+//       });
+
+//       // Snapshot the previous value
+//       const previousConnections = queryClient.getQueryData(["sourceConnections", variables.appId]);
+
+//       // Optimistically update to the new value
+//       queryClient.setQueryData(["sourceConnections", variables.appId], (old: any) => {
+//         if (!old) return old;
+//         return old.map((connection: any) =>
+//           connection.id === variables.editId ? { ...connection, ...variables.editedItem } : connection
+//         );
+//       });
+
+//       // Return the snapshotted value
+//       return { previousConnections };
+//     },
+//     onError: (error, variables, context) => {
+//       // Roll back to the previous value if the mutation fails
+//       queryClient.setQueryData(["sourceConnections", variables.appId], context?.previousConnections);
+//       console.error("Error updating source connection status:", error);
+//     },
+//     onSettled: (data, error, variables) => {
+//       // Always refetch after error or success
+//       queryClient.invalidateQueries({
+//         predicate: (query) => {
+//           const queryKey = query.queryKey;
+//           return (
+//             queryKey[0] === "sourceConnections" &&
+//             queryKey[1] === variables.appId
+//           );
+//         },
+//       });
+//     },  
+//   });
+// };

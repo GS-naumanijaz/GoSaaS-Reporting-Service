@@ -5,12 +5,12 @@ import {
   useBulkDeleteDestinationConnectionMutation,
   useDeleteDestinationConnectionMutation,
   useDestinationConnectionsQuery,
+  useEditDestinationConnectionMutation,
   useTestDestinationConnectionMutation,
   useUpdateDestinationConnectionStatusMutation,
 } from "../../hooks/useDestinationConnectionQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useDestinationConnectionStore from "../../store/DestinationConnStore";
-import { useEditSourceConnectionMutation } from "../../hooks/useSourceConnectionQuery";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -42,7 +42,7 @@ const DestinationConnectionData = ({
   const { mutate: updateDestinationConnectionStatus } =
     useUpdateDestinationConnectionStatusMutation();
   const testDestinationMutation = useTestDestinationConnectionMutation();
-  const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
+  const { mutate: editDestinationConnection } = useEditDestinationConnectionMutation();
 
 
   // Determine the actual field to search by, using fieldMapping if it exists
@@ -115,7 +115,7 @@ const DestinationConnectionData = ({
   };
 
   const handleEdit = (editId: number, editedItem: any) => {
-    editSourceConnection({appId, editId, editedItem})
+    editDestinationConnection({appId, editId, editedItem})
   }
 
   const manager = new TableManager(

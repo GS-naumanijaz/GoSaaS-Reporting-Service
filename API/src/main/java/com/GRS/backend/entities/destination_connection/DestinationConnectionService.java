@@ -72,13 +72,15 @@ public class DestinationConnectionService {
         if (existingDestinationOpt.isPresent()) {
             DestinationConnection existingDestination = existingDestinationOpt.get();
 
-            FieldUpdater.updateField(existingDestination, "alias", existingDestination);
-            FieldUpdater.updateField(existingDestination, "type", existingDestination);
-            FieldUpdater.updateField(existingDestination, "url", existingDestination);
-            FieldUpdater.updateField(existingDestination, "port", existingDestination);
-            FieldUpdater.updateField(existingDestination, "isActive", existingDestination);
-            FieldUpdater.updateField(existingDestination, "secretKey", existingDestination);
-            FieldUpdater.updateField(existingDestination, "accessKey", existingDestination);
+
+            FieldUpdater.updateField(existingDestination, "alias", destinationConnection);
+            FieldUpdater.updateField(existingDestination, "bucketName", destinationConnection);
+            FieldUpdater.updateField(existingDestination, "region", destinationConnection);
+            FieldUpdater.updateField(existingDestination, "isActive", destinationConnection);
+            FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
+            FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
+
+
 
             return destinationConnectionRepository.save(existingDestination);
         } else {
