@@ -9,6 +9,7 @@ import {
 } from "../../hooks/useReportsQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useReportsConnectionStore from "../../store/ReportsStore";
+import { useEditSourceConnectionMutation } from "../../hooks/useSourceConnectionQuery";
 
 interface ReportsConnectionDataProps {
   product: Product | null;
@@ -33,6 +34,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const { mutate: deleteReport } = useDeleteReportMutation();
   const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
+  const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
+
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -92,6 +95,10 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setPageSize(newPageSize);
   };
 
+  const handleEdit = (editId: number, editedItem: any) => {
+    let appId = product!.id
+    editSourceConnection({appId, editId, editedItem})
+  }
   const manager = new TableManager(
     new ReportsConnection(),
     reportsConnectionsList,
@@ -106,6 +113,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       onSearch={handleSearch}
       onDelete={handleDelete}
       onBulkDelete={handleBulkDelete}
+      onEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}

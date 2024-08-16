@@ -5,16 +5,17 @@ import { Application } from "../components/ApplicationPage/AppDashboard";
 export class SourceConnection extends TableRowData {
   private connectionId: number;
   private alias: string;
-  private connection_type: string;
+  private type: string;
   private host: string;
   private port: string;
-  private database_name: string;
+  private databaseName: string;
   private username: string;
   private password: string;
   // private appId: number;
   private application: Application;
   private isActive: boolean;
 
+  private static dbTypes = ["SQL", "POSTGRES", "MYSQL", "MARIADB", "ORACLE", "SQLSERVER", "SQLITE", "H2", "DB2", "DERBY", "HSQLDB", "FIREBIRD", "CASSANDRA", "MONGO", "INFORMIX", "SYBASE", "AWSATHENA", "NEO4J", "SNOWFLAKE", "REDSHIFT", "PRESTO"];
 
   //Static variables
   private static tableHeader = "Source Connections";
@@ -59,7 +60,7 @@ export class SourceConnection extends TableRowData {
       name: "Connection Type",
       label: "connection type",
       isSelectable: true,
-      options: ["SQL", "NoSQL"],
+      options: this.dbTypes,
     },
     {
       name: "Database Name",
@@ -107,7 +108,7 @@ export class SourceConnection extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["All", "MYSQL", "ORACLE"],
+      dropdownFilter: this.dbTypes,
     },
     {
       isEnabled: true,
@@ -173,10 +174,10 @@ export class SourceConnection extends TableRowData {
     super();
     this.connectionId = connectionId;
     this.alias = alias;
-    this.connection_type = connection_type;
+    this.type = connection_type;
     this.host = host;
     this.port = port;
-    this.database_name = database_name;
+    this.databaseName = database_name;
     this.username = username;
     this.password = password;
     // this.appId = appId;
@@ -191,8 +192,8 @@ export class SourceConnection extends TableRowData {
   getTableData(): string[] {
     return [
       this.alias,
-      this.connection_type,
-      this.database_name,
+      this.type,
+      this.databaseName,
       this.host,
       this.port,
       this.username,
@@ -218,10 +219,10 @@ export class SourceConnection extends TableRowData {
         this.alias = newValue;
         break;
       case 1:
-        this.connection_type = newValue;
+        this.type = newValue;
         break;
       case 2:
-        this.database_name = newValue;
+        this.databaseName = newValue;
         break;
       case 3:
         this.host = newValue;
@@ -240,8 +241,8 @@ export class SourceConnection extends TableRowData {
 
   editCompleteRow(newValue: string[]) {
     this.alias = newValue[0];
-    this.connection_type = newValue[1];
-    this.database_name = newValue[2];
+    this.type = newValue[1];
+    this.databaseName = newValue[2];
     this.host = newValue[3];
     this.port = newValue[4];
     this.username = newValue[5];

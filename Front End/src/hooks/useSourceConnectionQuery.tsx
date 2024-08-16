@@ -226,3 +226,46 @@ export const useTestSourceConnectionMutation = () => {
 };
 
 
+//edit source connection
+const editSourceConnection = async (
+  appId: number,
+  editId: number,
+  editedItem: any
+): Promise<void> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/${appId}/source-connections/${editId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedItem),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update the source connection status.");
+  }
+};
+
+export const useEditSourceConnectionMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
+      editSourceConnection(appId, editId, editedItem),
+    onSuccess: (_, variables) => {
+      // Invalidate queries that start with ["sourceConnections", appId]
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId;
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error updating source connection status:", error);
+    },
+  });
+};

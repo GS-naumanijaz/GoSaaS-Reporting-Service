@@ -33,6 +33,7 @@ interface Props {
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
   onTestConnection?: (appId: number, connectionId: number) => void;
+  onEdit: (itemId: number, editedItem: any) => void;
   page: number;
   pageSize: number;
   onPageChange: (newPage: number) => void;
@@ -44,7 +45,7 @@ interface Props {
 const CustomTable = ({
   tableManager, appId,
   onSort,
-  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus, onTestConnection,
+  onSearch, onDelete, onBulkDelete, onBulkUpdateStatus, onTestConnection, onEdit,
   page,
   pageSize,
   onPageChange,
@@ -94,8 +95,15 @@ const CustomTable = ({
 
   const handleEditToggle = (index: number) => {
     tableManager.handleEditToggle(index);
+    
     updateState();
   };
+
+  const handleEditSave = (rowIndex: number) => {
+    let itemId = tableManager.getRowId(rowIndex);
+    let editedItem = tableManager.getRowItem(rowIndex);
+    onEdit(itemId, editedItem);
+  }
 
   const handleInputChange = (
     rowIndex: number,
@@ -228,6 +236,7 @@ const CustomTable = ({
                     isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
                     handleEditToggle={() => handleEditToggle(rowIndex)}
                     revertEdit={() => revertEdit(rowIndex)}
+                    saveEdit={() => handleEditSave(rowIndex)}
                   />
                   <TdDeleteButton
                     handleDeleteRow={() => handleDeleteRow(row.getId())}

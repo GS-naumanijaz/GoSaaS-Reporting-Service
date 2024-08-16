@@ -7,6 +7,7 @@ interface Props {
   isDisabled: boolean;
   handleEditToggle: () => void;
   revertEdit: () => void;
+  saveEdit: () => void;
 }
 
 const TdEditButton = ({
@@ -14,13 +15,17 @@ const TdEditButton = ({
   isDisabled,
   handleEditToggle,
   revertEdit,
+  saveEdit,
 }: Props) => {
   return (
     <Td textAlign="center">
       {isEditing ? (
         <HStack>
           <Button
-            onClick={handleEditToggle}
+            onClick={() => {
+              handleEditToggle();
+              saveEdit();
+            }}
             isDisabled={isDisabled}
             variant={"ghost"}
           >

@@ -4,6 +4,7 @@ import { SourceConnection } from "../../models/SourceConnection";
 import {
   useBulkDeleteSourceConnectionMutation,
   useDeleteSourceConnectionMutation,
+  useEditSourceConnectionMutation,
   useSourceConnectionsQuery,
   useTestSourceConnectionMutation,
   useUpdateSourceConnectionStatusMutation,
@@ -37,6 +38,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatusMutation();
   const testSourceConnection = useTestSourceConnectionMutation();
+  const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
@@ -104,6 +106,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     setPageSize(newPageSize);
   };
 
+  const handleEdit = (editId: number, editedItem: any) => {
+    editSourceConnection({appId, editId, editedItem})
+  }
+
   const manager = new TableManager(
     new SourceConnection(),
     sourceConnectionsList
@@ -119,6 +125,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
       onBulkDelete={handleBulkDelete}
       onBulkUpdateStatus={handleBulkStatusUpdate}
       onTestConnection={handleTest}
+      onEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}

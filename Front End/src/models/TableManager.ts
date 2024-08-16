@@ -85,6 +85,14 @@ export class TableManager {
     return this.defaultData.getEditAccess()[index];
   }
 
+  getRowId(index: number): number {
+    return this.data[index].getId();
+  }
+
+  getRowItem(index: number): any {
+    return this.data[index];
+  }
+
   setEditSaveOnRow(index: number, newValue: boolean) {
     this.canSaveEditedRows[index] = newValue;
   }

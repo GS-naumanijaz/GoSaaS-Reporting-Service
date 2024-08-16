@@ -10,6 +10,7 @@ import {
 } from "../../hooks/useDestinationConnectionQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useDestinationConnectionStore from "../../store/DestinationConnStore";
+import { useEditSourceConnectionMutation } from "../../hooks/useSourceConnectionQuery";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -41,6 +42,9 @@ const DestinationConnectionData = ({
   const { mutate: updateDestinationConnectionStatus } =
     useUpdateDestinationConnectionStatusMutation();
   const testDestinationMutation = useTestDestinationConnectionMutation();
+  const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
+
+
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
@@ -110,6 +114,10 @@ const DestinationConnectionData = ({
     setPageSize(newPageSize);
   };
 
+  const handleEdit = (editId: number, editedItem: any) => {
+    editSourceConnection({appId, editId, editedItem})
+  }
+
   const manager = new TableManager(
     new DestinationConnection(),
     destinationConnectionsList
@@ -124,6 +132,7 @@ const DestinationConnectionData = ({
       onBulkDelete={handleBulkDelete}
       onBulkUpdateStatus={handleBulkStatusUpdate}
       onTestConnection={handleTest}
+      onEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}
