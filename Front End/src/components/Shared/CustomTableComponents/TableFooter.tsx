@@ -27,13 +27,15 @@ const TableFooter = ({
   onPageSizeChange,
 }: Props) => {
   const totalPages = Math.ceil(NoOfRecords / pageSize) || 1;
+
+  const lowerRange = page * pageSize + 1;
+  const upperRange = Math.min((page + 1) * pageSize, NoOfRecords);
+
   return (
     <Box margin={4}>
       <Flex justifyContent="space-between" alignItems="center">
         <Text flex="1" textAlign="left">
-          {NoOfRecords > pageSize
-            ? pageSize + " of " + NoOfRecords + " Records"
-            : NoOfRecords + " of " + NoOfRecords + " Records"}
+          {`${lowerRange}-${upperRange} of ${NoOfRecords} records showing`}
         </Text>
         <HStack spacing={4} justifyContent="center" flex="1">
           <Button

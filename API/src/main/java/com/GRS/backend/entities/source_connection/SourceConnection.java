@@ -45,7 +45,7 @@ public class SourceConnection {
 
     private int port = 0;
 
-    private Boolean isActive = false;
+    private Boolean isActive = true;
 
     private Boolean isDeleted = false;
 

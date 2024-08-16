@@ -11,7 +11,7 @@ interface ProductStore {
 
 const useProductStore = create<ProductStore>((set) => ({
   currentPage: 0,
-  selectedFilter: "All",
+  selectedFilter: "Active",
   searchTerm: "",
   setCurrentPage: (page) => set({ currentPage: page }),
   setSelectedFilter: (filter) => set({ selectedFilter: filter }),

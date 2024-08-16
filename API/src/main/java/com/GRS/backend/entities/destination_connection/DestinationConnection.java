@@ -52,7 +52,7 @@ public class DestinationConnection {
 //    @NotNull(message = "Port must not be null")
 //    private int port;
 
-    private Boolean isActive = false;
+    private Boolean isActive = true;
 
     private Boolean isDeleted = false;
 

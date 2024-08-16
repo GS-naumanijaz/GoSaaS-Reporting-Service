@@ -46,7 +46,7 @@ public class Application {
 
     private String description = "";
 
-    private Boolean isActive = false;
+    private Boolean isActive = true;
 
     private Boolean isDeleted = false;
 
