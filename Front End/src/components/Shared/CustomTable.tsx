@@ -137,6 +137,10 @@ const CustomTable = ({
     isSelectingRows,
   } = tableState;
 
+  const isEditingMode = () => {
+    return isEditing.some(value => value);
+  }
+
   return (
     <Box
       borderWidth={3}
@@ -232,6 +236,7 @@ const CustomTable = ({
                     />
                   )}
                   <TdEditButton
+                    isEditingMode={isEditingMode()}
                     isEditing={isEditing[rowIndex]}
                     isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
                     handleEditToggle={() => handleEditToggle(rowIndex)}
