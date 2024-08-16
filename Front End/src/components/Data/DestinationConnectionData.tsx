@@ -73,8 +73,8 @@ const DestinationConnectionData = ({
         new DestinationConnection(
           destinationConnection.id,
           destinationConnection.alias,
-          destinationConnection.secretKey,
           destinationConnection.accessKey,
+          destinationConnection.secretKey,
           destinationConnection.bucketName,
           destinationConnection.region,
           destinationConnection.application,
