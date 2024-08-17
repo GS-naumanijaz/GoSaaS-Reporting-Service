@@ -229,6 +229,7 @@ const CustomTable = ({
                       key={index}
                       isEditing={isEditing[rowIndex]}
                       isEditable={tableManager.getEditAccess(index)}
+                      columnWidth={tableManager.getColumnWidths()[index]}
                       data={d}
                       inputField={tableManager.getInputFields()[index]}
                       handleInputChange={(value, error) =>

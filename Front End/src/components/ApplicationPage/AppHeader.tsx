@@ -23,7 +23,7 @@ import {
   secondaryColor,
 } from "../../configs";
 import { Application } from "./AppDashboard";
-import { useUser } from "../Login/UserContext";
+// import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
@@ -110,7 +110,6 @@ const AppHeader = ({ appData }: Props) => {
           credentials: "include",
         }
       );
-      console.log("response", response);
       if (!response.ok) {
         throw new Error("Failed to save application");
       }

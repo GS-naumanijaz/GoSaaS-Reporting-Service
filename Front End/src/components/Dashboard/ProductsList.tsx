@@ -67,18 +67,17 @@ const ProductsList = ({
 
       <Flex alignItems="center" marginX={12} mt={6}>
         <Box flex="1" />
-        {totalPages > 1 && (
-          <Box>
-            <PageSelector
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-            />
-          </Box>
-        )}
+        {/* {totalPages > 1 && ( */}
+        <Box>
+          <PageSelector
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
+        </Box>
 
         <Box flex="1" textAlign="right">
-          <Text>Total number of applications = {totalElements}</Text>
+          <Text>{`${products.length} of ${totalElements} Applications`}</Text>
         </Box>
       </Flex>
     </>

@@ -4,7 +4,7 @@ import { Application } from "../components/ApplicationPage/AppDashboard";
 
 export class SourceConnection extends TableRowData {
   private connectionId: number;
-  public  alias: string;
+  public alias: string;
   private type: string;
   private host: string;
   private port: string;
@@ -15,7 +15,30 @@ export class SourceConnection extends TableRowData {
   private application: Application;
   private isActive: boolean;
 
-  private static dbTypes = ["SQL", "POSTGRES", "MYSQL", "MARIADB", "ORACLE", "SQLSERVER", "SQLITE", "H2", "DB2", "DERBY", "HSQLDB", "FIREBIRD", "CASSANDRA", "MONGO", "INFORMIX", "SYBASE", "AWSATHENA", "NEO4J", "SNOWFLAKE", "REDSHIFT", "PRESTO"];
+  private static dbTypes = [
+    "All",
+    "SQL",
+    "POSTGRES",
+    "MYSQL",
+    "MARIADB",
+    "ORACLE",
+    "SQLSERVER",
+    "SQLITE",
+    "H2",
+    "DB2",
+    "DERBY",
+    "HSQLDB",
+    "FIREBIRD",
+    "CASSANDRA",
+    "MONGO",
+    "INFORMIX",
+    "SYBASE",
+    "AWSATHENA",
+    "NEO4J",
+    "SNOWFLAKE",
+    "REDSHIFT",
+    "PRESTO",
+  ];
 
   //Static variables
   private static tableHeader = "Source Connections";

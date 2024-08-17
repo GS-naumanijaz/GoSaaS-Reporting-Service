@@ -16,8 +16,8 @@ const fetchSourceConnections = async (
     sort_order: sortingOrder,
     page: page.toString(),
     page_size: pageSize.toString(),
-    search: searchTerm,
     search_by: searchField,
+    search: searchTerm,
   });
 
   const response = await fetch(

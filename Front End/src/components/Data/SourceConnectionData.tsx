@@ -121,8 +121,8 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   };
 
   const handleEdit = (editId: number, editedItem: any) => {
-    editSourceConnection({appId, editId, editedItem})
-  }
+    editSourceConnection({ appId, editId, editedItem });
+  };
 
   const manager = new TableManager(
     new SourceConnection(),
@@ -141,7 +141,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         onBulkUpdateStatus={handleBulkStatusUpdate}
         onTestConnection={handleTest}
         onEdit={handleEdit}
-      onPageChange={handlePageChange}
+        onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         page={page}
         pageSize={pageSize}

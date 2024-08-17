@@ -38,7 +38,6 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
   // const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
 
-
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
@@ -101,8 +100,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const handleEdit = (report: ReportsConnection) => {
     let productDetails = product;
-    navigate("/addreports", { state: { productDetails , report} });  
-  }
+    navigate("/addreports", { state: { productDetails, report } });
+  };
 
   const manager = new TableManager(
     new ReportsConnection(),
@@ -128,6 +127,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchField: actualSearchField,
         searchTerm: searchTerm,
       }}
+      onAddNew={() => navigate("/addreports", { state: { product } })}
     />
   );
 };

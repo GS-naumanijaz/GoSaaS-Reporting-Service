@@ -21,6 +21,7 @@ interface Props {
   data: string;
   inputField: InputField;
   handleInputChange: (value: string, error: string) => void;
+  columnWidth: string;
 }
 
 const TdData = ({
@@ -29,6 +30,7 @@ const TdData = ({
   data,
   inputField,
   handleInputChange,
+  columnWidth,
 }: Props) => {
   const [error, setError] = useState<string>("");
   const [selectedItem, setSelectedItem] = useState(data);
@@ -52,13 +54,13 @@ const TdData = ({
   };
 
   return (
-    <Td textAlign="center">
+    <Td textAlign="center" width={columnWidth}>
       {isEditing && isEditable ? (
         <Box>
           {inputField.isSelectable ? (
             <Menu>
               <MenuButton
-                width={"100%"}
+                width="100%"
                 bg="white"
                 border="1px"
                 borderColor="gray.200"
@@ -66,7 +68,7 @@ const TdData = ({
                 fontWeight="normal"
                 rightIcon={<FaChevronDown />}
               >
-                {selectedItem}
+                {selectedItem.toLowerCase()}
               </MenuButton>
               <MenuList>
                 {inputField.options!.map((item, index) => (
@@ -75,7 +77,7 @@ const TdData = ({
                     fontSize={16}
                     onClick={() => handleMenuItemClick(item)}
                   >
-                    {item}
+                    {item.toLowerCase()}
                   </MenuItem>
                 ))}
               </MenuList>
@@ -88,12 +90,22 @@ const TdData = ({
                 value={inputField.isHidden ? "*".repeat(data.length) : data}
                 onChange={handleChange}
               />
-              <FormErrorMessage>{error}</FormErrorMessage>
+              <Box
+                width="100%"
+                maxWidth="100%"
+                overflowX="auto"
+                paddingTop="4px"
+                paddingBottom="4px"
+                whiteSpace="normal"
+                wordBreak="break-word"
+              >
+                <FormErrorMessage>{error}</FormErrorMessage>
+              </Box>
             </FormControl>
           )}
         </Box>
-      ) : inputField.isHidden ? (
-        "*".repeat(data.length)
+      ) : inputField.isSelectable ? (
+        data.toLowerCase()
       ) : (
         data
       )}

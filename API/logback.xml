@@ -1,60 +1,60 @@
-<configuration>
+<!--<configuration>-->
 
-    <!-- Define property for log directory -->
-    <property name="LOG_HOME" value="logs" />
+<!--    &lt;!&ndash; Define property for log directory &ndash;&gt;-->
+<!--    <property name="LOG_HOME" value="logs" />-->
 
-    <!-- Console Appender for logging to console -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>[%d{ISO8601}] [%p] [%X{traceid}]%m%n</Pattern>
-        </layout>
-    </appender>
+<!--    &lt;!&ndash; Console Appender for logging to console &ndash;&gt;-->
+<!--    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        <layout class="ch.qos.logback.classic.PatternLayout">-->
+<!--            <Pattern>[%d{ISO8601}] [%p] [%X{traceid}]%m%n</Pattern>-->
+<!--        </layout>-->
+<!--    </appender>-->
 
-    <!-- Primary File Appender for all types of logs -->
-    <appender name="FILE-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/all-logs.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily -->
-            <fileNamePattern>${LOG_HOME}/archived/all-logs.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>[%d{ISO8601}] [%p] [%X{traceid}]%m%n</Pattern>
-        </encoder>
-    </appender>
+<!--    &lt;!&ndash; Primary File Appender for all types of logs &ndash;&gt;-->
+<!--    <appender name="FILE-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>${LOG_HOME}/all-logs.log</file>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            &lt;!&ndash; rollover daily &ndash;&gt;-->
+<!--            <fileNamePattern>${LOG_HOME}/archived/all-logs.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+<!--                <maxFileSize>10MB</maxFileSize>-->
+<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+<!--            <Pattern>[%d{ISO8601}] [%p] [%X{traceid}]%m%n</Pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
-    <!-- Error File Appender for error logs -->
-    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/error-logs.log</file>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily -->
-            <fileNamePattern>${LOG_HOME}/archived/error-logs.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>[%d{ISO8601}] [%p] [%X{traceid}]%m%n</Pattern>
-        </encoder>
-    </appender>
+<!--    &lt;!&ndash; Error File Appender for error logs &ndash;&gt;-->
+<!--    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>${LOG_HOME}/error-logs.log</file>-->
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>ERROR</level>-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            &lt;!&ndash; rollover daily &ndash;&gt;-->
+<!--            <fileNamePattern>${LOG_HOME}/archived/error-logs.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+<!--                <maxFileSize>10MB</maxFileSize>-->
+<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+<!--            <Pattern>[%d{ISO8601}] [%p] [%X{traceid}]%m%n</Pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
-    <!-- Logger for the specific package to handle error logs -->
-    <logger name="com.GRS.backend" level="ERROR" additivity="true">
-        <appender-ref ref="FILE-ERROR" />
-    </logger>
+<!--    &lt;!&ndash; Logger for the specific package to handle error logs &ndash;&gt;-->
+<!--    <logger name="com.GRS.backend" level="ERROR" additivity="true">-->
+<!--        <appender-ref ref="FILE-ERROR" />-->
+<!--    </logger>-->
 
-    <!-- Root logger to handle all logs -->
-    <root level="INFO">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE-ALL" />
-    </root>
+<!--    &lt;!&ndash; Root logger to handle all logs &ndash;&gt;-->
+<!--    <root level="INFO">-->
+<!--        <appender-ref ref="STDOUT" />-->
+<!--        <appender-ref ref="FILE-ALL" />-->
+<!--    </root>-->
 
-</configuration>
+<!--</configuration>-->
 

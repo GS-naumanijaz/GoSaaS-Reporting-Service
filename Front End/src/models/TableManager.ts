@@ -184,8 +184,8 @@ export class TableManager {
   }
 
   getCheckedIds(): number[] {
-    return this
-            .data.map((item, index) => (this.checkedState[index] ? item.getId() : null))
-              .filter((id) => id !== null) as number[];
-  } 
+    return this.data
+      .map((item, index) => (this.checkedState[index] ? item.getId() : null))
+      .filter((id) => id !== null) as number[];
+  }
 }

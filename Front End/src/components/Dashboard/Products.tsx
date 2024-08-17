@@ -1,6 +1,6 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { FaSearch, FaPlus } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import ProductsList from "./ProductsList";
 import ExpandingSearchbar from "../Shared/ExpandingSearchbar";
 import { mainDashboardHeight, primaryColor, sx } from "../../configs";
@@ -144,7 +144,7 @@ const Products = () => {
                 color: primaryColor,
               }}
             >
-              <FaPlus /> Add Application
+              Add Application
             </Button>
           </HStack>
         </Box>

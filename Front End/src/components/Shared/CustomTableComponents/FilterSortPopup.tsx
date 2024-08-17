@@ -133,7 +133,7 @@ const FilterSortPopup = ({
                     fontWeight="normal"
                     rightIcon={<FaChevronDown />}
                   >
-                    {selectedItem}
+                    {selectedItem.toLowerCase()}
                   </MenuButton>
                   <MenuList>
                     {sortFilterOptions.dropdownFilter.map((item, index) => (
@@ -142,7 +142,7 @@ const FilterSortPopup = ({
                         fontSize={16}
                         onClick={() => handleDropdown(item)}
                       >
-                        {item}
+                        {item.toLowerCase()}
                       </MenuItem>
                     ))}
                   </MenuList>
