@@ -343,3 +343,31 @@ export const useEditDestinationConnectionMutation = () => {
     },
   });
 };
+
+//get list of all destination connections
+const getDestinationConnectionsList = async (): Promise<any> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/1/destination-connections/all`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch the dsetination connections.");
+  }
+
+  const data = await response.json();
+  return data.data;
+};
+
+export const useGetDestinationConnectionsListQuery = () => {
+  return useQuery({
+    queryKey: ['destinationConnections', "list"],
+    queryFn: () => getDestinationConnectionsList(),
+  })
+};

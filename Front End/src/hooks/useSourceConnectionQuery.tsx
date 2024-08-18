@@ -349,6 +349,38 @@ export const useEditSourceConnectionMutation = () => {
   });
 };
 
+//get list of all source connection for report
+const getSourceConnectionsList = async (): Promise<any> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/1/source-connections/all`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch the source connections.");
+  }
+
+  const data = await response.json();
+  return data.data;
+};
+
+export const useGetSourceConnectionsListQuery = () => {
+  return useQuery({
+    queryKey: ['sourceConnections', "list"],
+    queryFn: () => getSourceConnectionsList(),
+  })
+};
+
+
+
+
+
 // export const useEditSourceConnectionMutation = () => {
 //   const queryClient = useQueryClient();
 
