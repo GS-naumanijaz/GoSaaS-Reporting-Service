@@ -102,7 +102,12 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const handleEdit = (report: ReportsConnection) => {
     let productDetails = product;
-    navigate("/addreports", { state: { productDetails , report} });  
+
+    localStorage.setItem("isEditingMode", JSON.stringify(true));
+    localStorage.setItem("productDetails", JSON.stringify(productDetails));
+    localStorage.setItem("reportDetails", JSON.stringify(report));
+
+    navigate("/addreports");  
   }
 
   const manager = new TableManager(

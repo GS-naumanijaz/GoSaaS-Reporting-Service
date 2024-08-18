@@ -23,13 +23,35 @@ import { AiOutlineSave } from "react-icons/ai";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { useGetSourceConnectionsListQuery } from "../../hooks/useSourceConnectionQuery";
 import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
-import { useCreateReportMutation, useUpdateReportMutation } from "../../hooks/useReportsQuery";
+import {
+  useCreateReportMutation,
+  useUpdateReportMutation,
+} from "../../hooks/useReportsQuery";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
+  // const location = useLocation();
+  // const productDetails = location.state.productDetails;
+  // const reportDetails = location.state.report as ReportsConnection | undefined;
+
   const location = useLocation();
-  const productDetails = location.state.productDetails;
-  const reportDetails = location.state.report as ReportsConnection | undefined;
+
+  // Retrieve from location.state or localStorage
+  const isEditingMode =
+    location.state?.isEditing ??
+    JSON.parse(localStorage.getItem("isEditingMode") || "false");
+  const productDetails =
+    location.state?.productDetails ||
+    JSON.parse(localStorage.getItem("productDetails") || "{}");
+  const reportDetails = isEditingMode
+    ? location.state?.report ??
+      JSON.parse(localStorage.getItem("reportDetails") || "{}")
+    : undefined;
+
+  console.log(reportDetails);
+
+  const hasSetInitialSource = useRef(false);
+  const hasSetInitialDestination = useRef(false);
 
   const {
     data: sourceConnectionsList,
@@ -43,7 +65,7 @@ const AddReportDashboard = () => {
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery();
 
-  // const { mutate: createReport } = useCreateReportMutation();
+  const { mutate: createReport } = useCreateReportMutation();
   const { mutate: updateReport } = useUpdateReportMutation();
 
   const storedProcedures: { [key: string]: string[] } = {
@@ -52,20 +74,18 @@ const AddReportDashboard = () => {
     Analytics: ["Procedure 5", "Procedure 6"],
   };
 
-  const [reportAlias, setReportAlias] = useState(
-    reportDetails?.getAlias() ?? ""
-  );
+  const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
   const [reportDescription, setReportDescription] = useState(
-    reportDetails?.getDescription() ?? ""
+    reportDetails?.description ?? ""
   );
   const [selectedSource, setSelectedSource] = useState(
-    reportDetails?.getSourceConnection().alias ?? ""
+    reportDetails?.sourceConnection?.alias ?? ""
   );
   const [selectedDestination, setSelectedDestination] = useState(
-    reportDetails?.getDestinationConnection().alias ?? ""
+    reportDetails?.destinationConnection?.alias ?? ""
   );
   const [selectedProcedure, setSelectedProcedure] = useState(
-    reportDetails?.getStoredProcedures() ?? ""
+    reportDetails?.storedProcedure ?? ""
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -91,19 +111,43 @@ const AddReportDashboard = () => {
       return;
     }
 
-    let appId = productDetails.id;
-    let reportId = reportDetails!.getId();
-    let reportData = {
-      report: new ReportsConnection(undefined, reportAlias, reportDescription),
-      sourceId: Number(selectedSource),
-      destinationId: Number(selectedDestination),
-    }
+    if (isEditingMode) {
+      let appId = productDetails.id;
+      let reportId = reportDetails.reportId;
+      let reportData = {
+        report: new ReportsConnection(
+          undefined,
+          reportAlias,
+          reportDescription
+        ),
+        sourceId: Number(selectedSource),
+        destinationId: Number(selectedDestination),
+      };
 
-    updateReport({ appId, reportId, reportData })
+      updateReport({ appId, reportId, reportData });
+    } else {
+      let appId = productDetails.id;
+
+      let reportData = {
+        report: new ReportsConnection(
+          undefined,
+          reportAlias,
+          reportDescription
+        ),
+        sourceId: Number(selectedSource),
+        destinationId: Number(selectedDestination),
+      };
+
+      createReport({ appId, reportData });
+    }
 
     setIsSaveOpen(false);
     onSaveClose();
-    navigate("/homepage");
+    navigate(-1);
+
+    localStorage.removeItem("productDetails");
+    localStorage.removeItem("reportDetails");
+    localStorage.removeItem("isEditing");
   };
 
   const isSaveButtonDisabled =
@@ -113,23 +157,46 @@ const AddReportDashboard = () => {
     !selectedDestination;
 
   useEffect(() => {
-    if (reportDetails && sourceConnectionsList.length > 0 && destinationConnectionsList.length > 0) {
+    if (
+      isEditingMode &&
+      reportDetails &&
+      !hasSetInitialSource.current &&
+      Array.isArray(sourceConnectionsList) &&
+      sourceConnectionsList.length > 0
+    ) {
       const matchingSource = sourceConnectionsList.find(
         (sourceConnection: { id: number; alias: string }) =>
-          sourceConnection.alias === reportDetails.getSourceConnection().alias
+          sourceConnection.alias === reportDetails.sourceConnection?.alias
       );
       if (matchingSource) {
-        setSelectedSource(matchingSource.id);
-      }
-      const matchingDestination = destinationConnectionsList.find(
-        (destinationConnection: { id: number; alias: string}) =>
-          destinationConnection.alias == reportDetails.getDestinationConnection().alias
-      );
-      if (matchingDestination) {
-        setSelectedDestination(matchingDestination.id);
+        setSelectedSource(matchingSource.id.toString());
+        hasSetInitialSource.current = true;
       }
     }
-  }, [reportDetails, sourceConnectionsList, destinationConnectionsList]);
+
+    if (
+      isEditingMode &&
+      reportDetails &&
+      !hasSetInitialDestination.current &&
+      Array.isArray(destinationConnectionsList) &&
+      destinationConnectionsList.length > 0
+    ) {
+      const matchingDestination = destinationConnectionsList.find(
+        (destinationConnection: { id: number; alias: string }) =>
+          destinationConnection.alias ===
+          reportDetails.destinationConnection?.alias
+      );
+      if (matchingDestination) {
+        setSelectedDestination(matchingDestination.id.toString());
+        hasSetInitialDestination.current = true;
+      }
+    }
+  }, [
+    isEditingMode,
+    reportDetails,
+    sourceConnectionsList,
+    destinationConnectionsList,
+  ]);
 
   return (
     <>
@@ -165,7 +232,7 @@ const AddReportDashboard = () => {
           >
             <Spacer />
             <Text fontSize={25} textAlign="center">
-              Register Report
+              {isEditingMode ? "Edit Report" : "Register Report"}
             </Text>
             <Spacer />
             <Button

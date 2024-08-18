@@ -67,7 +67,12 @@ const TableHeader = ({
         ) : (
           <Button
             variant={"ghost"}
-            onClick={() => navigate("/addreports", { state: { productDetails } })}
+            onClick={() => {
+              localStorage.setItem("isEditingMode", JSON.stringify(false));
+              localStorage.setItem("productDetails", JSON.stringify(productDetails));
+              localStorage.removeItem("reportDetails");
+              navigate("/addreports")}
+            }
           >
             <FaPlus color={primaryColor} />
           </Button>
