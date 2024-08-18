@@ -33,6 +33,7 @@ export const sx = {
     background: primaryColor,
     borderRadius: "4px",
   },
+  width: "100%",
 };
 
 // App Validations
