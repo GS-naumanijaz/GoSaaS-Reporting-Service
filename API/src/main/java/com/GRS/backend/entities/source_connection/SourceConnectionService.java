@@ -5,6 +5,7 @@ import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.utilities.DatabaseConnectionTester;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SourceConnectionService {
@@ -40,6 +42,22 @@ public class SourceConnectionService {
             }
 
             return sourceConnectionRepository.findAll(spec, pageable);
+        }
+
+        throw new EntityNotFoundException("Application", appId);
+
+    }
+
+    public List<SourceConnectionDTO> getAllSourceConnections(int appId) {
+
+        Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
+
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
+            Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
+
+            return sourceConnectionRepository.findAll(spec).stream()
+                    .map(sourceConnection -> new SourceConnectionDTO(sourceConnection.getId(), sourceConnection.getAlias()))
+                    .collect(Collectors.toList());
         }
 
         throw new EntityNotFoundException("Application", appId);

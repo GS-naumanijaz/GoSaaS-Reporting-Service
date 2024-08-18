@@ -318,14 +318,23 @@ export const useEditDestinationConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
-      editDestinationConnection(appId, editId, editedItem),
+    mutationFn: ({
+      appId,
+      editId,
+      editedItem,
+    }: {
+      appId: number;
+      editId: number;
+      editedItem: any;
+    }) => editDestinationConnection(appId, editId, editedItem),
     onSuccess: (_, variables) => {
-      
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "destinationConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
@@ -334,4 +343,3 @@ export const useEditDestinationConnectionMutation = () => {
     },
   });
 };
-

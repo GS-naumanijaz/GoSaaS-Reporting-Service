@@ -54,6 +54,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       actualSearchField
     );
 
+  console.log(reportsConnections);
   const reportsConnectionsList: ReportsConnection[] = reportsConnections.map(
     (reportConnection: any) =>
       new ReportsConnection(
@@ -128,6 +129,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchField: actualSearchField,
         searchTerm: searchTerm,
       }}
+      onAddNew={null} 
     />
   );
 };
