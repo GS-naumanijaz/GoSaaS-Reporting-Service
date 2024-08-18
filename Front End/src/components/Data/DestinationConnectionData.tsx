@@ -16,6 +16,7 @@ import {
   mapFormDataKeys,
 } from "../../services/sortMappings";
 import useDestinationConnectionStore from "../../store/DestinationConnStore";
+import { useEffect } from "react";
 
 interface DestinationConnectionDataProps {
   appId: number;
@@ -37,7 +38,14 @@ const DestinationConnectionData = ({
     setSearchField,
     setPage,
     setPageSize,
+    reset,
   } = useDestinationConnectionStore();
+
+  useEffect(() => {
+    return () => {
+      reset(); // Reset store state when component unmounts
+    };
+  }, [reset]);
 
   const { mutate: deleteDestinationConnection } =
     useDeleteDestinationConnectionMutation();

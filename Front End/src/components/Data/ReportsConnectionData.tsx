@@ -10,6 +10,7 @@ import {
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useReportsConnectionStore from "../../store/ReportsStore";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface ReportsConnectionDataProps {
   product: Product | null;
@@ -32,7 +33,14 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setSearchField,
     setPage,
     setPageSize,
+    reset,
   } = useReportsConnectionStore();
+
+  useEffect(() => {
+    return () => {
+      reset(); // Reset store state when component unmounts
+    };
+  }, [reset]);
 
   const { mutate: deleteReport } = useDeleteReportMutation();
   const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();

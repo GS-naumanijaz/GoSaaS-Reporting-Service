@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface SourceConnectionStore {
   sortField: string;
@@ -7,6 +8,7 @@ interface SourceConnectionStore {
   searchField: string;
   page: number;
   pageSize: number;
+  reset: () => void;
   setSortField: (field: string) => void;
   setSortOrder: (order: string) => void;
   setSearchTerm: (term: string) => void;
@@ -15,19 +17,26 @@ interface SourceConnectionStore {
   setPageSize: (size: number) => void;
 }
 
-const useSourceConnectionStore = create<SourceConnectionStore>((set) => ({
+const initialState = {
   sortField: "updatedAt",
   sortOrder: "desc",
   searchTerm: "",
   searchField: "",
   page: 0,
   pageSize: 5,
-  setSortField: (field) => set({ sortField: field }),
-  setSortOrder: (order) => set({ sortOrder: order }),
-  setSearchTerm: (term) => set({ searchTerm: term }),
-  setSearchField: (field) => set({ searchField: field }),
-  setPage: (page) => set({ page }),
-  setPageSize: (size) => set({ pageSize: size, page: 0 }), // Reset page when pageSize changes
-}));
+};
+
+const useSourceConnectionStore = create<SourceConnectionStore>()(
+  devtools((set) => ({
+    ...initialState,
+    reset: () => set(initialState),
+    setSortField: (field) => set({ sortField: field }),
+    setSortOrder: (order) => set({ sortOrder: order }),
+    setSearchTerm: (term) => set({ searchTerm: term }),
+    setSearchField: (field) => set({ searchField: field }),
+    setPage: (page) => set({ page }),
+    setPageSize: (size) => set({ pageSize: size, page: 0 }), // Reset page when pageSize changes
+  }))
+);
 
 export default useSourceConnectionStore;
