@@ -44,3 +44,9 @@ export const mapFormDataKeys = (
 
   return mappedData;
 };
+
+
+// Create the reverse mapping
+export const reverseFieldMapping = Object.fromEntries(
+  Object.entries(fieldMapping).map(([key, value]) => [value, key])
+) as Record<string, keyof typeof fieldMapping>;

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   HStack,
   Table,
@@ -20,10 +21,14 @@ import TdData from "./CustomTableComponents/TdData";
 import TdDeleteButton from "./CustomTableComponents/TdDeleteButton";
 import TdEditButton from "./CustomTableComponents/TdEditButton";
 import TdSwitch from "./CustomTableComponents/TdSwitch";
-import { sx } from "../../configs";
+import { secondaryColor, sx } from "../../configs";
 import TdTestButton from "./CustomTableComponents/TdTestButton";
-import { FieldMappingKey } from "../../services/sortMappings";
+import {
+  FieldMappingKey,
+  reverseFieldMapping,
+} from "../../services/sortMappings";
 import { ReportsConnection } from "../../models/ReportsConnection";
+import { ImCross } from "react-icons/im";
 
 interface Props {
   tableManager: TableManager;
@@ -43,6 +48,7 @@ interface Props {
   totalElements: number;
   searchObject?: { searchField: string; searchTerm: string };
   onAddNew: any;
+  handleClearSearch: () => void;
 }
 
 const CustomTable = ({
@@ -63,6 +69,7 @@ const CustomTable = ({
   totalElements,
   searchObject,
   onAddNew,
+  handleClearSearch,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -161,19 +168,6 @@ const CustomTable = ({
       my={10}
       width={"90%"}
     >
-      {searchObject?.searchTerm && (
-        <Box mb={4} p={2} borderWidth={1} borderColor="gray.200">
-          <Text fontWeight="bold">Search Results:</Text>
-          <HStack justifyContent={"center"} spacing={5}>
-            <Text>
-              <strong>Field:</strong> {searchObject.searchField}
-            </Text>
-            <Text>
-              <strong>Term:</strong> {searchObject.searchTerm}
-            </Text>
-          </HStack>
-        </Box>
-      )}
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}
@@ -183,6 +177,32 @@ const CustomTable = ({
         productDetails={tableManager.getTableProduct()}
         onAddNew={onAddNew}
       />
+      {searchObject?.searchTerm && (
+        <HStack>
+          <Box
+            mb={4}
+            p={2}
+            borderWidth={1}
+            borderColor={secondaryColor}
+            borderRadius={50}
+            width={"35%"}
+            justifyContent={"center"}
+            mx="auto"
+          >
+            <Text fontWeight="bold">Search Results:</Text>
+
+            <Text>
+              <strong>Finding "</strong>
+              {searchObject.searchTerm} <strong>" in "</strong>
+              {reverseFieldMapping[searchObject.searchField]}
+              <strong>"</strong>
+            </Text>
+          </Box>
+          <Button mr={10} variant={"ghost"} onClick={() => handleClearSearch()}>
+            <ImCross size={13} />
+          </Button>
+        </HStack>
+      )}
       <TableContainer sx={sx}>
         <Table variant="simple" size="sm">
           <Thead>

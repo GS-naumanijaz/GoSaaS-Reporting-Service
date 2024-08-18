@@ -131,6 +131,11 @@ const DestinationConnectionData = ({
     editDestinationConnection({ appId, editId, editedItem });
   };
 
+  const handleClearSearch = () => {
+    setSearchField("");
+    setSearchTerm("");
+  };
+
   const manager = new TableManager(
     new DestinationConnection(),
     destinationConnectionsList
@@ -156,6 +161,7 @@ const DestinationConnectionData = ({
         searchTerm: searchTerm,
       }}
       onAddNew={handleAddNew}
+      handleClearSearch={handleClearSearch}
     />
   );
 };

@@ -103,6 +103,11 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     navigate("/addreports", { state: { productDetails, report } });
   };
 
+  const handleClearSearch = () => {
+    setSearchField("");
+    setSearchTerm("");
+  };
+
   const manager = new TableManager(
     new ReportsConnection(),
     reportsConnectionsList,
@@ -128,6 +133,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchTerm: searchTerm,
       }}
       onAddNew={() => navigate("/addreports", { state: { product } })}
+      handleClearSearch={handleClearSearch}
     />
   );
 };

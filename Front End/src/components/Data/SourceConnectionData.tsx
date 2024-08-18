@@ -124,6 +124,11 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     editSourceConnection({ appId, editId, editedItem });
   };
 
+  const handleClearSearch = () => {
+    setSearchField("");
+    setSearchTerm("");
+  };
+
   const manager = new TableManager(
     new SourceConnection(),
     sourceConnectionsList
@@ -151,6 +156,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
           searchTerm: searchTerm,
         }}
         onAddNew={handleAddNew}
+        handleClearSearch={handleClearSearch}
       />
     </>
   );
