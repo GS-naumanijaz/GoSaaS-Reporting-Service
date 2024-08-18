@@ -154,7 +154,7 @@ export class SourceConnection extends TableRowData {
       label: "password",
       isSelectable: false,
       isHidden: false,
-      type: "text",
+    type: "password",
       validation: {
         required: true,
         minLength: 8,

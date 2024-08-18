@@ -132,11 +132,7 @@ const AddRowDialogButton: React.FC<Props> = ({
                       <FormLabel>{field.name}</FormLabel>
                       <Input
                         type={field.type || "text"}
-                        value={
-                          field.isHidden
-                            ? "*".repeat(formData[field.name].length)
-                            : formData[field.name]
-                        }
+                        value={formData[field.name]}
                         onChange={handleChange(field.name)}
                         placeholder={`Enter ${field.name.toLowerCase()}`}
                       />

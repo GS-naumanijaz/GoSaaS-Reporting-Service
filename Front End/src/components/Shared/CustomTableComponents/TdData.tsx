@@ -9,6 +9,7 @@ import {
   MenuItem,
   MenuList,
   Td,
+  Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -48,9 +49,32 @@ const TdData = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    const error = validateField(value, inputField.validation);
-    setError(error);
-    handleInputChange(value, error); // Always apply changes
+    const validationError = validateField(value, inputField.validation);
+    setError(validationError);
+    handleInputChange(value, validationError);
+  };
+
+  const renderDataBasedOnType = () => {
+    if (inputField.isSelectable) {
+      return <Text>{selectedItem.toLowerCase()}</Text>;
+    }
+
+    if (inputField.type === "password") {
+      return (
+        <Input
+          type="password"
+          value={"•".repeat(data.length)}
+          isReadOnly
+          variant="filled"
+          bg="transparent"
+          _hover={{ bg: "transparent" }}
+          textAlign="center"
+          pointerEvents="none"
+        />
+      );
+    }
+
+    return <Text>{data}</Text>;
   };
 
   return (
@@ -60,11 +84,11 @@ const TdData = ({
           {inputField.isSelectable ? (
             <Menu>
               <MenuButton
+                as={Button}
                 width="100%"
                 bg="white"
                 border="1px"
                 borderColor="gray.200"
-                as={Button}
                 fontWeight="normal"
                 rightIcon={<FaChevronDown />}
               >
@@ -87,27 +111,15 @@ const TdData = ({
               <Input
                 type={inputField.type}
                 textAlign="center"
-                value={inputField.isHidden ? "*".repeat(data.length) : data}
+                value={data}
                 onChange={handleChange}
               />
-              <Box
-                width="100%"
-                maxWidth="100%"
-                overflowX="auto"
-                paddingTop="4px"
-                paddingBottom="4px"
-                whiteSpace="normal"
-                wordBreak="break-word"
-              >
-                <FormErrorMessage>{error}</FormErrorMessage>
-              </Box>
+              <FormErrorMessage>{error}</FormErrorMessage>
             </FormControl>
           )}
         </Box>
-      ) : inputField.isSelectable ? (
-        data.toLowerCase()
       ) : (
-        data
+        renderDataBasedOnType()
       )}
     </Td>
   );

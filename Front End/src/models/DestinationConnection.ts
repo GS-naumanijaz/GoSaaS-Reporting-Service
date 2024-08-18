@@ -101,6 +101,7 @@ export class DestinationConnection extends TableRowData {
       label: "secret_key",
       isSelectable: false,
       isHidden: false,
+      type: "password",
       validation: {
         required: true,
         minLength: 8,
@@ -213,8 +214,8 @@ export class DestinationConnection extends TableRowData {
       this.alias,
       this.bucketName,
       this.region,
-      this.accessKey,
       this.secretKey,
+      this.accessKey,
     ];
   }
 
