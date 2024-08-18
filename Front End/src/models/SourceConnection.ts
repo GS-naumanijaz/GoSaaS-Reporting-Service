@@ -4,7 +4,7 @@ import { Application } from "../components/ApplicationPage/AppDashboard";
 
 export class SourceConnection extends TableRowData {
   private connectionId: number;
-  public  alias: string;
+  private alias: string;
   private type: string;
   private host: string;
   private port: string;
