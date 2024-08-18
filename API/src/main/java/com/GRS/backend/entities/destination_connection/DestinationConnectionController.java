@@ -3,6 +3,8 @@ package com.GRS.backend.entities.destination_connection;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.models.DTO.DestinationConnectionDTO;
+import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
@@ -36,6 +38,13 @@ public class DestinationConnectionController {
 
         return Response.responseBuilder("Destination Connections retrieved successfully", HttpStatus.OK, allDestinationConnections);
 
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllDestinationConnections(@PathVariable int appId) {
+        List<DestinationConnectionDTO> allSourceConnections = destinationConnectionService.getAllDestinationConnections(appId);
+
+        return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, allSourceConnections);
     }
 
     @GetMapping("/{destinationId}")
