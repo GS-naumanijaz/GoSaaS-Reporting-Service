@@ -44,7 +44,7 @@ public class DestinationConnectionController {
     public ResponseEntity<Object> getAllDestinationConnections(@PathVariable int appId) {
         List<DestinationConnectionDTO> allSourceConnections = destinationConnectionService.getAllDestinationConnections(appId);
 
-        return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, allSourceConnections);
+        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
     }
 
     @GetMapping("/{destinationId}")

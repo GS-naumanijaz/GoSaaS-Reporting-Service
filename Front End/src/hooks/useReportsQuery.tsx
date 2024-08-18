@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
+import { ReportsConnection } from "../models/ReportsConnection";
 
 const fetchReportsConnections = async (
   productId: number,
@@ -117,7 +118,7 @@ export const useDeleteReportMutation = () => {
   });
 };
 
-//bulk delete source connections
+//bulk delete report connections
 const bulkDeleteReport = async (
   appId: number,
   reportIds: number[]
@@ -148,7 +149,7 @@ export const useBulkDeleteReportMutation = () => {
       reportIds: number[];
     }) => bulkDeleteReport(appId, reportIds),
     onSuccess: (_, variables) => {
-      // Invalidate and refetch source connections query after successful deletion
+      // Invalidate and refetch report connections query after successful deletion
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
@@ -164,3 +165,127 @@ export const useBulkDeleteReportMutation = () => {
     },
   });
 };
+
+
+//create report
+const createReport = async (
+  appId: number,
+  reportData: {
+    report: ReportsConnection;
+    sourceId: number;
+    destinationId: number;
+  }
+): Promise<void> => {
+  const response = await fetch(
+    `${BackendURL}/applications/${appId}/reports`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reportData),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create the report.");
+  }
+};
+
+export const useCreateReportMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      appId,
+      reportData,
+    }: {
+      appId: number;
+      reportData: {
+        report: ReportsConnection;
+        sourceId: number;
+        destinationId: number;
+      };
+    }) => createReport(appId, reportData),
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch the relevant queries after successful creation
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            queryKey[0] === "reportsConnections" &&
+            queryKey[1] === variables.appId
+          );
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error creating report:", error);
+    },
+  });
+};
+
+//update report
+const updateReport = async (
+  appId: number,
+  reportId: number,
+  reportData: {
+    report: ReportsConnection;
+    sourceId: number;
+    destinationId: number;
+  }
+): Promise<void> => {
+  const response = await fetch(
+    `${BackendURL}/applications/${appId}/reports/${reportId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reportData),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create the report.");
+  }
+};
+
+export const useUpdateReportMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      appId,
+      reportId,
+      reportData,
+    }: {
+      appId: number;
+      reportId: number;
+      reportData: {
+        report: ReportsConnection;
+        sourceId: number;
+        destinationId: number;
+      };
+    }) => updateReport(appId, reportId, reportData),
+    onSuccess: (_, variables) => {
+      // Invalidate and refetch the relevant queries after successful creation
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            queryKey[0] === "reportsConnections" &&
+            queryKey[1] === variables.appId
+          );
+        },
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Error creating report:", error);
+    },
+  });
+};
+
+

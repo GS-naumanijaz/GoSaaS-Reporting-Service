@@ -18,11 +18,12 @@ import {
 } from "@chakra-ui/react";
 import { primaryColor, secondaryColor, sx } from "../../configs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { useGetSourceConnectionsListQuery } from "../../hooks/useSourceConnectionQuery";
 import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
+import { useCreateReportMutation, useUpdateReportMutation } from "../../hooks/useReportsQuery";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -41,6 +42,9 @@ const AddReportDashboard = () => {
     isLoading: isLoadingDestination,
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery();
+
+  // const { mutate: createReport } = useCreateReportMutation();
+  const { mutate: updateReport } = useUpdateReportMutation();
 
   const storedProcedures: { [key: string]: string[] } = {
     Main: ["Procedure 1", "Procedure 2"],
@@ -86,6 +90,17 @@ const AddReportDashboard = () => {
     if (isSaveButtonDisabled) {
       return;
     }
+
+    let appId = productDetails.id;
+    let reportId = reportDetails!.getId();
+    let reportData = {
+      report: new ReportsConnection(undefined, reportAlias, reportDescription),
+      sourceId: Number(selectedSource),
+      destinationId: Number(selectedDestination),
+    }
+
+    updateReport({ appId, reportId, reportData })
+
     setIsSaveOpen(false);
     onSaveClose();
     navigate("/homepage");
@@ -95,9 +110,26 @@ const AddReportDashboard = () => {
     !reportAlias ||
     !reportDescription ||
     !selectedSource ||
-    !selectedDestination ||
-    !selectedProcedure ||
-    !selectedFile;
+    !selectedDestination;
+
+  useEffect(() => {
+    if (reportDetails && sourceConnectionsList.length > 0 && destinationConnectionsList.length > 0) {
+      const matchingSource = sourceConnectionsList.find(
+        (sourceConnection: { id: number; alias: string }) =>
+          sourceConnection.alias === reportDetails.getSourceConnection().alias
+      );
+      if (matchingSource) {
+        setSelectedSource(matchingSource.id);
+      }
+      const matchingDestination = destinationConnectionsList.find(
+        (destinationConnection: { id: number; alias: string}) =>
+          destinationConnection.alias == reportDetails.getDestinationConnection().alias
+      );
+      if (matchingDestination) {
+        setSelectedDestination(matchingDestination.id);
+      }
+    }
+  }, [reportDetails, sourceConnectionsList, destinationConnectionsList]);
 
   return (
     <>
@@ -221,7 +253,8 @@ const AddReportDashboard = () => {
                   {/* Error State */}
                   {errorDestination && (
                     <Text color="red.500" mt={2}>
-                      Error loading destination connections. Please try again later.
+                      Error loading destination connections. Please try again
+                      later.
                     </Text>
                   )}
 
