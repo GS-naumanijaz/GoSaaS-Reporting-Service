@@ -11,6 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useState, useEffect } from "react";
 
 interface Props {
   NoOfRecords: number;
@@ -27,38 +28,56 @@ const TableFooter = ({
   onPageChange,
   onPageSizeChange,
 }: Props) => {
-  const totalPages = Math.ceil(NoOfRecords / pageSize) || 1;
+  // Use local state to manage totalPages
+  const [totalPages, setTotalPages] = useState(
+    Math.ceil(NoOfRecords / pageSize)
+  );
 
-  const lowerRange = NoOfRecords == 0 ? 0 : page * pageSize + 1;
-  const upperRange = Math.min((page + 1) * pageSize, NoOfRecords);
+  // Recalculate totalPages whenever NoOfRecords or pageSize changes
+  useEffect(() => {
+    setTotalPages(Math.ceil(NoOfRecords / pageSize) || 1);
+  }, [NoOfRecords, pageSize]);
+
+  // Handle edge cases where pageSize might be zero
+  const safePageSize = pageSize > 0 ? pageSize : 1;
+
+  // Calculate range of records being displayed
+  const lowerRange = NoOfRecords === 0 ? 0 : page * safePageSize + 1;
+  const upperRange = Math.min((page + 1) * safePageSize, NoOfRecords);
+
+  // Conditionally render pagination info
+  const showPagination = totalPages > 1;
 
   return (
     <Box margin={4}>
       <Flex justifyContent="space-between" alignItems="center">
-        {NoOfRecords != 0 ? (
+        {NoOfRecords !== 0 && (
           <Text flex="1" textAlign="left">
             {`${lowerRange}-${upperRange} of ${NoOfRecords} records showing`}
           </Text>
-        ) : (
-          <Spacer />
         )}
         <HStack spacing={4} justifyContent="center" flex="1">
-          <Button
-            variant={"ghost"}
-            onClick={() => onPageChange(page - 1)}
-            isDisabled={page === 0}
-          >
-            <FaChevronLeft />
-          </Button>
-          <Text>{`${page + 1} of ${totalPages}`}</Text>
-          <Button
-            variant={"ghost"}
-            onClick={() => onPageChange(page + 1)}
-            isDisabled={page >= totalPages - 1}
-          >
-            <FaChevronRight />
-          </Button>
+          {showPagination && (
+            <>
+              <Button
+                variant={"ghost"}
+                onClick={() => onPageChange(page - 1)}
+                isDisabled={page === 0}
+              >
+                <FaChevronLeft />
+              </Button>
+              <Text>{`${page + 1} of ${totalPages}`}</Text>
+              <Button
+                variant={"ghost"}
+                onClick={() => onPageChange(page + 1)}
+                isDisabled={page >= totalPages - 1}
+              >
+                <FaChevronRight />
+              </Button>
+            </>
+          )}
         </HStack>
+
         <HStack flex="1" justifyContent="flex-end">
           <Text>Max Rows per Page</Text>
           <Menu>

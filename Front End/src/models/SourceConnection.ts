@@ -128,11 +128,14 @@ export class SourceConnection extends TableRowData {
       name: "Port",
       label: "port",
       isSelectable: false,
-      type: "text",
+      type: "number",
       validation: {
         required: true,
+        minLength: 1,
+        maxLength: 5,
         pattern: /^[0-9]+$/,
-        customErrorMessage: "Port must contain only numbers.",
+        customErrorMessage:
+          "Port must be 1-5 characters long and must contain only numbers.",
       },
     },
     {

@@ -193,7 +193,7 @@ const CustomTable = ({
             <Text fontWeight="bold">Search Results:</Text>
 
             <Text>
-              <strong>Finding "</strong>
+              <strong>Finding " </strong>
               {searchObject.searchTerm} <strong>" in "</strong>
               {reverseFieldMapping[searchObject.searchField]}
               <strong>"</strong>
@@ -288,6 +288,7 @@ const CustomTable = ({
                   {tableManager.requiresTestButton() && (
                     <TdTestButton
                       onClick={() => onTestConnection!(appId, row.getId())}
+                      isEditingMode={isEditingMode()}
                     />
                   )}
                 </Tr>

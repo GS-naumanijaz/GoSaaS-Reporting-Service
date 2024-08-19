@@ -1,14 +1,20 @@
 import { Button, Td } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Props {
   onClick: () => void;
+  isEditingMode: boolean;
 }
 
-const TdTestButton = ({ onClick }: Props) => {
+const TdTestButton = ({ onClick, isEditingMode }: Props) => {
   const [buttonState, setButtonState] = useState<
     "idle" | "loading" | "success" | "failure"
   >("idle");
+
+  useEffect(() => {
+    // Reset button state when isEditingMode changes
+    setButtonState("idle");
+  }, [isEditingMode]);
 
   const handleTest = async () => {
     setButtonState("loading");
@@ -24,7 +30,7 @@ const TdTestButton = ({ onClick }: Props) => {
   let buttonColorScheme = "blue";
 
   if (buttonState === "loading") {
-    buttonText = "Testing ";
+    buttonText = "Testing";
   } else if (buttonState === "success") {
     buttonText = "Success";
     buttonColorScheme = "green";
@@ -38,10 +44,9 @@ const TdTestButton = ({ onClick }: Props) => {
       <Button
         width={100}
         onClick={handleTest}
-        onMouseEnter={() => buttonState !== "loading"}
         colorScheme={buttonColorScheme}
         variant="solid"
-        isDisabled={buttonState === "loading"}
+        isDisabled={buttonState === "loading" || isEditingMode}
       >
         {buttonText}
       </Button>

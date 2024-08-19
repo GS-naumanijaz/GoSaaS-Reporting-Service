@@ -40,49 +40,89 @@ export class ReportsConnection extends TableRowData {
     "10%",
     "5%",
   ];
-
   private static inputFields: InputField[] = [
     {
       name: "Alias",
       label: "alias",
       isSelectable: false,
       type: "text",
-      validation: { required: true, minLength: 2, maxLength: 20 },
+      validation: {
+        required: true,
+        minLength: 2,
+        maxLength: 20,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Alias must be 2-20 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
     {
       name: "Description",
       label: "description",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 255,
+        customErrorMessage:
+          "Description is required and must be at least 3 characters long.",
+      },
     },
     {
       name: "Connection",
       label: "connection",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 50,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Connection must be 3-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
     {
       name: "Destination",
       label: "destination",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 50,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Destination must be 3-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
     {
       name: "Stored Procedures",
-      label: "stored_pocedures",
+      label: "stored_procedures",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 100,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Stored Procedures must be 3-100 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
     {
       name: "Parameters",
       label: "parameters",
       isSelectable: false,
       type: "text",
-      validation: { required: true },
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 100,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Parameters must be 3-100 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
     },
   ];
 
@@ -174,7 +214,7 @@ export class ReportsConnection extends TableRowData {
   getDescription(): string {
     return this.description;
   }
-  
+
   getConnectionAlias(): string {
     return this.connection_alias;
   }

@@ -58,7 +58,7 @@ const AddReportDashboard = () => {
     isLoading: isLoadingSource,
     error: errorSource,
   } = useGetSourceConnectionsListQuery();
-
+  //! ADD VALIDATION FOR INPUTS
   const {
     data: destinationConnectionsList,
     isLoading: isLoadingDestination,
