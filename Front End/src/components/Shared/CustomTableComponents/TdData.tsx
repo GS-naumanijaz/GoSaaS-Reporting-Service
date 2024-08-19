@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   FormControl,
-  FormErrorMessage,
   Input,
   Menu,
   MenuButton,
@@ -10,6 +9,7 @@ import {
   MenuList,
   Td,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -108,13 +108,21 @@ const TdData = ({
             </Menu>
           ) : (
             <FormControl isInvalid={!!error}>
-              <Input
-                type={inputField.type}
-                textAlign="center"
-                value={data}
-                onChange={handleChange}
-              />
-              <FormErrorMessage>{error}</FormErrorMessage>
+              <Tooltip
+                label={error}
+                placement="bottom-start"  
+                isOpen={!!error}
+                bg="red.600"
+                color="white"
+                fontSize="sm"
+              >
+                <Input
+                  type={inputField.type}
+                  textAlign="center"
+                  value={data}
+                  onChange={handleChange}
+                />
+              </Tooltip>
             </FormControl>
           )}
         </Box>
