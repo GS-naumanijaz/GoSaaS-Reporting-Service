@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BackendURL } from "../configs";
+import { useErrorToast } from "../hooks/useErrorToast";
 
 export interface APIResponse<T> {
   data?: T | null;
@@ -56,19 +57,19 @@ class APIClient<T> {
     response: AxiosResponse<APIResponse<R>>
   ): R | null => {
     if (response.data.httpStatus !== "OK") {
-      throw new Error(response.data.message || "An error occurred.");
+      useErrorToast()(response.data.message || "An error occurred.");
+      return null
+    } else {
+      return response.data.data || null;
     }
-    return response.data.data || null;
   };
 
   private handleError = (error: any) => {
     if (error.response) {
-      throw new Error(
-        error.response.data.message ||
-          `Request failed with status ${error.response.status}`
-      );
+      useErrorToast()(error.response.data.message || `Request failed with status ${error.response.status}`);
+    } else {
+      useErrorToast()(error.response.data.message || "Network error occurred.");
     }
-    throw new Error(error.message || "Network error occurred.");
   };
 
   getAll = (config?: AxiosRequestConfig) => {

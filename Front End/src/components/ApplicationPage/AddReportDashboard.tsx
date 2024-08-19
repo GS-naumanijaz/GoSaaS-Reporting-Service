@@ -287,13 +287,13 @@ const AddReportDashboard = () => {
                       const value = e.target.value;
                       setReportAlias(value);
                       validateAlias(value);
-                    }}  
+                    }}
                   />
                   {aliasError && (
                     <FormErrorMessage>{aliasError}</FormErrorMessage>
                   )}
                 </FormControl>
-                <FormControl isRequired p={5} isInvalid={!!descriptionError }>
+                <FormControl isRequired p={5} isInvalid={!!descriptionError}>
                   <FormLabel>Report Description</FormLabel>
                   <Input
                     type="string"
@@ -333,15 +333,19 @@ const AddReportDashboard = () => {
                       value={selectedSource}
                       onChange={(e) => setSelectedSource(e.target.value)}
                     >
-                      {sourceConnectionsList && sourceConnectionsList.map(
-                        (
-                          sourceConnection: SourceConnection,
-                          index: number
-                        ) => (
-                          <option key={index} value={sourceConnection.id}>
-                            {sourceConnection.alias}
-                          </option>
+                      {sourceConnectionsList ? (
+                        sourceConnectionsList.map(
+                          (
+                            sourceConnection: SourceConnection,
+                            index: number
+                          ) => (
+                            <option key={index} value={sourceConnection.id}>
+                              {sourceConnection.alias}
+                            </option>
+                          )
                         )
+                      ) : (
+                        <Text>Error with loading source connection list</Text>
                       )}
                     </Select>
                   )}
