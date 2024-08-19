@@ -16,9 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "destination_connections", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"app_id", "alias"}, name = "unique_destination_alias_per_application")
-})
+@Table(name = "destination_connections")
 @Setter
 @Getter
 public class DestinationConnection {
