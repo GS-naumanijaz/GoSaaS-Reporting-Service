@@ -28,20 +28,27 @@ public class ReportService {
 
     public Page<Report> getAllReports(int appId, String search, String searchBy, Pageable pageable) {
 
-
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<Report> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
             if (search != null && !search.isEmpty()) {
-                spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
+                // Check if the searchBy field is "source" or "destination"
+                if ("sourceConnection".equals(searchBy)) {
+                    spec = spec.and(BaseSpecification.containsTextIn("sourceConnection.alias", search));
+                } else if ("destinationConnection".equals(searchBy)) {
+                    spec = spec.and(BaseSpecification.containsTextIn("destinationConnection.alias", search));
+                } else {
+                    spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
+                }
             }
             return reportRepository.findAll(spec, pageable);
         }
 
         throw new EntityNotFoundException("Application", appId);
     }
+
 
     public Report getReportById(int reportId) {
         Optional<Report> report = reportRepository.findById(reportId);

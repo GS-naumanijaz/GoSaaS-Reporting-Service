@@ -16,7 +16,7 @@ public class DatabaseInitializer {
     @EventListener(ContextRefreshedEvent.class)
     @Transactional
     public void onApplicationEvent() {
-        createUniqueIndexes();
+//        createUniqueIndexes();
     }
 
     private void createUniqueIndexes() {

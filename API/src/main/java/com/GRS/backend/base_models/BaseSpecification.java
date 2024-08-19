@@ -1,6 +1,8 @@
 package com.GRS.backend.base_models;
 
 import com.GRS.backend.exceptionHandler.exceptions.InvalidQueryParamException;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.lang.reflect.Field;
@@ -12,45 +14,44 @@ public abstract class BaseSpecification<T> {
 
     public static <T> Specification<T> containsTextIn(String searchBy, String search) {
         return (root, query, criteriaBuilder) -> {
-            if (!doesFieldExist(root.getJavaType(), searchBy)) {
-                throw new InvalidQueryParamException(searchBy, "search_by");
-            }
             String searchTerm = "%" + search.toLowerCase() + "%";
 
-            try {
-                Field field = root.getJavaType().getDeclaredField(searchBy);
-                if (field.getType().isEnum()) {
-                    String searchLower = search.toLowerCase();
-                    List<Enum> matchingEnums = Arrays.stream((Enum[]) field.getType().getEnumConstants())
-                            .filter(enumConstant -> enumConstant.name().toLowerCase().contains(searchLower))
-                            .collect(Collectors.toList());
+            String[] searchByParts = searchBy.split("\\.");
+            Path<?> path = root.get(searchByParts[0]);
 
-                    if (matchingEnums.isEmpty()) {
-                        return criteriaBuilder.disjunction(); // No match, return empty
-                    } else {
-                        return root.get(searchBy).in(matchingEnums);
-                    }
+            for (int i = 1; i < searchByParts.length; i++) {
+                path = path.get(searchByParts[i]);
+            }
 
-                } else if (field.getType().equals(String.class)) {
-                    return criteriaBuilder.like(criteriaBuilder.lower(root.get(searchBy)), searchTerm);
-                } else if (field.getType().equals(Boolean.class)) {
-                    System.out.println("Handling as Boolean Type");
-                    boolean booleanValue;
-                    if ("active".equalsIgnoreCase(search)) {
-                        booleanValue = true;
-                    } else if ("inactive".equalsIgnoreCase(search)) {
-                        booleanValue = false;
-                    } else {
-                        throw new InvalidQueryParamException(search, "boolean");
-                    }
-                    return criteriaBuilder.equal(root.get(searchBy), booleanValue);
+            Class<?> fieldType = path.getJavaType();
+
+            if (fieldType.equals(String.class)) {
+                return criteriaBuilder.like(criteriaBuilder.lower((Expression<String>) path), searchTerm);
+            } else if (Enum.class.isAssignableFrom(fieldType)) {
+                String searchLower = search.toLowerCase();
+                @SuppressWarnings("unchecked")
+                Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) fieldType;
+                List<Enum<?>> matchingEnums = Arrays.stream(enumType.getEnumConstants())
+                        .filter(enumConstant -> enumConstant.name().toLowerCase().contains(searchLower))
+                        .collect(Collectors.toList());
+
+                if (matchingEnums.isEmpty()) {
+                    return criteriaBuilder.disjunction(); // No match, return empty
                 } else {
-                    return criteriaBuilder.like(criteriaBuilder.lower(root.get(searchBy).as(String.class)), searchTerm);
+                    return path.in(matchingEnums);
                 }
-
-            } catch (NoSuchFieldException e) {
-                System.out.println("No such field found: " + searchBy);
-                throw new InvalidQueryParamException(searchBy, "search_by");
+            } else if (fieldType.equals(Boolean.class)) {
+                boolean booleanValue;
+                if ("active".equalsIgnoreCase(search)) {
+                    booleanValue = true;
+                } else if ("inactive".equalsIgnoreCase(search)) {
+                    booleanValue = false;
+                } else {
+                    throw new InvalidQueryParamException(search, "boolean");
+                }
+                return criteriaBuilder.equal(path, booleanValue);
+            } else {
+                return criteriaBuilder.like(criteriaBuilder.lower(path.as(String.class)), searchTerm);
             }
         };
     }
