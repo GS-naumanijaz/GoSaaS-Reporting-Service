@@ -3,7 +3,7 @@ import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
 export class DestinationConnection extends TableRowData {
-  private destinationId: number;
+  public id: number;
   public alias: string;
   private accessKey: string;
   private secretKey: string;
@@ -174,7 +174,7 @@ export class DestinationConnection extends TableRowData {
     isActive: boolean = false
   ) {
     super();
-    this.destinationId = connectionId;
+    this.id = connectionId;
     this.alias = alias;
     this.bucketName = bucketName;
     this.region = region;
@@ -186,7 +186,7 @@ export class DestinationConnection extends TableRowData {
   }
 
   getId(): number {
-    return this.destinationId;
+    return this.id;
   }
 
   getAlias(): string {

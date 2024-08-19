@@ -2,13 +2,13 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import {
-  useBulkDeleteDestinationConnectionMutation,
-  useDeleteDestinationConnectionMutation,
-  useDestinationConnectionsQuery,
-  useEditDestinationConnectionMutation,
-  useTestDestinationConnectionMutation,
-  useUpdateDestinationConnectionStatusMutation,
-  useAddDestinationonnectionMutation,
+  useDestinationConnections,
+  useDeleteDestinationConnection,
+  useBulkDeleteDestinationConnections,
+  useUpdateDestinationConnectionStatus,
+  useTestDestinationConnection,
+  useAddDestinationConnection,
+  useEditDestinationConnection,
 } from "../../hooks/useDestinationConnectionQuery";
 import {
   fieldMapping,
@@ -48,24 +48,22 @@ const DestinationConnectionData = ({
   }, [reset]);
 
   const { mutate: deleteDestinationConnection } =
-    useDeleteDestinationConnectionMutation();
+    useDeleteDestinationConnection(appId);
   const { mutate: bulkDeleteDestinationConnection } =
-    useBulkDeleteDestinationConnectionMutation();
+    useBulkDeleteDestinationConnections(appId);
   const { mutate: updateDestinationConnectionStatus } =
-    useUpdateDestinationConnectionStatusMutation();
-  const testDestinationMutation = useTestDestinationConnectionMutation();
+    useUpdateDestinationConnectionStatus(appId);
+  const testDestinationMutation = useTestDestinationConnection(appId);
   const { mutate: addDestinationConnection } =
-    useAddDestinationonnectionMutation();
+    useAddDestinationConnection(appId);
   const { mutate: editDestinationConnection } =
-    useEditDestinationConnectionMutation();
+    useEditDestinationConnection(appId);
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const {
-    data: { content: destinationConnections = [], totalElements = 0 } = {},
-  } = useDestinationConnectionsQuery(
+  const { data } = useDestinationConnections(
     appId,
     sortField,
     sortOrder,
@@ -74,6 +72,8 @@ const DestinationConnectionData = ({
     searchTerm,
     actualSearchField
   );
+  const destinationConnections = data?.content ?? [];
+  const totalElements = data?.totalElements ?? 0;
 
   const destinationConnectionsList: DestinationConnection[] =
     destinationConnections.map(
@@ -102,22 +102,22 @@ const DestinationConnectionData = ({
   };
 
   const handleDelete = (destinationId: number) => {
-    deleteDestinationConnection({ appId, destinationId });
+    deleteDestinationConnection(destinationId);
   };
 
   const handleBulkDelete = (destinationIds: number[]) => {
-    bulkDeleteDestinationConnection({ appId, destinationIds });
+    bulkDeleteDestinationConnection(destinationIds);
   };
 
   const handleBulkStatusUpdate = (
     destinationIds: number[],
     status: boolean
   ) => {
-    updateDestinationConnectionStatus({ appId, destinationIds, status });
+    updateDestinationConnectionStatus({ destinationIds, status });
   };
 
   const handleTest = async (testId: number) => {
-    return testDestinationMutation.mutateAsync({ appId, testId });
+    return testDestinationMutation.mutateAsync(testId);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -129,14 +129,20 @@ const DestinationConnectionData = ({
   };
 
   const handleAddNew = (formData: Record<string, string>) => {
-    addDestinationConnection({
-      appId,
-      data: mapFormDataKeys(formData),
-    });
+    let destinationForm = mapFormDataKeys(formData);
+    let newDestination = new DestinationConnection(
+      undefined,
+      destinationForm.alias,
+      destinationForm.accessKey,
+      destinationForm.secretKey,
+      destinationForm.bucketName,
+      destinationForm.region,
+    );
+    addDestinationConnection(newDestination);
   };
 
-  const handleEdit = (editId: number, editedItem: any) => {
-    editDestinationConnection({ appId, editId, editedItem });
+  const handleEdit = (destinationId: number, updatedDestination: any) => {
+    editDestinationConnection({ destinationId, updatedDestination });
   };
 
   const handleClearSearch = () => {

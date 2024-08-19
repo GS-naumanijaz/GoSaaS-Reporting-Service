@@ -29,6 +29,7 @@ import {
   useUpdateReportMutation,
 } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
+import { DestinationConnection } from "../../models/DestinationConnection";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const AddReportDashboard = () => {
     data: destinationConnectionsList,
     isLoading: isLoadingDestination,
     error: errorDestination,
-  } = useGetDestinationConnectionsListQuery();
+  } = useGetDestinationConnectionsListQuery(productDetails.id);
 
   const { mutate: createReport } = useCreateReportMutation();
   const { mutate: updateReport } = useUpdateReportMutation();
@@ -205,7 +206,7 @@ const AddReportDashboard = () => {
       destinationConnectionsList.length > 0
     ) {
       const matchingDestination = destinationConnectionsList.find(
-        (destinationConnection: { id: number; alias: string }) =>
+        (destinationConnection: DestinationConnection) =>
           destinationConnection.alias ===
           reportDetails.destinationConnection?.alias
       );
@@ -375,15 +376,22 @@ const AddReportDashboard = () => {
                       value={selectedDestination}
                       onChange={(e) => setSelectedDestination(e.target.value)}
                     >
-                      {destinationConnectionsList.map(
-                        (
-                          sourceConnection: { id: number; alias: string },
-                          index: number
-                        ) => (
-                          <option key={index} value={sourceConnection.id}>
-                            {sourceConnection.alias}
-                          </option>
+                      {destinationConnectionsList ? (
+                        destinationConnectionsList.map(
+                          (
+                            sourceConnection: { id: number; alias: string },
+                            index: number
+                          ) => (
+                            <option key={index} value={sourceConnection.id}>
+                              {sourceConnection.alias}
+                            </option>
+                          )
                         )
+                      ) : (
+                        <Text>
+                          Error loading destination connections. Please try
+                          again later.
+                        </Text>
                       )}
                     </Select>
                   )}
