@@ -24,10 +24,7 @@ import { AiOutlineSave } from "react-icons/ai";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { useGetSourceConnectionsListQuery } from "../../hooks/useSourceConnectionQuery";
 import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
-import {
-  useCreateReportMutation,
-  useUpdateReportMutation,
-} from "../../hooks/useReportsQuery";
+import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
 
@@ -68,8 +65,8 @@ const AddReportDashboard = () => {
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery(productDetails.id);
 
-  const { mutate: createReport } = useCreateReportMutation();
-  const { mutate: updateReport } = useUpdateReportMutation();
+  const { mutate: addReport } = useAddReport(productDetails.id);
+  const { mutate: updateReport } = useEditReport(productDetails.id);
 
   const storedProcedures: { [key: string]: string[] } = {
     Main: ["Procedure 1", "Procedure 2"],
@@ -134,9 +131,8 @@ const AddReportDashboard = () => {
     }
 
     if (isEditingMode) {
-      let appId = productDetails.id;
       let reportId = reportDetails.reportId;
-      let reportData = {
+      let updatedReport = {
         report: new ReportsConnection(
           undefined,
           reportAlias,
@@ -146,10 +142,8 @@ const AddReportDashboard = () => {
         destinationId: Number(selectedDestination),
       };
 
-      updateReport({ appId, reportId, reportData });
+      updateReport({ reportId, updatedReport });
     } else {
-      let appId = productDetails.id;
-
       let reportData = {
         report: new ReportsConnection(
           undefined,
@@ -160,7 +154,7 @@ const AddReportDashboard = () => {
         destinationId: Number(selectedDestination),
       };
 
-      createReport({ appId, reportData });
+      addReport(reportData);
     }
 
     setIsSaveOpen(false);

@@ -5,9 +5,9 @@ import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { Product } from "../Dashboard/Products";
 import {
-  useBulkDeleteReportMutation,
-  useDeleteReportMutation,
-  useReportsQuery,
+  useBulkDeleteReport,
+  useDeleteReport,
+  useReports,
 } from "../../hooks/useReportsQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useReportsConnectionStore from "../../store/ReportsStore";
@@ -52,14 +52,14 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     };
   }, [reset]);
 
-  const { mutate: deleteReport } = useDeleteReportMutation();
-  const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
+  const { mutate: deleteReport } = useDeleteReport(productId);
+  const { mutate: bulkDeleteReport } = useBulkDeleteReport(productId);
 
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data: { content: reportsConnections = [], totalElements = 0 } = {} } =
-    useReportsQuery(
+  const { data } =
+    useReports(
       productId,
       sortField,
       sortOrder,
@@ -68,6 +68,9 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       searchTerm,
       actualSearchField
     );
+
+  const reportsConnections = data?.content ?? [];
+  const totalElements = data?.totalElements ?? 0;
 
   const reportsConnectionsList: ReportsConnection[] = reportsConnections.map(
     (reportConnection: any) =>
@@ -97,13 +100,11 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   };
 
   const handleDelete = (reportId: number) => {
-    let appId = product.id;
-    deleteReport({ appId, reportId });
+    deleteReport(reportId);
   };
 
   const handleBulkDelete = (reportIds: number[]) => {
-    let appId = product.id;
-    bulkDeleteReport({ appId, reportIds });
+    bulkDeleteReport(reportIds);
   };
 
   const handlePageChange = (newPage: number) => {

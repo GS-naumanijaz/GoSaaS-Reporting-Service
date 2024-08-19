@@ -1,306 +1,128 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BackendURL } from "../configs";
 import { ReportsConnection } from "../models/ReportsConnection";
-import { useErrorToast } from "./useErrorToast";
+import APIClient from "../services/apiClient";
 
-const fetchReportsConnections = async (
-  productId: number,
-  sortField: string,
-  sortOrder: string,
-  page: number,
-  pageSize: number,
-  searchTerm: string,
-  searchField: string
-) => {
-  const params = new URLSearchParams({
-    sort_by: sortField,
-    sort_order: sortOrder,
-    page: page.toString(),
-    page_size: pageSize.toString(),
-    search: searchTerm,
-    search_by: searchField,
-  });
+interface ReportRequestBody {
+  report: Partial<ReportsConnection>;
+  sourceId: number;
+  destinationId:number;
+}
 
-  const response = await fetch(
-    `${BackendURL}/applications/${productId}/reports?${params.toString()}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
+const createApiClient1 = (appId: number) =>
+  new APIClient<ReportsConnection>(`applications/${appId}/reports`);
+
+const createApiClient2 = (appId: number) =>
+  new APIClient<ReportRequestBody>(`applications/${appId}/reports`);
+
+// Utility function to create a predicate for invalidating queries
+const invalidateReportsConnections = (appId: number) => (query: any) => {
+  const queryKey = query.queryKey;
+  return (
+    queryKey[0] === "reportsConnections" && queryKey[1] === appId
   );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    const errorMessage =
-      errorData.message || "Failed to fetch the reports.";
-
-    throw new Error(errorMessage);
-  }
-
-  const data = await response.json();
-  return data.data;
 };
 
-export const useReportsQuery = (
-  productId: number | null,
-  sortField: string,
-  sortOrder: string,
+//fetch all report pagination
+export const useReports = (
+  appId: number,
+  sortingBy: string,
+  sortingOrder: string,
   page: number,
   pageSize: number,
   searchTerm: string,
   searchField: string
 ) => {
+  const apiClient = createApiClient1(appId);
+
   return useQuery({
     queryKey: [
       "reportsConnections",
-      productId,
-      sortField,
-      sortOrder,
+      appId,
+      sortingBy,
+      sortingOrder,
       page,
       pageSize,
       searchTerm,
       searchField,
     ],
-    queryFn: () => {
-      if (!productId) {
-        throw new Error("No product ID provided.");
-      }
-      return fetchReportsConnections(
-        productId,
-        sortField,
-        sortOrder,
-        page,
-        pageSize,
-        searchTerm,
-        searchField
-      );
-    },
-    enabled: !!productId, // Only fetch if productId is provided
-    staleTime: 0, // Mark data as stale as soon as it is received
-    gcTime: 0, // No caching (note: 'gcTime' is an incorrect option in react-query)
+    queryFn: () =>
+      apiClient.getAll({
+        params: {
+          sort_by: sortingBy,
+          sort_order: sortingOrder,
+          page: page,
+          page_size: pageSize,
+          search_by: searchField,
+          search: searchTerm,
+        },
+      }),
+    staleTime: 1000 * 60 * 5, 
   });
 };
 
-//delete report
-const deleteReport = async (appId: number, reportId: number): Promise<void> => {
-  const response = await fetch(
-    `${BackendURL}/applications/${appId}/reports/${reportId}`,
-    {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    const errorMessage =
-      errorData.message || "Failed to delete the report.";
-
-    throw new Error(errorMessage);
-  }
-};
-
-export const useDeleteReportMutation = () => {
+// Hook to delete a single report
+export const useDeleteReport = (appId: number) => {
   const queryClient = useQueryClient();
+  const apiClient = createApiClient1(appId);
 
   return useMutation({
-    mutationFn: ({ appId, reportId }: { appId: number; reportId: number }) =>
-      deleteReport(appId, reportId),
-    onSuccess: (_, variables) => {
-      // Invalidate and refetch source connections query after successful deletion
+    mutationFn: (reportId: number) => apiClient.delete(`${reportId}`),
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = query.queryKey;
-          return (
-            queryKey[0] === "reportsConnections" &&
-            queryKey[1] === variables.appId
-          );
-        },
+        predicate: invalidateReportsConnections(appId),
       });
     },
-    onError: (error: Error) => {
-      useErrorToast()(error.message);
-    },
   });
 };
 
-//bulk delete report connections
-const bulkDeleteReport = async (
-  appId: number,
-  reportIds: number[]
-): Promise<void> => {
-  const response = await fetch(`${BackendURL}/applications/${appId}/reports`, {
-    method: "DELETE",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(reportIds),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    const errorMessage =
-      errorData.message || "Failed to bulk delete the reports.";
-
-    throw new Error(errorMessage);
-  }
-};
-
-export const useBulkDeleteReportMutation = () => {
+// Hook to bulk delete reports
+export const useBulkDeleteReport = (appId: number) => {
   const queryClient = useQueryClient();
+  const apiClient = createApiClient1(appId);
+
+  return useMutation({
+    mutationFn: (reportIds: number[]) => apiClient.bulkDelete(reportIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: invalidateReportsConnections(appId),
+      });
+    },
+  });
+};
+
+// Hook to add a new report
+export const useAddReport = (appId: number) => {
+  const queryClient = useQueryClient();
+  const apiClient = createApiClient2(appId);
+
+  return useMutation({
+    mutationFn: (newReport: ReportRequestBody) => apiClient.create(newReport),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: invalidateReportsConnections(appId),
+      });
+    },
+  });
+};
+
+// Hook to edit an existing report
+export const useEditReport = (appId: number) => {
+  const queryClient = useQueryClient();
+  const apiClient = createApiClient2(appId);
 
   return useMutation({
     mutationFn: ({
-      appId,
-      reportIds,
-    }: {
-      appId: number;
-      reportIds: number[];
-    }) => bulkDeleteReport(appId, reportIds),
-    onSuccess: (_, variables) => {
-      // Invalidate and refetch report connections query after successful deletion
-      queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = query.queryKey;
-          return (
-            queryKey[0] === "reportsConnections" &&
-            queryKey[1] === variables.appId
-          );
-        },
-      });
-    },
-    onError: (error: Error) => {
-      useErrorToast()(error.message);
-    },
-  });
-};
-
-//create report
-const createReport = async (
-  appId: number,
-  reportData: {
-    report: ReportsConnection;
-    sourceId: number;
-    destinationId: number;
-  }
-): Promise<void> => {
-  const response = await fetch(`${BackendURL}/applications/${appId}/reports`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(reportData),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    const errorMessage =
-      errorData.message || "Failed to create report.";
-
-    throw new Error(errorMessage);
-  }
-};
-
-export const useCreateReportMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      appId,
-      reportData,
-    }: {
-      appId: number;
-      reportData: {
-        report: ReportsConnection;
-        sourceId: number;
-        destinationId: number;
-      };
-    }) => createReport(appId, reportData),
-    onSuccess: (_, variables) => {
-      // Invalidate and refetch the relevant queries after successful creation
-      queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = query.queryKey;
-          return (
-            queryKey[0] === "reportsConnections" &&
-            queryKey[1] === variables.appId
-          );
-        },
-      });
-    },
-    onError: (error: Error) => {
-      useErrorToast()(error.message);
-    },
-  });
-};
-
-//update report
-const updateReport = async (
-  appId: number,
-  reportId: number,
-  reportData: {
-    report: ReportsConnection;
-    sourceId: number;
-    destinationId: number;
-  }
-): Promise<void> => {
-  const response = await fetch(
-    `${BackendURL}/applications/${appId}/reports/${reportId}`,
-    {
-      method: "PATCH",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reportData),
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    const errorMessage =
-      errorData.message || "Failed to update report.";
-
-    throw new Error(errorMessage);
-  }
-};
-
-export const useUpdateReportMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      appId,
       reportId,
-      reportData,
+      updatedReport,
     }: {
-      appId: number;
       reportId: number;
-      reportData: {
-        report: ReportsConnection;
-        sourceId: number;
-        destinationId: number;
-      };
-    }) => updateReport(appId, reportId, reportData),
-    onSuccess: (_, variables) => {
-      // Invalidate and refetch the relevant queries after successful creation
+      updatedReport: ReportRequestBody;
+    }) => apiClient.update(`${reportId}`, updatedReport),
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = query.queryKey;
-          return (
-            queryKey[0] === "reportsConnections" &&
-            queryKey[1] === variables.appId
-          );
-        },
+        predicate: invalidateReportsConnections(appId),
       });
-    },
-    onError: (error: Error) => {
-      useErrorToast()(error.message);
     },
   });
 };
