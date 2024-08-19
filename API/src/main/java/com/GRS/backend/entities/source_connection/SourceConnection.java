@@ -36,7 +36,7 @@ public class SourceConnection {
     @NotNull(message = "Alias must not be null")
     private String alias;
 
-//    @NotNull(message = "Type must not be null")
+    @NotNull(message = "Type must not be null")
     private SourceConnectionType type;
 
     private String host = "";
