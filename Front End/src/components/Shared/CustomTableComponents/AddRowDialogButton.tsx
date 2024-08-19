@@ -107,7 +107,8 @@ const AddRowDialogButton: React.FC<Props> = ({
                           fontWeight="normal"
                           rightIcon={<FaChevronDown />}
                         >
-                          {formData[field.name] || `Select ${field.name}`}
+                          {formData[field.name].toLowerCase() ||
+                            `Select ${field.name}`}
                         </MenuButton>
                         <MenuList>
                           {field.options!.map((item, index) => (
@@ -118,7 +119,7 @@ const AddRowDialogButton: React.FC<Props> = ({
                                 setFormData({ ...formData, [field.name]: item })
                               }
                             >
-                              {item}
+                              {item.toLowerCase()}
                             </MenuItem>
                           ))}
                         </MenuList>
