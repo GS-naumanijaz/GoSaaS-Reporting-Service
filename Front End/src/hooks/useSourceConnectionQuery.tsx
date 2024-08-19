@@ -103,17 +103,14 @@ export const useDeleteSourceConnectionMutation = () => {
         predicate: (query) => {
           const queryKey = query.queryKey;
           return (
-            queryKey[0] === "sourceConnections" &&
-            queryKey[1] === variables.appId
-          );
-          return (
-            queryKey[0] === "sourceConnections" &&
-            queryKey[1] === variables.appId
+            (queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "sourceConnections" && queryKey[1] === "list")
           );
         },
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error) => {  
       useErrorToast()("Error deleting source connection:" + error.message);
     },
   });
@@ -158,8 +155,9 @@ export const useBulkDeleteSourceConnectionMutation = () => {
         predicate: (query) => {
           const queryKey = query.queryKey;
           return (
-            queryKey[0] === "sourceConnections" &&
-            queryKey[1] === variables.appId
+            (queryKey[0] === "sourceConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "sourceConnections" && queryKey[1] === "list")
           );
         },
       });

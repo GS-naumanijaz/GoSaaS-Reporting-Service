@@ -4,6 +4,7 @@ import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.report.ReportRepository;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.models.DTO.DestinationConnectionDTO;
@@ -29,6 +30,9 @@ public class DestinationConnectionService {
 
     @Autowired
     private ApplicationRepository applicationRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     public Page<DestinationConnection> getAllDestinationConnections(int appId, String search, String searchBy, Pageable pageable) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
@@ -133,6 +137,14 @@ public class DestinationConnectionService {
             existingDestination.setIsDeleted(true);
             existingDestination.setDeletionDate(LocalDateTime.now());
 
+            List<Report> reportsToDelete = new ArrayList<>(existingDestination.getReports());
+            for (Report report: reportsToDelete) {
+                report.setIsDeleted(true);
+                report.setDeletionDate(LocalDateTime.now());
+
+                reportRepository.save(report);
+            }
+
             destinationConnectionRepository.save(existingDestination);
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
@@ -145,13 +157,21 @@ public class DestinationConnectionService {
         for (Integer id : destinationIds) {
             Optional<DestinationConnection> optionalConnection = destinationConnectionRepository.findById(id);
             if (optionalConnection.isPresent()) {
-                DestinationConnection existingSourceConnection = optionalConnection.get();
+                DestinationConnection existingDestination = optionalConnection.get();
 
-                if (!existingSourceConnection.getIsDeleted()) {
-                    existingSourceConnection.setIsDeleted(true);
-                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+                if (!existingDestination.getIsDeleted()) {
+                    existingDestination.setIsDeleted(true);
+                    existingDestination.setDeletionDate(LocalDateTime.now());
 
-                    destinationConnectionRepository.save(existingSourceConnection);
+                    List<Report> reportsToDelete = new ArrayList<>(existingDestination.getReports());
+                    for (Report report: reportsToDelete) {
+                        report.setIsDeleted(true);
+                        report.setDeletionDate(LocalDateTime.now());
+
+                        reportRepository.save(report);
+                    }
+
+                    destinationConnectionRepository.save(existingDestination);
                     deletedCount++;
                 }
             }

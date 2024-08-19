@@ -7,7 +7,6 @@ import { FaPlus } from "react-icons/fa";
 import { primaryColor } from "../../../configs";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../Dashboard/Products";
-import { useErrorToast } from "../../../hooks/useErrorToast";
 
 interface Props {
   tableHeading: string;
@@ -29,7 +28,7 @@ const TableHeader = ({
   onAddNew,
 }: Props) => {
   const navigate = useNavigate();
-  const showErrorToast = useErrorToast();
+  // const showErrorToast = useErrorToast();
 
   return (
     <HStack

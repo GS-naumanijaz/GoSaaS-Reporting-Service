@@ -66,6 +66,7 @@ const FilterSortPopup = ({
         fontWeight="semibold"
         lineHeight="1.2"
         color="gray.700"
+        textTransform="none"
       >
         {heading}
       </Text>

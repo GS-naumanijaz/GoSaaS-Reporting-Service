@@ -110,8 +110,9 @@ export const useDeleteDestinationConnectionMutation = () => {
         predicate: (query) => {
           const queryKey = query.queryKey;
           return (
-            queryKey[0] === "destinationConnections" &&
-            queryKey[1] === variables.appId
+            (queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "destinationConnections" && queryKey[1] === "list")
           );
         },
       });
@@ -161,8 +162,9 @@ export const useBulkDeleteDestinationConnectionMutation = () => {
         predicate: (query) => {
           const queryKey = query.queryKey;
           return (
-            queryKey[0] === "destinationConnections" &&
-            queryKey[1] === variables.appId
+            (queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "destinationConnections" && queryKey[1] === "list")
           );
         },
       });

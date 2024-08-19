@@ -4,6 +4,9 @@ import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.report.ReportRepository;
+import com.GRS.backend.entities.report.ReportService;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.utilities.DatabaseConnectionTester;
@@ -29,6 +32,9 @@ public class SourceConnectionService {
 
     @Autowired
     private ApplicationRepository applicationRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     public Page<SourceConnection> getAllSourceConnections(int appId, String search, String searchBy, Pageable pageable) {
 
@@ -139,6 +145,14 @@ public class SourceConnectionService {
             existingSourceConnection.setIsDeleted(true);
             existingSourceConnection.setDeletionDate(LocalDateTime.now());
 
+            List<Report> reportsToDelete = new ArrayList<>(existingSourceConnection.getReports());
+            for (Report report: reportsToDelete) {
+                report.setIsDeleted(true);
+                report.setDeletionDate(LocalDateTime.now());
+
+                reportRepository.save(report);
+            }
+
             sourceConnectionRepository.save(existingSourceConnection);
         } else {
             throw new EntityNotFoundException("SourceConnection", sourceConnectionId);
@@ -156,6 +170,14 @@ public class SourceConnectionService {
                 if (!existingSourceConnection.getIsDeleted()) {
                     existingSourceConnection.setIsDeleted(true);
                     existingSourceConnection.setDeletionDate(LocalDateTime.now());
+
+                    List<Report> reportsToDelete = new ArrayList<>(existingSourceConnection.getReports());
+                    for (Report report: reportsToDelete) {
+                        report.setIsDeleted(true);
+                        report.setDeletionDate(LocalDateTime.now());
+
+                        reportRepository.save(report);
+                    }
 
                     sourceConnectionRepository.save(existingSourceConnection);
                     deletedCount++;
