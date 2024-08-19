@@ -2,14 +2,13 @@ import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { SourceConnection } from "../../models/SourceConnection";
 import {
-  useAddSourceConnectionMutation,
-  useBulkDeleteSourceConnectionMutation,
-  useDeleteSourceConnectionMutation,
-  useEditSourceConnectionMutation,
+  useAddSourceConnection,
+  useBulkDeleteSourceConnections,
+  useDeleteSourceConnection,
+  useEditSourceConnection,
   useSourceConnections,
-  useSourceConnectionsQuery,
-  useTestSourceConnectionMutation,
-  useUpdateSourceConnectionStatusMutation,
+  useTestSourceConnection,
+  useUpdateSourceConnectionStatus,
 } from "../../hooks/useSourceConnectionQuery";
 import {
   fieldMapping,
@@ -46,22 +45,31 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     };
   }, [reset]);
 
-  const { mutate: deleteSourceConnection } =
-    useDeleteSourceConnectionMutation();
+  // const { mutate: deleteSourceConnection } =
+  //   useDeleteSourceConnectionMutation();
+
+  const { mutate: deleteSourceConnection } = useDeleteSourceConnection(appId);
   const { mutate: bulkDeleteSourceConnection } =
-    useBulkDeleteSourceConnectionMutation();
+    useBulkDeleteSourceConnections(appId);
   const { mutate: updateSourceConnectionStatus } =
-    useUpdateSourceConnectionStatusMutation();
-  const testSourceConnection = useTestSourceConnectionMutation();
-  const { mutate: addSourceConnection } = useAddSourceConnectionMutation();
-  const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
+    useUpdateSourceConnectionStatus(appId);
+  const testSourceConnection = useTestSourceConnection(appId);
+  const { mutate: addSourceConnection } = useAddSourceConnection(appId);
+  const { mutate: editSourceConnection } = useEditSourceConnection(appId);
 
   // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-
-  const { data } = useSourceConnections(appId, sortField, sortOrder, page, pageSize, searchTerm, actualSearchField);
+  const { data } = useSourceConnections(
+    appId,
+    sortField,
+    sortOrder,
+    page,
+    pageSize,
+    searchTerm,
+    actualSearchField
+  );
   const sourceConnections = data?.content ?? [];
   const totalElements = data?.totalElements ?? 0;
 
@@ -93,19 +101,19 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   };
 
   const handleDelete = (sourceId: number) => {
-    deleteSourceConnection({ appId, sourceId });
+    deleteSourceConnection(sourceId);
   };
 
   const handleBulkDelete = (sourceIds: number[]) => {
-    bulkDeleteSourceConnection({ appId, sourceIds });
+    bulkDeleteSourceConnection(sourceIds);
   };
 
   const handleBulkStatusUpdate = (sourceIds: number[], status: boolean) => {
-    updateSourceConnectionStatus({ appId, sourceIds, status });
+    updateSourceConnectionStatus({ sourceIds, status });
   };
 
-  const handleTest = async (appId: number, testId: number) => {
-    return testSourceConnection.mutateAsync({ appId, testId });
+  const handleTest = async (testId: number) => {
+    return testSourceConnection.mutateAsync(testId);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -117,14 +125,22 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   };
 
   const handleAddNew = (formData: Record<string, string>) => {
-    addSourceConnection({
-      appId,
-      data: mapFormDataKeys(formData),
-    });
+    let sourceForm = mapFormDataKeys(formData);
+    let newSource = new SourceConnection(
+      undefined,
+      sourceForm.alias,
+      sourceForm.type,
+      sourceForm.databaseName,
+      sourceForm.host,
+      sourceForm.port,
+      sourceForm.username,
+      sourceForm.password
+    );
+    addSourceConnection(newSource);
   };
 
-  const handleEdit = (editId: number, editedItem: any) => {
-    editSourceConnection({ appId, editId, editedItem });
+  const handleEdit = (sourceId: number, updatedSource: any) => {
+    editSourceConnection({ sourceId, updatedSource });
   };
 
   const handleClearSearch = () => {
@@ -139,27 +155,26 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
 
   return (
     <CustomTable
-        tableManager={manager}
-        appId={appId}
-        onSort={handleSort}
-        onSearch={handleSearch}
-        onDelete={handleDelete}
-        onBulkDelete={handleBulkDelete}
-        onBulkUpdateStatus={handleBulkStatusUpdate}
-        onTestConnection={handleTest}
-        onEdit={handleEdit}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        page={page}
-        pageSize={pageSize}
-        totalElements={totalElements}
-        searchObject={{
-          searchField: actualSearchField,
-          searchTerm: searchTerm,
-        }}
-        onAddNew={handleAddNew}
-        handleClearSearch={handleClearSearch}
-      />
+      tableManager={manager}
+      onSort={handleSort}
+      onSearch={handleSearch}
+      onDelete={handleDelete}
+      onBulkDelete={handleBulkDelete}
+      onBulkUpdateStatus={handleBulkStatusUpdate}
+      onTestConnection={handleTest}
+      onEdit={handleEdit}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
+      page={page}
+      pageSize={pageSize}
+      totalElements={totalElements}
+      searchObject={{
+        searchField: actualSearchField,
+        searchTerm: searchTerm,
+      }}
+      onAddNew={handleAddNew}
+      handleClearSearch={handleClearSearch}
+    />
   );
 };
 

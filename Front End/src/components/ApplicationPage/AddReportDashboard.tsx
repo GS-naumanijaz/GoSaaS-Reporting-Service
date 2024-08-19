@@ -28,6 +28,7 @@ import {
   useCreateReportMutation,
   useUpdateReportMutation,
 } from "../../hooks/useReportsQuery";
+import { SourceConnection } from "../../models/SourceConnection";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const AddReportDashboard = () => {
     data: sourceConnectionsList,
     isLoading: isLoadingSource,
     error: errorSource,
-  } = useGetSourceConnectionsListQuery();
+  } = useGetSourceConnectionsListQuery(productDetails.id);
   //! ADD VALIDATION FOR INPUTS
   const {
     data: destinationConnectionsList,
@@ -187,7 +188,7 @@ const AddReportDashboard = () => {
       sourceConnectionsList.length > 0
     ) {
       const matchingSource = sourceConnectionsList.find(
-        (sourceConnection: { id: number; alias: string }) =>
+        (sourceConnection: SourceConnection) =>
           sourceConnection.alias === reportDetails.sourceConnection?.alias
       );
       if (matchingSource) {
@@ -332,9 +333,9 @@ const AddReportDashboard = () => {
                       value={selectedSource}
                       onChange={(e) => setSelectedSource(e.target.value)}
                     >
-                      {sourceConnectionsList.map(
+                      {sourceConnectionsList && sourceConnectionsList.map(
                         (
-                          sourceConnection: { id: number; alias: string },
+                          sourceConnection: SourceConnection,
                           index: number
                         ) => (
                           <option key={index} value={sourceConnection.id}>

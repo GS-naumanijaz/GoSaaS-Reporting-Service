@@ -138,7 +138,6 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   return (
     <CustomTable
       tableManager={manager}
-      appId={product.id}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}

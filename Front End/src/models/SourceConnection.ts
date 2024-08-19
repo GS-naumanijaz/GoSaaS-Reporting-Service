@@ -3,8 +3,8 @@ import { TableRowData } from "./TableRowData";
 import { Application } from "../components/ApplicationPage/AppDashboard";
 
 export class SourceConnection extends TableRowData {
-  private connectionId: number;
-  private alias: string;
+  public id: number;
+  public alias: string;
   private type: string;
   private host: string;
   private port: string;
@@ -241,7 +241,7 @@ export class SourceConnection extends TableRowData {
     isActive: boolean = false
   ) {
     super();
-    this.connectionId = connectionId;
+    this.id = connectionId;
     this.alias = alias;
     this.type = connection_type;
     this.host = host;
@@ -255,7 +255,7 @@ export class SourceConnection extends TableRowData {
   }
 
   getId(): number {
-    return this.connectionId;
+    return this.id;
   }
 
   getAlias(): string {

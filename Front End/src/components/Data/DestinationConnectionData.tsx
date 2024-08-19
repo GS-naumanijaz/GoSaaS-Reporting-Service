@@ -116,7 +116,7 @@ const DestinationConnectionData = ({
     updateDestinationConnectionStatus({ appId, destinationIds, status });
   };
 
-  const handleTest = async (appId: number, testId: number) => {
+  const handleTest = async (testId: number) => {
     return testDestinationMutation.mutateAsync({ appId, testId });
   };
 
@@ -151,7 +151,6 @@ const DestinationConnectionData = ({
   return (
     <CustomTable
       tableManager={manager}
-      appId={appId}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}

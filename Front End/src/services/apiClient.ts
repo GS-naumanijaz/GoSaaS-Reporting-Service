@@ -78,6 +78,13 @@ class APIClient<T> {
       .catch(this.handleError);
   };
 
+  getListAll = (config?: AxiosRequestConfig) => {
+    return axiosInstance
+      .get<APIResponse<T[]>>(`${this.endpoint}/all`, config)
+      .then((res) => this.handleResponse(res))
+      .catch(this.handleError);
+  };
+
   get = (urlParams: string) => {
     return axiosInstance
       .get<APIResponse<T>>(`${this.endpoint}/${urlParams}`)
@@ -118,14 +125,14 @@ class APIClient<T> {
   };
 
   updateStatus = (
-    urlParams: string,
     status: boolean,
+    sourceIds: number[],
     config?: AxiosRequestConfig
   ) => {
     return axiosInstance
       .patch<APIResponse<T>>(
-        `${this.endpoint}/${urlParams}?isActive=${status}`,
-        null,
+        `${this.endpoint}?isActive=${status}`,
+        sourceIds,
         config
       )
       .then((res) => this.handleResponse(res))

@@ -33,13 +33,12 @@ import { ImCross } from "react-icons/im";
 
 interface Props {
   tableManager: TableManager;
-  appId: number;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
   onDelete: (deleteId: number) => void;
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
-  onTestConnection?: (appId: number, connectionId: number) => void;
+  onTestConnection?: (connectionId: number) => void;
   onEdit?: (itemId: number, editedItem: any) => void;
   onClickEdit?: (report: ReportsConnection) => void;
   page: number;
@@ -54,7 +53,6 @@ interface Props {
 
 const CustomTable = ({
   tableManager,
-  appId,
   onSort,
   onSearch,
   onDelete,
@@ -287,7 +285,7 @@ const CustomTable = ({
                   />
                   {tableManager.requiresTestButton() && (
                     <TdTestButton
-                      onClick={() => onTestConnection!(appId, row.getId())}
+                      onClick={() => onTestConnection!(row.getId())}
                       isEditingMode={isEditingMode()}
                     />
                   )}
