@@ -45,6 +45,7 @@ const AppDashboard = () => {
         h="96.8%"
         overflowY="auto"
         sx={sx}
+        width={"auto"}
       >
         {isLoading ? (
           <Spinner size="xl" />

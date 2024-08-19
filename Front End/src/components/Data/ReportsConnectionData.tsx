@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CustomTable from "../Shared/CustomTable";
 import { TableManager } from "../../models/TableManager";
 import { ReportsConnection } from "../../models/ReportsConnection";
@@ -9,8 +11,6 @@ import {
 } from "../../hooks/useReportsQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useReportsConnectionStore from "../../store/ReportsStore";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 interface ReportsConnectionDataProps {
   product: Product | null;
@@ -19,7 +19,17 @@ interface ReportsConnectionDataProps {
 const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const navigate = useNavigate();
 
-  const productId = product?.id ?? null;
+  useEffect(() => {
+    if (product === null) {
+      navigate("/homepage");
+    }
+  }, [product, navigate]);
+
+  if (product === null) {
+    return null;
+  }
+
+  const productId = product.id;
   const {
     sortField,
     sortOrder,
@@ -44,9 +54,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const { mutate: deleteReport } = useDeleteReportMutation();
   const { mutate: bulkDeleteReport } = useBulkDeleteReportMutation();
-  // const { mutate: editSourceConnection } = useEditSourceConnectionMutation();
 
-  // Determine the actual field to search by, using fieldMapping if it exists
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
@@ -61,7 +69,6 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       actualSearchField
     );
 
-  console.log(reportsConnections);
   const reportsConnectionsList: ReportsConnection[] = reportsConnections.map(
     (reportConnection: any) =>
       new ReportsConnection(
@@ -90,12 +97,12 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   };
 
   const handleDelete = (reportId: number) => {
-    let appId = product!.id;
+    let appId = product.id;
     deleteReport({ appId, reportId });
   };
 
   const handleBulkDelete = (reportIds: number[]) => {
-    let appId = product!.id;
+    let appId = product.id;
     bulkDeleteReport({ appId, reportIds });
   };
 
@@ -114,8 +121,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     localStorage.setItem("productDetails", JSON.stringify(productDetails));
     localStorage.setItem("reportDetails", JSON.stringify(report));
 
-    navigate("/addreports");  
-  }
+    navigate("/addreports");
+  };
 
   const handleClearSearch = () => {
     setSearchField("");
@@ -125,13 +132,13 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const manager = new TableManager(
     new ReportsConnection(),
     reportsConnectionsList,
-    product ?? undefined
+    product
   );
 
   return (
     <CustomTable
       tableManager={manager}
-      appId={product!.id}
+      appId={product.id}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}
@@ -146,7 +153,6 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchField: actualSearchField,
         searchTerm: searchTerm,
       }}
-      // onAddNew={null} 
       onAddNew={() => navigate("/addreports", { state: { product } })}
       handleClearSearch={handleClearSearch}
     />

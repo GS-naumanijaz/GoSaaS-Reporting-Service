@@ -1,9 +1,10 @@
 import { extendTheme } from "@chakra-ui/react";
+import { tertiaryColor } from "./configs";
 export const theme = extendTheme({
   styles: {
     global: {
       body: {
-        bg: "white",
+        bg: tertiaryColor,
         color: "black",
       },
     },

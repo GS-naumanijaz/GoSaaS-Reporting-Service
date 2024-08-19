@@ -21,13 +21,13 @@ import {
   minimumAppDescription,
   primaryColor,
   secondaryColor,
+  minimumAppName,
+  BackendURL,
 } from "../../configs";
 import { Application } from "./AppDashboard";
-// import { useUser } from "../Login/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
-import { minimumAppName, BackendURL } from "../../configs";
 
 interface Props {
   appData?: Application;
@@ -58,7 +58,6 @@ const AppHeader = ({ appData }: Props) => {
   );
 
   const [touched, setTouched] = useState({ alias: false, description: false });
-  // const user = useUser();
   const user = { fullName: "testUser" };
   const navigate = useNavigate();
   const queryClient = useQueryClient();

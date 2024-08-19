@@ -143,8 +143,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   );
 
   return (
-    <>
-      <CustomTable
+    <CustomTable
         tableManager={manager}
         appId={appId}
         onSort={handleSort}
@@ -166,7 +165,6 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         onAddNew={handleAddNew}
         handleClearSearch={handleClearSearch}
       />
-    </>
   );
 };
 

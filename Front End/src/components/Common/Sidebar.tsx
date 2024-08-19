@@ -11,12 +11,12 @@ interface SidebarProps {
 const Sidebar = ({ onSelected }: SidebarProps) => {
   return (
     <Box
-      height={sidebarHeight}
       paddingLeft={5}
       p={5}
       borderRightColor={"lightgrey"}
       borderRightWidth={2}
       bg={tertiaryColor}
+      h={sidebarHeight}
     >
       <Button variant="ghost" onClick={() => onSelected("Dashboard")}>
         <MdDashboard size={20} color={primaryColor} />

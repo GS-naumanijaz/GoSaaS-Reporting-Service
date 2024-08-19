@@ -6,6 +6,7 @@ import {
   Table,
   TableContainer,
   Tbody,
+  Td,
   Text,
   Th,
   Thead,
@@ -166,7 +167,7 @@ const CustomTable = ({
       borderEndWidth={0}
       borderStartWidth={0}
       my={10}
-      width={"90%"}
+      width={"95%"}
     >
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
@@ -293,7 +294,26 @@ const CustomTable = ({
               ))}
             </Tbody>
           ) : (
-            <Text>No data to show</Text>
+            <Tbody>
+              <Tr>
+                <Td
+                  colSpan={
+                    tableManager.getTableHeadings().length +
+                    (tableManager.requiresCheckBox() ? 1 : 0)
+                  }
+                  textAlign="center"
+                >
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="20px"
+                  >
+                    <Text>No data to show</Text>
+                  </Box>
+                </Td>
+              </Tr>
+            </Tbody>
           )}
         </Table>
       </TableContainer>

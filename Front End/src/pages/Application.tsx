@@ -21,7 +21,7 @@ const Application = () => {
       templateAreas={`"nav nav" "sidebar main"`}
       templateColumns={{ base: "0fr", lg: "200px 1fr" }}
     >
-      <GridItem area="nav" bg={secondaryColor}>
+      <GridItem area="nav" bg={secondaryColor} >
         <NavBar />
       </GridItem>
       <Show above="lg">

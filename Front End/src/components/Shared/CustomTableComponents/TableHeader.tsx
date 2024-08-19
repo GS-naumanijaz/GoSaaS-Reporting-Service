@@ -30,6 +30,7 @@ const TableHeader = ({
   const navigate = useNavigate();
   // const showErrorToast = useErrorToast();
 
+  console.log(inputFields);
   return (
     <HStack
       marginX={10}
@@ -40,7 +41,7 @@ const TableHeader = ({
     >
       <Text fontSize={"x-large"}>{tableHeading}</Text>
       <HStack>
-        {isSelectingRows && (
+        {tableHeading !== "Reports" && isSelectingRows && (
           <HStack spacing={6}>
             <Button onClick={() => handleBulkSwitchActions(true)}>
               Activate All
