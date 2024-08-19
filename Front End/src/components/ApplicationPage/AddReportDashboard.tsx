@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -95,6 +96,25 @@ const AddReportDashboard = () => {
     }
   };
 
+  const [aliasError, setAliasError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+
+  const validateAlias = (value: string) => {
+    if (value.length < 3 || value.length > 20) {
+      setAliasError("Alias must be between 3 and 20 characters.");
+    } else {
+      setAliasError("");
+    }
+  };
+
+  const validateDescription = (value: string) => {
+    if (value.length < 20 || value.length > 250) {
+      setDescriptionError("Description must be between 20 and 250 characters.");
+    } else {
+      setDescriptionError("");
+    }
+  };
+
   const handleButtonClick = () => {
     document.getElementById("fileInput")?.click();
   };
@@ -154,7 +174,9 @@ const AddReportDashboard = () => {
     !reportAlias ||
     !reportDescription ||
     !selectedSource ||
-    !selectedDestination;
+    !selectedDestination ||
+    !!aliasError ||
+    !!descriptionError;
 
   useEffect(() => {
     if (
@@ -197,6 +219,8 @@ const AddReportDashboard = () => {
     sourceConnectionsList,
     destinationConnectionsList,
   ]);
+
+  console.log('errors', aliasError, descriptionError);
 
   return (
     <>
@@ -252,23 +276,37 @@ const AddReportDashboard = () => {
               </Text>
               {/* form */}
               <Box width="50%">
-                <FormControl isRequired p={5}>
+                <FormControl isRequired p={5} isInvalid={!!aliasError}>
                   <FormLabel>Report Alias</FormLabel>
                   <Input
                     type="string"
                     placeholder="Alias"
                     value={reportAlias}
-                    onChange={(e) => setReportAlias(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setReportAlias(value);
+                      validateAlias(value);
+                    }}  
                   />
+                  {aliasError && (
+                    <FormErrorMessage>{aliasError}</FormErrorMessage>
+                  )}
                 </FormControl>
-                <FormControl isRequired p={5}>
+                <FormControl isRequired p={5} isInvalid={!!descriptionError }>
                   <FormLabel>Report Description</FormLabel>
                   <Input
                     type="string"
                     placeholder="Description"
                     value={reportDescription}
-                    onChange={(e) => setReportDescription(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setReportDescription(value);
+                      validateDescription(value);
+                    }}
                   />
+                  {descriptionError && (
+                    <FormErrorMessage>{descriptionError}</FormErrorMessage>
+                  )}
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Source Connections</FormLabel>
@@ -420,7 +458,7 @@ const AddReportDashboard = () => {
 
             <AlertDialogBody>
               {isSaveButtonDisabled
-                ? "Please fill all the fields"
+                ? "Please fill all the fields with valid information"
                 : "Are you sure you want to save these changes?"}
             </AlertDialogBody>
 

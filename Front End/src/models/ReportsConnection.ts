@@ -41,6 +41,7 @@ export class ReportsConnection extends TableRowData {
     "5%",
   ];
 
+  //not being used
   private static inputFields: InputField[] = [
     {
       name: "Alias",

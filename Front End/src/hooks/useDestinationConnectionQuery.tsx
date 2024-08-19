@@ -232,8 +232,9 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
         predicate: (query) => {
           const queryKey = query.queryKey;
           return (
-            queryKey[0] === "destinationConnections" &&
-            queryKey[1] === variables.appId
+            (queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "destinationConnections" && queryKey[1] === "list")
           );
         },
       });
@@ -309,7 +310,14 @@ export const useAddDestinationonnectionMutation = () => {
     onSuccess: (_, variables) => {
       // Invalidate and refetch the source connections query after successful addition
       queryClient.invalidateQueries({
-        queryKey: ["destinationConnections", variables.appId],
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return (
+            (queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "destinationConnections" && queryKey[1] === "list")
+          );
+        },
       });
     },
     onError: (error: Error) => {
@@ -363,8 +371,9 @@ export const useEditDestinationConnectionMutation = () => {
         predicate: (query) => {
           const queryKey = query.queryKey;
           return (
-            queryKey[0] === "destinationConnections" &&
-            queryKey[1] === variables.appId
+            (queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "reportsConnections" && queryKey[1] === variables.appId) ||
+            (queryKey[0] === "destinationConnections" && queryKey[1] === "list")
           );
         },
       });
