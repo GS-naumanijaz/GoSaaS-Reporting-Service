@@ -61,6 +61,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       actualSearchField
     );
 
+  console.log(reportsConnections);
   const reportsConnectionsList: ReportsConnection[] = reportsConnections.map(
     (reportConnection: any) =>
       new ReportsConnection(
@@ -108,8 +109,13 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const handleEdit = (report: ReportsConnection) => {
     let productDetails = product;
-    navigate("/addreports", { state: { productDetails, report } });
-  };
+
+    localStorage.setItem("isEditingMode", JSON.stringify(true));
+    localStorage.setItem("productDetails", JSON.stringify(productDetails));
+    localStorage.setItem("reportDetails", JSON.stringify(report));
+
+    navigate("/addreports");  
+  }
 
   const handleClearSearch = () => {
     setSearchField("");
@@ -140,6 +146,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchField: actualSearchField,
         searchTerm: searchTerm,
       }}
+      // onAddNew={null} 
       onAddNew={() => navigate("/addreports", { state: { product } })}
       handleClearSearch={handleClearSearch}
     />

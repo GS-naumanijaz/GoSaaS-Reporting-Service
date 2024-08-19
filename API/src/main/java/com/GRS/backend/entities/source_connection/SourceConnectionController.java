@@ -5,6 +5,7 @@ import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.enums.SourceConnectionType;
+import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
@@ -39,6 +40,13 @@ public class SourceConnectionController {
 
         return Response.responseBuilder("Source Connections retrieved successfully", HttpStatus.OK, allSourceConnections);
 
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllSourceConnections(@PathVariable int appId) {
+        List<SourceConnectionDTO> allSourceConnections = sourceConnectionService.getAllSourceConnections(appId);
+
+        return Response.responseBuilder("Source Connection found successfully", HttpStatus.OK, allSourceConnections);
     }
 
     @GetMapping("/{sourceId}")

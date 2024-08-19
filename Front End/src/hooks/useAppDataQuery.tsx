@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
+import { useErrorToast } from "./useErrorToast";
 
 const fetchAppData = async (appId: number) => {
   const response = await fetch(`${BackendURL}/applications/${appId}`, {
@@ -59,7 +60,7 @@ export const useAppDataMutation = () => {
       console.log("Application saved successfully:", data);
     },
     onError: (error) => {
-      console.error("Failed to save application:", error);
+      useErrorToast()(error.message);
     },
   });
 };

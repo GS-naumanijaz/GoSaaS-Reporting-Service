@@ -4,7 +4,10 @@ import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.models.DTO.DestinationConnectionDTO;
+import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.utilities.FieldUpdater;
 import com.GRS.backend.utilities.S3BucketTester;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DestinationConnectionService {
@@ -36,6 +40,22 @@ public class DestinationConnectionService {
                 spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
             }
             return destinationConnectionRepository.findAll(spec, pageable);
+        }
+
+        throw new EntityNotFoundException("Application", appId);
+
+    }
+
+    public List<DestinationConnectionDTO> getAllDestinationConnections(int appId) {
+
+        Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
+
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
+            Specification<DestinationConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
+
+            return destinationConnectionRepository.findAll(spec).stream()
+                    .map(destinationConnection -> new DestinationConnectionDTO(destinationConnection.getId(), destinationConnection.getAlias()))
+                    .collect(Collectors.toList());
         }
 
         throw new EntityNotFoundException("Application", appId);

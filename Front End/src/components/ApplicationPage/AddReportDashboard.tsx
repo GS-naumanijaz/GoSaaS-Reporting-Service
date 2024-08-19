@@ -13,38 +13,80 @@ import {
   Input,
   Select,
   Spacer,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import { primaryColor, secondaryColor, sx } from "../../configs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { ReportsConnection } from "../../models/ReportsConnection";
+import { useGetSourceConnectionsListQuery } from "../../hooks/useSourceConnectionQuery";
+import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
+import {
+  useCreateReportMutation,
+  useUpdateReportMutation,
+} from "../../hooks/useReportsQuery";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
+  // const location = useLocation();
+  // const productDetails = location.state.productDetails;
+  // const reportDetails = location.state.report as ReportsConnection | undefined;
+
   const location = useLocation();
-  const productDetails = location.state.productDetails;
-  const reportDetails = location.state.report as ReportsConnection | undefined;
 
+  // Retrieve from location.state or localStorage
+  const isEditingMode =
+    location.state?.isEditing ??
+    JSON.parse(localStorage.getItem("isEditingMode") || "false");
+  const productDetails =
+    location.state?.productDetails ||
+    JSON.parse(localStorage.getItem("productDetails") || "{}");
+  const reportDetails = isEditingMode
+    ? location.state?.report ??
+      JSON.parse(localStorage.getItem("reportDetails") || "{}")
+    : undefined;
 
-  const sourceConnections = [
-    "Main Server",
-    "Backup Server",
-    "Analytics Server",
-  ];
-  const destinationConnections = ["Backend Server", "Default Backend Server"];
+  console.log(reportDetails);
+
+  const hasSetInitialSource = useRef(false);
+  const hasSetInitialDestination = useRef(false);
+
+  const {
+    data: sourceConnectionsList,
+    isLoading: isLoadingSource,
+    error: errorSource,
+  } = useGetSourceConnectionsListQuery();
+
+  const {
+    data: destinationConnectionsList,
+    isLoading: isLoadingDestination,
+    error: errorDestination,
+  } = useGetDestinationConnectionsListQuery();
+
+  const { mutate: createReport } = useCreateReportMutation();
+  const { mutate: updateReport } = useUpdateReportMutation();
+
   const storedProcedures: { [key: string]: string[] } = {
     Main: ["Procedure 1", "Procedure 2"],
     Backup: ["Procedure 3", "Procedure 4"],
     Analytics: ["Procedure 5", "Procedure 6"],
   };
 
-  const [reportAlias, setReportAlias] = useState(reportDetails?.getAlias() ?? "");
-  const [reportDescription, setReportDescription] = useState(reportDetails?.getDescription() ?? "");
-  const [selectedSource, setSelectedSource] = useState(reportDetails?.getSourceConnection().alias ?? "");
-  const [selectedDestination, setSelectedDestination] = useState(reportDetails?.getDestinationConnection().alias ?? "");
-  const [selectedProcedure, setSelectedProcedure] = useState(reportDetails?.getStoredProcedures() ?? "");
+  const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
+  const [reportDescription, setReportDescription] = useState(
+    reportDetails?.description ?? ""
+  );
+  const [selectedSource, setSelectedSource] = useState(
+    reportDetails?.sourceConnection?.alias ?? ""
+  );
+  const [selectedDestination, setSelectedDestination] = useState(
+    reportDetails?.destinationConnection?.alias ?? ""
+  );
+  const [selectedProcedure, setSelectedProcedure] = useState(
+    reportDetails?.storedProcedure ?? ""
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,18 +110,93 @@ const AddReportDashboard = () => {
     if (isSaveButtonDisabled) {
       return;
     }
+
+    if (isEditingMode) {
+      let appId = productDetails.id;
+      let reportId = reportDetails.reportId;
+      let reportData = {
+        report: new ReportsConnection(
+          undefined,
+          reportAlias,
+          reportDescription
+        ),
+        sourceId: Number(selectedSource),
+        destinationId: Number(selectedDestination),
+      };
+
+      updateReport({ appId, reportId, reportData });
+    } else {
+      let appId = productDetails.id;
+
+      let reportData = {
+        report: new ReportsConnection(
+          undefined,
+          reportAlias,
+          reportDescription
+        ),
+        sourceId: Number(selectedSource),
+        destinationId: Number(selectedDestination),
+      };
+
+      createReport({ appId, reportData });
+    }
+
     setIsSaveOpen(false);
     onSaveClose();
-    navigate("/homepage");
+    navigate(-1);
+
+    localStorage.removeItem("productDetails");
+    localStorage.removeItem("reportDetails");
+    localStorage.removeItem("isEditing");
   };
 
   const isSaveButtonDisabled =
     !reportAlias ||
     !reportDescription ||
     !selectedSource ||
-    !selectedDestination ||
-    !selectedProcedure ||
-    !selectedFile;
+    !selectedDestination;
+
+  useEffect(() => {
+    if (
+      isEditingMode &&
+      reportDetails &&
+      !hasSetInitialSource.current &&
+      Array.isArray(sourceConnectionsList) &&
+      sourceConnectionsList.length > 0
+    ) {
+      const matchingSource = sourceConnectionsList.find(
+        (sourceConnection: { id: number; alias: string }) =>
+          sourceConnection.alias === reportDetails.sourceConnection?.alias
+      );
+      if (matchingSource) {
+        setSelectedSource(matchingSource.id.toString());
+        hasSetInitialSource.current = true;
+      }
+    }
+
+    if (
+      isEditingMode &&
+      reportDetails &&
+      !hasSetInitialDestination.current &&
+      Array.isArray(destinationConnectionsList) &&
+      destinationConnectionsList.length > 0
+    ) {
+      const matchingDestination = destinationConnectionsList.find(
+        (destinationConnection: { id: number; alias: string }) =>
+          destinationConnection.alias ===
+          reportDetails.destinationConnection?.alias
+      );
+      if (matchingDestination) {
+        setSelectedDestination(matchingDestination.id.toString());
+        hasSetInitialDestination.current = true;
+      }
+    }
+  }, [
+    isEditingMode,
+    reportDetails,
+    sourceConnectionsList,
+    destinationConnectionsList,
+  ]);
 
   return (
     <>
@@ -115,7 +232,7 @@ const AddReportDashboard = () => {
           >
             <Spacer />
             <Text fontSize={25} textAlign="center">
-              Register Report
+              {isEditingMode ? "Edit Report" : "Register Report"}
             </Text>
             <Spacer />
             <Button
@@ -155,29 +272,78 @@ const AddReportDashboard = () => {
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Source Connections</FormLabel>
-                  <Select
-                    // placeholder="Select Source"
-                    value={selectedSource}
-                    onChange={(e) => setSelectedSource(e.target.value)}
-                  >
-                    {sourceConnections.map((sourceConnection, index) => (
-                      <option key={index}>{sourceConnection}</option>
-                    ))}
-                  </Select>
+                  {/* Loading State */}
+                  {isLoadingSource && (
+                    <>
+                      <Spinner size="md" />
+                      <Text mt={2}>Loading Source Connections...</Text>
+                    </>
+                  )}
+
+                  {/* Error State */}
+                  {errorSource && (
+                    <Text color="red.500" mt={2}>
+                      Error loading source connections. Please try again later.
+                    </Text>
+                  )}
+
+                  {/* Select Dropdown */}
+                  {!isLoadingSource && !errorSource && (
+                    <Select
+                      placeholder="Select Source Connection"
+                      value={selectedSource}
+                      onChange={(e) => setSelectedSource(e.target.value)}
+                    >
+                      {sourceConnectionsList.map(
+                        (
+                          sourceConnection: { id: number; alias: string },
+                          index: number
+                        ) => (
+                          <option key={index} value={sourceConnection.id}>
+                            {sourceConnection.alias}
+                          </option>
+                        )
+                      )}
+                    </Select>
+                  )}
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Destination Connections</FormLabel>
-                  <Select
-                    // placeholder="Select Destination"
-                    value={selectedDestination}
-                    onChange={(e) => setSelectedDestination(e.target.value)}
-                  >
-                    {destinationConnections.map(
-                      (destinationConnection, index) => (
-                        <option key={index}>{destinationConnection}</option>
-                      )
-                    )}
-                  </Select>
+                  {/* Loading State */}
+                  {isLoadingDestination && (
+                    <>
+                      <Spinner size="md" />
+                      <Text mt={2}>Loading Destination Connections...</Text>
+                    </>
+                  )}
+
+                  {/* Error State */}
+                  {errorDestination && (
+                    <Text color="red.500" mt={2}>
+                      Error loading destination connections. Please try again
+                      later.
+                    </Text>
+                  )}
+
+                  {/* Select Dropdown */}
+                  {!isLoadingDestination && !errorDestination && (
+                    <Select
+                      placeholder="Select Destination Connection"
+                      value={selectedDestination}
+                      onChange={(e) => setSelectedDestination(e.target.value)}
+                    >
+                      {destinationConnectionsList.map(
+                        (
+                          sourceConnection: { id: number; alias: string },
+                          index: number
+                        ) => (
+                          <option key={index} value={sourceConnection.id}>
+                            {sourceConnection.alias}
+                          </option>
+                        )
+                      )}
+                    </Select>
+                  )}
                 </FormControl>
                 <FormControl isRequired p={5}>
                   <FormLabel>Stored Procedures</FormLabel>

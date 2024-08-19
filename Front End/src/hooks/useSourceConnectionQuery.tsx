@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 import { SourceConnection } from "../models/SourceConnection";
+import { useErrorToast } from "./useErrorToast";
 
 const fetchSourceConnections = async (
   appId: number,
@@ -113,7 +114,7 @@ export const useDeleteSourceConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting source connection:", error);
+      useErrorToast()("Error deleting source connection:" + error.message);
     },
   });
 };
@@ -160,15 +161,11 @@ export const useBulkDeleteSourceConnectionMutation = () => {
             queryKey[0] === "sourceConnections" &&
             queryKey[1] === variables.appId
           );
-          return (
-            queryKey[0] === "sourceConnections" &&
-            queryKey[1] === variables.appId
-          );
         },
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting source connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -198,6 +195,7 @@ const updateSourceConnectionStatus = async (
 
 export const useUpdateSourceConnectionStatusMutation = () => {
   const queryClient = useQueryClient();
+  const toast = useErrorToast();
 
   return useMutation({
     mutationFn: ({
@@ -226,7 +224,7 @@ export const useUpdateSourceConnectionStatusMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error updating source connection status:", error);
+      toast(error.message);
     },
   });
 };
@@ -274,6 +272,7 @@ const addSourceConnection = async (
   );
 
   if (!response.ok) {
+    
     throw new Error("Failed to add the source connection.");
   }
 };
@@ -292,10 +291,12 @@ export const useAddSourceConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error adding source connection:", error);
+      useErrorToast()(error.message);
     },
   });
-}; //edit source connection
+};
+
+//edit source connection
 const editSourceConnection = async (
   appId: number,
   editId: number,
@@ -344,8 +345,36 @@ export const useEditSourceConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error updating source connection status:", error);
+      useErrorToast()(error.message);
     },
+  });
+};
+
+//get list of all source connection for report
+const getSourceConnectionsList = async (): Promise<any> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/1/source-connections/all`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch the source connections.");
+  }
+
+  const data = await response.json();
+  return data.data;
+};
+
+export const useGetSourceConnectionsListQuery = () => {
+  return useQuery({
+    queryKey: ["sourceConnections", "list"],
+    queryFn: () => getSourceConnectionsList(),
   });
 };
 

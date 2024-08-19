@@ -16,9 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "destination_connections", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"app_id", "alias"}, name = "unique_destination_alias_per_application")
-})
+@Table(name = "destination_connections")
 @Setter
 @Getter
 public class DestinationConnection {
@@ -52,7 +50,7 @@ public class DestinationConnection {
 //    @NotNull(message = "Port must not be null")
 //    private int port;
 
-    private Boolean isActive = false;
+    private Boolean isActive = true;
 
     private Boolean isDeleted = false;
 

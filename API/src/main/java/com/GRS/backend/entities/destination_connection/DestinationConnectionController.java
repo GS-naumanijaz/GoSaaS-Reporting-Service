@@ -3,6 +3,8 @@ package com.GRS.backend.entities.destination_connection;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.models.DTO.DestinationConnectionDTO;
+import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
@@ -38,6 +40,13 @@ public class DestinationConnectionController {
 
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllDestinationConnections(@PathVariable int appId) {
+        List<DestinationConnectionDTO> allSourceConnections = destinationConnectionService.getAllDestinationConnections(appId);
+
+        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
+    }
+
     @GetMapping("/{destinationId}")
     public ResponseEntity<Object> getDestinationConnectionById(@PathVariable int destinationId) {
         DestinationConnection connectionToAdd = destinationConnectionService.getDestinationConnectionById(destinationId);
@@ -63,14 +72,34 @@ public class DestinationConnectionController {
 
         destinationConnection.setApplication(destinationApp);
 
+        System.out.println("------------------------------------------------------------------------------------------------");
+        System.out.println(destinationConnection.getSecretKey());
+        System.out.println(destinationConnection.getAccessKey());
+
         DestinationConnection createdDestinationConnection = destinationConnectionService.addDestinationConnection(destinationConnection);
+
+        System.out.println("------------------------------------------------------------------------------------------------");
+        System.out.println(createdDestinationConnection.getSecretKey());
+        System.out.println(createdDestinationConnection.getAccessKey());
 
         return Response.responseBuilder("Destination Connection added successfully", HttpStatus.OK, createdDestinationConnection);
     }
 
     @PatchMapping("/{destinationId}")
     public ResponseEntity<Object> updateDestinationConnection(@RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId) {
+
+        System.out.println("------------------------------------------------------------------------------------------------");
+        System.out.println(destinationConnection.getSecretKey());
+        System.out.println(destinationConnection.getAccessKey());
+
+
         DestinationConnection updatedDestinationConnection = destinationConnectionService.updateDestinationConnection(destinationId, destinationConnection);
+
+
+        System.out.println("------------------------------------------------------------------------------------------------");
+        System.out.println(updatedDestinationConnection.getSecretKey());
+        System.out.println(updatedDestinationConnection.getAccessKey());
+
         return Response.responseBuilder("Destination Connection updated successfully", HttpStatus.OK, updatedDestinationConnection);
     }
 

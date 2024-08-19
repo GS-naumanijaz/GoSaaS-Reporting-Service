@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "applications", uniqueConstraints = { @UniqueConstraint(columnNames = {"alias"}, name = "application_alias") })
+@Table(name = "applications")
 @Setter
 @Getter
 @ToString

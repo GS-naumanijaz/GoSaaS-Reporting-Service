@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 import { DestinationConnection } from "../models/DestinationConnection";
+import { useErrorToast } from "./useErrorToast";
 
 const fetchDestinationConnections = async (
   appId: number,
@@ -116,7 +117,7 @@ export const useDeleteDestinationConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting destination connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -167,7 +168,7 @@ export const useBulkDeleteDestinationConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting destination connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -220,7 +221,7 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error updating source destination status:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -286,7 +287,7 @@ export const useAddDestinationonnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error adding source connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -318,20 +319,56 @@ export const useEditDestinationConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
-      editDestinationConnection(appId, editId, editedItem),
+    mutationFn: ({
+      appId,
+      editId,
+      editedItem,
+    }: {
+      appId: number;
+      editId: number;
+      editedItem: any;
+    }) => editDestinationConnection(appId, editId, editedItem),
     onSuccess: (_, variables) => {
-      
       queryClient.invalidateQueries({
         predicate: (query) => {
           const queryKey = query.queryKey;
-          return queryKey[0] === "destinationConnections" && queryKey[1] === variables.appId;
+          return (
+            queryKey[0] === "destinationConnections" &&
+            queryKey[1] === variables.appId
+          );
         },
       });
     },
     onError: (error: Error) => {
-      console.error("Error updating destination connection status:", error);
+      useErrorToast()(error.message);
     },
   });
 };
 
+//get list of all destination connections
+const getDestinationConnectionsList = async (): Promise<any> => {
+  const response = await fetch(
+    `http://localhost:8080/applications/1/destination-connections/all`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch the dsetination connections.");
+  }
+
+  const data = await response.json();
+  return data.data;
+};
+
+export const useGetDestinationConnectionsListQuery = () => {
+  return useQuery({
+    queryKey: ['destinationConnections', "list"],
+    queryFn: () => getDestinationConnectionsList(),
+  })
+};
