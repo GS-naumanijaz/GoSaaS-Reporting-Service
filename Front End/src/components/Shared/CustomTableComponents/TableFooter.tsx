@@ -7,6 +7,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spacer,
   Text,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -28,15 +29,19 @@ const TableFooter = ({
 }: Props) => {
   const totalPages = Math.ceil(NoOfRecords / pageSize) || 1;
 
-  const lowerRange = page * pageSize + 1;
+  const lowerRange = NoOfRecords == 0 ? 0 : page * pageSize + 1;
   const upperRange = Math.min((page + 1) * pageSize, NoOfRecords);
 
   return (
     <Box margin={4}>
       <Flex justifyContent="space-between" alignItems="center">
-        <Text flex="1" textAlign="left">
-          {`${lowerRange}-${upperRange} of ${NoOfRecords} records showing`}
-        </Text>
+        {NoOfRecords != 0 ? (
+          <Text flex="1" textAlign="left">
+            {`${lowerRange}-${upperRange} of ${NoOfRecords} records showing`}
+          </Text>
+        ) : (
+          <Spacer />
+        )}
         <HStack spacing={4} justifyContent="center" flex="1">
           <Button
             variant={"ghost"}
