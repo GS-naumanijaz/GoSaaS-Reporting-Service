@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import AddApplicationDialog from "../ApplicationPage/AddApplicationDialog";
 import { useAppDataMutation } from "../../hooks/useAppDataQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import { useErrorToast } from "../../hooks/useErrorToast";
 
 export interface Product {
   alias: string;

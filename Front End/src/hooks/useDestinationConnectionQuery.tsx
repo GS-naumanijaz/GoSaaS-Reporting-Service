@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 import { DestinationConnection } from "../models/DestinationConnection";
+import { useErrorToast } from "./useErrorToast";
 
 const fetchDestinationConnections = async (
   appId: number,
@@ -116,7 +117,7 @@ export const useDeleteDestinationConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting destination connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -167,7 +168,7 @@ export const useBulkDeleteDestinationConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting destination connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -220,7 +221,7 @@ export const useUpdateDestinationConnectionStatusMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error updating source destination status:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -286,7 +287,7 @@ export const useAddDestinationonnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error adding source connection:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -339,7 +340,7 @@ export const useEditDestinationConnectionMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error updating destination connection status:", error);
+      useErrorToast()(error.message);
     },
   });
 };

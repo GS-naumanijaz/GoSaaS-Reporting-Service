@@ -1,5 +1,4 @@
 import { Button, Td } from "@chakra-ui/react";
-import { useTestDestinationConnectionMutation } from "../../../hooks/useDestinationConnectionQuery";
 import { useState } from "react";
 
 interface Props {
@@ -10,10 +9,6 @@ const TdTestButton = ({ onClick }: Props) => {
   const [buttonState, setButtonState] = useState<
     "idle" | "loading" | "success" | "failure"
   >("idle");
-  const testDestinationMutation = useTestDestinationConnectionMutation();
-
-  let appId = 5;
-  let destinationId = 14;
 
   const handleTest = async () => {
     setButtonState("loading");

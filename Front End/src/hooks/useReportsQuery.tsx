@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 import { ReportsConnection } from "../models/ReportsConnection";
+import { useErrorToast } from "./useErrorToast";
 
 const fetchReportsConnections = async (
   productId: number,
@@ -113,7 +114,7 @@ export const useDeleteReportMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting report:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -161,7 +162,7 @@ export const useBulkDeleteReportMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error deleting report:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -221,7 +222,7 @@ export const useCreateReportMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error creating report:", error);
+      useErrorToast()(error.message);
     },
   });
 };
@@ -283,7 +284,7 @@ export const useUpdateReportMutation = () => {
       });
     },
     onError: (error: Error) => {
-      console.error("Error creating report:", error);
+      useErrorToast()(error.message);
     },
   });
 };

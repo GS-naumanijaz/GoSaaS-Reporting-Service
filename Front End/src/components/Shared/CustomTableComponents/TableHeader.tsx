@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import { primaryColor } from "../../../configs";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../Dashboard/Products";
+import { useErrorToast } from "../../../hooks/useErrorToast";
 
 interface Props {
   tableHeading: string;
@@ -28,6 +29,8 @@ const TableHeader = ({
   onAddNew,
 }: Props) => {
   const navigate = useNavigate();
+  const showErrorToast = useErrorToast();
+
   return (
     <HStack
       marginX={10}
@@ -36,6 +39,13 @@ const TableHeader = ({
       display="flex"
       justifyContent="space-between"
     >
+      <Button
+        onClick={() => {
+          showErrorToast("This is a test error message.");
+        }}
+      >
+        Trigger Error Toast
+      </Button>
       <Text fontSize={"x-large"}>{tableHeading}</Text>
       <HStack>
         {isSelectingRows && (
@@ -69,10 +79,13 @@ const TableHeader = ({
             variant={"ghost"}
             onClick={() => {
               localStorage.setItem("isEditingMode", JSON.stringify(false));
-              localStorage.setItem("productDetails", JSON.stringify(productDetails));
+              localStorage.setItem(
+                "productDetails",
+                JSON.stringify(productDetails)
+              );
               localStorage.removeItem("reportDetails");
-              navigate("/addreports")}
-            }
+              navigate("/addreports");
+            }}
           >
             <FaPlus color={primaryColor} />
           </Button>
