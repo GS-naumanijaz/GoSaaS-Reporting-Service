@@ -30,7 +30,11 @@ const fetchReportsConnections = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch reports connection data.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to fetch the reports.";
+
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
@@ -91,7 +95,11 @@ const deleteReport = async (appId: number, reportId: number): Promise<void> => {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to delete the report.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to delete the report.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -134,7 +142,11 @@ const bulkDeleteReport = async (
   });
 
   if (!response.ok) {
-    throw new Error("Failed to delete the report.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to bulk delete the reports.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -167,7 +179,6 @@ export const useBulkDeleteReportMutation = () => {
   });
 };
 
-
 //create report
 const createReport = async (
   appId: number,
@@ -177,20 +188,21 @@ const createReport = async (
     destinationId: number;
   }
 ): Promise<void> => {
-  const response = await fetch(
-    `${BackendURL}/applications/${appId}/reports`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reportData),
-    }
-  );
+  const response = await fetch(`${BackendURL}/applications/${appId}/reports`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reportData),
+  });
 
   if (!response.ok) {
-    throw new Error("Failed to create the report.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to create report.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -250,7 +262,11 @@ const updateReport = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to create the report.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to update report.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -288,5 +304,3 @@ export const useUpdateReportMutation = () => {
     },
   });
 };
-
-

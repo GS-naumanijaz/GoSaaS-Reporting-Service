@@ -27,7 +27,11 @@ const fetchSourceConnections = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch source connection data.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to fetch the source connection.";
+    
+    throw new Error(errorMessage);
+
   }
 
   const data = await response.json();
@@ -87,7 +91,11 @@ const deleteSourceConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to delete the source connection.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to delete source connection.";
+    
+    throw new Error(errorMessage);
+
   }
 };
 
@@ -134,7 +142,10 @@ const bulkDeleteSourceConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to delete the source connection.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to bulk delete source connections.";
+    
+    throw new Error(errorMessage);
   }
 };
 
@@ -187,7 +198,10 @@ const updateSourceConnectionStatus = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to update the source connection status.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to update the source connection status.";
+    
+    throw new Error(errorMessage);
   }
 };
 
@@ -240,7 +254,10 @@ const testSourceConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to test the source connection.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to test the source connection.";
+    
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -270,8 +287,10 @@ const addSourceConnection = async (
   );
 
   if (!response.ok) {
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to add the source connection.";
     
-    throw new Error("Failed to add the source connection.");
+    throw new Error(errorMessage);
   }
 };
 
@@ -313,7 +332,10 @@ const editSourceConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to update the source connection status.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to edit the source connection.";
+    
+    throw new Error(errorMessage);
   }
 };
 
@@ -362,7 +384,11 @@ const getSourceConnectionsList = async (): Promise<any> => {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch the source connections.");
+    const errorData = await response.json();
+    const errorMessage = errorData.message || "Failed to fetch the source connections.";
+    
+    throw new Error(errorMessage);
+
   }
 
   const data = await response.json();

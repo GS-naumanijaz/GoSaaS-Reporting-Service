@@ -29,7 +29,11 @@ const fetchDestinationConnections = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch destination connection data.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to fetch destination connections.";
+
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
@@ -89,7 +93,11 @@ const deleteDestinationConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to delete the destination connection.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to delete destination connection.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -141,7 +149,11 @@ const bulkDeleteDestinationConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to delete the destination connection.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to delete destination connections.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -194,7 +206,11 @@ const updateDestinationConnectionStatus = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to update the destination connection status.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to update destination connection status.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -241,7 +257,11 @@ const testDestinationConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to test the destination connection.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to test destination connection.";
+
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -271,7 +291,11 @@ const addDestinationConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to add the source connection.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to add destination connection.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -313,7 +337,11 @@ const editDestinationConnection = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to update the destination connection status.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to edit destination connections.";
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -361,7 +389,11 @@ const getDestinationConnectionsList = async (): Promise<any> => {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch the dsetination connections.");
+    const errorData = await response.json();
+    const errorMessage =
+      errorData.message || "Failed to fetch destination connections.";
+
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
