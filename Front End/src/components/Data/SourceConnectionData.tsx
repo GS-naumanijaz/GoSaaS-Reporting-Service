@@ -6,6 +6,7 @@ import {
   useBulkDeleteSourceConnectionMutation,
   useDeleteSourceConnectionMutation,
   useEditSourceConnectionMutation,
+  useSourceConnections,
   useSourceConnectionsQuery,
   useTestSourceConnectionMutation,
   useUpdateSourceConnectionStatusMutation,
@@ -59,16 +60,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data: { content: sourceConnections = [], totalElements = 0 } = {} } =
-    useSourceConnectionsQuery(
-      appId,
-      sortField,
-      sortOrder,
-      page,
-      pageSize,
-      searchTerm,
-      actualSearchField
-    );
+
+  const { data } = useSourceConnections(appId, sortField, sortOrder, page, pageSize, searchTerm, actualSearchField);
+  const sourceConnections = data?.content ?? [];
+  const totalElements = data?.totalElements ?? 0;
 
   const sourceConnectionsList: SourceConnection[] = sourceConnections!.map(
     (sourceConnection: any) =>

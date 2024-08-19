@@ -30,7 +30,7 @@ const TableHeader = ({
   const navigate = useNavigate();
   // const showErrorToast = useErrorToast();
 
-  console.log(inputFields);
+  // console.log(inputFields);
   return (
     <HStack
       marginX={10}

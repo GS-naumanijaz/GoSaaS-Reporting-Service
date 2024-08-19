@@ -2,6 +2,38 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 import { SourceConnection } from "../models/SourceConnection";
 import { useErrorToast } from "./useErrorToast";
+import APIClient from "../services/apiClient";
+
+const createApiClient = (appId: number) => 
+  new APIClient<SourceConnection>(`applications/${appId}/source-connections`);
+
+export const useSourceConnections = (
+  appId: number, 
+  sortingBy: string, 
+  sortingOrder: string, 
+  page: number, 
+  pageSize: number, 
+  searchTerm: string, 
+  searchField: string
+) => {
+  // Create the API client specific to the appId
+  const apiClient = createApiClient(appId);
+
+  return useQuery({
+    queryKey: ["sourceConnections", appId, sortingBy, sortingOrder, page, pageSize, searchTerm, searchField],
+    queryFn: () => apiClient.getAll({
+      params: {
+        sort_by: sortingBy,
+        sort_order: sortingOrder,
+        page: page,
+        page_size: pageSize,
+        search_by: searchField,
+        search: searchTerm,
+      }
+    }),
+    staleTime: 1000 * 60 * 5, // 5 minutes cache time
+  });
+};
 
 const fetchSourceConnections = async (
   appId: number,
@@ -407,54 +439,3 @@ export const useGetSourceConnectionsListQuery = () => {
   });
 };
 
-// export const useEditSourceConnectionMutation = () => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: ({ appId, editId, editedItem }: { appId: number; editId: number; editedItem: any }) =>
-//       editSourceConnection(appId, editId, editedItem),
-//     onMutate: async (variables) => {
-//       // Cancel any outgoing refetches that match the beginning of the query key
-//       await queryClient.cancelQueries({
-//         predicate: (query) => {
-//           const queryKey = query.queryKey;
-//           return (
-//             queryKey[0] === "sourceConnections" &&
-//             queryKey[1] === variables.appId
-//           );
-//         },
-//       });
-
-//       // Snapshot the previous value
-//       const previousConnections = queryClient.getQueryData(["sourceConnections", variables.appId]);
-
-//       // Optimistically update to the new value
-//       queryClient.setQueryData(["sourceConnections", variables.appId], (old: any) => {
-//         if (!old) return old;
-//         return old.map((connection: any) =>
-//           connection.id === variables.editId ? { ...connection, ...variables.editedItem } : connection
-//         );
-//       });
-
-//       // Return the snapshotted value
-//       return { previousConnections };
-//     },
-//     onError: (error, variables, context) => {
-//       // Roll back to the previous value if the mutation fails
-//       queryClient.setQueryData(["sourceConnections", variables.appId], context?.previousConnections);
-//       console.error("Error updating source connection status:", error);
-//     },
-//     onSettled: (data, error, variables) => {
-//       // Always refetch after error or success
-//       queryClient.invalidateQueries({
-//         predicate: (query) => {
-//           const queryKey = query.queryKey;
-//           return (
-//             queryKey[0] === "sourceConnections" &&
-//             queryKey[1] === variables.appId
-//           );
-//         },
-//       });
-//     },
-//   });
-// };
