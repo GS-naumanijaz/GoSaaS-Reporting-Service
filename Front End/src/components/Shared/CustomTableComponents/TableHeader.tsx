@@ -39,13 +39,6 @@ const TableHeader = ({
       display="flex"
       justifyContent="space-between"
     >
-      <Button
-        onClick={() => {
-          showErrorToast("This is a test error message.");
-        }}
-      >
-        Trigger Error Toast
-      </Button>
       <Text fontSize={"x-large"}>{tableHeading}</Text>
       <HStack>
         {isSelectingRows && (

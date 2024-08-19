@@ -214,8 +214,8 @@ export class DestinationConnection extends TableRowData {
       this.alias,
       this.bucketName,
       this.region,
-      this.secretKey,
       this.accessKey,
+      this.secretKey,
     ];
   }
 
