@@ -65,8 +65,8 @@ const AddReportDashboard = () => {
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery(productDetails.id);
 
-  const { mutate: addReport } = useAddReport(productDetails.id);
-  const { mutate: updateReport } = useEditReport(productDetails.id);
+  const { mutateAsync: addReport } = useAddReport(productDetails.id);
+  const { mutateAsync: updateReport } = useEditReport(productDetails.id);
 
   const storedProcedures: { [key: string]: string[] } = {
     Main: ["Procedure 1", "Procedure 2"],
@@ -123,46 +123,50 @@ const AddReportDashboard = () => {
   const onSaveClose = () => setIsSaveOpen(false);
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
 
-  const onSave = () => {
+  const onSave = async () => {
     // save changes to database
     // reload the application page
     if (isSaveButtonDisabled) {
       return;
     }
 
-    if (isEditingMode) {
-      let reportId = reportDetails.reportId;
-      let updatedReport = {
-        report: new ReportsConnection(
-          undefined,
-          reportAlias,
-          reportDescription
-        ),
-        sourceId: Number(selectedSource),
-        destinationId: Number(selectedDestination),
-      };
+    try {
+      if (isEditingMode) {
+        let reportId = reportDetails.reportId;
+        let updatedReport = {
+          report: new ReportsConnection(
+            undefined,
+            reportAlias,
+            reportDescription
+          ),
+          sourceId: Number(selectedSource),
+          destinationId: Number(selectedDestination),
+        };
 
-      updateReport({ reportId, updatedReport });
-    } else {
-      let reportData = {
-        report: new ReportsConnection(
-          undefined,
-          reportAlias,
-          reportDescription
-        ),
-        sourceId: Number(selectedSource),
-        destinationId: Number(selectedDestination),
-      };
+        await updateReport({ reportId, updatedReport });
+      } else {
+        let reportData = {
+          report: new ReportsConnection(
+            undefined,
+            reportAlias,
+            reportDescription
+          ),
+          sourceId: Number(selectedSource),
+          destinationId: Number(selectedDestination),
+        };
 
-      addReport(reportData);
+        await addReport(reportData);
+      }
+    } catch {
+      console.log("error");
     }
 
     setIsSaveOpen(false);
     onSaveClose();
     navigate(-1);
 
-    localStorage.removeItem("productDetails");
-    localStorage.removeItem("reportDetails");
+    // localStorage.removeItem("productDetails");
+    // localStorage.removeItem("reportDetails");
     localStorage.removeItem("isEditing");
   };
 

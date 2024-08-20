@@ -58,7 +58,7 @@ class APIClient<T> {
   ): R | null => {
     if (response.data.httpStatus !== "OK") {
       useErrorToast()(response.data.message || "An error occurred.");
-      return null
+      throw new Error(response.data.message || "An error occurred.");
     } else {
       return response.data.data || null;
     }
@@ -67,8 +67,10 @@ class APIClient<T> {
   private handleError = (error: any) => {
     if (error.response) {
       useErrorToast()(error.response.data.message || `Request failed with status ${error.response.status}`);
+      throw new Error(error.response.data.message || `Request failed with status ${error.response.status}`);
     } else {
       useErrorToast()(error.response.data.message || "Network error occurred.");
+      throw new Error(error.response.data.message || "Network error occurred.");
     }
   };
 

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SourceConnection } from "../models/SourceConnection";
 import APIClient from "../services/apiClient";
+import { AxiosError } from "axios";
 
 const createApiClient = (appId: number) =>
   new APIClient<SourceConnection>(`applications/${appId}/source-connections`);
@@ -109,8 +110,19 @@ export const useUpdateSourceConnectionStatus = (appId: number) => {
 export const useTestSourceConnection = (appId: number) => {
   const apiClient = createApiClient(appId);
 
-  return useMutation({
-    mutationFn: (sourceId: number) => apiClient.get(`${sourceId}/test`),
+  return useMutation<SourceConnection | null, AxiosError, number>({
+    mutationFn: async (sourceId: number) => {
+      try {
+        const result = await apiClient.get(`${sourceId}/test`);
+        if (result) {
+          return result; 
+        } else {
+          return null;
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
   });
 };
 

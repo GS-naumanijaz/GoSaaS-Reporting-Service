@@ -53,7 +53,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     useBulkDeleteSourceConnections(appId);
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatus(appId);
-  const testSourceConnection = useTestSourceConnection(appId);
+  const { mutateAsync: testSourceConnection} = useTestSourceConnection(appId);
   const { mutate: addSourceConnection } = useAddSourceConnection(appId);
   const { mutate: editSourceConnection } = useEditSourceConnection(appId);
 
@@ -113,12 +113,12 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   };
 
   const handleTest = async (testId: number) => {
-    return testSourceConnection.mutateAsync(testId);
+    return testSourceConnection(testId);
   };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-  };
+  };  
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
