@@ -28,7 +28,6 @@ const TableHeader = ({
   onAddNew,
 }: Props) => {
   const navigate = useNavigate();
-
   return (
     <HStack
       marginX={10}
@@ -39,14 +38,18 @@ const TableHeader = ({
     >
       <Text fontSize={"x-large"}>{tableHeading}</Text>
       <HStack>
-        {tableHeading !== "Reports" && isSelectingRows && (
+        {isSelectingRows && (
           <HStack spacing={6}>
-            <Button onClick={() => handleBulkSwitchActions(true)}>
-              Activate All
-            </Button>
-            <Button onClick={() => handleBulkSwitchActions(false)}>
-              Deactivate All
-            </Button>
+            {tableHeading !== "Reports" && (
+              <>
+                <Button onClick={() => handleBulkSwitchActions(true)}>
+                  Activate All
+                </Button>
+                <Button onClick={() => handleBulkSwitchActions(false)}>
+                  Deactivate All
+                </Button>
+              </>
+            )}
             <AlertDialogButton
               header="Delete Connection"
               body="Are you sure you want to delete this connection?"

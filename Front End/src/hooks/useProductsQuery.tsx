@@ -10,7 +10,8 @@ const fetchProducts = async (
   page: number,
   pageSize: number,
   searchTerm: string,
-  searchField: string
+  searchField: string,
+  selectedFilter: string
 ): Promise<{
   content: Product[];
   totalPages: number;
@@ -24,6 +25,7 @@ const fetchProducts = async (
     page_size: pageSize.toString(),
     search_by: searchField,
     search: searchTerm,
+    status: selectedFilter,
   });
   const response = await fetch(
     `${BackendURL}/applications?${params.toString()}`,
@@ -33,8 +35,8 @@ const fetchProducts = async (
     }
   );
 
-  console.log("response: ", `${BackendURL}/applications?${params.toString()}`);
   const data = await response.json();
+  console.log("Products data: ", data.data);
   return data.data;
 };
 
@@ -45,7 +47,8 @@ export const useProductsQuery = (
   page: number,
   pageSize: number,
   searchTerm: string,
-  searchField: string
+  searchField: string,
+  selectedFilter: string
 ) => {
   return useQuery({
     queryKey: [
@@ -56,6 +59,7 @@ export const useProductsQuery = (
       pageSize,
       searchTerm,
       searchField,
+      selectedFilter,
     ],
     queryFn: () =>
       fetchProducts(
@@ -64,7 +68,8 @@ export const useProductsQuery = (
         page,
         pageSize,
         searchTerm,
-        searchField
+        searchField,
+        selectedFilter
       ),
     refetchOnWindowFocus: true,
     gcTime: 0, // cache time

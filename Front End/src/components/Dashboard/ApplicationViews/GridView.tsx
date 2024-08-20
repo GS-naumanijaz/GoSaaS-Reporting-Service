@@ -2,7 +2,6 @@ import { Box, Button, HStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FaSearch } from "react-icons/fa";
 import AddApplicationDialog from "../../ApplicationPage/AddApplicationDialog";
-import { Product } from "../Products";
 import { mainDashboardHeight, primaryColor, sx } from "../../../configs";
 import ExpandingSearchbar from "../../Shared/ExpandingSearchbar";
 import ViewSelector from "./ViewSelector";
@@ -19,7 +18,6 @@ interface ProductsRenderProps {
 }
 
 const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
-  const allFilters = ["All", "Active", "Inactive"];
   const {
     sortField,
     sortOrder,
@@ -31,6 +29,8 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     setSelectedFilter,
     selectedFilter,
     currentPage,
+    setPage,
+    setPageSize,
     setCurrentPage,
     setSearchTerm,
   } = useProductStore();
@@ -38,13 +38,14 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data, isFetching, isError } = useProductsQuery(
+  const { data, isFetching, isError, refetch } = useProductsQuery(
     sortField,
     sortOrder,
     page,
     pageSize,
     searchTerm,
-    actualSearchField
+    actualSearchField,
+    selectedFilter
   );
 
   useEffect(() => {
@@ -86,22 +87,21 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     }
   };
 
-  // Effect to reset page number when filter or search term changes
+  // Effect to reset page number when search term, filter, or page size changes
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchTerm]);
+  }, [searchTerm, selectedFilter, pageSize]);
 
-  const filteredProducts =
-    data?.content.filter((product: Product) => {
-      switch (selectedFilter) {
-        case "Active":
-          return product.isActive;
-        case "Inactive":
-          return !product.isActive;
-        default:
-          return true;
-      }
-    }) || [];
+  // Sync the store's `page` with `currentPage`
+  useEffect(() => {
+    setPage(currentPage);
+  }, [currentPage]);
+
+  const allFilters = ["All", "Active", "Inactive"];
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
 
   // Animation variants
   const itemVariants = {
@@ -135,6 +135,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
                 key={index}
                 onClick={() => {
                   setSelectedFilter(filter);
+                  refetch(); // Refresh data based on the new filter value
                 }}
                 border={"1px"}
                 bg={selectedFilter === filter ? primaryColor : "white"}
@@ -177,11 +178,11 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <ProductsList
-              products={filteredProducts}
+              products={data?.content ?? []}
               totalElements={data?.totalElements ?? 0}
               totalPages={data?.totalPages ?? 1}
               currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
+              setCurrentPage={handlePageChange} // Updated to handle page change correctly
               itemVariants={itemVariants}
               isEmpty={data?.empty ?? false}
               isFetching={isFetching}
