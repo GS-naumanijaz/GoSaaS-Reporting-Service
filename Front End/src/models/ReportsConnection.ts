@@ -12,8 +12,8 @@ export class ReportsConnection extends TableRowData {
   private destination_alias: string;
   private sourceConnection?: SourceConnection;
   private destinationConnection?: DestinationConnection;
-  private stored_procedures: string;
-  private parameters: string;
+  private storedProcedure: string;
+  private params: string[];
   // private appId: number;
   private application: Application;
 
@@ -176,7 +176,7 @@ export class ReportsConnection extends TableRowData {
     sourceConnection?: SourceConnection,
     destinationConnection?: DestinationConnection,
     stored_procedures: string = "",
-    parameters: string = "",
+    parameters: string[] = [],
     // appId: number,
     application: Application = {
       id: 0,
@@ -199,8 +199,8 @@ export class ReportsConnection extends TableRowData {
     this.destination_alias = destination_alias;
     this.sourceConnection = sourceConnection;
     this.destinationConnection = destinationConnection;
-    this.stored_procedures = stored_procedures;
-    this.parameters = parameters;
+    this.storedProcedure = stored_procedures;
+    this.params = parameters;
     // this.appId = appId;
     this.application = application;
   }
@@ -234,11 +234,11 @@ export class ReportsConnection extends TableRowData {
   }
 
   getStoredProcedures(): string {
-    return this.stored_procedures;
+    return this.storedProcedure;
   }
 
-  getParameters(): string {
-    return this.parameters;
+  getParameters(): string[] {
+    return this.params;
   }
 
   getTableData(): string[] {
@@ -247,8 +247,8 @@ export class ReportsConnection extends TableRowData {
       this.description,
       this.connection_alias,
       this.destination_alias,
-      this.stored_procedures,
-      this.parameters,
+      this.storedProcedure,
+      this.params ? this.params[0] : "none",
     ];
   }
 
@@ -264,7 +264,7 @@ export class ReportsConnection extends TableRowData {
     return ReportsConnection.columnWidths.slice(1);
   }
 
-  editRowData(elementIndex: number, newValue: string): void {
+  editRowData(elementIndex: number, newValue: any): void {
     switch (elementIndex) {
       case 0:
         this.alias = newValue;
@@ -279,21 +279,21 @@ export class ReportsConnection extends TableRowData {
         this.destination_alias = newValue;
         break;
       case 4:
-        this.stored_procedures = newValue;
+        this.storedProcedure = newValue;
         break;
       case 5:
-        this.parameters = newValue;
+        this.params = newValue;
         break;
     }
   }
 
-  editCompleteRow(newValue: string[]) {
+  editCompleteRow(newValue: any[]) {
     this.alias = newValue[0];
     this.description = newValue[1];
     this.connection_alias = newValue[2];
     this.destination_alias = newValue[3];
-    this.stored_procedures = newValue[4];
-    this.parameters = newValue[5];
+    this.storedProcedure = newValue[4];
+    this.params = newValue[5];
   }
 
   getInputFields(): InputField[] {

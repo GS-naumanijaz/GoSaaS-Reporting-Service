@@ -24,7 +24,7 @@ import { AiOutlineSave } from "react-icons/ai";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import {
   useConditionalStoredProcedures,
-  useGetSourceConnectionsListQuery
+  useGetSourceConnectionsListQuery,
 } from "../../hooks/useSourceConnectionQuery";
 import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
 import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
@@ -136,7 +136,13 @@ const AddReportDashboard = () => {
           report: new ReportsConnection(
             undefined,
             reportAlias,
-            reportDescription
+            reportDescription,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            storedProcedures ? storedProcedures[selectedProcedure].name : "",
+            storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -148,7 +154,13 @@ const AddReportDashboard = () => {
           report: new ReportsConnection(
             undefined,
             reportAlias,
-            reportDescription
+            reportDescription,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            storedProcedures ? storedProcedures[selectedProcedure].name : "",
+            storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -416,6 +428,31 @@ const AddReportDashboard = () => {
                             ))}
                           </Select>
                         </FormControl>
+                        {selectedProcedure && (
+                          <FormControl isReadOnly p={5}>
+                            {storedProcedures &&
+                              storedProcedures.length !== 0 && (
+                                <>
+                                  <FormLabel>Parameters</FormLabel>
+                                  {storedProcedures[
+                                    selectedProcedure
+                                  ].parameters.map((param, index) => (
+                                    <HStack
+                                      key={index}
+                                      spacing={4}
+                                      p={5}
+                                      borderWidth={1}
+                                      borderColor="gray.200"
+                                      borderRadius="md"
+                                      width="100%"
+                                    >
+                                      <Box flex={1}>{param}</Box>
+                                    </HStack>
+                                  ))}
+                                </>
+                              )}
+                          </FormControl>
+                        )}
                       </>
                     )}
                   </>

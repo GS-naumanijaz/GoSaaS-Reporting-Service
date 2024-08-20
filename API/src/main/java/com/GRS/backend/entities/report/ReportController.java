@@ -65,6 +65,9 @@ public class ReportController {
 
         report.setApplication(reportApp);
 
+        System.out.println(report.getStoredProcedure());
+        System.out.println(report.getParams()[0]);
+
         if (reportRequest.sourceId != null) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
 
