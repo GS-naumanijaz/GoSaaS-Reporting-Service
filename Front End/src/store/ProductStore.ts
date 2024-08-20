@@ -1,21 +1,50 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface ProductStore {
-  currentPage: number;
-  selectedFilter: string;
+  sortField: string;
+  sortOrder: string;
   searchTerm: string;
+  searchField: string;
+  selectedFilter: string;
+  currentPage: number;
   setCurrentPage: (page: number) => void;
   setSelectedFilter: (filter: string) => void;
+  page: number;
+  pageSize: number;
+  reset: () => void;
+  setSortField: (field: string) => void;
+  setSortOrder: (order: string) => void;
   setSearchTerm: (term: string) => void;
+  setSearchField: (field: string) => void;
+  setPage: (page: number) => void;
+  setPageSize: (size: number) => void;
 }
 
-const useProductStore = create<ProductStore>((set) => ({
-  currentPage: 0,
-  selectedFilter: "Active",
+const initialState = {
+  sortField: "alias", // Default sorting by product name
+  sortOrder: "asc", // Default ascending order
   searchTerm: "",
-  setCurrentPage: (page) => set({ currentPage: page }),
-  setSelectedFilter: (filter) => set({ selectedFilter: filter }),
-  setSearchTerm: (term) => set({ searchTerm: term }),
-}));
+  searchField: "alias", // Default search field is product name
+  page: 0,
+  pageSize: 5, // Default page size
+  selectedFilter: "Active",
+  currentPage: 0,
+};
+
+const useProductStore = create<ProductStore>()(
+  devtools((set) => ({
+    ...initialState,
+    reset: () => set(initialState),
+    setSortField: (field) => set({ sortField: field }),
+    setSortOrder: (order) => set({ sortOrder: order }),
+    setSearchTerm: (term) => set({ searchTerm: term }),
+    setSearchField: (field) => set({ searchField: field }),
+    setPage: (page) => set({ page }),
+    setPageSize: (size) => set({ pageSize: size, page: 0 }), // Reset page when pageSize changes
+    setSelectedFilter: (filter) => set({ selectedFilter: filter }),
+    setCurrentPage: (page) => set({ currentPage: page }),
+  }))
+);
 
 export default useProductStore;

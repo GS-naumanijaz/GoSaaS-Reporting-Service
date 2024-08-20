@@ -168,6 +168,7 @@ const CustomTable = ({
       borderStartWidth={0}
       my={10}
       width={"95%"}
+      mx="auto"
     >
       <TableHeader
         tableHeading={tableManager.getTableHeader()}

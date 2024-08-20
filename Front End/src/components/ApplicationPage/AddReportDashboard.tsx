@@ -49,7 +49,6 @@ const AddReportDashboard = () => {
       JSON.parse(localStorage.getItem("reportDetails") || "{}")
     : undefined;
 
-  console.log(reportDetails);
 
   const hasSetInitialSource = useRef(false);
   const hasSetInitialDestination = useRef(false);
@@ -220,7 +219,6 @@ const AddReportDashboard = () => {
     destinationConnectionsList,
   ]);
 
-  console.log('errors', aliasError, descriptionError);
 
   return (
     <>
