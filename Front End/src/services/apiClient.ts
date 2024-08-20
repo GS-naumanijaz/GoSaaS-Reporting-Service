@@ -81,9 +81,9 @@ class APIClient<T> {
       .catch(this.handleError);
   };
 
-  getListAll = (config?: AxiosRequestConfig) => {
+  getListAll = (endUrl: string, config?: AxiosRequestConfig) => {
     return axiosInstance
-      .get<APIResponse<T[]>>(`${this.endpoint}/all`, config)
+      .get<APIResponse<T[]>>(`${this.endpoint}/${endUrl}`, config)
       .then((res) => this.handleResponse(res))
       .catch(this.handleError);
   };

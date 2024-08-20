@@ -22,11 +22,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 import { ReportsConnection } from "../../models/ReportsConnection";
-import { useGetSourceConnectionsListQuery } from "../../hooks/useSourceConnectionQuery";
+import {
+  useConditionalStoredProcedures,
+  useGetSourceConnectionsListQuery
+} from "../../hooks/useSourceConnectionQuery";
 import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
 import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
+import StoredProcedure from "../../models/StoredProcedure";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -48,7 +52,20 @@ const AddReportDashboard = () => {
       JSON.parse(localStorage.getItem("reportDetails") || "{}")
     : undefined;
 
-  // console.log(reportDetails);
+  const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
+  const [reportDescription, setReportDescription] = useState(
+    reportDetails?.description ?? ""
+  );
+  const [selectedSource, setSelectedSource] = useState(
+    reportDetails?.sourceConnection?.alias ?? ""
+  );
+  const [selectedDestination, setSelectedDestination] = useState(
+    reportDetails?.destinationConnection?.alias ?? ""
+  );
+  const [selectedProcedure, setSelectedProcedure] = useState(
+    reportDetails?.storedProcedure ?? ""
+  );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const hasSetInitialSource = useRef(false);
   const hasSetInitialDestination = useRef(false);
@@ -65,29 +82,11 @@ const AddReportDashboard = () => {
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery(productDetails.id);
 
+  const { data: storedProcedures, isLoading: isLoadingStoredProcedures } =
+    useConditionalStoredProcedures(productDetails.id, selectedSource);
+
   const { mutateAsync: addReport } = useAddReport(productDetails.id);
   const { mutateAsync: updateReport } = useEditReport(productDetails.id);
-
-  const storedProcedures: { [key: string]: string[] } = {
-    Main: ["Procedure 1", "Procedure 2"],
-    Backup: ["Procedure 3", "Procedure 4"],
-    Analytics: ["Procedure 5", "Procedure 6"],
-  };
-
-  const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
-  const [reportDescription, setReportDescription] = useState(
-    reportDetails?.description ?? ""
-  );
-  const [selectedSource, setSelectedSource] = useState(
-    reportDetails?.sourceConnection?.alias ?? ""
-  );
-  const [selectedDestination, setSelectedDestination] = useState(
-    reportDetails?.destinationConnection?.alias ?? ""
-  );
-  const [selectedProcedure, setSelectedProcedure] = useState(
-    reportDetails?.storedProcedure ?? ""
-  );
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -219,8 +218,6 @@ const AddReportDashboard = () => {
     sourceConnectionsList,
     destinationConnectionsList,
   ]);
-
-  // console.log('errors', aliasError, descriptionError);
 
   return (
     <>
@@ -394,41 +391,34 @@ const AddReportDashboard = () => {
                     </Select>
                   )}
                 </FormControl>
-                <FormControl isRequired p={5}>
-                  <FormLabel>Stored Procedures</FormLabel>
-                  <Select
-                    placeholder="Select Stored Procedure"
-                    value={selectedProcedure}
-                    onChange={(e) => setSelectedProcedure(e.target.value)}
-                  >
-                    {Object.keys(storedProcedures).map(
-                      (storedProcedure, index) => (
-                        <option key={index} value={storedProcedure}>
-                          {storedProcedure}
-                        </option>
-                      )
+                {selectedSource && (
+                  <>
+                    {isLoadingStoredProcedures ? (
+                      <>
+                        <Spinner size="md" />
+                        <Text mt={2}>Loading Source Connections...</Text>
+                      </>
+                    ) : (
+                      <>
+                        <FormControl isRequired p={5}>
+                          <FormLabel>Stored Procedures</FormLabel>
+                          <Select
+                            placeholder="Select Stored Procedure"
+                            value={selectedProcedure}
+                            onChange={(e) =>
+                              setSelectedProcedure(e.target.value)
+                            }
+                          >
+                            {storedProcedures?.map((storedProcedure, index) => (
+                              <option key={index} value={index}>
+                                {storedProcedure.name}
+                              </option>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </>
                     )}
-                  </Select>
-                </FormControl>
-                {selectedProcedure && (
-                  <FormControl isReadOnly p={5}>
-                    <FormLabel>Parameters</FormLabel>
-                    {storedProcedures[selectedProcedure]?.map(
-                      (param, index) => (
-                        <HStack
-                          key={index}
-                          spacing={4}
-                          p={5}
-                          borderWidth={1}
-                          borderColor="gray.200"
-                          borderRadius="md"
-                          width="100%"
-                        >
-                          <Box flex={1}>{param}</Box>
-                        </HStack>
-                      )
-                    )}
-                  </FormControl>
+                  </>
                 )}
 
                 <Input

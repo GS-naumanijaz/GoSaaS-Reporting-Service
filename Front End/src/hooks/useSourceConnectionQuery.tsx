@@ -2,9 +2,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SourceConnection } from "../models/SourceConnection";
 import APIClient from "../services/apiClient";
 import { AxiosError } from "axios";
+import StoredProcedure from "../models/StoredProcedure";
+import { useEffect, useState } from "react";
 
 const createApiClient = (appId: number) =>
   new APIClient<SourceConnection>(`applications/${appId}/source-connections`);
+
+
+
+const fiveMins = 1000 * 60 * 5;
 
 // Utility function to create a predicate for invalidating queries
 const invalidateSourceAndReportsConnections = (appId: number) => (query: any) => {
@@ -50,7 +56,7 @@ export const useSourceConnections = (
           search: searchTerm,
         },
       }),
-    staleTime: 1000 * 60 * 5, 
+    staleTime: fiveMins, 
   });
 };
 
@@ -168,7 +174,28 @@ export const useGetSourceConnectionsListQuery = (appId: number) => {
 
   return useQuery({
     queryKey: ["sourceConnections", appId, "list"],
-    queryFn: () => apiClient.getListAll(),
-    staleTime: 1000 * 60 * 5, 
+    queryFn: () => apiClient.getListAll('all'),
+    staleTime: fiveMins, 
   });
+};
+
+//Hook to get stored procedures
+export const useConditionalStoredProcedures = (appId: number, sourceId: number) => {
+  const apiClient = new APIClient<StoredProcedure>(`applications/${appId}/source-connections/${sourceId}`);
+
+  const fetchStoredProcedures = async () => {
+    if (!sourceId) {
+      return null; // Skip fetch if sourceId is not provided
+    }
+    return apiClient.getListAll('stored-procedures');
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["sourceConnections", appId, "storedProcedures", sourceId],
+    queryFn: fetchStoredProcedures,
+    staleTime: fiveMins,
+    enabled: !!sourceId, // Only enable the query if sourceId is provided
+  });
+
+  return { data, isLoading };
 };

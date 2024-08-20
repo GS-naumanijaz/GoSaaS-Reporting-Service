@@ -156,7 +156,7 @@ export const useGetDestinationConnectionsListQuery = (appId: number) => {
 
   return useQuery({
     queryKey: ["destinationConnections", appId, "list"],
-    queryFn: () => apiClient.getListAll(),
+    queryFn: () => apiClient.getListAll("all"),
     staleTime: 1000 * 60 * 5, 
   });
 };
