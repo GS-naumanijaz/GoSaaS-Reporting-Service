@@ -3,13 +3,12 @@ package com.GRS.backend.entities.source_connection;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
-import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.report.ReportRepository;
-import com.GRS.backend.entities.report.ReportService;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.models.DTO.SourceConnectionDTO;
-import com.GRS.backend.utilities.DatabaseConnectionTester;
+import com.GRS.backend.models.StoredProcedure;
+import com.GRS.backend.utilities.DatabaseUtilities;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.xml.transform.Source;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -92,7 +91,7 @@ public class SourceConnectionService {
         String password = sourceConnection.getPassword();
         String driverClassName  = sourceConnection.getType().getDriverClassName();
 
-        return DatabaseConnectionTester.tryConnect(url, username, password, driverClassName);
+        return DatabaseUtilities.tryConnect(url, username, password, driverClassName);
     }
 
     public SourceConnection addSourceConnection(SourceConnection sourceConnection) {
@@ -188,6 +187,8 @@ public class SourceConnectionService {
         return deletedCount;
     }
 
-    
-    
+
+    public List<StoredProcedure> getSourceConnectionStoredProcedures(SourceConnection sourceConnection) {
+        return DatabaseUtilities.getDatabaseInfo(sourceConnection);
+    }
 }

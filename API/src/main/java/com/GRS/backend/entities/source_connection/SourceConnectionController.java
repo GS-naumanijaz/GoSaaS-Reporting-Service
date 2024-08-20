@@ -6,6 +6,7 @@ import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.enums.SourceConnectionType;
 import com.GRS.backend.models.DTO.SourceConnectionDTO;
+import com.GRS.backend.models.StoredProcedure;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -69,11 +71,19 @@ public class SourceConnectionController {
 
     }
 
+    @GetMapping("/{sourceId}/stored-procedures")
+    public ResponseEntity<Object> getSourceConnectionStoredProcedures(@PathVariable int sourceId) {
+        SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId);
+
+        List<StoredProcedure> storedProcedures = sourceConnectionService.getSourceConnectionStoredProcedures(sourceConnection);
+
+        return Response.responseBuilder("Source Connection stored procedures were retrieved successfully", HttpStatus.OK, storedProcedures);
+    }
+
     @GetMapping("/types")
     public ResponseEntity<Object> getSourceConnectionTypes() {
         return Response.responseBuilder("Source Connection types returned successfully", HttpStatus.OK, SourceConnectionType.getDbTypes());
     }
-
 
     @PostMapping("")
     public ResponseEntity<Object> addSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int appId) {
