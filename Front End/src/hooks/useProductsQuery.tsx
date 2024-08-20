@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import useProductStore from "../store/ProductStore";
 import { Product } from "../components/Dashboard/Products";
 import { BackendURL } from "../configs";
 
@@ -36,7 +35,6 @@ const fetchProducts = async (
   );
 
   const data = await response.json();
-  console.log("Products data: ", data.data);
   return data.data;
 };
 

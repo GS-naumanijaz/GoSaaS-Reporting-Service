@@ -30,10 +30,15 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     selectedFilter,
     currentPage,
     setPage,
-    setPageSize,
     setCurrentPage,
     setSearchTerm,
+    setPageSize,
   } = useProductStore();
+
+  useEffect(() => {
+    setSelectedFilter("Active");
+    setPageSize(6);
+  }, [setSelectedFilter, setPageSize]);
 
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;

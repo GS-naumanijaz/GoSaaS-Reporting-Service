@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useProductsQuery } from "../../hooks/useProductsQuery";
 import { ProductTable } from "../../models/ProductTable";
 import { TableManager } from "../../models/TableManager";
@@ -6,8 +7,6 @@ import useProductStore from "../../store/ProductStore";
 import CustomTable from "../Shared/CustomTable";
 
 const ProductTableData = () => {
-  const allFilters = ["All", "Active", "Inactive"];
-
   const {
     sortField,
     sortOrder,
@@ -15,29 +14,35 @@ const ProductTableData = () => {
     pageSize,
     searchTerm,
     searchField,
-    reset,
     setSelectedFilter,
     selectedFilter,
-    currentPage,
     setCurrentPage,
     setSearchTerm,
     setSearchField,
     setSortField,
     setSortOrder,
+    setPageSize,
+    setPage,
   } = useProductStore();
+
+  useEffect(() => {
+    setSelectedFilter("All");
+  }, [setSelectedFilter]);
 
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data, isFetching, isError } = useProductsQuery(
+  const { data, isError } = useProductsQuery(
     sortField,
     sortOrder,
     page,
     pageSize,
     searchTerm,
-    actualSearchField
+    actualSearchField,
+    selectedFilter // Pass the selected filter
   );
-  const { content: products, totalPages, totalElements } = data || {};
+
+  const { content: products, totalElements } = data || {};
 
   const ProductsList: ProductTable[] =
     products?.map(
@@ -52,21 +57,36 @@ const ProductTableData = () => {
 
   const manager = new TableManager(new ProductTable(), ProductsList);
 
-  //* implementing
-
   function handleSearch(searchTerm: string, field: string): void {
     setSearchTerm(searchTerm);
     setSearchField(field);
+    setCurrentPage(0);
   }
 
   function handleSort(field: string, order: string): void {
     const mappedField = fieldMapping[field as FieldMappingKey] || field;
     setSortField(mappedField);
     setSortOrder(order);
+    setCurrentPage(0);
   }
 
-  //* to implement later
+  function handleClearSearch(): void {
+    setSearchTerm("");
+    setSearchField("");
+    setCurrentPage(0);
+  }
 
+  function handlePageChange(newPage: number): void {
+    setPage(newPage);
+    setCurrentPage(newPage);
+  }
+
+  function handlePageSizeChange(newPageSize: number): void {
+    setPageSize(newPageSize);
+    setCurrentPage(0);
+  }
+
+  // Placeholder functions for other table actions
   function handleDelete(deleteId: number): void {
     throw new Error("Function not implemented.");
   }
@@ -87,18 +107,6 @@ const ProductTableData = () => {
     throw new Error("Function not implemented.");
   }
 
-  function handlePageChange(newPage: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handlePageSizeChange(newPageSize: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handleClearSearch(): void {
-    throw new Error("Function not implemented.");
-  }
-
   function handleAddNew(): void {
     throw new Error("Function not implemented.");
   }
@@ -116,12 +124,12 @@ const ProductTableData = () => {
       onEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
-      page={totalPages ?? 1} // Set the current page
-      pageSize={pageSize} // Set the page size
-      totalElements={totalElements ?? 1} // Set the total number of elements
+      page={page}
+      pageSize={pageSize}
+      totalElements={totalElements ?? 0}
       searchObject={{
-        searchField: "", // Set search field
-        searchTerm: "", // Set search term
+        searchField: searchField || "",
+        searchTerm: searchTerm || "",
       }}
       onAddNew={handleAddNew}
       handleClearSearch={handleClearSearch}

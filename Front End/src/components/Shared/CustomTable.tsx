@@ -53,7 +53,7 @@ interface Props {
 }
 
 const CustomTable = ({
-  tableManager,
+  tableManager, 
   appId,
   onSort,
   onSearch,
@@ -160,6 +160,10 @@ const CustomTable = ({
     return isEditing.some((value) => value);
   };
 
+  // search field prompt box
+  const searchField = searchObject?.searchField ?? "";
+  const mappedSearchField = reverseFieldMapping[searchField] || searchField;
+
   return (
     <Box
       borderWidth={3}
@@ -196,7 +200,7 @@ const CustomTable = ({
             <Text>
               <strong>Finding " </strong>
               {searchObject.searchTerm} <strong>" in "</strong>
-              {reverseFieldMapping[searchObject.searchField]}
+              {mappedSearchField}
               <strong>"</strong>
             </Text>
           </Box>

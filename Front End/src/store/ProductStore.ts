@@ -27,7 +27,7 @@ const initialState = {
   searchTerm: "",
   searchField: "alias", // Default search field is product name
   page: 0,
-  pageSize: 6, // Default page size
+  pageSize: 5, // Default page size
   selectedFilter: "Active",
   currentPage: 0,
 };
