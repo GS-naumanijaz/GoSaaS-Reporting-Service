@@ -73,8 +73,8 @@ public class ReportService {
             FieldUpdater.updateField(existingReport, "description", report);
             FieldUpdater.updateField(existingReport, "storedProcedure", report);
             FieldUpdater.updateField(existingReport, "params", report);
-            FieldUpdater.updateField(existingReport, "xsl_template", report);
-            FieldUpdater.updateField(existingReport, "is_pinned", report);
+            FieldUpdater.updateField(existingReport, "xslTemplate", report);
+            FieldUpdater.updateField(existingReport, "isPinned", report);
 
             return reportRepository.save(existingReport);
         } else {

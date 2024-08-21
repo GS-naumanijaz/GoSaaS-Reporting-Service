@@ -48,6 +48,8 @@ public class Report {
 
     private Boolean isPinned = false;
 
+    private Boolean isActive = true;
+
     private LocalDateTime creationDate;
 
     private LocalDateTime deletionDate;

@@ -54,7 +54,7 @@ const TableHeader = ({
               body="Are you sure you want to delete this connection?"
               cancelText="Cancel"
               confirmText="Confirm"
-              onDelete={handleBulkDeleteRows}
+              onConfirm={handleBulkDeleteRows}
             >
               <FaRegTrashCan color="red" size={20} />
             </AlertDialogButton>

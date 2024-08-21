@@ -15,8 +15,7 @@ interface Props {
   body: string;
   cancelText: string;
   confirmText: string;
-  onDelete: () => void;
-
+  onConfirm: () => void;
   children: React.ReactNode;
 }
 
@@ -25,7 +24,7 @@ const AlertDialogButton = ({
   body,
   cancelText,
   confirmText,
-  onDelete,
+  onConfirm: onDelete,
   children,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -14,7 +14,7 @@ const TdDeleteButton = ({ handleDeleteRow }: Props) => {
         body="Are you sure you want to delete this connection?"
         cancelText="Cancel"
         confirmText="Confirm"
-        onDelete={handleDeleteRow}
+        onConfirm={handleDeleteRow}
       >
         <FaRegTrashCan color="red" size={20} />
       </AlertDialogButton>
