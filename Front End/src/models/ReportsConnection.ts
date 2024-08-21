@@ -14,9 +14,9 @@ export class ReportsConnection extends TableRowData {
   private destinationConnection?: DestinationConnection;
   private storedProcedure: string;
   private params: string[];
-  // private appId: number;
   private application: Application;
   private isActive: boolean;
+  private isPinned: boolean;
 
   //Static variables
   private static tableHeader = "Reports";
@@ -190,7 +190,8 @@ export class ReportsConnection extends TableRowData {
       deletionDate: null,
       updatedAt: "",
     },
-    isActive: boolean = false
+    isActive: boolean = false,
+    isPinned: boolean = false
   ) {
     super();
     this.reportId = reportId;
@@ -204,6 +205,7 @@ export class ReportsConnection extends TableRowData {
     this.params = parameters;
     this.application = application;
     this.isActive = isActive;
+    this.isPinned = isPinned;
   }
 
   getId(): number {

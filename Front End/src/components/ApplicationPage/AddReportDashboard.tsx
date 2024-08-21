@@ -31,6 +31,8 @@ import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinatio
 import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
+import { LuPinOff, LuPin } from "react-icons/lu";
+import { BsPin, BsFillPinFill } from "react-icons/bs";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -60,6 +62,8 @@ const AddReportDashboard = () => {
   const [activeStatus, setActiveStatus] = useState(
     reportDetails?.isActive ?? false
   );
+
+  const [isPinned, setIsPinned] = useState(reportDetails?.isPinned ?? false);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -166,7 +170,8 @@ const AddReportDashboard = () => {
               ? storedProcedures[selectedProcedure].parameters
               : [],
             undefined,
-            activeStatus
+            activeStatus,
+            isPinned
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -187,7 +192,8 @@ const AddReportDashboard = () => {
             storedProcedures
               ? storedProcedures[selectedProcedure].parameters
               : [],
-            activeStatus
+            activeStatus,
+            isPinned
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -303,15 +309,25 @@ const AddReportDashboard = () => {
               {isEditingMode ? "Edit Report" : "Register Report"}
             </Text>
             <Spacer />
-            <Button
-              variant="link"
-              p={0}
-              _active={{ color: primaryColor }}
-              color={primaryColor}
-              onClick={() => setIsSaveOpen(true)}
-            >
-              <AiOutlineSave size={35} />
-            </Button>
+            <HStack spacing={5}>
+              <Button
+                variant="link"
+                _active={{ color: primaryColor }}
+                color={primaryColor}
+                onClick={() => setIsPinned(!isPinned)}
+              >
+                {isPinned ? <BsPin size={30} /> : <BsFillPinFill size={30} />}
+              </Button>
+              <Button
+                variant="link"
+                p={0}
+                _active={{ color: primaryColor }}
+                color={primaryColor}
+                onClick={() => setIsSaveOpen(true)}
+              >
+                <AiOutlineSave size={35} />
+              </Button>
+            </HStack>
           </HStack>
           {productDetails ? (
             <>

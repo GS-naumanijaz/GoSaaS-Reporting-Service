@@ -5,6 +5,8 @@ import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.models.DTO.ReportDTO;
+import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -119,4 +122,11 @@ public class ReportService {
         return deletedCount;
     }
 
+    public List<ReportDTO> getAllPinnerReports() {
+        Specification<Report> spec = Specification.where(ReportSpecification.isPinned()).and(ReportSpecification.isNotDeleted());
+
+        return reportRepository.findAll(spec).stream()
+                .map(report -> new ReportDTO(report.getId(), report.getAlias(), report.getDescription()))
+                .collect(Collectors.toList());
+    }
 }

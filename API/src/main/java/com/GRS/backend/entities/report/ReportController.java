@@ -7,6 +7,8 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.source_connection.SourceConnectionService;
+import com.GRS.backend.models.DTO.DestinationConnectionDTO;
+import com.GRS.backend.models.DTO.ReportDTO;
 import com.GRS.backend.models.ReportRequestBody;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
@@ -46,6 +48,13 @@ public class ReportController {
         Page<Report> allReports = reportService.getAllReports(appId, search, searchBy, pageable);
 
         return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
+    }
+
+    @GetMapping("/pinned")
+    public ResponseEntity<Object> getAllPinnedReports() {
+        List<ReportDTO> allSourceConnections = reportService.getAllPinnerReports();
+
+        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
     }
 
     @GetMapping("/{reportId}")
