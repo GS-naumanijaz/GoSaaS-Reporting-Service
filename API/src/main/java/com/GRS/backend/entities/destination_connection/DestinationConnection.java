@@ -54,6 +54,8 @@ public class DestinationConnection {
 
     private Boolean isDeleted = false;
 
+    private Boolean lastTestResult = null;
+
     private String secretKey = "";
 
     private String accessKey = "";

@@ -14,6 +14,7 @@ export class SourceConnection extends TableRowData {
   // private appId: number;
   private application: Application;
   private isActive: boolean;
+  public lastTestResult?: boolean;
 
   private static dbTypes = [
     "All",
@@ -238,7 +239,8 @@ export class SourceConnection extends TableRowData {
       deletionDate: null,
       updatedAt: "",
     },
-    isActive: boolean = false
+    isActive: boolean = false,
+    lastTestResult?: boolean
   ) {
     super();
     this.id = connectionId;
@@ -249,9 +251,9 @@ export class SourceConnection extends TableRowData {
     this.databaseName = database_name;
     this.username = username;
     this.password = password;
-    // this.appId = appId;
     this.isActive = isActive;
     this.application = application;
+    this.lastTestResult = lastTestResult;
   }
 
   getId(): number {

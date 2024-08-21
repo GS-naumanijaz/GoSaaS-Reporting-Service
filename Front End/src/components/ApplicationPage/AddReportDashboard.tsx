@@ -345,29 +345,31 @@ const AddReportDashboard = () => {
 
                   {/* Select Dropdown */}
                   {!isLoadingSource && !errorSource && (
-                    <Select
-                      placeholder="Select Source Connection"
-                      value={selectedSource}
-                      onChange={(e) => {
-                        setSelectedSource(e.target.value);
-                        setSelectedProcedure(-1);
-                      }}
-                    >
-                      {sourceConnectionsList ? (
-                        sourceConnectionsList.map(
-                          (
-                            sourceConnection: SourceConnection,
-                            index: number
-                          ) => (
-                            <option key={index} value={sourceConnection.id}>
-                              {sourceConnection.alias}
-                            </option>
+                    <>
+                      <Select
+                        placeholder="Select Source Connection"
+                        value={selectedSource}
+                        onChange={(e) => {
+                          setSelectedSource(e.target.value);
+                          setSelectedProcedure(-1);
+                        }}
+                      >
+                        {sourceConnectionsList ? (
+                          sourceConnectionsList.map(
+                            (
+                              sourceConnection: SourceConnection,
+                              index: number
+                            ) => (
+                              <option key={index} value={sourceConnection.id}>
+                                {sourceConnection.alias}
+                              </option>
+                            )
                           )
-                        )
-                      ) : (
-                        <Text>Error with loading source connection list</Text>
-                      )}
-                    </Select>
+                        ) : (
+                          <Text>Error with loading source connection list</Text>
+                        )}
+                      </Select>   
+                    </>
                   )}
                 </FormControl>
                 <FormControl isRequired p={5}>
@@ -443,7 +445,7 @@ const AddReportDashboard = () => {
                         {selectedProcedure && (
                           <FormControl isReadOnly p={5}>
                             {storedProcedures &&
-                              selectedProcedure !== -1 && 
+                              selectedProcedure !== -1 &&
                               storedProcedures.length !== 0 && (
                                 <>
                                   <FormLabel>Parameters</FormLabel>

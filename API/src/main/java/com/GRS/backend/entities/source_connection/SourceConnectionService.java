@@ -93,7 +93,12 @@ public class SourceConnectionService {
         String password = sourceConnection.getPassword();
         String driverClassName  = sourceConnection.getType().getDriverClassName();
 
-        return DatabaseUtilities.tryConnect(url, username, password, driverClassName);
+        boolean testResult = DatabaseUtilities.tryConnect(url, username, password, driverClassName);
+
+        sourceConnection.setLastTestResult(testResult);
+        updateSourceConnection(sourceConnection.getId(), sourceConnection);
+
+        return testResult;
     }
 
     public SourceConnection addSourceConnection(SourceConnection sourceConnection) {

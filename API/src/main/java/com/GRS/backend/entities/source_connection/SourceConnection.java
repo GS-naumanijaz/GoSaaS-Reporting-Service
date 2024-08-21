@@ -47,6 +47,8 @@ public class SourceConnection {
 
     private Boolean isDeleted = false;
 
+    private Boolean lastTestResult = null;
+
     @NotNull
     private String username;
 

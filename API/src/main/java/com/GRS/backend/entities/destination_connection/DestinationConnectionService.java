@@ -85,7 +85,12 @@ public class DestinationConnectionService {
         String bucketName = destinationConnection.getBucketName();
         String region = destinationConnection.getRegion();
 
-        return S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
+        boolean testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
+
+        destinationConnection.setLastTestResult(testResult);
+        updateDestinationConnection(destinationConnection.getId(), destinationConnection);
+
+        return testResult;
     }
 
     public DestinationConnection addDestinationConnection(DestinationConnection destinationConnection) {
