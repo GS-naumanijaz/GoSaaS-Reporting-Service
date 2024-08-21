@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   HStack,
+  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -36,6 +37,7 @@ interface Props {
   appId: number;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
+  onDateSearch: (date: Date[]) => void;
   onDelete: (deleteId: number) => void;
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
@@ -50,13 +52,15 @@ interface Props {
   searchObject?: { searchField: string; searchTerm: string };
   onAddNew: any;
   handleClearSearch: () => void;
+  handleClearDates: () => void;
 }
 
 const CustomTable = ({
-  tableManager, 
+  tableManager,
   appId,
   onSort,
   onSearch,
+  onDateSearch,
   onDelete,
   onBulkDelete,
   onBulkUpdateStatus,
@@ -71,6 +75,7 @@ const CustomTable = ({
   searchObject,
   onAddNew,
   handleClearSearch,
+  handleClearDates,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -163,6 +168,12 @@ const CustomTable = ({
   // search field prompt box
   const searchField = searchObject?.searchField ?? "";
   const mappedSearchField = reverseFieldMapping[searchField] || searchField;
+  //
+  const [selectedDate, setSelectedDate] = useState<Date[] | null>(null);
+  const handleDateSearch = (date: Date[]) => {
+    setSelectedDate(date);
+    onDateSearch(date);
+  };
 
   return (
     <Box
@@ -184,7 +195,7 @@ const CustomTable = ({
         onAddNew={onAddNew}
       />
       {searchObject?.searchTerm && (
-        <HStack>
+        <Stack spacing={4}>
           <Box
             mb={4}
             p={2}
@@ -192,19 +203,41 @@ const CustomTable = ({
             borderColor={secondaryColor}
             borderRadius={50}
             width={"35%"}
-            justifyContent={"center"}
             mx="auto"
           >
             <Text fontWeight="bold">Search Results:</Text>
 
-            <Text>
-              <strong>Finding " </strong>
-              {searchObject.searchTerm} <strong>" in "</strong>
-              {mappedSearchField}
-              <strong>"</strong>
-            </Text>
+            <HStack
+              spacing={4}
+              display={"flex"}
+              justifyContent="space-between"
+              pl={18}
+            >
+              <Text>
+                <strong>Finding " </strong>
+                {searchObject.searchTerm} <strong>" in "</strong>
+                {mappedSearchField}
+                <strong>"</strong>
+              </Text>
+
+              <Button variant={"ghost"} onClick={() => handleClearSearch()}>
+                <ImCross size={13} />
+              </Button>
+            </HStack>
           </Box>
-          <Button mr={10} variant={"ghost"} onClick={() => handleClearSearch()}>
+        </Stack>
+      )}
+      {selectedDate && (
+        <HStack spacing={2} display={"flex"} justifyContent={"center"}>
+          <Text>
+            <strong>Selected Dates: </strong>
+          </Text>
+          {selectedDate.map((date, index) => (
+            <HStack key={index} spacing={4} alignItems="center">
+              <Text>{date.toDateString()}</Text>
+            </HStack>
+          ))}
+          <Button variant="ghost" onClick={() => handleClearDates()}>
             <ImCross size={13} />
           </Button>
         </HStack>
@@ -235,6 +268,7 @@ const CustomTable = ({
                     }
                     onSort={onSort}
                     onSearch={onSearch}
+                    onDateSearch={handleDateSearch}
                   />
                 </Th>
               ))}

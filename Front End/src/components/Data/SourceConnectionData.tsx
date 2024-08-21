@@ -144,27 +144,30 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
 
   return (
     <CustomTable
-        tableManager={manager}
-        appId={appId}
-        onSort={handleSort}
-        onSearch={handleSearch}
-        onDelete={handleDelete}
-        onBulkDelete={handleBulkDelete}
-        onBulkUpdateStatus={handleBulkStatusUpdate}
-        onTestConnection={handleTest}
-        onEdit={handleEdit}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        page={page}
-        pageSize={pageSize}
-        totalElements={totalElements}
-        searchObject={{
-          searchField: actualSearchField,
-          searchTerm: searchTerm,
-        }}
-        onAddNew={handleAddNew}
-        handleClearSearch={handleClearSearch}
-      />
+      tableManager={manager}
+      appId={appId}
+      onSort={handleSort}
+      onSearch={handleSearch}
+      onDelete={handleDelete}
+      onBulkDelete={handleBulkDelete}
+      onBulkUpdateStatus={handleBulkStatusUpdate}
+      onTestConnection={handleTest}
+      onEdit={handleEdit}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
+      page={page}
+      pageSize={pageSize}
+      totalElements={totalElements}
+      searchObject={{
+        searchField: actualSearchField,
+        searchTerm: searchTerm,
+      }}
+      onAddNew={handleAddNew}
+      handleClearSearch={handleClearSearch} onDateSearch={function (date: Date[]): void {
+        throw new Error("Function not implemented.");
+      } } handleClearDates={function (): void {
+        throw new Error("Function not implemented.");
+      } }      />
   );
 };
 

@@ -74,6 +74,10 @@ const TdData = ({
       );
     }
 
+    if (inputField.isDate) {
+      return <Text>{new Date(data).toLocaleDateString()}</Text>;
+    }
+
     return <Text>{data}</Text>;
   };
 
@@ -110,7 +114,7 @@ const TdData = ({
             <FormControl isInvalid={!!error}>
               <Tooltip
                 label={error}
-                placement="bottom-start"  
+                placement="bottom-start"
                 isOpen={!!error}
                 bg="red.600"
                 color="white"

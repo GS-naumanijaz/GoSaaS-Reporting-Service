@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useProductsQuery } from "../../hooks/useProductsQuery";
 import { ProductTable } from "../../models/ProductTable";
 import { TableManager } from "../../models/TableManager";
@@ -86,6 +86,16 @@ const ProductTableData = () => {
     setCurrentPage(0);
   }
 
+  const [dates, setDates] = useState<Date[] | undefined>();
+  function handleDateSearch(date: Date[]): void {
+    setDates(date);
+    //! Search Dates Received
+  }
+
+  function handleClearDate(): void {
+    setDates(undefined);
+  }
+
   // Placeholder functions for other table actions
   function handleDelete(deleteId: number): void {
     throw new Error("Function not implemented.");
@@ -133,6 +143,8 @@ const ProductTableData = () => {
       }}
       onAddNew={handleAddNew}
       handleClearSearch={handleClearSearch}
+      onDateSearch={handleDateSearch}
+      handleClearDates={handleClearDate}
     />
   );
 };

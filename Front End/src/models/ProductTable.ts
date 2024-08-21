@@ -39,6 +39,7 @@ export class ProductTable extends TableRowData {
       label: "updatedAt",
       isSelectable: false,
       type: "date",
+      isDate: true,
       validation: {
         required: true,
         customErrorMessage: "Please provide a valid date for Last Modified.",
@@ -55,7 +56,7 @@ export class ProductTable extends TableRowData {
     {
       isEnabled: true,
       isSortable: true,
-      isSearchable: true,
+      DateItem: true,
     },
     {
       isEnabled: true,
