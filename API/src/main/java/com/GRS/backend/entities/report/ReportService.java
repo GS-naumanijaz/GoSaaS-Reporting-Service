@@ -3,10 +3,8 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
-import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.models.DTO.ReportDTO;
-import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -122,11 +120,12 @@ public class ReportService {
         return deletedCount;
     }
 
-    public List<ReportDTO> getAllPinnerReports() {
+    public List<Report> getAllPinnedReports() {
         Specification<Report> spec = Specification.where(ReportSpecification.isPinned()).and(ReportSpecification.isNotDeleted());
 
-        return reportRepository.findAll(spec).stream()
-                .map(report -> new ReportDTO(report.getId(), report.getAlias(), report.getDescription()))
-                .collect(Collectors.toList());
+        return  reportRepository.findAll(spec);
+//        return reportRepository.findAll(spec).stream()
+//                .map(report -> new ReportDTO(report.getId(), report.getAlias(), report.getDescription()))
+//                .collect(Collectors.toList());
     }
 }

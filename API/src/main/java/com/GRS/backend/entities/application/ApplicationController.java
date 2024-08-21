@@ -1,6 +1,9 @@
 package com.GRS.backend.entities.application;
 
 import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.report.ReportService;
+import com.GRS.backend.models.DTO.ReportDTO;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,6 +26,9 @@ public class ApplicationController {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private ReportService reportService;
 
     Logger logger = LoggerFactory.getLogger(ApplicationController.class);
 
@@ -64,4 +71,13 @@ public class ApplicationController {
         applicationService.deleteApplication(appId);
         return Response.responseBuilder("Application deleted successfully", HttpStatus.OK, null);
     }
+
+    @GetMapping("/pinned-reports")
+    public ResponseEntity<Object> getAllPinnedReports() {
+        List<Report> allSourceConnections = reportService.getAllPinnedReports();
+
+        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
+    }
+
+
 }

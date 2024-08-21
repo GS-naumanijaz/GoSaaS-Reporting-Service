@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class ReportDTO {
 
-    private int id;
+    private int reprotId;
     private String alias;
     private String description;
 
     public ReportDTO(int id, String alias, String description) {
-        this.id = id;
+        this.reprotId = id;
         this.alias = alias;
         this.description = description;
     }

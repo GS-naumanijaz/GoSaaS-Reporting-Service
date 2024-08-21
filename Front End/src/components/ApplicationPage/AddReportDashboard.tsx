@@ -46,13 +46,16 @@ const AddReportDashboard = () => {
   const isEditingMode =
     location.state?.isEditing ??
     JSON.parse(localStorage.getItem("isEditingMode") ?? "false");
-  const productDetails =
-    location.state?.productDetails ||
-    JSON.parse(localStorage.getItem("productDetails") ?? "{}");
+
   const reportDetails = isEditingMode
     ? location.state?.report ??
       JSON.parse(localStorage.getItem("reportDetails") ?? "{}")
     : undefined;
+
+  const productDetails = isEditingMode
+    ? reportDetails?.application ?? {}
+    : location.state?.productDetails ||
+      JSON.parse(localStorage.getItem("productDetails") ?? "{}");
 
   const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
   const [reportDescription, setReportDescription] = useState(
@@ -63,7 +66,11 @@ const AddReportDashboard = () => {
     reportDetails?.isActive ?? false
   );
 
+  console.log(reportDetails);
+
   const [isPinned, setIsPinned] = useState(reportDetails?.isPinned ?? false);
+
+  console.log(isPinned);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -104,13 +111,7 @@ const AddReportDashboard = () => {
   const { mutateAsync: addReport } = useAddReport(productDetails.id);
   const { mutateAsync: updateReport } = useEditReport(productDetails.id);
 
-  const [selectedProcedure, setSelectedProcedure] = useState<number>(
-    storedProcedures && reportDetails
-      ? storedProcedures.findIndex(
-          (obj) => obj.name === reportDetails.storedProcedure
-        )
-      : -1
-  );
+  const [selectedProcedure, setSelectedProcedure] = useState<number>(-1);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -155,7 +156,7 @@ const AddReportDashboard = () => {
 
     try {
       if (isEditingMode) {
-        let reportId = reportDetails.reportId;
+        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1 ;  
         let updatedReport = {
           report: new ReportsConnection(
             undefined,
@@ -224,6 +225,15 @@ const AddReportDashboard = () => {
     !!descriptionError;
 
   useEffect(() => {
+
+    if (selectedProcedure == -1) {
+      setSelectedProcedure(storedProcedures && reportDetails
+        ? storedProcedures.findIndex(
+            (obj) => obj.name === reportDetails.storedProcedure
+          )
+        : -1);
+    }
+
     if (
       isEditingMode &&
       reportDetails &&
@@ -316,7 +326,7 @@ const AddReportDashboard = () => {
                 color={primaryColor}
                 onClick={() => setIsPinned(!isPinned)}
               >
-                {isPinned ? <BsPin size={30} /> : <BsFillPinFill size={30} />}
+                {isPinned ? <BsFillPinFill size={30} /> : <BsPin size={30} />}
               </Button>
               <Button
                 variant="link"

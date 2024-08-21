@@ -6,17 +6,17 @@ import { TableRowData } from "./TableRowData";
 
 export class ReportsConnection extends TableRowData {
   private reportId: number;
-  private alias: string;
-  private description: string;
+  public alias: string;
+  public description: string;
   private connection_alias: string;
   private destination_alias: string;
   private sourceConnection?: SourceConnection;
   private destinationConnection?: DestinationConnection;
   private storedProcedure: string;
   private params: string[];
-  private application: Application;
+  public application: Application;
   private isActive: boolean;
-  private isPinned: boolean;
+  public isPinned: boolean;
 
   //Static variables
   private static tableHeader = "Reports";

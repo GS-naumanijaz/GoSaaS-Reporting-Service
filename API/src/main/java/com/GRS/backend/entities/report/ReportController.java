@@ -7,7 +7,6 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.source_connection.SourceConnectionService;
-import com.GRS.backend.models.DTO.DestinationConnectionDTO;
 import com.GRS.backend.models.DTO.ReportDTO;
 import com.GRS.backend.models.ReportRequestBody;
 import com.GRS.backend.resolver.QueryArgumentResolver;
@@ -40,6 +39,7 @@ public class ReportController {
 
     @GetMapping
     public ResponseEntity<Object> getAllReports(@PathVariable int appId, @QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
         String search = paginationParams.getSearch();
         String searchBy = paginationParams.getSearchBy();
@@ -50,15 +50,10 @@ public class ReportController {
         return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
     }
 
-    @GetMapping("/pinned")
-    public ResponseEntity<Object> getAllPinnedReports() {
-        List<ReportDTO> allSourceConnections = reportService.getAllPinnerReports();
-
-        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
-    }
-
     @GetMapping("/{reportId}")
     public ResponseEntity<Object> getReportById(@PathVariable int reportId) {
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
         Report reportToAdd = reportService.getReportById(reportId);
 
         return Response.responseBuilder("Report found successfully", HttpStatus.OK, reportToAdd);
@@ -66,15 +61,15 @@ public class ReportController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addReport(@Valid @RequestBody ReportRequestBody reportRequest, @PathVariable int appId) {
+    public ResponseEntity<Object> addReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int appId) {
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
         Application reportApp = applicationService.getApplicationById(appId);
 
         Report report = reportRequest.report;
 
         report.setApplication(reportApp);
 
-        System.out.println(report.getStoredProcedure());
-        System.out.println(report.getParams()[0]);
 
         if (reportRequest.sourceId != null) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
@@ -100,6 +95,7 @@ public class ReportController {
     @PatchMapping("/{reportId}")
     public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId) {
         Report updatedReport = reportService.updateReport(reportId, reportRequest.report);
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
         if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSourceConnection().getId()) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
@@ -121,6 +117,8 @@ public class ReportController {
 
     @DeleteMapping("/{reportId}")
     public ResponseEntity<Object> deleteReport(@PathVariable int reportId) {
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
         reportService.deleteReport(reportId);
         return Response.responseBuilder("Report deleted successfully", HttpStatus.OK, null);
     }
@@ -129,6 +127,8 @@ public class ReportController {
     public ResponseEntity<Object> connectSourceToReport(@PathVariable int reportId, @PathVariable int sourceId) {
         Report report = reportService.getReportById(reportId);
         SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId);
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
         sourceConnection.addReport(report);
 
@@ -144,6 +144,7 @@ public class ReportController {
         DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(destinationId);
 
         destinationConnection.addReport(report);
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
         destinationConnectionService.addDestinationConnection(destinationConnection);
         reportService.addReport(report);
@@ -153,6 +154,8 @@ public class ReportController {
 
     @DeleteMapping("")
     public ResponseEntity<Object> deleteReports(@RequestBody List<Integer> reportIds) {
+        System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
         Integer deletedCount = reportService.bulkDeleteReports(reportIds);
         if (deletedCount == reportIds.size()) {
             return Response.responseBuilder("All Reports deleted successfully", HttpStatus.OK);
