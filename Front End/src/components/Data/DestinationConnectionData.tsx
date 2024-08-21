@@ -174,8 +174,11 @@ const DestinationConnectionData = ({
         searchTerm: searchTerm,
       }}
       onAddNew={handleAddNew}
-      handleClearSearch={handleClearSearch}
-    />
+      handleClearSearch={handleClearSearch} onDateSearch={function (date: string[]): void {
+        throw new Error("Function not implemented.");
+      } } handleClearDates={function (): void {
+        throw new Error("Function not implemented.");
+      } }    />
   );
 };
 

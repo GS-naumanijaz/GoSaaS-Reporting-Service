@@ -154,7 +154,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchTerm: searchTerm,
       }}
       onAddNew={() => navigate("/addreports", { state: { product } })}
-      handleClearSearch={handleClearSearch} onDateSearch={function (date: Date[]): void {
+      handleClearSearch={handleClearSearch} onDateSearch={function (date: string[]): void {
         throw new Error("Function not implemented.");
       } } handleClearDates={function (): void {
         throw new Error("Function not implemented.");

@@ -10,22 +10,27 @@ const fetchProducts = async (
   pageSize: number,
   searchTerm: string,
   searchField: string,
-  selectedFilter: string
+  selectedFilter: string,
+  selectedDates: string[]
 ): Promise<{
   content: Product[];
   totalPages: number;
   totalElements: number;
   empty: boolean;
 }> => {
+  console.log("reached")
   const params = new URLSearchParams({
-    sort_by: sortingBy,
-    sort_order: sortingOrder,
+    sort_by: sortingBy || "alias",
+    sort_order: sortingOrder || "desc",
     page: page.toString(),
     page_size: pageSize.toString(),
-    search_by: searchField,
-    search: searchTerm,
-    status: selectedFilter,
+    search_by: searchField || "alias",
+    search: searchTerm || "",
+    status: selectedFilter || "all",
+    start_date: selectedDates[0] || "2024-01-01",
+    end_date: selectedDates[1] || "9999-12-31",
   });
+  console.log(selectedDates);
   const response = await fetch(
     `${BackendURL}/applications?${params.toString()}`,
     {
@@ -35,6 +40,7 @@ const fetchProducts = async (
   );
 
   const data = await response.json();
+  console.log("Response");
   return data.data;
 };
 
@@ -46,7 +52,8 @@ export const useProductsQuery = (
   pageSize: number,
   searchTerm: string,
   searchField: string,
-  selectedFilter: string
+  selectedFilter: string,
+  selectedDates: string[]
 ) => {
   return useQuery({
     queryKey: [
@@ -58,6 +65,7 @@ export const useProductsQuery = (
       searchTerm,
       searchField,
       selectedFilter,
+      selectedDates,
     ],
     queryFn: () =>
       fetchProducts(
@@ -67,7 +75,8 @@ export const useProductsQuery = (
         pageSize,
         searchTerm,
         searchField,
-        selectedFilter
+        selectedFilter,
+        selectedDates
       ),
     refetchOnWindowFocus: true,
     gcTime: 0, // cache time

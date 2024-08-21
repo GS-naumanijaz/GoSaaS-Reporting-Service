@@ -33,6 +33,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     setCurrentPage,
     setSearchTerm,
     setPageSize,
+    selectedDates,
   } = useProductStore();
 
   useEffect(() => {
@@ -50,7 +51,8 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     pageSize,
     searchTerm,
     actualSearchField,
-    selectedFilter
+    selectedFilter,
+    selectedDates
   );
 
   useEffect(() => {

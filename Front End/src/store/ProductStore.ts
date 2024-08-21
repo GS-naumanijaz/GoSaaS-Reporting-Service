@@ -7,6 +7,8 @@ interface ProductStore {
   searchTerm: string;
   searchField: string;
   selectedFilter: string;
+  selectedDates: string[];
+  setSelectedDates: (dates: string[]) => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   setSelectedFilter: (filter: string) => void;
@@ -30,6 +32,7 @@ const initialState = {
   pageSize: 5, // Default page size
   selectedFilter: "Active",
   currentPage: 0,
+  selectedDates: ["0000-01-01", "9999-12-31"],
 };
 
 const useProductStore = create<ProductStore>()(
@@ -44,6 +47,7 @@ const useProductStore = create<ProductStore>()(
     setPageSize: (size) => set({ pageSize: size, page: 0 }), // Reset page when pageSize changes
     setSelectedFilter: (filter) => set({ selectedFilter: filter }),
     setCurrentPage: (page) => set({ currentPage: page }),
+    setSelectedDates: (dates) => set({ selectedDates: dates }),
   }))
 );
 

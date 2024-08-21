@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useProductsQuery } from "../../hooks/useProductsQuery";
 import { ProductTable } from "../../models/ProductTable";
 import { TableManager } from "../../models/TableManager";
@@ -23,6 +23,8 @@ const ProductTableData = () => {
     setSortOrder,
     setPageSize,
     setPage,
+    selectedDates,
+    setSelectedDates,
   } = useProductStore();
 
   useEffect(() => {
@@ -39,7 +41,8 @@ const ProductTableData = () => {
     pageSize,
     searchTerm,
     actualSearchField,
-    selectedFilter // Pass the selected filter
+    selectedFilter,
+    selectedDates
   );
 
   const { content: products, totalElements } = data || {};
@@ -86,14 +89,13 @@ const ProductTableData = () => {
     setCurrentPage(0);
   }
 
-  const [dates, setDates] = useState<Date[] | undefined>();
-  function handleDateSearch(date: Date[]): void {
-    setDates(date);
-    //! Search Dates Received
-  }
+  const handleDateSearch = (date: string[]) => {
+    setSelectedDates(date);
+  };
 
   function handleClearDate(): void {
-    setDates(undefined);
+    setSelectedDates(["0000-01-01", "9999-12-31"]);
+    setCurrentPage(0);
   }
 
   // Placeholder functions for other table actions
@@ -109,7 +111,7 @@ const ProductTableData = () => {
     throw new Error("Function not implemented.");
   }
 
-  function handleTest(appId: number, connectionId: number): void {
+  function handleTest(appId: number): void {
     throw new Error("Function not implemented.");
   }
 
@@ -124,7 +126,6 @@ const ProductTableData = () => {
   return (
     <CustomTable
       tableManager={manager}
-      appId={1}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}
@@ -140,6 +141,7 @@ const ProductTableData = () => {
       searchObject={{
         searchField: searchField || "",
         searchTerm: searchTerm || "",
+        selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
       }}
       onAddNew={handleAddNew}
       handleClearSearch={handleClearSearch}

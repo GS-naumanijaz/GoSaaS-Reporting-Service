@@ -36,7 +36,7 @@ interface Props {
   tableManager: TableManager;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
-  onDateSearch: (date: Date[]) => void;
+  onDateSearch: (date: string[]) => void;
   onDelete: (deleteId: number) => void;
   onBulkDelete: (deleteIds: number[]) => void;
   onBulkUpdateStatus?: (updateIds: number[], status: boolean) => void;
@@ -48,7 +48,11 @@ interface Props {
   onPageChange: (newPage: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
   totalElements: number;
-  searchObject?: { searchField: string; searchTerm: string };
+  searchObject?: {
+    searchField: string;
+    searchTerm: string;
+    selectedDates?: string[];
+  };
   onAddNew: any;
   handleClearSearch: () => void;
   handleClearDates: () => void;
@@ -166,12 +170,6 @@ const CustomTable = ({
   // search field prompt box
   const searchField = searchObject?.searchField ?? "";
   const mappedSearchField = reverseFieldMapping[searchField] || searchField;
-  //
-  const [selectedDate, setSelectedDate] = useState<Date[] | null>(null);
-  const handleDateSearch = (date: Date[]) => {
-    setSelectedDate(date);
-    onDateSearch(date);
-  };
 
   return (
     <Box
@@ -225,21 +223,23 @@ const CustomTable = ({
           </Box>
         </Stack>
       )}
-      {selectedDate && (
-        <HStack spacing={2} display={"flex"} justifyContent={"center"}>
-          <Text>
-            <strong>Selected Dates: </strong>
-          </Text>
-          {selectedDate.map((date, index) => (
-            <HStack key={index} spacing={4} alignItems="center">
-              <Text>{date.toDateString()}</Text>
-            </HStack>
-          ))}
-          <Button variant="ghost" onClick={() => handleClearDates()}>
-            <ImCross size={13} />
-          </Button>
-        </HStack>
-      )}
+      {searchObject?.selectedDates &&
+        searchObject?.selectedDates.toString() !==
+          ["0000-01-01", "9999-12-31"].toString() && (
+          <HStack spacing={2} display={"flex"} justifyContent={"center"}>
+            <Text>
+              <strong>Selected Dates: </strong>
+            </Text>
+            {searchObject?.selectedDates.map((date, index) => (
+              <HStack key={index} spacing={4} alignItems="center">
+                <Text>{date}</Text>
+              </HStack>
+            ))}
+            <Button variant="ghost" onClick={() => handleClearDates()}>
+              <ImCross size={13} />
+            </Button>
+          </HStack>
+        )}
       <TableContainer sx={sx}>
         <Table variant="simple" size="sm">
           <Thead>
@@ -266,7 +266,7 @@ const CustomTable = ({
                     }
                     onSort={onSort}
                     onSearch={onSearch}
-                    onDateSearch={handleDateSearch}
+                    onDateSearch={onDateSearch}
                   />
                 </Th>
               ))}

@@ -17,6 +17,7 @@ const fetchAppData = async (appId: number) => {
 };
 
 export const useAppDataQuery = (appId: number | null) => {
+  
   return useQuery({
     queryKey: ["application", appId],
     queryFn: () => {

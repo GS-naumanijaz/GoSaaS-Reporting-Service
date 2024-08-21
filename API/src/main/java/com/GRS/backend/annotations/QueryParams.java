@@ -12,6 +12,6 @@ public @interface QueryParams {
     int pageSize() default 10;
     String sortBy() default "updatedAt";
     String sortOrder() default "desc";
-    String startDate() default "0000-01-01";  // Beginning of time (LocalDate.MIN)
+    String startDate() default "0000-01-01";  // Beginning of time (LocalDate.MIN) yyyy-mm-dd
     String endDate() default "";
 }

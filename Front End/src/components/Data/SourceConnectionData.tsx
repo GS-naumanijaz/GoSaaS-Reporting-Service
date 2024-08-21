@@ -45,9 +45,6 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     };
   }, [reset]);
 
-  // const { mutate: deleteSourceConnection } =
-  //   useDeleteSourceConnectionMutation();
-
   const { mutate: deleteSourceConnection } = useDeleteSourceConnection(appId);
   const { mutate: bulkDeleteSourceConnection } =
     useBulkDeleteSourceConnections(appId);
@@ -73,7 +70,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const sourceConnections = data?.content ?? [];
   const totalElements = data?.totalElements ?? 0;
 
-  const sourceConnectionsList: SourceConnection[] = sourceConnections!.map(
+  const sourceConnectionsList: SourceConnection[] = sourceConnections.map(
     (sourceConnection: any) =>
       new SourceConnection(
         sourceConnection.id,
@@ -157,7 +154,6 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   return (
     <CustomTable
       tableManager={manager}
-      appId={appId}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}
@@ -175,7 +171,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         searchTerm: searchTerm,
       }}
       onAddNew={handleAddNew}
-      handleClearSearch={handleClearSearch} onDateSearch={function (date: Date[]): void {
+      handleClearSearch={handleClearSearch} onDateSearch={function (date: string[]): void {
         throw new Error("Function not implemented.");
       } } handleClearDates={function (): void {
         throw new Error("Function not implemented.");

@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -16,11 +17,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { DayPicker } from "react-day-picker";
+import { FaChevronDown } from "react-icons/fa";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { FaChevronDown } from "react-icons/fa";
-import { useState } from "react";
-import { DayPicker } from "react-day-picker";
 import { primaryColor } from "../../../configs";
 
 interface Props {
@@ -28,7 +28,19 @@ interface Props {
   sortFilterOptions: ColumnSortFilterOptions;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
-  onDateSearch: (date: Date[]) => void;
+  onDateSearch: (date: string[]) => void;
+}
+
+function formatDateToYYYYMMDD(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function convertDatesToStrings(datesArray: Date[]): string[] {
+  return datesArray.map((date) => formatDateToYYYYMMDD(date));
 }
 
 const customStyles = `
@@ -46,6 +58,7 @@ const FilterSortPopup = ({
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState("All");
   const [selectedDate, setSelectedDate] = useState<Date[] | undefined>();
+  const hasCalledOnDateSearchRef = useRef(false);
 
   const handleChange = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -70,9 +83,14 @@ const FilterSortPopup = ({
     setSelectedItem(selected);
   };
 
-  if (selectedDate?.length === 2) {
-  onDateSearch(selectedDate);
-  }
+  useEffect(() => {
+    if (selectedDate?.length === 2 && !hasCalledOnDateSearchRef.current) {
+      onDateSearch(convertDatesToStrings(selectedDate));
+      hasCalledOnDateSearchRef.current = true;
+    } else if (selectedDate?.length !== 2) {
+      hasCalledOnDateSearchRef.current = false;
+    }
+  }, [selectedDate, onDateSearch]);
 
   if (!sortFilterOptions.isEnabled)
     return (
