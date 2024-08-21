@@ -120,6 +120,12 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "databaseName", sourceConnection);
 
+            if (Boolean.FALSE.equals(existingSourceConnection.getIsActive())) {
+                existingSourceConnection.getReports().forEach(report -> {
+                    report.setIsActive(false);
+                    reportRepository.save(report);
+                });
+            }
 
             return sourceConnectionRepository.save(existingSourceConnection);
         } else {

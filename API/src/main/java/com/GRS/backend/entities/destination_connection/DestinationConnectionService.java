@@ -112,7 +112,6 @@ public class DestinationConnectionService {
             FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
 
 
-
             return destinationConnectionRepository.save(existingDestination);
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
