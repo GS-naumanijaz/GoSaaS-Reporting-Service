@@ -38,6 +38,6 @@ export const sx = {
 
 // App Validations
 export const minimumAppName = 3;
-export const maximumAppName = 20;
+export const maximumAppName = 50;
 export const minimumAppDescription = 20;
 export const maximumAppDescription = 250;
