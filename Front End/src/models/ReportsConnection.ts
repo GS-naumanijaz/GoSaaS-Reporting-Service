@@ -16,7 +16,7 @@ export class ReportsConnection extends TableRowData {
   private params: string[];
   // private appId: number;
   private application: Application;
-  isActive: boolean;
+  private isActive: boolean;
 
   //Static variables
   private static tableHeader = "Reports";

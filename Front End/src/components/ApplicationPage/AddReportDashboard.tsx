@@ -15,6 +15,7 @@ import {
   Select,
   Spacer,
   Spinner,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import { primaryColor, secondaryColor, sx } from "../../configs";
@@ -42,24 +43,22 @@ const AddReportDashboard = () => {
   // Retrieve from location.state or localStorage
   const isEditingMode =
     location.state?.isEditing ??
-    JSON.parse(localStorage.getItem("isEditingMode") || "false");
+    JSON.parse(localStorage.getItem("isEditingMode") ?? "false");
   const productDetails =
     location.state?.productDetails ||
-    JSON.parse(localStorage.getItem("productDetails") || "{}");
+    JSON.parse(localStorage.getItem("productDetails") ?? "{}");
   const reportDetails = isEditingMode
     ? location.state?.report ??
-      JSON.parse(localStorage.getItem("reportDetails") || "{}")
+      JSON.parse(localStorage.getItem("reportDetails") ?? "{}")
     : undefined;
 
   const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
   const [reportDescription, setReportDescription] = useState(
     reportDetails?.description ?? ""
   );
-  const [selectedSource, setSelectedSource] = useState(
-    reportDetails?.sourceConnection?.id ?? ""
-  );
-  const [selectedDestination, setSelectedDestination] = useState(
-    reportDetails?.destinationConnection?.alias ?? ""
+
+  const [activeStatus, setActiveStatus] = useState(
+    reportDetails?.isActive ?? false
   );
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -72,12 +71,28 @@ const AddReportDashboard = () => {
     isLoading: isLoadingSource,
     error: errorSource,
   } = useGetSourceConnectionsListQuery(productDetails.id);
-  //! ADD VALIDATION FOR INPUTS
+
+  const [selectedSource, setSelectedSource] = useState(
+    sourceConnectionsList?.some(
+      (obj) => obj.id === reportDetails?.sourceConnection?.id
+    )
+      ? reportDetails?.sourceConnection?.id
+      : ""
+  );
+
   const {
     data: destinationConnectionsList,
     isLoading: isLoadingDestination,
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery(productDetails.id);
+
+  const [selectedDestination, setSelectedDestination] = useState(
+    destinationConnectionsList?.some(
+      (obj) => obj.id === reportDetails?.destinationConnection?.id
+    )
+      ? reportDetails?.destinationConnection?.alias
+      : ""
+  );
 
   const { data: storedProcedures, isLoading: isLoadingStoredProcedures } =
     useConditionalStoredProcedures(productDetails.id, selectedSource);
@@ -149,7 +164,9 @@ const AddReportDashboard = () => {
             storedProcedures ? storedProcedures[selectedProcedure].name : "",
             storedProcedures
               ? storedProcedures[selectedProcedure].parameters
-              : []
+              : [],
+            undefined,
+            activeStatus
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -169,7 +186,8 @@ const AddReportDashboard = () => {
             storedProcedures ? storedProcedures[selectedProcedure].name : "",
             storedProcedures
               ? storedProcedures[selectedProcedure].parameters
-              : []
+              : [],
+            activeStatus
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -195,6 +213,7 @@ const AddReportDashboard = () => {
     !reportDescription ||
     !selectedSource ||
     !selectedDestination ||
+    selectedProcedure == -1 ||
     !!aliasError ||
     !!descriptionError;
 
@@ -212,6 +231,7 @@ const AddReportDashboard = () => {
       );
       if (matchingSource) {
         setSelectedSource(matchingSource.id.toString());
+        setSelectedProcedure(-1);
         hasSetInitialSource.current = true;
       }
     }
@@ -272,6 +292,12 @@ const AddReportDashboard = () => {
             borderBottomWidth={3}
             width={"100%"}
           >
+            <Switch
+              size="lg"
+              colorScheme="red"
+              isChecked={activeStatus}
+              onChange={() => setActiveStatus(!activeStatus)}
+            />
             <Spacer />
             <Text fontSize={25} textAlign="center">
               {isEditingMode ? "Edit Report" : "Register Report"}
@@ -368,7 +394,7 @@ const AddReportDashboard = () => {
                         ) : (
                           <Text>Error with loading source connection list</Text>
                         )}
-                      </Select>   
+                      </Select>
                     </>
                   )}
                 </FormControl>
