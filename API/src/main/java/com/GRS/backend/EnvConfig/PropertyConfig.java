@@ -15,6 +15,7 @@ public class PropertyConfig {
     public void init() {
         System.setProperty("CLIENT_ID", dotenv.get("CLIENT_ID"));
         System.setProperty("CLIENT_SECRET", dotenv.get("CLIENT_SECRET"));
-        System.setProperty("FRONTEND_URL", dotenv.get("FRONTEND_URL"));
+        System.setProperty("LOCAL_FRONTEND_URL", dotenv.get("LOCAL_FRONTEND_URL"));
+        System.setProperty("HOST_FRONTEND_URL", dotenv.get("HOST_FRONTEND_URL"));
     }
 }

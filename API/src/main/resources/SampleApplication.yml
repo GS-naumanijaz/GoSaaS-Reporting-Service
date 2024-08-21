@@ -8,6 +8,10 @@ spring:
             client-id: your-google-client-id
             client-secret: your-google-client-secret
 
+# profiles
+  profiles:
+    active: your-yml-file-tag
+
   # Database
   datasource:
     url: jdbc:your-database-url
@@ -34,3 +38,9 @@ logging:
     max-size: your-log-file-max-size
   pattern:
     console: your-log-pattern
+
+  # testing logging and deleting
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 0
