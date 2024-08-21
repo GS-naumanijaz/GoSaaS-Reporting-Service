@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -32,8 +33,10 @@ public class ApplicationController {
         String search = queryParams.getSearch();
         String searchBy = queryParams.getSearchBy();
         Pageable pageable = queryParams.getPageable();
+        LocalDate startDate = queryParams.getStartDate();
+        LocalDate endDate = queryParams.getEndDate();
 
-        Page<Application> allApplications = applicationService.getAllApplications(search, searchBy, pageable, status);
+        Page<Application> allApplications = applicationService.getAllApplications(search, searchBy, pageable, status, startDate, endDate);
 
         return Response.responseBuilder("Applications retrieved successfully", HttpStatus.OK, allApplications);
     }

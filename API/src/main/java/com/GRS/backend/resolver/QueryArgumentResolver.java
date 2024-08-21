@@ -10,7 +10,12 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,21 +33,31 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
         int pageSize = webRequest.getParameter("page_size") != null ? Integer.parseInt(webRequest.getParameter("page_size")) : annotation.pageSize();
         String sortBy = webRequest.getParameter("sort_by") != null ? webRequest.getParameter("sort_by") : annotation.sortBy();
         String sortOrder = webRequest.getParameter("sort_order") != null ? webRequest.getParameter("sort_order") : annotation.sortOrder();
+        String startDateStr = webRequest.getParameter("start_date") != null ? webRequest.getParameter("start_date") : annotation.startDate();
+        String endDateStr = webRequest.getParameter("end_date") != null ? webRequest.getParameter("end_date") : annotation.endDate();
+
+        LocalDate startDate = LocalDate.parse(startDateStr, DATE_FORMATTER);
+        LocalDate endDate = endDateStr.isEmpty() ? LocalDate.now() : LocalDate.parse(endDateStr, DATE_FORMATTER);
 
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
 
-        return new QueryParamsContainer(search, searchBy, pageable);
+        return new QueryParamsContainer(search, searchBy, startDate, endDate, pageable);
+
     }
 
     public static class QueryParamsContainer {
         private final String search;
         private final String searchBy;
+        private final LocalDate startDate;
+        private final LocalDate endDate;
         private final Pageable pageable;
 
-        public QueryParamsContainer(String search, String searchBy, Pageable pageable) {
+        public QueryParamsContainer(String search, String searchBy, LocalDate startDate, LocalDate endDate, Pageable pageable) {
             this.search = search;
             this.searchBy = searchBy;
+            this.startDate = startDate;
+            this.endDate = endDate;
             this.pageable = pageable;
         }
 
@@ -54,9 +69,18 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
             return searchBy;
         }
 
+        public LocalDate getStartDate() {
+            return startDate;
+        }
+
+        public LocalDate getEndDate() {
+            return endDate;
+        }
+
         public Pageable getPageable() {
             return pageable;
         }
     }
 }
+
 

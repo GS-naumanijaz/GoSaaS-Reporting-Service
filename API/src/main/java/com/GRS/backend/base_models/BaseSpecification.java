@@ -6,6 +6,9 @@ import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,5 +77,19 @@ public abstract class BaseSpecification<T> {
         return (root, query, criteriaBuilder) -> criteriaBuilder.and(
                 criteriaBuilder.isTrue(root.get("isActive"))
         );
+    }
+
+    public static <T> Specification<T> betweenDates(String dateField, LocalDate startDate, LocalDate endDate) {
+        return (root, query, criteriaBuilder) -> {
+            // Convert LocalDate to LocalDateTime
+            LocalDateTime startDateTime = startDate.atStartOfDay();
+            LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+            System.out.println(startDateTime);
+            System.out.println(endDateTime);
+
+            Path<LocalDateTime> datePath = root.get(dateField);
+            return criteriaBuilder.between(datePath, startDateTime, endDateTime);
+        };
     }
 }

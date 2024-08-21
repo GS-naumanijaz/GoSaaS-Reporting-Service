@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -16,7 +18,7 @@ public class ApplicationService {
     @Autowired
     private ApplicationRepository applicationRepository;
 
-    public Page<Application> getAllApplications(String search, String searchBy, Pageable pageable, String status) {
+    public Page<Application> getAllApplications(String search, String searchBy, Pageable pageable, String status, LocalDate startDate, LocalDate endDate) {
 
         Specification<Application> spec = Specification.where(ApplicationSpecification.isNotDeleted());
 
@@ -27,6 +29,9 @@ public class ApplicationService {
         if (status != null) {
             spec = spec.and(ApplicationSpecification.hasStatus(status));
         }
+
+        // Apply the date filter
+        spec = spec.and(ApplicationSpecification.betweenDates("updatedAt", startDate, endDate));
 
         return applicationRepository.findAll(spec, pageable);
     }
