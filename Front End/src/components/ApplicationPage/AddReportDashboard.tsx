@@ -30,7 +30,6 @@ import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinatio
 import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
-import StoredProcedure from "../../models/StoredProcedure";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -57,14 +56,12 @@ const AddReportDashboard = () => {
     reportDetails?.description ?? ""
   );
   const [selectedSource, setSelectedSource] = useState(
-    reportDetails?.sourceConnection?.alias ?? ""
+    reportDetails?.sourceConnection?.id ?? ""
   );
   const [selectedDestination, setSelectedDestination] = useState(
     reportDetails?.destinationConnection?.alias ?? ""
   );
-  const [selectedProcedure, setSelectedProcedure] = useState(
-    reportDetails?.storedProcedure ?? ""
-  );
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const hasSetInitialSource = useRef(false);
@@ -87,6 +84,14 @@ const AddReportDashboard = () => {
 
   const { mutateAsync: addReport } = useAddReport(productDetails.id);
   const { mutateAsync: updateReport } = useEditReport(productDetails.id);
+
+  const [selectedProcedure, setSelectedProcedure] = useState<number>(
+    storedProcedures && reportDetails
+      ? storedProcedures.findIndex(
+          (obj) => obj.name === reportDetails.storedProcedure
+        )
+      : -1
+  );
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -142,7 +147,9 @@ const AddReportDashboard = () => {
             undefined,
             undefined,
             storedProcedures ? storedProcedures[selectedProcedure].name : "",
-            storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
+            storedProcedures
+              ? storedProcedures[selectedProcedure].parameters
+              : []
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -160,7 +167,9 @@ const AddReportDashboard = () => {
             undefined,
             undefined,
             storedProcedures ? storedProcedures[selectedProcedure].name : "",
-            storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
+            storedProcedures
+              ? storedProcedures[selectedProcedure].parameters
+              : []
           ),
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
@@ -169,7 +178,7 @@ const AddReportDashboard = () => {
         await addReport(reportData);
       }
     } catch {
-      console.log("error");
+      console.log("failed to save");
     }
 
     setIsSaveOpen(false);
@@ -339,7 +348,10 @@ const AddReportDashboard = () => {
                     <Select
                       placeholder="Select Source Connection"
                       value={selectedSource}
-                      onChange={(e) => setSelectedSource(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedSource(e.target.value);
+                        setSelectedProcedure(-1);
+                      }}
                     >
                       {sourceConnectionsList ? (
                         sourceConnectionsList.map(
@@ -418,7 +430,7 @@ const AddReportDashboard = () => {
                             placeholder="Select Stored Procedure"
                             value={selectedProcedure}
                             onChange={(e) =>
-                              setSelectedProcedure(e.target.value)
+                              setSelectedProcedure(Number(e.target.value))
                             }
                           >
                             {storedProcedures?.map((storedProcedure, index) => (
@@ -431,6 +443,7 @@ const AddReportDashboard = () => {
                         {selectedProcedure && (
                           <FormControl isReadOnly p={5}>
                             {storedProcedures &&
+                              selectedProcedure !== -1 && 
                               storedProcedures.length !== 0 && (
                                 <>
                                   <FormLabel>Parameters</FormLabel>

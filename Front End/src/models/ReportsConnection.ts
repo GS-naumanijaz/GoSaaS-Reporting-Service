@@ -26,7 +26,6 @@ export class ReportsConnection extends TableRowData {
     "Connection",
     "Destination",
     "Stored Procedures",
-    "Parameters",
     "Edit",
     "Delete",
   ];
@@ -155,11 +154,6 @@ export class ReportsConnection extends TableRowData {
       isSearchable: true,
     },
     {
-      isEnabled: true,
-      isSortable: true,
-      isSearchable: true,
-    },
-    {
       isEnabled: false,
     },
     {
@@ -248,7 +242,6 @@ export class ReportsConnection extends TableRowData {
       this.connection_alias,
       this.destination_alias,
       this.storedProcedure,
-      this.params ? this.params[0] : "none",
     ];
   }
 
@@ -293,7 +286,6 @@ export class ReportsConnection extends TableRowData {
     this.connection_alias = newValue[2];
     this.destination_alias = newValue[3];
     this.storedProcedure = newValue[4];
-    this.params = newValue[5];
   }
 
   getInputFields(): InputField[] {
@@ -305,7 +297,7 @@ export class ReportsConnection extends TableRowData {
   }
 
   getEditAccess(): boolean[] {
-    return [true, true, true, true, true];
+    return [true, true, true, true];
   }
 
   requiresCheckBox(): boolean {
