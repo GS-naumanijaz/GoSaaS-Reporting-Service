@@ -111,6 +111,14 @@ public class DestinationConnectionService {
             FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
             FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
 
+            if (Boolean.FALSE.equals(existingDestination.getIsActive())) {
+                List<Report> reportsToUpdate = new ArrayList<>(existingDestination.getReports());
+                for (Report report: reportsToUpdate) {
+                    report.setIsActive(false);
+
+                    reportRepository.save(report);
+                }
+            }
 
             return destinationConnectionRepository.save(existingDestination);
         } else {
@@ -126,6 +134,16 @@ public class DestinationConnectionService {
             if (optionalConnection.isPresent()) {
                 DestinationConnection connection = optionalConnection.get();
                 connection.setIsActive(isActive);
+
+                if (!isActive) {
+                    List<Report> reportsToUpdate = new ArrayList<>(connection.getReports());
+                    for (Report report: reportsToUpdate) {
+                        report.setIsActive(false);
+
+                        reportRepository.save(report);
+                    }
+                }
+
                 updatedConnections.add(destinationConnectionRepository.save(connection));
             }
         }
