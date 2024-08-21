@@ -163,9 +163,9 @@ export class SourceConnection extends TableRowData {
         required: true,
         minLength: 8,
         maxLength: 100,
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).*$/,
+        pattern: /^[a-zA-Z0-9\W_]+$/,
         customErrorMessage:
-          "Password must be 8-100 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+          "Password must be 8-100 characters long and contain only letters, numbers, or special characters.",
       },
     },
   ];

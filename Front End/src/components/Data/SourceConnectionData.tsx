@@ -157,6 +157,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   return (
     <CustomTable
       tableManager={manager}
+      appId={appId}
       onSort={handleSort}
       onSearch={handleSearch}
       onDelete={handleDelete}
@@ -174,8 +175,11 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         searchTerm: searchTerm,
       }}
       onAddNew={handleAddNew}
-      handleClearSearch={handleClearSearch}
-    />
+      handleClearSearch={handleClearSearch} onDateSearch={function (date: Date[]): void {
+        throw new Error("Function not implemented.");
+      } } handleClearDates={function (): void {
+        throw new Error("Function not implemented.");
+      } }      />
   );
 };
 

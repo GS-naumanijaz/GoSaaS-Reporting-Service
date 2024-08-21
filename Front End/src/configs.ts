@@ -1,8 +1,8 @@
 // URLS
-// export const FrontendURL = "http://10.8.0.32:5173";
-// export const BackendURL = "http://10.8.0.32:8080";
-export const FrontendURL = "http://localhost:5173";
-export const BackendURL = "http://localhost:8080";
+export const FrontendURL = "http://10.8.0.32:5173";
+export const BackendURL = "http://10.8.0.32:8080";
+// export const FrontendURL = "http://localhost:5173";
+// export const BackendURL = "http://localhost:8080";
 
 // Color palette
 export const primaryColor = "#D40B0B";
@@ -38,6 +38,6 @@ export const sx = {
 
 // App Validations
 export const minimumAppName = 3;
-export const maximumAppName = 20;
+export const maximumAppName = 50;
 export const minimumAppDescription = 20;
 export const maximumAppDescription = 250;

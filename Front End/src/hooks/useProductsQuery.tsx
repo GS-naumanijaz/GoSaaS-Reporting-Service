@@ -1,13 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import useProductStore from "../store/ProductStore";
 import { Product } from "../components/Dashboard/Products";
 import { BackendURL } from "../configs";
 
 // Define the fetch function
 const fetchProducts = async (
+  sortingBy: string,
+  sortingOrder: string,
   page: number,
+  pageSize: number,
   searchTerm: string,
-  status: string
+  searchField: string,
+  selectedFilter: string
 ): Promise<{
   content: Product[];
   totalPages: number;
@@ -15,10 +18,13 @@ const fetchProducts = async (
   empty: boolean;
 }> => {
   const params = new URLSearchParams({
+    sort_by: sortingBy,
+    sort_order: sortingOrder,
     page: page.toString(),
-    page_size: "6",
+    page_size: pageSize.toString(),
+    search_by: searchField,
     search: searchTerm,
-    status: status ?? "All",
+    status: selectedFilter,
   });
   const response = await fetch(
     `${BackendURL}/applications?${params.toString()}`,
@@ -33,12 +39,36 @@ const fetchProducts = async (
 };
 
 // Define the query hook
-export const useProductsQuery = () => {
-  const { currentPage, searchTerm, selectedFilter } = useProductStore();
-
+export const useProductsQuery = (
+  sortingBy: string,
+  sortingOrder: string,
+  page: number,
+  pageSize: number,
+  searchTerm: string,
+  searchField: string,
+  selectedFilter: string
+) => {
   return useQuery({
-    queryKey: ["products", currentPage, searchTerm, selectedFilter],
-    queryFn: () => fetchProducts(currentPage, searchTerm, selectedFilter),
+    queryKey: [
+      "products",
+      sortingBy,
+      sortingOrder,
+      page,
+      pageSize,
+      searchTerm,
+      searchField,
+      selectedFilter,
+    ],
+    queryFn: () =>
+      fetchProducts(
+        sortingBy,
+        sortingOrder,
+        page,
+        pageSize,
+        searchTerm,
+        searchField,
+        selectedFilter
+      ),
     refetchOnWindowFocus: true,
     gcTime: 0, // cache time
   });

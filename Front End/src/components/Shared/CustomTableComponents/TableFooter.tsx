@@ -7,7 +7,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Spacer,
   Text,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -32,21 +31,35 @@ const TableFooter = ({
   const [totalPages, setTotalPages] = useState(
     Math.ceil(NoOfRecords / pageSize)
   );
-
   // Recalculate totalPages whenever NoOfRecords or pageSize changes
   useEffect(() => {
     setTotalPages(Math.ceil(NoOfRecords / pageSize) || 1);
   }, [NoOfRecords, pageSize]);
 
-  // Handle edge cases where pageSize might be zero
+  // calculating range of records
   const safePageSize = pageSize > 0 ? pageSize : 1;
-
-  // Calculate range of records being displayed
   const lowerRange = NoOfRecords === 0 ? 0 : page * safePageSize + 1;
   const upperRange = Math.min((page + 1) * safePageSize, NoOfRecords);
 
-  // Conditionally render pagination info
   const showPagination = totalPages > 1;
+
+  // for page size calculation
+  const generatePageSizes = (upperBound: number, step: number) => {
+    const sizes: number[] = [];
+
+    if (upperBound > 0) {
+      let currentSize = step;
+      while (currentSize <= upperBound) {
+        sizes.push(currentSize);
+        currentSize += step;
+      }
+      if (sizes.length === 0 || sizes[sizes.length - 1] < upperBound) {
+        sizes.push(currentSize);
+      }
+    }
+    return sizes.length > 0 ? sizes : [5];
+  };
+  const pageSizes = generatePageSizes(NoOfRecords, 5);
 
   return (
     <Box margin={4}>
@@ -93,7 +106,7 @@ const TableFooter = ({
               {pageSize}
             </MenuButton>
             <MenuList>
-              {[5, 10, 20, 40].map((size) => (
+              {pageSizes.map((size) => (
                 <MenuItem key={size} onClick={() => onPageSizeChange(size)}>
                   {size}
                 </MenuItem>

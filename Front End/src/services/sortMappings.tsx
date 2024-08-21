@@ -7,6 +7,8 @@ export type MappedFormData = {
 };
 
 export const fieldMapping = {
+  // applications
+  "Last Modified": "updatedAt",
   // source
   Alias: "alias",
   "Connection Type": "type",
@@ -44,7 +46,6 @@ export const mapFormDataKeys = (
 
   return mappedData;
 };
-
 
 // Create the reverse mapping
 export const reverseFieldMapping = Object.fromEntries(

@@ -240,6 +240,7 @@ const AddReportDashboard = () => {
     destinationConnectionsList,
   ]);
 
+
   return (
     <>
       <Box

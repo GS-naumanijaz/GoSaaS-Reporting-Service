@@ -20,21 +20,32 @@ import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
 import { FaChevronDown } from "react-icons/fa";
 import { useState } from "react";
+import { DayPicker } from "react-day-picker";
+import { primaryColor } from "../../../configs";
 
 interface Props {
   heading: string;
   sortFilterOptions: ColumnSortFilterOptions;
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
+  onDateSearch: (date: Date[]) => void;
 }
+
+const customStyles = `
+  .rdp-day:not(.selected):hover {
+    background-color: red; // Optional: change the hover color for better UX
+  }
+`;
 
 const FilterSortPopup = ({
   heading,
   sortFilterOptions,
   onSort,
   onSearch,
+  onDateSearch,
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState("All");
+  const [selectedDate, setSelectedDate] = useState<Date[] | undefined>();
 
   const handleChange = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -58,6 +69,10 @@ const FilterSortPopup = ({
     }
     setSelectedItem(selected);
   };
+
+  if (selectedDate?.length === 2) {
+  onDateSearch(selectedDate);
+  }
 
   if (!sortFilterOptions.isEnabled)
     return (
@@ -150,6 +165,36 @@ const FilterSortPopup = ({
                 </Menu>
               </PopoverBody>
             </Box>
+          )}
+          {sortFilterOptions.DateItem && (
+            <Stack
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                ".rdp-footer": {
+                  color: primaryColor,
+                },
+              }}
+            >
+              <style>{customStyles}</style>
+              <DayPicker
+                mode="multiple"
+                min={2}
+                max={2}
+                required
+                showOutsideDays={false}
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                footer={
+                  selectedDate?.length
+                    ? `${selectedDate
+                        .map((date) => date.toLocaleDateString())
+                        .join(" - ")}.`
+                    : "Please pick a date."
+                }
+              />
+            </Stack>
           )}
         </PopoverContent>
       </Popover>
