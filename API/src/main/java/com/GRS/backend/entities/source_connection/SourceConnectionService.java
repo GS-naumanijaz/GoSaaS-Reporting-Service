@@ -58,7 +58,9 @@ public class SourceConnectionService {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
-            Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
+            Specification<SourceConnection> spec = Specification
+                    .<SourceConnection>where(BaseSpecification.belongsTo("application", appId))
+                    .and(BaseSpecification.isActive());
 
             return sourceConnectionRepository.findAll(spec).stream()
                     .map(sourceConnection -> new SourceConnectionDTO(sourceConnection.getId(), sourceConnection.getAlias()))

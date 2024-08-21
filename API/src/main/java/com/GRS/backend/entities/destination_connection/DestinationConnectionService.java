@@ -55,7 +55,9 @@ public class DestinationConnectionService {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
-            Specification<DestinationConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
+            Specification<DestinationConnection> spec = Specification
+                    .<DestinationConnection> where(BaseSpecification.belongsTo("application", appId))
+                    .and(BaseSpecification.isActive());
 
             return destinationConnectionRepository.findAll(spec).stream()
                     .map(destinationConnection -> new DestinationConnectionDTO(destinationConnection.getId(), destinationConnection.getAlias()))

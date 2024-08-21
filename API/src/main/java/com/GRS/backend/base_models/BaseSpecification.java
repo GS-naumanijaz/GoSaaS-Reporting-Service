@@ -70,12 +70,9 @@ public abstract class BaseSpecification<T> {
         );
     }
 
-    private static boolean doesFieldExist(Class<?> entityClass, String fieldName) {
-        for (Field field : entityClass.getDeclaredFields()) {
-            if (field.getName().equals(fieldName)) {
-                return true;
-            }
-        }
-        return false;
+    public static <T> Specification<T> isActive() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                criteriaBuilder.isTrue(root.get("isActive"))
+        );
     }
 }
