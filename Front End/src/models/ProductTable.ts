@@ -18,13 +18,12 @@ export class ProductTable extends TableRowData {
   private static tableHeadings = [
     "",
     "Alias",
-    "Description",
-    "Creation Date",
     "Last Modified",
     "Active Status",
+    "View",
     "Delete",
   ];
-  private static columnWidths = ["5%", "20%", "25%", "20%", "20%", "5%", "5%"];
+  private static columnWidths = ["5%", "25%", "25%", "25%", "5%", "5%"];
 
   private static inputFields: InputField[] = [
     {
@@ -39,29 +38,6 @@ export class ProductTable extends TableRowData {
         pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
           "Alias must be 3-20 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
-      },
-    },
-    {
-      name: "Description",
-      label: "description",
-      isSelectable: false,
-      type: "text",
-      validation: {
-        required: true,
-        minLength: 3,
-        maxLength: 100,
-        customErrorMessage: "Description must be 3-100 characters long.",
-      },
-    },
-    {
-      name: "Creation Date",
-      label: "creationDate",
-      isSelectable: false,
-      type: "date",
-      isDate: true,
-      validation: {
-        required: true,
-        customErrorMessage: "Please provide a valid date for Creation Date.",
       },
     },
     {
@@ -80,24 +56,20 @@ export class ProductTable extends TableRowData {
   private static sortFilterOptions: ColumnSortFilterOptions[] = [
     {
       isEnabled: true,
-      isSortable: true,
       isSearchable: true,
-    },
-    {
-      isEnabled: true,
       isSortable: true,
     },
     {
       isEnabled: true,
       isSortable: true,
+      DateItem: true,
     },
     {
       isEnabled: true,
-      isSortable: true,
+      dropdownFilter: ["All", "Active", "Inactive"],
     },
     {
-      isEnabled: true,
-      isSortable: true,
+      isEnabled: false,
     },
     {
       isEnabled: false,
@@ -136,7 +108,7 @@ export class ProductTable extends TableRowData {
   }
 
   getTableData(): string[] {
-    return [this.alias, this.description, this.creationDate, this.updatedAt];
+    return [this.alias, this.updatedAt];
   }
 
   getProductData(): Product {
@@ -171,12 +143,6 @@ export class ProductTable extends TableRowData {
         this.alias = newValue;
         break;
       case 1:
-        this.description = newValue;
-        break;
-      case 2:
-        this.creationDate = newValue;
-        break;
-      case 3:
         this.updatedAt = newValue;
         break;
     }
@@ -184,9 +150,7 @@ export class ProductTable extends TableRowData {
 
   editCompleteRow(newValue: string[]) {
     this.alias = newValue[0];
-    this.description = newValue[1];
-    this.creationDate = newValue[2];
-    this.updatedAt = newValue[3];
+    this.updatedAt = newValue[1];
   }
 
   getInputFields(): InputField[] {
