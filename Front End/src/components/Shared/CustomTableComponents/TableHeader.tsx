@@ -95,6 +95,10 @@ const TableHeader = ({
           <FaPlus color={primaryColor} />
         </Button>
       );
+    } else if (tableHeading === "Audit Log") {
+      return (
+        <></>
+      );
     } else {
       return (
         <Button

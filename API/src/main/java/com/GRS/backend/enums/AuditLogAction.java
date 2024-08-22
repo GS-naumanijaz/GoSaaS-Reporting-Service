@@ -4,6 +4,6 @@ public enum AuditLogAction {
     CREATED,
     MODIFIED,
     DELETED,
-    LOG_IN,
-    LOG_OUT
+    LOGIN,
+    LOGOUT
 }

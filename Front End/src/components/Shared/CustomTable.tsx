@@ -303,29 +303,31 @@ const CustomTable = ({
                       }}
                     />
                   )}
-                  {tableManager.requiresRedirect() ? (
-                    <TdRedirect
-                      tableManager={tableManager}
-                      rowIndex={rowIndex}
+                  {tableManager.requiresActions() && <>
+                    {tableManager.requiresRedirect() ? (
+                      <TdRedirect
+                        tableManager={tableManager}
+                        rowIndex={rowIndex}
+                      />
+                    ) : (
+                      <TdEditButton
+                        isEditingMode={isEditingMode()}
+                        isEditing={isEditing[rowIndex]}
+                        isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
+                        // handleEditToggle={() => handleEditToggle(rowIndex)}
+                        handleEditToggle={
+                          onClickEdit
+                            ? () => onClickEdit(tableManager.getRowItem(rowIndex))
+                            : () => handleEditToggle(rowIndex)
+                        }
+                        revertEdit={() => revertEdit(rowIndex)}
+                        saveEdit={() => handleEditSave(rowIndex)}
+                      />
+                    )}
+                    <TdDeleteButton
+                      handleDeleteRow={() => handleDeleteRow(row.getId())}
                     />
-                  ) : (
-                    <TdEditButton
-                      isEditingMode={isEditingMode()}
-                      isEditing={isEditing[rowIndex]}
-                      isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
-                      // handleEditToggle={() => handleEditToggle(rowIndex)}
-                      handleEditToggle={
-                        onClickEdit
-                          ? () => onClickEdit(tableManager.getRowItem(rowIndex))
-                          : () => handleEditToggle(rowIndex)
-                      }
-                      revertEdit={() => revertEdit(rowIndex)}
-                      saveEdit={() => handleEditSave(rowIndex)}
-                    />
-                  )}
-                  <TdDeleteButton
-                    handleDeleteRow={() => handleDeleteRow(row.getId())}
-                  />
+                  </>}
                   {tableManager.requiresTestButton() && (
                     <TdTestButton
                       onClick={() => onTestConnection!(row.getId())}

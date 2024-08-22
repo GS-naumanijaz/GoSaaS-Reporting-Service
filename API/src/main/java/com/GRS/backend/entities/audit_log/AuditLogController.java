@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -19,12 +21,15 @@ public class AuditLogController {
     private AuditLogService auditLogService;
 
     @GetMapping
-    public ResponseEntity<Object> getAllAuditLogs(@QueryParams(sortBy = "createdAt") QueryArgumentResolver.QueryParamsContainer paginationParams) {
+    public ResponseEntity<Object> getAllAuditLogs(@QueryParams(sortBy = "createdAt") QueryArgumentResolver.QueryParamsContainer queryParams) {
 
-        String search = paginationParams.getSearch();
-        Pageable pageable = paginationParams.getPageable();
+        String search = queryParams.getSearch();
+        String searchBy = queryParams.getSearchBy();
+        Pageable pageable = queryParams.getPageable();
+        LocalDate startDate = queryParams.getStartDate();
+        LocalDate endDate = queryParams.getEndDate();
 
-        Page<AuditLog> allAuditLogs = auditLogService.getAllAuditLogs(search, pageable);
+        Page<AuditLog> allAuditLogs = auditLogService.getAllAuditLogs(search, searchBy, pageable, startDate, endDate);
 
         return Response.responseBuilder("Audit Logs retrieved successfully", HttpStatus.OK, allAuditLogs);
 

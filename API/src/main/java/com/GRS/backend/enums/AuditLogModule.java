@@ -6,5 +6,4 @@ public enum AuditLogModule {
     DESTINATION,
     SOURCE,
     REPORT,
-
 }

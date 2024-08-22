@@ -104,6 +104,10 @@ export class TableManager {
     }
   }
 
+  requiresActions() {
+    return this.defaultData.requiresActions();
+  }
+
   requiresStatusToggle() {
     return this.defaultData.requiresStatusToggle();
   }

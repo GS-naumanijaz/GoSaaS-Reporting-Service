@@ -13,6 +13,9 @@ export abstract class TableRowData {
   abstract getEditAccess(): boolean[];
 
   // abstract handleBulkDelete(deleteIds: number[]): void;
+  requiresActions(): boolean {
+    return true;
+  }
 
   requiresCheckBox(): boolean {
     return false;

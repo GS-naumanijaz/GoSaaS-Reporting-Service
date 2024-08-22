@@ -82,7 +82,7 @@ const TdData = ({
   };
 
   return (
-    <Td textAlign="center" width={columnWidth} m={0} p={0}>
+    <Td textAlign="center" width={columnWidth} m={0} p={0} height={50}>
       {isEditing && isEditable ? (
         <Box>
           {inputField.isSelectable ? (
