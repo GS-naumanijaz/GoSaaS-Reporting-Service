@@ -155,47 +155,28 @@ const AddReportDashboard = () => {
     }
 
     try {
+      let partialReport: Partial<ReportsConnection> = {
+        alias: reportAlias,
+        description: reportDescription,
+        storedProcedure: storedProcedures ? storedProcedures[selectedProcedure].name : "",
+        params: storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
+        isActive: activeStatus,
+        isPinned: isPinned,
+      };
+
       if (isEditingMode) {
         let reportId = reportDetails.id ?? reportDetails.reportId ?? -1 ;  
         let updatedReport = {
-          report: new ReportsConnection(
-            undefined,
-            reportAlias,
-            reportDescription,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            storedProcedures ? storedProcedures[selectedProcedure].name : "",
-            storedProcedures
-              ? storedProcedures[selectedProcedure].parameters
-              : [],
-            undefined,
-            activeStatus,
-            isPinned
-          ),
+          report: partialReport,
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
         };
 
         await updateReport({ reportId, updatedReport });
       } else {
+
         let reportData = {
-          report: new ReportsConnection(
-            undefined,
-            reportAlias,
-            reportDescription,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            storedProcedures ? storedProcedures[selectedProcedure].name : "",
-            storedProcedures
-              ? storedProcedures[selectedProcedure].parameters
-              : [],
-            activeStatus,
-            isPinned
-          ),
+          report: partialReport,
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
         };

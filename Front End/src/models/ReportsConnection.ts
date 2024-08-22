@@ -12,10 +12,10 @@ export class ReportsConnection extends TableRowData {
   private destination_alias: string;
   private sourceConnection?: SourceConnection;
   private destinationConnection?: DestinationConnection;
-  private storedProcedure: string;
-  private params: string[];
+  public storedProcedure: string;
+  public params: string[];
   public application: Application;
-  private isActive: boolean;
+  public isActive: boolean;
   public isPinned: boolean;
 
   //Static variables
