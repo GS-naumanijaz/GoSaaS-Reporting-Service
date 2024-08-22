@@ -70,6 +70,7 @@ const AppHeader = ({ appData }: Props) => {
   const cancelDeleteRef = useRef<HTMLButtonElement | null>(null);
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
 
+
   const deleteMutation = useMutation({
     // refactor later into useAppData
     mutationFn: async (id: number) => {

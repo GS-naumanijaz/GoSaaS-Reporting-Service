@@ -3,24 +3,22 @@ import { SourceConnection } from "../models/SourceConnection";
 import APIClient from "../services/apiClient";
 import { AxiosError } from "axios";
 import StoredProcedure from "../models/StoredProcedure";
-import { useEffect, useState } from "react";
 
 const createApiClient = (appId: number) =>
   new APIClient<SourceConnection>(`applications/${appId}/source-connections`);
 
-
-
 const fiveMins = 1000 * 60 * 5;
 
 // Utility function to create a predicate for invalidating queries
-const invalidateSourceAndReportsConnections = (appId: number) => (query: any) => {
-  const queryKey = query.queryKey;
-  return (
-    (queryKey[0] === "sourceConnections" && queryKey[1] === appId) ||
-    (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
-    (queryKey[0] === "sourceConnections" && queryKey[1] === "list")
-  );
-};
+const invalidateSourceAndReportsConnections =
+  (appId: number) => (query: any) => {
+    const queryKey = query.queryKey;
+    return (
+      (queryKey[0] === "sourceConnections" && queryKey[1] === appId) ||
+      (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
+      (queryKey[0] === "sourceConnections" && queryKey[1] === "list")
+    );
+  };
 
 //fetch all source connections pagination
 export const useSourceConnections = (
@@ -56,7 +54,7 @@ export const useSourceConnections = (
           search: searchTerm,
         },
       }),
-    staleTime: fiveMins, 
+    staleTime: fiveMins,
   });
 };
 
@@ -102,8 +100,7 @@ export const useUpdateSourceConnectionStatus = (appId: number) => {
     }: {
       sourceIds: number[];
       status: boolean;
-    }) =>
-      apiClient.updateStatus(status, sourceIds    ), 
+    }) => apiClient.updateStatus(status, sourceIds),
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidateSourceAndReportsConnections(appId),
@@ -121,7 +118,7 @@ export const useTestSourceConnection = (appId: number) => {
       try {
         const result = await apiClient.get(`${sourceId}/test`);
         if (result) {
-          return result; 
+          return result;
         } else {
           return null;
         }
@@ -174,20 +171,25 @@ export const useGetSourceConnectionsListQuery = (appId: number) => {
 
   return useQuery({
     queryKey: ["sourceConnections", appId, "list"],
-    queryFn: () => apiClient.getListAll('all'),
-    staleTime: fiveMins, 
+    queryFn: () => apiClient.getListAll("all"),
+    staleTime: fiveMins,
   });
 };
 
 //Hook to get stored procedures
-export const useConditionalStoredProcedures = (appId: number, sourceId: number) => {
-  const apiClient = new APIClient<StoredProcedure>(`applications/${appId}/source-connections/${sourceId}`);
+export const useConditionalStoredProcedures = (
+  appId: number,
+  sourceId: number
+) => {
+  const apiClient = new APIClient<StoredProcedure>(
+    `applications/${appId}/source-connections/${sourceId}`
+  );
 
   const fetchStoredProcedures = async () => {
     if (!sourceId) {
       return null; // Skip fetch if sourceId is not provided
     }
-    return apiClient.getListAll('stored-procedures');
+    return apiClient.getListAll("stored-procedures");
   };
 
   const { data, isLoading } = useQuery({

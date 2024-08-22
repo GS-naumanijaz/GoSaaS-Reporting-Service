@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { useProductsQuery } from "../../hooks/useProductsQuery";
+import {
+  useBulkDeleteApplications,
+  useDeleteApplication,
+  useProductsQuery,
+  useUpdateApplicationStatus,
+} from "../../hooks/useProductsQuery";
 import { ProductTable } from "../../models/ProductTable";
 import { TableManager } from "../../models/TableManager";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
@@ -46,6 +51,9 @@ const ProductTableData = () => {
   );
 
   const { content: products, totalElements } = data || {};
+
+  const { mutate: updateApplicationStatus } = useUpdateApplicationStatus();
+  const { mutate: bulkDeleteApplications } = useBulkDeleteApplications();
 
   const ProductsList: ProductTable[] =
     products?.map(
@@ -98,24 +106,28 @@ const ProductTableData = () => {
     setCurrentPage(0);
   }
 
-  // Placeholder functions for other table actions
-  function handleDelete(deleteId: number): void {
-    throw new Error("Function not implemented.");
+  function handleBulkStatusUpdate(updateIds: number[], status: boolean): void {
+    updateApplicationStatus({ updateIds, status });
   }
 
   function handleBulkDelete(deleteIds: number[]): void {
-    throw new Error("Function not implemented.");
+    bulkDeleteApplications(deleteIds);
   }
 
-  function handleBulkStatusUpdate(updateIds: number[], status: boolean): void {
-    throw new Error("Function not implemented.");
+  const deleteApplication = useDeleteApplication();
+
+  function handleDelete(deleteId: number): void {
+    deleteApplication.mutate(deleteId);
   }
+
+  //! Placeholder functions for other table actions
 
   function handleTest(appId: number): void {
     throw new Error("Function not implemented.");
   }
 
   function handleEdit(itemId: number, editedItem: any): void {
+    console.log("Edit", itemId, editedItem);
     throw new Error("Function not implemented.");
   }
 

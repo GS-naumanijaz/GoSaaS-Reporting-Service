@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Product } from "../components/Dashboard/Products";
 import { BackendURL } from "../configs";
 
@@ -18,7 +18,6 @@ const fetchProducts = async (
   totalElements: number;
   empty: boolean;
 }> => {
-  console.log("reached")
   const params = new URLSearchParams({
     sort_by: sortingBy || "alias",
     sort_order: sortingOrder || "desc",
@@ -30,7 +29,6 @@ const fetchProducts = async (
     start_date: selectedDates[0] || "2024-01-01",
     end_date: selectedDates[1] || "9999-12-31",
   });
-  console.log(selectedDates);
   const response = await fetch(
     `${BackendURL}/applications?${params.toString()}`,
     {
@@ -40,7 +38,6 @@ const fetchProducts = async (
   );
 
   const data = await response.json();
-  console.log("Response");
   return data.data;
 };
 
@@ -80,5 +77,57 @@ export const useProductsQuery = (
       ),
     refetchOnWindowFocus: true,
     gcTime: 0, // cache time
+  });
+};
+
+import APIClient from "../services/apiClient";
+const createApiClient = () => new APIClient<Product>(`applications`);
+
+// mutation
+export const useUpdateApplicationStatus = () => {
+  const queryClient = useQueryClient();
+  const apiClient = createApiClient();
+
+  return useMutation({
+    mutationFn: ({
+      updateIds,
+      status,
+    }: {
+      updateIds: number[];
+      status: boolean;
+    }) => apiClient.updateStatus(status, updateIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "products",
+      });
+    },
+  });
+};
+
+export const useBulkDeleteApplications = () => {
+  const queryClient = useQueryClient();
+  const apiClient = createApiClient();
+
+  return useMutation({
+    mutationFn: (ids: number[]) => apiClient.bulkDelete(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "products",
+      });
+    },
+  });
+};
+
+export const useDeleteApplication = () => {
+  const queryClient = useQueryClient();
+  const apiClient = createApiClient();
+
+  return useMutation({
+    mutationFn: (deleteId: number) => apiClient.delete(`${deleteId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "products",
+      });
+    },
   });
 };

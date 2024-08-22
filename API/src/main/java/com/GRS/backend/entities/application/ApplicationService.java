@@ -1,5 +1,7 @@
 package com.GRS.backend.entities.application;
 
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,6 +69,21 @@ public class ApplicationService {
         }
     }
 
+    public List<Application> bulkUpdateIsActive(List<Integer> ApplicationIds, boolean isActive) {
+        List<Application> applicationList = new ArrayList<>();
+
+        for (Integer id : ApplicationIds) {
+            Optional<Application> optionalConnection = applicationRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                Application connection = optionalConnection.get();
+                connection.setIsActive(isActive);
+                applicationList.add(applicationRepository.save(connection));
+            }
+        }
+
+        return applicationList;
+    }
+
     public void deleteApplication(int appId) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
@@ -78,5 +97,24 @@ public class ApplicationService {
         } else {
             throw new EntityNotFoundException("Application", appId);
         }
+    }
+
+    public Integer bulkDeleteApplications(List<Integer> applicationIds) {
+        Integer deletedCount = 0;
+
+        for (Integer id : applicationIds) {
+            Optional<Application> optionalConnection = applicationRepository.findById(id);
+            if (optionalConnection.isPresent()) {
+                Application existingApplication = optionalConnection.get();
+
+                if (!existingApplication.getIsDeleted()) {
+                    existingApplication.setIsDeleted(true);
+                    existingApplication.setDeletionDate(LocalDateTime.now());
+                    applicationRepository.save(existingApplication);
+                    deletedCount++;
+                }
+            }
+        }
+        return deletedCount;
     }
 }

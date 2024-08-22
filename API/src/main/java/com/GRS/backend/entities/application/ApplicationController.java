@@ -1,6 +1,7 @@
 package com.GRS.backend.entities.application;
 
 import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -53,6 +55,21 @@ public class ApplicationController {
         return Response.responseBuilder("Application added successfully", HttpStatus.OK, createdApplication);
     }
 
+    @PatchMapping("")
+    public ResponseEntity<Object> bulkUpdateApplications(@RequestBody List<Integer> applicationIds, @RequestParam boolean isActive) {
+
+        List<Application> updatedApps = applicationService.bulkUpdateIsActive(applicationIds, isActive);
+
+        if (updatedApps.size() == applicationIds.size()) {
+            return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedApps);
+        } else if (updatedApps.size() != 0){
+            return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedApps);
+        } else {
+            return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedApps);
+        }
+
+    }
+
     @PatchMapping("/{appId}")
     public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId) {
         Application updatedApplication = applicationService.updateApplication(appId, application);
@@ -63,5 +80,17 @@ public class ApplicationController {
     public ResponseEntity<Object> deleteApplication(@PathVariable int appId) {
         applicationService.deleteApplication(appId);
         return Response.responseBuilder("Application deleted successfully", HttpStatus.OK, null);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<Object> deleteApplication(@RequestBody List<Integer> applicationIds) {
+        Integer deletedCount = applicationService.bulkDeleteApplications(applicationIds);
+        if (deletedCount == applicationIds.size()) {
+            return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
+        } else if (deletedCount != 0){
+            return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+        } else {
+            return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);
+        }
     }
 }

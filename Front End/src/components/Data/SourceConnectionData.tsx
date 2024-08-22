@@ -50,7 +50,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     useBulkDeleteSourceConnections(appId);
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatus(appId);
-  const { mutateAsync: testSourceConnection} = useTestSourceConnection(appId);
+  const { mutateAsync: testSourceConnection } = useTestSourceConnection(appId);
   const { mutate: addSourceConnection } = useAddSourceConnection(appId);
   const { mutate: editSourceConnection } = useEditSourceConnection(appId);
 
@@ -116,7 +116,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-  };  
+  };
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
@@ -171,11 +171,14 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         searchTerm: searchTerm,
       }}
       onAddNew={handleAddNew}
-      handleClearSearch={handleClearSearch} onDateSearch={function (date: string[]): void {
+      handleClearSearch={handleClearSearch}
+      onDateSearch={function (date: string[]): void {
         throw new Error("Function not implemented.");
-      } } handleClearDates={function (): void {
+      }}
+      handleClearDates={function (): void {
         throw new Error("Function not implemented.");
-      } }      />
+      }}
+    />
   );
 };
 
