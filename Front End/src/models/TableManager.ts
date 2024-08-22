@@ -106,7 +106,7 @@ export class TableManager {
 
     let partialData = this.data[index].getPartialData(differentIndexes);
 
-    if (this.data[index].getSwitchStatus() !== this.preEditActiveStatus) {
+    if (this.requiresStatusToggle() && this.data[index].getSwitchStatus() !== this.preEditActiveStatus) {
       partialData = { ...partialData, isActive: this.data[index].getSwitchStatus()}
     }
 

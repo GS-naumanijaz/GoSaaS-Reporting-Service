@@ -79,6 +79,7 @@ public class SourceConnection {
         this.createdBy = "";
         this.deletedBy = "";
         this.isDeleted = false;
+        this.isActive = true;
         this.deletionDate = null;
         this.lastTestResult = null;
     }
