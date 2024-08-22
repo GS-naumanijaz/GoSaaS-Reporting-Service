@@ -175,8 +175,8 @@ public class DestinationConnectionService {
         }
     }
 
-    public Integer bulkDeleteDestinationConnections(List<Integer> destinationIds) {
-        Integer deletedCount = 0;
+    public List<Integer> bulkDeleteDestinationConnections(List<Integer> destinationIds) {
+        List<Integer> deletedIds = new ArrayList<>();
 
         for (Integer id : destinationIds) {
             Optional<DestinationConnection> optionalConnection = destinationConnectionRepository.findById(id);
@@ -196,11 +196,11 @@ public class DestinationConnectionService {
                     }
 
                     destinationConnectionRepository.save(existingDestination);
-                    deletedCount++;
+                    deletedIds.add(existingDestination.getId());
                 }
             }
         }
-        return deletedCount;
+        return deletedIds;
     }
 
 

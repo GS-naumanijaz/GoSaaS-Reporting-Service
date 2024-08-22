@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -100,24 +101,24 @@ public class ReportService {
         }
     }
 
-    public Integer bulkDeleteReports(List<Integer> reportIds) {
-        Integer deletedCount = 0;
+    public List<Integer> bulkDeleteReports(List<Integer> reportIds) {
+        List<Integer> deletedIds = new ArrayList<>();
 
         for (Integer id : reportIds) {
-            Optional<Report> optionalConnection = reportRepository.findById(id);
-            if (optionalConnection.isPresent()) {
-                Report existingSourceConnection = optionalConnection.get();
+            Optional<Report> optionalReport = reportRepository.findById(id);
+            if (optionalReport.isPresent()) {
+                Report existingReport = optionalReport.get();
 
-                if (!existingSourceConnection.getIsDeleted()) {
-                    existingSourceConnection.setIsDeleted(true);
-                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+                if (!existingReport.getIsDeleted()) {
+                    existingReport.setIsDeleted(true);
+                    existingReport.setDeletionDate(LocalDateTime.now());
 
-                    reportRepository.save(existingSourceConnection);
-                    deletedCount++;
+                    reportRepository.save(existingReport);
+                    deletedIds.add(existingReport.getId());
                 }
             }
         }
-        return deletedCount;
+        return deletedIds;
     }
 
     public List<Report> getAllPinnedReports() {

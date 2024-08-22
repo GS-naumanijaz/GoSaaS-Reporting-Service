@@ -183,8 +183,8 @@ public class SourceConnectionService {
         }
     }
 
-    public Integer bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
-        Integer deletedCount = 0;
+    public List<Integer> bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
+        List<Integer> deletedIds = new ArrayList<>();
 
         for (Integer id : sourceConnectionIds) {
             Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
@@ -204,12 +204,12 @@ public class SourceConnectionService {
                     }
 
                     sourceConnectionRepository.save(existingSourceConnection);
-                    deletedCount++;
+                    deletedIds.add(existingSourceConnection.getId());
                 }
 
             }
         }
-        return deletedCount;
+        return deletedIds;
     }
 
 
