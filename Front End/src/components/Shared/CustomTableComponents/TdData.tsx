@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { InputField } from "../../../models/TableManagementModels";
 import { validateField } from "../../../models/ValidationRule";
+import { sx } from "../../../configs";
 
 interface Props {
   isEditing: boolean;
@@ -98,7 +99,12 @@ const TdData = ({
               >
                 {selectedItem.toLowerCase()}
               </MenuButton>
-              <MenuList>
+              <MenuList
+                maxHeight="30vh"
+                overflowY="auto"
+                overflowX="hidden"
+                sx={sx}
+              >
                 {inputField.options!.map((item, index) => (
                   <MenuItem
                     key={index}

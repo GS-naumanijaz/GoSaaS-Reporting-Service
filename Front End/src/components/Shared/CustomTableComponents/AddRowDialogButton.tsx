@@ -21,6 +21,7 @@ import React, { useState } from "react";
 import { FaChevronDown, FaPlus } from "react-icons/fa";
 import { InputField } from "../../../models/TableManagementModels";
 import { validateField } from "../../../models/ValidationRule";
+import { sx } from "../../../configs";
 
 interface Props {
   header: string;
@@ -110,7 +111,12 @@ const AddRowDialogButton: React.FC<Props> = ({
                           {formData[field.name].toLowerCase() ||
                             `Select ${field.name}`}
                         </MenuButton>
-                        <MenuList>
+                        <MenuList
+                          maxHeight="30vh"
+                          overflowY="auto"
+                          overflowX="hidden"
+                          sx={sx}
+                        >
                           {field.options!.map((item, index) => (
                             <MenuItem
                               key={index}

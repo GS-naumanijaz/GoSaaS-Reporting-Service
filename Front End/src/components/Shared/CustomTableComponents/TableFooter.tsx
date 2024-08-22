@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { sx } from "../../../configs";
 
 interface Props {
   NoOfRecords: number;
@@ -105,7 +106,12 @@ const TableFooter = ({
             >
               {pageSize}
             </MenuButton>
-            <MenuList>
+            <MenuList
+              maxHeight="30vh"
+              overflowY="auto"
+              overflowX="hidden"
+              sx={sx}
+            >
               {pageSizes.map((size) => (
                 <MenuItem key={size} onClick={() => onPageSizeChange(size)}>
                   {size}

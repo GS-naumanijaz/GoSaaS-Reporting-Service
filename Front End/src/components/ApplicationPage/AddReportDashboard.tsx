@@ -18,7 +18,15 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import { primaryColor, secondaryColor, sx } from "../../configs";
+import {
+  maximumAppDescription,
+  maximumAppName,
+  minimumAppDescription,
+  minimumAppName,
+  primaryColor,
+  secondaryColor,
+  sx,
+} from "../../configs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineSave } from "react-icons/ai";
@@ -31,7 +39,6 @@ import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinatio
 import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
-import { LuPinOff, LuPin } from "react-icons/lu";
 import { BsPin, BsFillPinFill } from "react-icons/bs";
 
 const AddReportDashboard = () => {
@@ -123,16 +130,23 @@ const AddReportDashboard = () => {
   const [descriptionError, setDescriptionError] = useState("");
 
   const validateAlias = (value: string) => {
-    if (value.length < 3 || value.length > 20) {
-      setAliasError("Alias must be between 3 and 20 characters.");
+    if (value.length < minimumAppName || value.length > maximumAppName) {
+      setAliasError(
+        `Alias must be between ${minimumAppName} and ${maximumAppName} characters.`
+      );
     } else {
       setAliasError("");
     }
   };
 
   const validateDescription = (value: string) => {
-    if (value.length < 20 || value.length > 250) {
-      setDescriptionError("Description must be between 20 and 250 characters.");
+    if (
+      value.length < minimumAppDescription ||
+      value.length > maximumAppDescription
+    ) {
+      setDescriptionError(
+        `Description must be between ${minimumAppDescription} and ${maximumAppDescription} characters.`
+      );
     } else {
       setDescriptionError("");
     }
@@ -158,14 +172,18 @@ const AddReportDashboard = () => {
       let partialReport: Partial<ReportsConnection> = {
         alias: reportAlias,
         description: reportDescription,
-        storedProcedure: storedProcedures ? storedProcedures[selectedProcedure].name : "",
-        params: storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
+        storedProcedure: storedProcedures
+          ? storedProcedures[selectedProcedure].name
+          : "",
+        params: storedProcedures
+          ? storedProcedures[selectedProcedure].parameters
+          : [],
         isActive: activeStatus,
         isPinned: isPinned,
       };
 
       if (isEditingMode) {
-        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1 ;  
+        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1;
         let updatedReport = {
           report: partialReport,
           sourceId: Number(selectedSource),
@@ -174,7 +192,6 @@ const AddReportDashboard = () => {
 
         await updateReport({ reportId, updatedReport });
       } else {
-
         let reportData = {
           report: partialReport,
           sourceId: Number(selectedSource),
@@ -206,13 +223,14 @@ const AddReportDashboard = () => {
     !!descriptionError;
 
   useEffect(() => {
-
     if (selectedProcedure == -1) {
-      setSelectedProcedure(storedProcedures && reportDetails
-        ? storedProcedures.findIndex(
-            (obj) => obj.name === reportDetails.storedProcedure
-          )
-        : -1);
+      setSelectedProcedure(
+        storedProcedures && reportDetails
+          ? storedProcedures.findIndex(
+              (obj) => obj.name === reportDetails.storedProcedure
+            )
+          : -1
+      );
     }
 
     if (
@@ -256,7 +274,6 @@ const AddReportDashboard = () => {
     sourceConnectionsList,
     destinationConnectionsList,
   ]);
-
 
   return (
     <>
@@ -379,31 +396,29 @@ const AddReportDashboard = () => {
 
                   {/* Select Dropdown */}
                   {!isLoadingSource && !errorSource && (
-                    <>
-                      <Select
-                        placeholder="Select Source Connection"
-                        value={selectedSource}
-                        onChange={(e) => {
-                          setSelectedSource(e.target.value);
-                          setSelectedProcedure(-1);
-                        }}
-                      >
-                        {sourceConnectionsList ? (
-                          sourceConnectionsList.map(
-                            (
-                              sourceConnection: SourceConnection,
-                              index: number
-                            ) => (
-                              <option key={index} value={sourceConnection.id}>
-                                {sourceConnection.alias}
-                              </option>
-                            )
+                    <Select
+                      placeholder="Select Source Connection"
+                      value={selectedSource}
+                      onChange={(e) => {
+                        setSelectedSource(e.target.value);
+                        setSelectedProcedure(-1);
+                      }}
+                    >
+                      {sourceConnectionsList ? (
+                        sourceConnectionsList.map(
+                          (
+                            sourceConnection: SourceConnection,
+                            index: number
+                          ) => (
+                            <option key={index} value={sourceConnection.id}>
+                              {sourceConnection.alias}
+                            </option>
                           )
-                        ) : (
-                          <Text>Error with loading source connection list</Text>
-                        )}
-                      </Select>
-                    </>
+                        )
+                      ) : (
+                        <Text>Error with loading source connection list</Text>
+                      )}
+                    </Select>
                   )}
                 </FormControl>
                 <FormControl isRequired p={5}>

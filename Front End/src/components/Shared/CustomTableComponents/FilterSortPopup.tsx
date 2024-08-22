@@ -21,7 +21,7 @@ import { DayPicker } from "react-day-picker";
 import { FaChevronDown } from "react-icons/fa";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { primaryColor } from "../../../configs";
+import { primaryColor, sx } from "../../../configs";
 
 interface Props {
   heading: string;
@@ -169,7 +169,12 @@ const FilterSortPopup = ({
                   >
                     {selectedItem.toLowerCase()}
                   </MenuButton>
-                  <MenuList>
+                  <MenuList
+                    maxHeight="30vh"
+                    overflowY="auto"
+                    overflowX="hidden"
+                    sx={sx}
+                  >
                     {sortFilterOptions.dropdownFilter.map((item, index) => (
                       <MenuItem
                         key={index}
