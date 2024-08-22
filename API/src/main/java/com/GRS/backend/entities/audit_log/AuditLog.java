@@ -27,10 +27,10 @@ public class AuditLog {
 
     private LocalDateTime createdAt;
 
-    private String details = "";
+    private String details;
 
     @NotNull
-    private int userId;
+    private Integer userId;
 
     public AuditLog() {
     }

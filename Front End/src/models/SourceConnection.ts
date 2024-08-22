@@ -348,6 +348,41 @@ export class SourceConnection extends TableRowData {
     this.password = newValue[6];
   }
 
+  getPartialData(indexes: number[]): Partial<SourceConnection> {
+    return indexes.reduce((partialData, index) => {
+      return { ...partialData, ...this.getPartialDataObject(index) };
+    }, {});
+  }
+
+  private getPartialDataObject(index: number): Partial<SourceConnection> {
+    switch (index) {
+      case 0:
+        return { alias: this.alias } as Partial<SourceConnection>;
+      case 2:
+        return { databaseName: this.databaseName } as Partial<SourceConnection>;
+      case 3:
+        return { host: this.host } as Partial<SourceConnection>;
+      case 1:
+        return { type: this.type } as Partial<SourceConnection>;
+      case 4:
+        return { port: this.port } as Partial<SourceConnection>;
+      case 5:
+        return { username: this.username } as Partial<SourceConnection>;
+      case 6:
+        return { password: this.password } as Partial<SourceConnection>;
+      case 7:
+        return { isActive: this.isActive } as Partial<SourceConnection>;
+      case 8:
+        return { application: this.application } as Partial<SourceConnection>;
+      case 9:
+        return { lastTestResult: this.lastTestResult } as Partial<SourceConnection>;
+      default:
+        return {} as Partial<SourceConnection>;
+    }
+  }
+
+  
+
   getInputFields(): InputField[] {
     return SourceConnection.inputFields;
   }

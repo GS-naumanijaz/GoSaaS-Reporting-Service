@@ -44,15 +44,15 @@ public class Application {
     @NotNull(message = "Alias must not be null")
     private String alias;
 
-    private String description = "";
+    private String description;
 
-    private Boolean isActive = true;
+    private Boolean isActive;
 
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
-    private String createdBy = "";
+    private String createdBy;
 
-    private String deletedBy = "";
+    private String deletedBy;
 
     private LocalDateTime creationDate;
 
@@ -73,6 +73,7 @@ public class Application {
         this.deletedBy = "";
         this.isDeleted = false;
         this.deletionDate = null;
+        this.isActive = true;
     }
 
     @PreUpdate
