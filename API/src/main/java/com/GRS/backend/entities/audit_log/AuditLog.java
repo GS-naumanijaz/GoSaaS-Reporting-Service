@@ -4,6 +4,7 @@ package com.GRS.backend.entities.audit_log;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -18,15 +19,31 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //fk
-    //user id
-    //connection id
-    //destination id
-    //report id
-
+    @NotNull
     private AuditLogModule module;
-    private AuditLogAction action;
-    private LocalDateTime timestamp;
-    private String details;
 
+    @NotNull
+    private AuditLogAction action;
+
+    private LocalDateTime createdAt;
+
+    private String details = "";
+
+    @NotNull
+    private int userId;
+
+    public AuditLog() {
+    }
+
+    public AuditLog(AuditLogModule module, AuditLogAction action, String details, int userId) {
+        this.module = module;
+        this.action = action;
+        this.details = details;
+        this.userId = userId;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

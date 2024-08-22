@@ -120,6 +120,14 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "databaseName", sourceConnection);
 
+            if (Boolean.FALSE.equals(existingSourceConnection.getIsActive())) {
+                List<Report> reportsToUpdate = new ArrayList<>(existingSourceConnection.getReports());
+                for (Report report: reportsToUpdate) {
+                    report.setIsActive(false);
+
+                    reportRepository.save(report);
+                }
+            }
 
             return sourceConnectionRepository.save(existingSourceConnection);
         } else {
@@ -135,6 +143,16 @@ public class SourceConnectionService {
             if (optionalConnection.isPresent()) {
                 SourceConnection connection = optionalConnection.get();
                 connection.setIsActive(isActive);
+
+                if (!isActive) {
+                    List<Report> reportsToUpdate = new ArrayList<>(connection.getReports());
+                    for (Report report: reportsToUpdate) {
+                        report.setIsActive(false);
+
+                        reportRepository.save(report);
+                    }
+                }
+
                 updatedConnections.add(sourceConnectionRepository.save(connection));
             }
         }
@@ -165,8 +183,8 @@ public class SourceConnectionService {
         }
     }
 
-    public Integer bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
-        Integer deletedCount = 0;
+    public List<Integer> bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
+        List<Integer> deletedIds = new ArrayList<>();
 
         for (Integer id : sourceConnectionIds) {
             Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
@@ -186,12 +204,12 @@ public class SourceConnectionService {
                     }
 
                     sourceConnectionRepository.save(existingSourceConnection);
-                    deletedCount++;
+                    deletedIds.add(existingSourceConnection.getId());
                 }
 
             }
         }
-        return deletedCount;
+        return deletedIds;
     }
 
 

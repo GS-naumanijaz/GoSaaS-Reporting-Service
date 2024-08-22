@@ -111,7 +111,14 @@ public class DestinationConnectionService {
             FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
             FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
 
+            if (Boolean.FALSE.equals(existingDestination.getIsActive())) {
+                List<Report> reportsToUpdate = new ArrayList<>(existingDestination.getReports());
+                for (Report report: reportsToUpdate) {
+                    report.setIsActive(false);
 
+                    reportRepository.save(report);
+                }
+            }
 
             return destinationConnectionRepository.save(existingDestination);
         } else {
@@ -127,6 +134,16 @@ public class DestinationConnectionService {
             if (optionalConnection.isPresent()) {
                 DestinationConnection connection = optionalConnection.get();
                 connection.setIsActive(isActive);
+
+                if (!isActive) {
+                    List<Report> reportsToUpdate = new ArrayList<>(connection.getReports());
+                    for (Report report: reportsToUpdate) {
+                        report.setIsActive(false);
+
+                        reportRepository.save(report);
+                    }
+                }
+
                 updatedConnections.add(destinationConnectionRepository.save(connection));
             }
         }
@@ -158,8 +175,8 @@ public class DestinationConnectionService {
         }
     }
 
-    public Integer bulkDeleteDestinationConnections(List<Integer> destinationIds) {
-        Integer deletedCount = 0;
+    public List<Integer> bulkDeleteDestinationConnections(List<Integer> destinationIds) {
+        List<Integer> deletedIds = new ArrayList<>();
 
         for (Integer id : destinationIds) {
             Optional<DestinationConnection> optionalConnection = destinationConnectionRepository.findById(id);
@@ -179,11 +196,11 @@ public class DestinationConnectionService {
                     }
 
                     destinationConnectionRepository.save(existingDestination);
-                    deletedCount++;
+                    deletedIds.add(existingDestination.getId());
                 }
             }
         }
-        return deletedCount;
+        return deletedIds;
     }
 
 

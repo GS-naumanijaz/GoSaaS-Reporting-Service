@@ -18,7 +18,8 @@ const createApiClient2 = (appId: number) =>
 const invalidateReportsConnections = (appId: number) => (query: any) => {
   const queryKey = query.queryKey;
   return (
-    queryKey[0] === "reportsConnections" && queryKey[1] === appId
+    (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
+    (queryKey[0] === "pinnedReports") 
   );
 };
 
@@ -124,5 +125,16 @@ export const useEditReport = (appId: number) => {
         predicate: invalidateReportsConnections(appId),
       });
     },
+  });
+};
+
+// Hook to get the list of all pinned reports
+export const useGetPinnedReports = () => {
+  const apiClient = new APIClient<ReportsConnection>(`applications`)
+
+  return useQuery({
+    queryKey: ["pinnedReports"],
+    queryFn: () => apiClient.getListAll("pinned-reports"),
+    staleTime: 1000 * 60 * 5, 
   });
 };

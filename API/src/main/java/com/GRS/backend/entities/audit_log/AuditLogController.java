@@ -19,7 +19,7 @@ public class AuditLogController {
     private AuditLogService auditLogService;
 
     @GetMapping
-    public ResponseEntity<Object> getAllAuditLogs(@QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
+    public ResponseEntity<Object> getAllAuditLogs(@QueryParams(sortBy = "createdAt") QueryArgumentResolver.QueryParamsContainer paginationParams) {
 
         String search = paginationParams.getSearch();
         Pageable pageable = paginationParams.getPageable();

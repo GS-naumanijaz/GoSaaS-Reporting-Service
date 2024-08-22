@@ -3,8 +3,8 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
-import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
+import com.GRS.backend.models.DTO.ReportDTO;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,8 +13,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -75,6 +77,8 @@ public class ReportService {
             FieldUpdater.updateField(existingReport, "params", report);
             FieldUpdater.updateField(existingReport, "xslTemplate", report);
             FieldUpdater.updateField(existingReport, "isPinned", report);
+            FieldUpdater.updateField(existingReport, "isActive", report);
+
 
             return reportRepository.save(existingReport);
         } else {
@@ -97,24 +101,32 @@ public class ReportService {
         }
     }
 
-    public Integer bulkDeleteReports(List<Integer> reportIds) {
-        Integer deletedCount = 0;
+    public List<Integer> bulkDeleteReports(List<Integer> reportIds) {
+        List<Integer> deletedIds = new ArrayList<>();
 
         for (Integer id : reportIds) {
-            Optional<Report> optionalConnection = reportRepository.findById(id);
-            if (optionalConnection.isPresent()) {
-                Report existingSourceConnection = optionalConnection.get();
+            Optional<Report> optionalReport = reportRepository.findById(id);
+            if (optionalReport.isPresent()) {
+                Report existingReport = optionalReport.get();
 
-                if (!existingSourceConnection.getIsDeleted()) {
-                    existingSourceConnection.setIsDeleted(true);
-                    existingSourceConnection.setDeletionDate(LocalDateTime.now());
+                if (!existingReport.getIsDeleted()) {
+                    existingReport.setIsDeleted(true);
+                    existingReport.setDeletionDate(LocalDateTime.now());
 
-                    reportRepository.save(existingSourceConnection);
-                    deletedCount++;
+                    reportRepository.save(existingReport);
+                    deletedIds.add(existingReport.getId());
                 }
             }
         }
-        return deletedCount;
+        return deletedIds;
     }
 
+    public List<Report> getAllPinnedReports() {
+        Specification<Report> spec = Specification.where(ReportSpecification.isPinned()).and(ReportSpecification.isNotDeleted());
+
+        return  reportRepository.findAll(spec);
+//        return reportRepository.findAll(spec).stream()
+//                .map(report -> new ReportDTO(report.getId(), report.getAlias(), report.getDescription()))
+//                .collect(Collectors.toList());
+    }
 }

@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import PinnedRequests from "./PinnedRequests";
+import PinnedReports from "./PinnedReports";
 import StatusSummary from "./StatusSummary";
 import { tertiaryColor } from "../../configs";
 import Products from "./Products";
@@ -21,7 +21,7 @@ const Dashboard = () => {
         <Products />
       </GridItem>
       <GridItem display={{ base: "none", lg: "block" }} area="requests">
-        <PinnedRequests />
+        <PinnedReports />
       </GridItem>
       <GridItem display={{ base: "none", lg: "block" }} area="summary">
         <StatusSummary />

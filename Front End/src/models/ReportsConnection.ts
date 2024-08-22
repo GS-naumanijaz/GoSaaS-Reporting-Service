@@ -6,16 +6,17 @@ import { TableRowData } from "./TableRowData";
 
 export class ReportsConnection extends TableRowData {
   private reportId: number;
-  private alias: string;
-  private description: string;
+  public alias: string;
+  public description: string;
   private connection_alias: string;
   private destination_alias: string;
   private sourceConnection?: SourceConnection;
   private destinationConnection?: DestinationConnection;
-  private storedProcedure: string;
-  private params: string[];
-  // private appId: number;
-  private application: Application;
+  public storedProcedure: string;
+  public params: string[];
+  public application: Application;
+  public isActive: boolean;
+  public isPinned: boolean;
 
   //Static variables
   private static tableHeader = "Reports";
@@ -26,6 +27,7 @@ export class ReportsConnection extends TableRowData {
     "Connection",
     "Destination",
     "Stored Procedures",
+    "Active Status",
     "Edit",
     "Delete",
   ];
@@ -33,9 +35,10 @@ export class ReportsConnection extends TableRowData {
     "5%",
     "25%",
     "15%",
-    "15%",
     "10%",
-    "15%",
+    "10%",
+    "10%",
+    "10%",  
     "10%",
     "5%",
   ];
@@ -154,6 +157,10 @@ export class ReportsConnection extends TableRowData {
       isSearchable: true,
     },
     {
+      isEnabled: true,
+      dropdownFilter: ["All", "Active", "Inactive"],
+    },
+    {
       isEnabled: false,
     },
     {
@@ -171,7 +178,6 @@ export class ReportsConnection extends TableRowData {
     destinationConnection?: DestinationConnection,
     stored_procedures: string = "",
     parameters: string[] = [],
-    // appId: number,
     application: Application = {
       id: 0,
       alias: "",
@@ -183,7 +189,9 @@ export class ReportsConnection extends TableRowData {
       creationDate: "",
       deletionDate: null,
       updatedAt: "",
-    }
+    },
+    isActive: boolean = false,
+    isPinned: boolean = false
   ) {
     super();
     this.reportId = reportId;
@@ -195,8 +203,9 @@ export class ReportsConnection extends TableRowData {
     this.destinationConnection = destinationConnection;
     this.storedProcedure = stored_procedures;
     this.params = parameters;
-    // this.appId = appId;
     this.application = application;
+    this.isActive = isActive;
+    this.isPinned = isPinned;
   }
 
   getId(): number {
@@ -297,7 +306,7 @@ export class ReportsConnection extends TableRowData {
   }
 
   getEditAccess(): boolean[] {
-    return [true, true, true, true];
+    return [false, false, false, false, false];
   }
 
   requiresCheckBox(): boolean {
@@ -309,7 +318,17 @@ export class ReportsConnection extends TableRowData {
   }
 
   requiresStatusToggle(): boolean {
-    return false;
+    return true;
+  }
+
+  getSwitchStatus(): boolean {
+    return this.isActive; 
+  }
+  setSwitchStatus(status: boolean) {
+    this.isActive = status;
+  }
+  toggleSwitchStatus() {
+    this.isActive = !this.isActive;
   }
 
   requiresRedirect(): boolean {

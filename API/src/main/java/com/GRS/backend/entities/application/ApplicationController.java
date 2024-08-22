@@ -1,9 +1,14 @@
 package com.GRS.backend.entities.application;
 
 import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.report.ReportService;
+import com.GRS.backend.enums.AuditLogAction;
+import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import com.GRS.backend.utilities.AuditLogGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.validation.Valid;
@@ -24,6 +29,9 @@ public class ApplicationController {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private ReportService reportService;
 
     Logger logger = LoggerFactory.getLogger(ApplicationController.class);
 
@@ -52,6 +60,7 @@ public class ApplicationController {
     @PostMapping
     public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application) {
         Application createdApplication = applicationService.addApplication(application);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getId(), 1);
         return Response.responseBuilder("Application added successfully", HttpStatus.OK, createdApplication);
     }
 
@@ -73,14 +82,25 @@ public class ApplicationController {
     @PatchMapping("/{appId}")
     public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId) {
         Application updatedApplication = applicationService.updateApplication(appId, application);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, appId, 1);
         return Response.responseBuilder("Application updated successfully", HttpStatus.OK, updatedApplication);
     }
 
     @DeleteMapping("/{appId}")
     public ResponseEntity<Object> deleteApplication(@PathVariable int appId) {
         applicationService.deleteApplication(appId);
-        return Response.responseBuilder("Application deleted successfully", HttpStatus.OK, null);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.APPLICATION, appId, 1);
+        return Response.responseBuilder("Application deleted successfully", HttpStatus.OK);
     }
+
+    @GetMapping("/pinned-reports")
+    public ResponseEntity<Object> getAllPinnedReports() {
+        List<Report> allSourceConnections = reportService.getAllPinnedReports();
+
+        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
+    }
+
+
 
     @DeleteMapping("")
     public ResponseEntity<Object> deleteApplication(@RequestBody List<Integer> applicationIds) {

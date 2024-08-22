@@ -83,7 +83,9 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         reportConnection.destinationConnection,
         reportConnection.storedProcedure,
         reportConnection.params,
-        reportConnection.application
+        reportConnection.application,
+        reportConnection.isActive,
+        reportConnection.isPinned,
       )
   );
 

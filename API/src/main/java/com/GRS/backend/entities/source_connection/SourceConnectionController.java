@@ -3,12 +3,16 @@ package com.GRS.backend.entities.source_connection;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.enums.AuditLogAction;
+import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.enums.SourceConnectionType;
 import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.models.StoredProcedure;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
+import com.GRS.backend.utilities.AuditLogGenerator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -64,6 +68,7 @@ public class SourceConnectionController {
         SourceConnection connectionToTest = sourceConnectionService.getSourceConnectionById(sourceId);
 
         if (sourceConnectionService.testSourceConnection(connectionToTest)) {
+
             return Response.responseBuilder("Source Connection was tested successfully", HttpStatus.OK);
         } else {
             return Response.responseBuilder("Source Connection failed test", HttpStatus.BAD_REQUEST);
@@ -93,24 +98,30 @@ public class SourceConnectionController {
         sourceConnection.setApplication(sourceApp);
 
         SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection);
-
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.SOURCE, createdSourceConnection.getId(), 1, appId);
         return Response.responseBuilder("Source Connection added successfully", HttpStatus.OK, createdSourceConnection);
     }
 
     @PatchMapping("/{sourceId}")
-    public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId) {
+    public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId) {
         SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, sourceId, 1, appId);
         return Response.responseBuilder("Source Connection updated successfully", HttpStatus.OK, updatedSourceConnection);
     }
 
     @PatchMapping("")
-    public ResponseEntity<Object> bulkUpdateSourceConnections(@RequestBody List<Integer> sourceIds, @RequestParam boolean isActive) {
+    public ResponseEntity<Object> bulkUpdateSourceConnections(@RequestBody List<Integer> sourceIds, @RequestParam boolean isActive, @PathVariable int appId) {
 
         List<SourceConnection> updatedSources = sourceConnectionService.bulkUpdateIsActive(sourceIds, isActive);
 
+        int[] updatedIds = updatedSources.stream()
+                .mapToInt(SourceConnection::getId)
+                .toArray();
         if (updatedSources.size() == sourceIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, sourceIds, 1, appId);
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedSources);
-        } else if (updatedSources.size() != 0){
+        } else if (!updatedSources.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedIds, 1, appId);
             return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedSources);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedSources);
@@ -119,17 +130,20 @@ public class SourceConnectionController {
     }
 
     @DeleteMapping("/{sourceId}")
-    public ResponseEntity<Object> deleteSourceConnection(@PathVariable int sourceId) {
+    public ResponseEntity<Object> deleteSourceConnection(@PathVariable int sourceId, @PathVariable int appId) {
         sourceConnectionService.deleteSourceConnection(sourceId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.SOURCE, sourceId, 1, appId);
         return Response.responseBuilder("Source Connection deleted successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("")
-    public ResponseEntity<Object> deleteSourceConnection(@RequestBody List<Integer> sourceIds) {
-        Integer deletedCount = sourceConnectionService.bulkDeleteSourceConnections(sourceIds);
-        if (deletedCount == sourceIds.size()) {
+    public ResponseEntity<Object> deleteSourceConnection(@RequestBody List<Integer> sourceIds, @PathVariable int appId) {
+        List<Integer> deletedIds = sourceConnectionService.bulkDeleteSourceConnections(sourceIds);
+        if (deletedIds.size() == sourceIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, sourceIds, 1, appId);
             return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
-        } else if (deletedCount != 0){
+        } else if (!deletedIds.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedIds, 1, appId);
             return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);

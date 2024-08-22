@@ -15,6 +15,7 @@ import {
   Select,
   Spacer,
   Spinner,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import { primaryColor, secondaryColor, sx } from "../../configs";
@@ -30,6 +31,8 @@ import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinatio
 import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
+import { LuPinOff, LuPin } from "react-icons/lu";
+import { BsPin, BsFillPinFill } from "react-icons/bs";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -42,25 +45,32 @@ const AddReportDashboard = () => {
   // Retrieve from location.state or localStorage
   const isEditingMode =
     location.state?.isEditing ??
-    JSON.parse(localStorage.getItem("isEditingMode") || "false");
-  const productDetails =
-    location.state?.productDetails ||
-    JSON.parse(localStorage.getItem("productDetails") || "{}");
+    JSON.parse(localStorage.getItem("isEditingMode") ?? "false");
+
   const reportDetails = isEditingMode
     ? location.state?.report ??
-      JSON.parse(localStorage.getItem("reportDetails") || "{}")
+      JSON.parse(localStorage.getItem("reportDetails") ?? "{}")
     : undefined;
+
+  const productDetails = isEditingMode
+    ? reportDetails?.application ?? {}
+    : location.state?.productDetails ||
+      JSON.parse(localStorage.getItem("productDetails") ?? "{}");
 
   const [reportAlias, setReportAlias] = useState(reportDetails?.alias ?? "");
   const [reportDescription, setReportDescription] = useState(
     reportDetails?.description ?? ""
   );
-  const [selectedSource, setSelectedSource] = useState(
-    reportDetails?.sourceConnection?.id ?? ""
+
+  const [activeStatus, setActiveStatus] = useState(
+    reportDetails?.isActive ?? false
   );
-  const [selectedDestination, setSelectedDestination] = useState(
-    reportDetails?.destinationConnection?.alias ?? ""
-  );
+
+  console.log(reportDetails);
+
+  const [isPinned, setIsPinned] = useState(reportDetails?.isPinned ?? false);
+
+  console.log(isPinned);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -72,12 +82,28 @@ const AddReportDashboard = () => {
     isLoading: isLoadingSource,
     error: errorSource,
   } = useGetSourceConnectionsListQuery(productDetails.id);
-  //! ADD VALIDATION FOR INPUTS
+
+  const [selectedSource, setSelectedSource] = useState(
+    sourceConnectionsList?.some(
+      (obj) => obj.id === reportDetails?.sourceConnection?.id
+    )
+      ? reportDetails?.sourceConnection?.id
+      : ""
+  );
+
   const {
     data: destinationConnectionsList,
     isLoading: isLoadingDestination,
     error: errorDestination,
   } = useGetDestinationConnectionsListQuery(productDetails.id);
+
+  const [selectedDestination, setSelectedDestination] = useState(
+    destinationConnectionsList?.some(
+      (obj) => obj.id === reportDetails?.destinationConnection?.id
+    )
+      ? reportDetails?.destinationConnection?.alias
+      : ""
+  );
 
   const { data: storedProcedures, isLoading: isLoadingStoredProcedures } =
     useConditionalStoredProcedures(productDetails.id, selectedSource);
@@ -85,13 +111,7 @@ const AddReportDashboard = () => {
   const { mutateAsync: addReport } = useAddReport(productDetails.id);
   const { mutateAsync: updateReport } = useEditReport(productDetails.id);
 
-  const [selectedProcedure, setSelectedProcedure] = useState<number>(
-    storedProcedures && reportDetails
-      ? storedProcedures.findIndex(
-          (obj) => obj.name === reportDetails.storedProcedure
-        )
-      : -1
-  );
+  const [selectedProcedure, setSelectedProcedure] = useState<number>(-1);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -135,42 +155,28 @@ const AddReportDashboard = () => {
     }
 
     try {
+      let partialReport: Partial<ReportsConnection> = {
+        alias: reportAlias,
+        description: reportDescription,
+        storedProcedure: storedProcedures ? storedProcedures[selectedProcedure].name : "",
+        params: storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
+        isActive: activeStatus,
+        isPinned: isPinned,
+      };
+
       if (isEditingMode) {
-        let reportId = reportDetails.reportId;
+        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1 ;  
         let updatedReport = {
-          report: new ReportsConnection(
-            undefined,
-            reportAlias,
-            reportDescription,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            storedProcedures ? storedProcedures[selectedProcedure].name : "",
-            storedProcedures
-              ? storedProcedures[selectedProcedure].parameters
-              : []
-          ),
+          report: partialReport,
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
         };
 
         await updateReport({ reportId, updatedReport });
       } else {
+
         let reportData = {
-          report: new ReportsConnection(
-            undefined,
-            reportAlias,
-            reportDescription,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            storedProcedures ? storedProcedures[selectedProcedure].name : "",
-            storedProcedures
-              ? storedProcedures[selectedProcedure].parameters
-              : []
-          ),
+          report: partialReport,
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
         };
@@ -195,10 +201,20 @@ const AddReportDashboard = () => {
     !reportDescription ||
     !selectedSource ||
     !selectedDestination ||
+    selectedProcedure == -1 ||
     !!aliasError ||
     !!descriptionError;
 
   useEffect(() => {
+
+    if (selectedProcedure == -1) {
+      setSelectedProcedure(storedProcedures && reportDetails
+        ? storedProcedures.findIndex(
+            (obj) => obj.name === reportDetails.storedProcedure
+          )
+        : -1);
+    }
+
     if (
       isEditingMode &&
       reportDetails &&
@@ -212,6 +228,7 @@ const AddReportDashboard = () => {
       );
       if (matchingSource) {
         setSelectedSource(matchingSource.id.toString());
+        setSelectedProcedure(-1);
         hasSetInitialSource.current = true;
       }
     }
@@ -273,20 +290,36 @@ const AddReportDashboard = () => {
             borderBottomWidth={3}
             width={"100%"}
           >
+            <Switch
+              size="lg"
+              colorScheme="red"
+              isChecked={activeStatus}
+              onChange={() => setActiveStatus(!activeStatus)}
+            />
             <Spacer />
             <Text fontSize={25} textAlign="center">
               {isEditingMode ? "Edit Report" : "Register Report"}
             </Text>
             <Spacer />
-            <Button
-              variant="link"
-              p={0}
-              _active={{ color: primaryColor }}
-              color={primaryColor}
-              onClick={() => setIsSaveOpen(true)}
-            >
-              <AiOutlineSave size={35} />
-            </Button>
+            <HStack spacing={5}>
+              <Button
+                variant="link"
+                _active={{ color: primaryColor }}
+                color={primaryColor}
+                onClick={() => setIsPinned(!isPinned)}
+              >
+                {isPinned ? <BsFillPinFill size={30} /> : <BsPin size={30} />}
+              </Button>
+              <Button
+                variant="link"
+                p={0}
+                _active={{ color: primaryColor }}
+                color={primaryColor}
+                onClick={() => setIsSaveOpen(true)}
+              >
+                <AiOutlineSave size={35} />
+              </Button>
+            </HStack>
           </HStack>
           {productDetails ? (
             <>
@@ -369,7 +402,7 @@ const AddReportDashboard = () => {
                         ) : (
                           <Text>Error with loading source connection list</Text>
                         )}
-                      </Select>   
+                      </Select>
                     </>
                   )}
                 </FormControl>
