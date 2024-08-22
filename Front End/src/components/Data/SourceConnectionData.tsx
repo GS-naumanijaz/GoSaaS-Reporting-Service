@@ -173,10 +173,10 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
       onAddNew={handleAddNew}
       handleClearSearch={handleClearSearch}
       onDateSearch={function (date: string[]): void {
-        throw new Error("Function not implemented.");
+        throw new Error("onDateSearch function not implemented." + date);
       }}
       handleClearDates={function (): void {
-        throw new Error("Function not implemented.");
+        throw new Error("handleClearDates function not implemented.");
       }}
     />
   );

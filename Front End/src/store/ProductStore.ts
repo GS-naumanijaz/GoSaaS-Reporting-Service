@@ -24,12 +24,12 @@ interface ProductStore {
 }
 
 const initialState = {
-  sortField: "alias", // Default sorting by product name
-  sortOrder: "asc", // Default ascending order
+  sortField: "updatedAt",
+  sortOrder: "desc",
   searchTerm: "",
-  searchField: "alias", // Default search field is product name
+  searchField: "alias",
   page: 0,
-  pageSize: 5, // Default page size
+  pageSize: 5,
   selectedFilter: "Active",
   currentPage: 0,
   selectedDates: ["0000-01-01", "9999-12-31"],

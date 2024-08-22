@@ -91,6 +91,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
       console.error("Failed to save application:", error);
     } finally {
       handleAddApplicationClose();
+      setIsAddApplicationOpen(false);
     }
   };
 

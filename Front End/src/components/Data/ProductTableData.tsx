@@ -39,7 +39,7 @@ const ProductTableData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data, isError } = useProductsQuery(
+  const { data } = useProductsQuery(
     sortField,
     sortOrder,
     page,
@@ -61,8 +61,13 @@ const ProductTableData = () => {
         new ProductTable(
           product.id,
           product.alias,
+          product.description, // Added description
+          product.isActive,
+          product.isDeleted, // Added isDeleted
+          product.creationDate, // Added creationDate
           product.updatedAt,
-          product.isActive
+          product.deletedBy, // Added deletedBy
+          product.deletionDate // Added deletionDate
         )
     ) || [];
 
@@ -120,21 +125,6 @@ const ProductTableData = () => {
     deleteApplication.mutate(deleteId);
   }
 
-  //! Placeholder functions for other table actions
-
-  function handleTest(appId: number): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handleEdit(itemId: number, editedItem: any): void {
-    console.log("Edit", itemId, editedItem);
-    throw new Error("Function not implemented.");
-  }
-
-  function handleAddNew(): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <CustomTable
       tableManager={manager}
@@ -143,8 +133,6 @@ const ProductTableData = () => {
       onDelete={handleDelete}
       onBulkDelete={handleBulkDelete}
       onBulkUpdateStatus={handleBulkStatusUpdate}
-      onTestConnection={handleTest}
-      onEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
       page={page}
@@ -155,7 +143,6 @@ const ProductTableData = () => {
         searchTerm: searchTerm || "",
         selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
       }}
-      onAddNew={handleAddNew}
       handleClearSearch={handleClearSearch}
       onDateSearch={handleDateSearch}
       handleClearDates={handleClearDate}

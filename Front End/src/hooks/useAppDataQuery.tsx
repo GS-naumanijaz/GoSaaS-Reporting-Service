@@ -17,7 +17,6 @@ const fetchAppData = async (appId: number) => {
 };
 
 export const useAppDataQuery = (appId: number | null) => {
-  
   return useQuery({
     queryKey: ["application", appId],
     queryFn: () => {
@@ -57,9 +56,9 @@ export const useAppDataMutation = () => {
     }) => {
       return saveApp(formData.applicationName, formData.applicationDescription);
     },
-    onSuccess: (data) => {
-      // console.log("Application saved successfully:", data);
-    },
+    // onSuccess: (data) => {
+    //   // console.log("Application saved successfully:", data);
+    // },
     onError: (error) => {
       useErrorToast()(error.message);
     },

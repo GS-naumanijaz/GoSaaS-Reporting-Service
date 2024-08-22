@@ -58,16 +58,15 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } =
-    useReports(
-      productId,
-      sortField,
-      sortOrder,
-      page,
-      pageSize,
-      searchTerm,
-      actualSearchField
-    );
+  const { data } = useReports(
+    productId,
+    sortField,
+    sortOrder,
+    page,
+    pageSize,
+    searchTerm,
+    actualSearchField
+  );
 
   const reportsConnections = data?.content ?? [];
   const totalElements = data?.totalElements ?? 0;
@@ -154,11 +153,14 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         searchTerm: searchTerm,
       }}
       onAddNew={() => navigate("/addreports", { state: { product } })}
-      handleClearSearch={handleClearSearch} onDateSearch={function (date: string[]): void {
+      handleClearSearch={handleClearSearch}
+      onDateSearch={function (date: string[]): void {
+        throw new Error("onDateSearch function not implemented." + date);
+      }}
+      handleClearDates={function (): void {
         throw new Error("Function not implemented.");
-      } } handleClearDates={function (): void {
-        throw new Error("Function not implemented.");
-      } }    />
+      }}
+    />
   );
 };
 

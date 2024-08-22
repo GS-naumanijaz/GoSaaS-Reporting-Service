@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   HStack,
+  Spacer,
   Stack,
   Table,
   TableContainer,
@@ -31,6 +32,7 @@ import {
 } from "../../services/sortMappings";
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { ImCross } from "react-icons/im";
+import TdRedirect from "./CustomTableComponents/TdRedirect";
 
 interface Props {
   tableManager: TableManager;
@@ -53,7 +55,7 @@ interface Props {
     searchTerm: string;
     selectedDates?: string[];
   };
-  onAddNew: any;
+  onAddNew?: any;
   handleClearSearch: () => void;
   handleClearDates: () => void;
 }
@@ -170,7 +172,6 @@ const CustomTable = ({
   // search field prompt box
   const searchField = searchObject?.searchField ?? "";
   const mappedSearchField = reverseFieldMapping[searchField] || searchField;
-
   return (
     <Box
       borderWidth={3}
@@ -203,19 +204,15 @@ const CustomTable = ({
           >
             <Text fontWeight="bold">Search Results:</Text>
 
-            <HStack
-              spacing={4}
-              display={"flex"}
-              justifyContent="space-between"
-              pl={18}
-            >
+            <HStack spacing={4} display={"flex"} justifyContent="space-between">
+              <Spacer />
               <Text>
                 <strong>Finding " </strong>
                 {searchObject.searchTerm} <strong>" in "</strong>
                 {mappedSearchField}
                 <strong>"</strong>
-              </Text>
-
+              </Text>{" "}
+              <Spacer />
               <Button variant={"ghost"} onClick={() => handleClearSearch()}>
                 <ImCross size={13} />
               </Button>
@@ -306,19 +303,26 @@ const CustomTable = ({
                       }}
                     />
                   )}
-                  <TdEditButton
-                    isEditingMode={isEditingMode()}
-                    isEditing={isEditing[rowIndex]}
-                    isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
-                    // handleEditToggle={() => handleEditToggle(rowIndex)}
-                    handleEditToggle={
-                      onClickEdit
-                        ? () => onClickEdit(tableManager.getRowItem(rowIndex))
-                        : () => handleEditToggle(rowIndex)
-                    }
-                    revertEdit={() => revertEdit(rowIndex)}
-                    saveEdit={() => handleEditSave(rowIndex)}
-                  />
+                  {tableManager.requiresRedirect() ? (
+                    <TdRedirect
+                      tableManager={tableManager}
+                      rowIndex={rowIndex}
+                    />
+                  ) : (
+                    <TdEditButton
+                      isEditingMode={isEditingMode()}
+                      isEditing={isEditing[rowIndex]}
+                      isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
+                      // handleEditToggle={() => handleEditToggle(rowIndex)}
+                      handleEditToggle={
+                        onClickEdit
+                          ? () => onClickEdit(tableManager.getRowItem(rowIndex))
+                          : () => handleEditToggle(rowIndex)
+                      }
+                      revertEdit={() => revertEdit(rowIndex)}
+                      saveEdit={() => handleEditSave(rowIndex)}
+                    />
+                  )}
                   <TdDeleteButton
                     handleDeleteRow={() => handleDeleteRow(row.getId())}
                   />

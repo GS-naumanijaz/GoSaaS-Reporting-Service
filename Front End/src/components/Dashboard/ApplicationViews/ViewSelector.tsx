@@ -2,7 +2,6 @@ import { Box, Button } from "@chakra-ui/react";
 import { CiViewTable } from "react-icons/ci";
 import { IoGridOutline } from "react-icons/io5";
 import { useState } from "react";
-import { primaryColor } from "../../../configs";
 
 interface ViewSelectorProps {
   viewType: (str: string) => void;

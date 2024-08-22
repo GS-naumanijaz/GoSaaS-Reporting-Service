@@ -1,0 +1,49 @@
+import { Product } from "../../Dashboard/Products";
+import { TableManager } from "../../../models/TableManager";
+import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
+import { Button } from "@chakra-ui/react";
+
+interface Props {
+  rowIndex: number;
+  tableManager: TableManager;
+}
+
+const TdRedirect = ({ rowIndex, tableManager }: Props) => {
+  // navigation
+  const navigate = useNavigate();
+  const handleButtonClick = (rowIndex: number) => {
+    const rowData = tableManager.getRowItem(rowIndex);
+
+    // Map the `ProductTable` instance to a `Product` object
+    const product: Product = {
+      id: rowData.productId,
+      alias: rowData.alias,
+      description: rowData.description,
+      isActive: rowData.isActive,
+      isDeleted: rowData.isDeleted,
+      creationDate: rowData.creationDate,
+      updatedAt: rowData.updatedAt,
+      deletedBy: rowData.deletedBy || null,
+      deletionDate: rowData.deletionDate || null,
+    };
+
+    navigate("/applications", { state: product });
+  };
+
+  return (
+    <Button
+      pt={4}
+      variant={"ghost"}
+      _hover={{
+        bg: "transparent",
+        boxShadow: "none",
+      }}
+      onClick={() => handleButtonClick(rowIndex)}
+    >
+      <FaEye color={"#4A4A4A"} />
+    </Button>
+  );
+};
+
+export default TdRedirect;

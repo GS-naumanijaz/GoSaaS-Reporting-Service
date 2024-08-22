@@ -312,6 +312,11 @@ export class ReportsConnection extends TableRowData {
     return false;
   }
 
+  requiresRedirect(): boolean {
+    return false;
+  }
+
+
   getApplication(): Application {
     return this.application;
   }

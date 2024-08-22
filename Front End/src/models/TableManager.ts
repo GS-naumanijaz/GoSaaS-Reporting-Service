@@ -116,6 +116,10 @@ export class TableManager {
     return this.defaultData.requiresTestButton();
   }
 
+  requiresRedirect(): boolean {
+    return this.defaultData.requiresRedirect();
+  }
+
   handleToggleSwitch(id: number) {
     this.data = this.data.map((row) => {
       if (row.getId() === id) {

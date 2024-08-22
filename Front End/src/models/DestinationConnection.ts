@@ -287,6 +287,11 @@ export class DestinationConnection extends TableRowData {
     return true;
   }
 
+  requiresRedirect(): boolean {
+    return false;
+  }
+
+
   getSwitchStatus(): boolean {
     return this.isActive;
   }

@@ -1,13 +1,8 @@
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
-import { mainDashboardHeight, primaryColor, sx } from "../../configs";
-import useProductStore from "../../store/ProductStore";
-import { useProductsQuery } from "../../hooks/useProductsQuery";
+import { Box } from "@chakra-ui/react";
+import { mainDashboardHeight, sx } from "../../configs";
 import { useState } from "react";
-import { useAppDataMutation } from "../../hooks/useAppDataQuery";
-import { useQueryClient } from "@tanstack/react-query";
 import GridView from "./ApplicationViews/GridView";
 import ViewSelector from "./ApplicationViews/ViewSelector";
-import AddApplicationDialog from "../ApplicationPage/AddApplicationDialog";
 import ProductTableData from "../Data/ProductTableData";
 
 export interface Product {
@@ -17,7 +12,7 @@ export interface Product {
   isActive: boolean;
   isDeleted: boolean;
   creationDate: string;
-  updatedAt?: string | null;
+  updatedAt: string;
   deletedBy?: string | null;
   deletionDate?: string | null;
 }

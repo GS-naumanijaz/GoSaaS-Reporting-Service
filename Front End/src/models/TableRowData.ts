@@ -1,4 +1,4 @@
-import {ColumnSortFilterOptions, InputField} from "./TableManagementModels";
+import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 
 export abstract class TableRowData {
   abstract getId(): number;
@@ -11,11 +11,11 @@ export abstract class TableRowData {
   abstract getInputFields(): InputField[];
   abstract getSortFilterOptions(): ColumnSortFilterOptions[];
   abstract getEditAccess(): boolean[];
-  
+
   // abstract handleBulkDelete(deleteIds: number[]): void;
 
   requiresCheckBox(): boolean {
-    return false
+    return false;
   }
   getCheckBoxWidth(): string {
     return "0%";
@@ -26,6 +26,11 @@ export abstract class TableRowData {
   requiresTestButton(): boolean {
     return false;
   }
+
+  requiresRedirect(): boolean {
+    return true;
+  }
+
   getSwitchStatus(): boolean {
     throw new Error("This componnent does not have a switch");
   }
@@ -35,7 +40,4 @@ export abstract class TableRowData {
   toggleSwitchStatus() {
     throw new Error("This componnent does not have a switch");
   }
-  
-  
-  
 }
