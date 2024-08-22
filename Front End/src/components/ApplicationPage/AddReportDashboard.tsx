@@ -66,11 +66,7 @@ const AddReportDashboard = () => {
     reportDetails?.isActive ?? false
   );
 
-  console.log(reportDetails);
-
   const [isPinned, setIsPinned] = useState(reportDetails?.isPinned ?? false);
-
-  console.log(isPinned);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -148,40 +144,93 @@ const AddReportDashboard = () => {
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
 
   const onSave = async () => {
-    // save changes to database
-    // reload the application page
     if (isSaveButtonDisabled) {
       return;
     }
 
     try {
-      let partialReport: Partial<ReportsConnection> = {
-        alias: reportAlias,
-        description: reportDescription,
-        storedProcedure: storedProcedures ? storedProcedures[selectedProcedure].name : "",
-        params: storedProcedures ? storedProcedures[selectedProcedure].parameters : [],
-        isActive: activeStatus,
-        isPinned: isPinned,
+      let partialReport: Partial<ReportsConnection> = {};
+
+      //preparing request
+      if (isEditingMode) {
+        if (reportAlias !== reportDetails.alias) {
+          partialReport.alias = reportAlias;
+        }
+
+        if (reportDescription !== reportDetails.description) {
+          partialReport.description = reportDescription;
+        }
+
+        const currentStoredProcedureName = storedProcedures
+          ? storedProcedures[selectedProcedure].name
+          : "";
+
+        if (currentStoredProcedureName !== reportDetails.storedProcedure) {
+          partialReport.storedProcedure = currentStoredProcedureName;
+        }
+
+        const currentParams = storedProcedures
+          ? storedProcedures[selectedProcedure].parameters
+          : [];
+
+        if (
+          JSON.stringify(currentParams) !== JSON.stringify(reportDetails.params)
+        ) {
+          partialReport.params = currentParams;
+        }
+
+        if (activeStatus !== reportDetails.isActive) {
+          partialReport.isActive = activeStatus;
+        }
+
+        if (isPinned !== reportDetails.isPinned) {
+          partialReport.isPinned = isPinned;
+        }
+      } else {
+        partialReport = {
+          alias: reportAlias,
+          description: reportDescription,
+          storedProcedure: storedProcedures
+            ? storedProcedures[selectedProcedure].name
+            : "",
+          params: storedProcedures
+            ? storedProcedures[selectedProcedure].parameters
+            : [],
+          isActive: activeStatus,
+          isPinned: isPinned,
+        };
+      }
+
+      let reportRequest: any = {
+        report: partialReport,
       };
 
       if (isEditingMode) {
-        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1 ;  
-        let updatedReport = {
-          report: partialReport,
-          sourceId: Number(selectedSource),
-          destinationId: Number(selectedDestination),
-        };
-
-        await updateReport({ reportId, updatedReport });
+        if (selectedSource != reportDetails.sourceConnection.id) {
+          reportRequest = {
+            ...reportRequest,
+            sourceId: Number(selectedSource),
+          };
+        }
+        if (selectedDestination != reportDetails.destinationConnection.id) {
+          reportRequest = {
+            ...reportRequest,
+            destinationId: Number(selectedDestination),
+          };
+        }
       } else {
-
-        let reportData = {
-          report: partialReport,
+        reportRequest = {
+          ...reportRequest,
           sourceId: Number(selectedSource),
           destinationId: Number(selectedDestination),
         };
+      }
 
-        await addReport(reportData);
+      if (isEditingMode) {
+        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1;
+        await updateReport({ reportId, updatedReport: reportRequest });
+      } else {
+        await addReport(reportRequest);
       }
     } catch {
       console.log("failed to save");
@@ -206,13 +255,14 @@ const AddReportDashboard = () => {
     !!descriptionError;
 
   useEffect(() => {
-
     if (selectedProcedure == -1) {
-      setSelectedProcedure(storedProcedures && reportDetails
-        ? storedProcedures.findIndex(
-            (obj) => obj.name === reportDetails.storedProcedure
-          )
-        : -1);
+      setSelectedProcedure(
+        storedProcedures && reportDetails
+          ? storedProcedures.findIndex(
+              (obj) => obj.name === reportDetails.storedProcedure
+            )
+          : -1
+      );
     }
 
     if (
@@ -256,7 +306,6 @@ const AddReportDashboard = () => {
     sourceConnectionsList,
     destinationConnectionsList,
   ]);
-
 
   return (
     <>
