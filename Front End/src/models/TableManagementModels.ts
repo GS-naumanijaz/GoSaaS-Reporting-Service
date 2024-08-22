@@ -8,6 +8,7 @@ export interface InputField {
   validation?: ValidationRule;
   options?: string[];
   isHidden?: boolean;
+  isDate?: boolean;
 }
 
 export interface ColumnSortFilterOptions {
@@ -15,4 +16,5 @@ export interface ColumnSortFilterOptions {
   isSortable?: boolean;
   isSearchable?: boolean;
   dropdownFilter?: string[];
+  DateItem?: boolean;
 }
