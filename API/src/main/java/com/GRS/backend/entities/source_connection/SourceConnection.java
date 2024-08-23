@@ -57,6 +57,8 @@ public class SourceConnection {
 
     private String databaseName;
 
+    private String schema;
+
     private String createdBy;
 
     private String deletedBy ;

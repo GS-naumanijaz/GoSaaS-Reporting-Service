@@ -49,6 +49,15 @@ public class ApplicationService {
         }
     }
 
+    public Application getApplicationByAlias(String appAlias) {
+        Optional<Application> app = applicationRepository.findByAlias(appAlias);
+        if (app.isPresent()) {
+            return app.get();
+        } else {
+            throw new EntityNotFoundException("Application", appAlias);
+        }
+    }
+
     public Application addApplication(Application application) {
         return applicationRepository.save(application);
     }
