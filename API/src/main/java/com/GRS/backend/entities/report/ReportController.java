@@ -89,12 +89,13 @@ public class ReportController {
 
         Report createdReport = reportService.addReport(report);
 
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.REPORT, createdReport.getId(), 1, appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.REPORT, createdReport.getAlias(), 1, reportApp.getAlias());
         return Response.responseBuilder("Report added successfully", HttpStatus.OK, createdReport);
     }
 
     @PatchMapping("/{reportId}")
     public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId, @PathVariable int appId) {
+        Application reportApp = applicationService.getApplicationById(appId);
         Report updatedReport = reportService.updateReport(reportId, reportRequest.report);
 
         if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSourceConnection().getId()) {
@@ -112,27 +113,27 @@ public class ReportController {
 
         reportService.addReport(updatedReport);
 
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.REPORT, reportId, 1, appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.REPORT, updatedReport.getAlias(), 1, reportApp.getAlias());
         return Response.responseBuilder("Report updated successfully", HttpStatus.OK, updatedReport);
     }
 
     @DeleteMapping("/{reportId}")
     public ResponseEntity<Object> deleteReport(@PathVariable int reportId, @PathVariable int appId) {
-
-        reportService.deleteReport(reportId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.REPORT, reportId, 1, appId);
+        Application reportApp = applicationService.getApplicationById(appId);
+        Report deletedReport = reportService.deleteReport(reportId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedReport.getAlias(), 1, reportApp.getAlias());
         return Response.responseBuilder("Report deleted successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("")
     public ResponseEntity<Object> deleteReports(@RequestBody List<Integer> reportIds, @PathVariable int appId) {
-
-        List<Integer> deletedIds = reportService.bulkDeleteReports(reportIds);
-        if (deletedIds.size() == reportIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, reportIds, 1, appId);
+        Application reportApp = applicationService.getApplicationById(appId);
+        List<String> deletedAliases = reportService.bulkDeleteReports(reportIds);
+        if (deletedAliases.size() == reportIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedAliases, 1, reportApp.getAlias());
             return Response.responseBuilder("All Reports deleted successfully", HttpStatus.OK);
-        } else if (deletedIds.size() != 0){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedIds, 1, appId);
+        } else if (!deletedAliases.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedAliases, 1, reportApp.getAlias());
             return Response.responseBuilder("Some Reports could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Reports could not be deleted", HttpStatus.BAD_REQUEST);

@@ -86,7 +86,7 @@ public class ReportService {
         }
     }
 
-    public void deleteReport(int reportId) {
+    public Report deleteReport(int reportId) {
         Optional<Report> existingReportOpt = reportRepository.findById(reportId);
 
         if (existingReportOpt.isPresent() && !existingReportOpt.get().getIsDeleted()) {
@@ -96,13 +96,14 @@ public class ReportService {
             existingReport.setDeletionDate(LocalDateTime.now());
 
             reportRepository.save(existingReport);
+            return existingReport;
         } else {
             throw new EntityNotFoundException("Report", reportId);
         }
     }
 
-    public List<Integer> bulkDeleteReports(List<Integer> reportIds) {
-        List<Integer> deletedIds = new ArrayList<>();
+    public List<String> bulkDeleteReports(List<Integer> reportIds) {
+        List<String> deletedIds = new ArrayList<>();
 
         for (Integer id : reportIds) {
             Optional<Report> optionalReport = reportRepository.findById(id);
@@ -114,7 +115,7 @@ public class ReportService {
                     existingReport.setDeletionDate(LocalDateTime.now());
 
                     reportRepository.save(existingReport);
-                    deletedIds.add(existingReport.getId());
+                    deletedIds.add(existingReport.getAlias());
                 }
             }
         }

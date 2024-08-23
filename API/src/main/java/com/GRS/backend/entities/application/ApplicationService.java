@@ -93,7 +93,7 @@ public class ApplicationService {
         return applicationList;
     }
 
-    public void deleteApplication(int appId) {
+    public Application deleteApplication(int appId) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
@@ -103,6 +103,7 @@ public class ApplicationService {
             existingApplication.setDeletionDate(LocalDateTime.now());
 
             applicationRepository.save(existingApplication);
+            return existingApplication;
         } else {
             throw new EntityNotFoundException("Application", appId);
         }

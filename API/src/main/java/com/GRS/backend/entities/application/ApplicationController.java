@@ -60,7 +60,7 @@ public class ApplicationController {
     @PostMapping
     public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application) {
         Application createdApplication = applicationService.addApplication(application);
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getId(), 1);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getAlias(), 1);
         return Response.responseBuilder("Application added successfully", HttpStatus.OK, createdApplication);
     }
 
@@ -82,14 +82,14 @@ public class ApplicationController {
     @PatchMapping("/{appId}")
     public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId) {
         Application updatedApplication = applicationService.updateApplication(appId, application);
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, appId, 1);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedApplication.getAlias(), 1);
         return Response.responseBuilder("Application updated successfully", HttpStatus.OK, updatedApplication);
     }
 
     @DeleteMapping("/{appId}")
     public ResponseEntity<Object> deleteApplication(@PathVariable int appId) {
-        applicationService.deleteApplication(appId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.APPLICATION, appId, 1);
+        Application deletedApplication = applicationService.deleteApplication(appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.APPLICATION, deletedApplication.getAlias(), 1);
         return Response.responseBuilder("Application deleted successfully", HttpStatus.OK);
     }
 
