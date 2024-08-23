@@ -1,0 +1,54 @@
+[
+  {
+    "trainee_first_name": "Aafaq ul",
+    "trainee_last_name": "Basit",
+    "supervisor_first_name": "Muhammad Adil",
+    "supervisor_last_name": "Sardar",
+    "course_code": "Asynchronous JavaScript",
+    "course_name": "Asynchronous JavaScript",
+    "revision_number": 2,
+    "instance_title": "Not available",
+    "start_date": "2023-07-04T19:00:00.000Z",
+    "due_date": "2023-07-04T19:00:00.000Z",
+    "status": "Failed"
+  },
+  {
+    "trainee_first_name": "Aafaq ul",
+    "trainee_last_name": "Basit",
+    "supervisor_first_name": "Muhammad Adil",
+    "supervisor_last_name": "Sardar",
+    "course_code": "Oracle Fusion 23C Release Overview",
+    "course_name": "Oracle Fusion 23C Release Overview",
+    "revision_number": 1,
+    "instance_title": "Oracle Fusion 23C Release Overview",
+    "start_date": "2023-08-02T19:00:00.000Z",
+    "due_date": "2023-08-02T19:00:00.000Z",
+    "status": "Failed"
+  },
+  {
+    "trainee_first_name": "Aafaq ul",
+    "trainee_last_name": "Basit",
+    "supervisor_first_name": "Muhammad Adil",
+    "supervisor_last_name": "Sardar",
+    "course_code": "Oracle PLM 23B New Features",
+    "course_name": "Oracle PLM 23B New Features",
+    "revision_number": 1,
+    "instance_title": "Not available",
+    "start_date": "2023-06-05T19:00:00.000Z",
+    "due_date": "2023-06-05T19:00:00.000Z",
+    "status": "Failed"
+  },
+  {
+    "trainee_first_name": "Aafaq ul",
+    "trainee_last_name": "Basit",
+    "supervisor_first_name": "Muhammad Adil",
+    "supervisor_last_name": "Sardar",
+    "course_code": "How we Develop Products",
+    "course_name": "How we Develop Products",
+    "revision_number": 1,
+    "instance_title": "Not available",
+    "start_date": "2023-06-19T19:00:00.000Z",
+    "due_date": "2023-06-19T19:00:00.000Z",
+    "status": "Approved"
+  }
+]

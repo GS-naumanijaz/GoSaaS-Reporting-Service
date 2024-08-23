@@ -42,5 +42,15 @@ logging:
   # testing logging and deleting
   logback:
     rollingpolicy:
-      max-file-size: 10MB
-      max-history: 0
+      max-file-size: file-max-size
+      max-history: file-max-history
+
+  # AWS Config
+  aws:
+    access:
+      key: your-aws-access-key
+    secret:
+      key: your-aws-secret-key
+    region: your-aws-region
+    bucket:
+      name: your-aws-bucket-name
