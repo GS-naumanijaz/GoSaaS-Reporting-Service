@@ -21,13 +21,13 @@ public class JsonToXmlConverter {
 
         // Convert each object in the array to XML and wrap it in a root element
         StringBuilder xmlBuilder = new StringBuilder();
-        xmlBuilder.append("<UserReports>");
+        xmlBuilder.append("<records>");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String xml = XML.toString(jsonObject, "Report");
+            String xml = XML.toString(jsonObject, "record");
             xmlBuilder.append(xml);
         }
-        xmlBuilder.append("</UserReports>");
+        xmlBuilder.append("</records>");
 
         return xmlBuilder.toString();
     }

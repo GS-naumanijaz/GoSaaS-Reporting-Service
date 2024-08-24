@@ -1,58 +1,56 @@
 package com.GRS.backend.reportGeneration;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextRenderer;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.core.sync.RequestBody;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class HtmlToPdfConverter {
 
-    @Value("${aws.access.key}")
-    private String awsAccessKey;
-
-    @Value("${aws.secret.key}")
-    private String awsSecretKey;
-
-    @Value("${aws.region}")
-    private String awsRegion;
-
     @Value("${aws.bucket.name}")
     private String bucketName;
 
-    private AmazonS3 s3Client;
+    private final S3Client s3Client;
 
     private static final Logger logger = LoggerFactory.getLogger(HtmlToPdfConverter.class);
 
-    @PostConstruct
-    public void init() {
-        // Initialize AWS credentials using Spring properties
-        AWSCredentials credentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+    public HtmlToPdfConverter(S3Client s3Client) {
+        this.s3Client = s3Client;
+    }
 
-        this.s3Client = AmazonS3ClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withRegion(awsRegion)
-                .build();
+    public void convertHtmlToPdfAndUpload(String htmlContent, String fileName) {
+        try {
+            byte[] pdfBytes = convertHtmlToPdf(htmlContent);
+
+            // Upload the PDF to S3
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .build();
+
+            PutObjectResponse putObjectResponse = s3Client.putObject(putObjectRequest,
+                    RequestBody.fromBytes(pdfBytes));
+
+            logger.info("PDF uploaded successfully to S3. ETag: {}", putObjectResponse.eTag());
+        } catch (Exception e) {
+            logger.error("Error while uploading PDF to S3", e);
+            throw new RuntimeException("Error while uploading PDF to S3", e);
+        }
     }
 
     public byte[] convertHtmlToPdf(String htmlContent) {
         try {
-            // Apply the page styling to the HTML content
             String styledHtmlContent = addPageStyling(htmlContent);
 
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -64,31 +62,8 @@ public class HtmlToPdfConverter {
                 return os.toByteArray();
             }
         } catch (Exception e) {
-            System.err.println("Error while converting HTML to PDF: " + e.getMessage());
             logger.error("Error while converting HTML to PDF", e);
             throw new RuntimeException("Error while converting HTML to PDF", e);
-        }
-    }
-
-    public void convertHtmlToPdfAndUpload(String htmlContent, String fileName) {
-        try {
-            // Convert the HTML content to PDF
-            byte[] pdfBytes = convertHtmlToPdf(htmlContent);
-
-            // Upload the PDF to S3
-            try (InputStream pdfInputStream = new ByteArrayInputStream(pdfBytes)) {
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentLength(pdfBytes.length);
-
-                PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, pdfInputStream, metadata)
-                        .withCannedAcl(CannedAccessControlList.Private);
-                s3Client.putObject(putObjectRequest);
-                System.out.println("PDF uploaded successfully to S3. ETag: " + s3Client.getObjectMetadata(bucketName, fileName).getETag());
-            }
-        } catch (Exception e) {
-            System.err.println("Error while uploading PDF to S3: " + e.getMessage());
-            logger.error("Error while uploading PDF to S3", e);
-            throw new RuntimeException("Error while uploading PDF to S3", e);
         }
     }
 

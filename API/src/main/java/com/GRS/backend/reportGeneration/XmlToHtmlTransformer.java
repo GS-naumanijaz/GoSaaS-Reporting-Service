@@ -22,13 +22,6 @@ public class XmlToHtmlTransformer {
         // Create a Transformer with the XSL
         Transformer transformer = factory.newTransformer(xslStreamSource);
 
-        // *** Key changes here ***
-        // Set the output method to 'html'
-        transformer.setOutputProperty(OutputKeys.METHOD, "html");
-
-        // Disable the automatic generation of the <META> tag (just in case)
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-
         // Set up the input and output streams
         StreamSource xmlStreamSource = new StreamSource(new StringReader(xmlContent));
         StringWriter htmlWriter = new StringWriter();
