@@ -12,7 +12,6 @@ const TdTestButton = ({ onClick, isEditingMode }: Props) => {
   >("idle");
 
   useEffect(() => {
-    // Reset button state when isEditingMode changes
     setButtonState("idle");
   }, [isEditingMode]);
 

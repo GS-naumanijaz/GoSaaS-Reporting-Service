@@ -58,7 +58,7 @@ public class RequestController {
 
     }
 
-    @PostMapping("/{appId}/destination-connections/{destinationId}")
+    @PostMapping("/{appId}/destinationConnections/{destinationId}")
     public ResponseEntity<Object> addRequest(@Valid @RequestBody Request request, @PathVariable int appId, @PathVariable int destinationId) {
         Application requestApp = applicationService.getApplicationById(appId);
         DestinationConnection requestDestination = destinationConnectionService.getDestinationConnectionById(destinationId);

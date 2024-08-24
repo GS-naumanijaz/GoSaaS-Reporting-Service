@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import StoredProcedure from "../models/StoredProcedure";
 
 const createApiClient = (appId: number) =>
-  new APIClient<SourceConnection>(`applications/${appId}/source-connections`);
+  new APIClient<SourceConnection>(`applications/${appId}/sourceConnections`);
 
 const fiveMins = 1000 * 60 * 5;
 
@@ -182,14 +182,14 @@ export const useConditionalStoredProcedures = (
   sourceId: number
 ) => {
   const apiClient = new APIClient<StoredProcedure>(
-    `applications/${appId}/source-connections/${sourceId}`
+    `applications/${appId}/sourceConnections/${sourceId}`
   );
 
   const fetchStoredProcedures = async () => {
     if (!sourceId) {
       return null; // Skip fetch if sourceId is not provided
     }
-    return apiClient.getListAll("stored-procedures");
+    return apiClient.getListAll("storedProcedures");
   };
 
   const { data, isLoading } = useQuery({

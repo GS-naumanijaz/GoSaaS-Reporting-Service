@@ -5,7 +5,7 @@ import APIClient from "../services/apiClient";
 interface ReportRequestBody {
   report: Partial<ReportsConnection>;
   sourceId: number;
-  destinationId:number;
+  destinationId: number;
 }
 
 const createApiClient1 = (appId: number) =>
@@ -19,7 +19,7 @@ const invalidateReportsConnections = (appId: number) => (query: any) => {
   const queryKey = query.queryKey;
   return (
     (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
-    (queryKey[0] === "pinnedReports") 
+    queryKey[0] === "pinnedReports"
   );
 };
 
@@ -57,10 +57,9 @@ export const useReports = (
           search: searchTerm,
         },
       }),
-    staleTime: 1000 * 60 * 5, 
+    staleTime: 1000 * 60 * 5,
   });
 };
-
 
 // Hook to delete a single report
 export const useDeleteReport = (appId: number) => {
@@ -130,11 +129,11 @@ export const useEditReport = (appId: number) => {
 
 // Hook to get the list of all pinned reports
 export const useGetPinnedReports = () => {
-  const apiClient = new APIClient<ReportsConnection>(`applications`)
+  const apiClient = new APIClient<ReportsConnection>(`applications`);
 
   return useQuery({
     queryKey: ["pinnedReports"],
-    queryFn: () => apiClient.getListAll("pinned-reports"),
-    staleTime: 1000 * 60 * 5, 
+    queryFn: () => apiClient.getListAll("pinnedReports"),
+    staleTime: 1000 * 60 * 5,
   });
 };

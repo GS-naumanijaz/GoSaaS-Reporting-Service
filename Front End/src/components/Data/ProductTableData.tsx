@@ -61,13 +61,13 @@ const ProductTableData = () => {
         new ProductTable(
           product.id,
           product.alias,
-          product.description, // Added description
+          product.description,
           product.isActive,
-          product.isDeleted, // Added isDeleted
-          product.creationDate, // Added creationDate
+          product.isDeleted, 
+          product.creationDate,
           product.updatedAt,
-          product.deletedBy, // Added deletedBy
-          product.deletionDate // Added deletionDate
+          product.deletedBy, 
+          product.deletionDate 
         )
     ) || [];
 

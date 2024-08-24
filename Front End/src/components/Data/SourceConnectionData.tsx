@@ -41,7 +41,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
 
   useEffect(() => {
     return () => {
-      reset(); // Reset store state when component unmounts
+      reset();
     };
   }, [reset]);
 

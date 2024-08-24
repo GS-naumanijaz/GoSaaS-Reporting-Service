@@ -33,7 +33,6 @@ public class XmlToHtmlTransformer {
         // Return the resulting HTML
         String html = htmlWriter.toString();
 
-        // *** New code here ***
         // Remove the unwanted <META> tag using string manipulation
         html = html.replaceFirst("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
 

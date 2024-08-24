@@ -85,7 +85,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
       });
 
       await queryClient.refetchQueries({
-        queryKey: ["products", searchTerm],
+        queryKey: ["products"],
       });
     } catch (error) {
       console.error("Failed to save application:", error);

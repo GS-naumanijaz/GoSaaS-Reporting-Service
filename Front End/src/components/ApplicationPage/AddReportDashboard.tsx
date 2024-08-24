@@ -525,7 +525,7 @@ const AddReportDashboard = () => {
                 <Input
                   type="file"
                   id="fileInput"
-                  accept=".xml"
+                  accept=".xsl"
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
@@ -534,7 +534,7 @@ const AddReportDashboard = () => {
                   bg={secondaryColor}
                   onClick={handleButtonClick}
                 >
-                  Upload XML File
+                  Upload XSL File
                 </Button>
                 {selectedFile && (
                   <Text marginTop={2}>Selected File: {selectedFile.name}</Text>

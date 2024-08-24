@@ -45,7 +45,7 @@ function convertDatesToStrings(datesArray: Date[]): string[] {
 
 const customStyles = `
   .rdp-day:not(.selected):hover {
-    background-color: red; // Optional: change the hover color for better UX
+    background-color: red; 
   }
 `;
 

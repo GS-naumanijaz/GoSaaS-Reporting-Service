@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/applications/{appId}/source-connections")
+@RequestMapping("/applications/{appId}/sourceConnections")
 public class SourceConnectionController {
 
     @Autowired
@@ -76,7 +76,7 @@ public class SourceConnectionController {
 
     }
 
-    @GetMapping("/{sourceId}/stored-procedures")
+    @GetMapping("/{sourceId}/storedProcedures")
     public ResponseEntity<Object> getSourceConnectionStoredProcedures(@PathVariable int sourceId) {
         SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId);
 

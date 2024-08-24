@@ -29,7 +29,7 @@ const PageSelector = ({ currentPage, totalPages, setCurrentPage }: Props) => {
         onClick={() => setCurrentPage(currentPage + 1)}
         bg={currentPage < totalPages - 1 ? primaryColor : disabledButton}
         transition="transform 0.2s, box-shadow 0.2s"
-        isDisabled={!(currentPage < totalPages - 1)}
+        isDisabled={currentPage >= totalPages - 1}
         _hover={
           currentPage < totalPages - 1
             ? { transform: "scale(1.05)", boxShadow: "lg" }

@@ -60,14 +60,20 @@ class APIClient<T> {
       useErrorToast()(response.data.message || "An error occurred.");
       throw new Error(response.data.message || "An error occurred.");
     } else {
-      return response.data.data || null;
+      return response.data.data ?? null;
     }
   };
 
   private handleError = (error: any) => {
     if (error.response) {
-      useErrorToast()(error.response.data.message || `Request failed with status ${error.response.status}`);
-      throw new Error(error.response.data.message || `Request failed with status ${error.response.status}`);
+      useErrorToast()(
+        error.response.data.message ||
+          `Request failed with status ${error.response.status}`
+      );
+      throw new Error(
+        error.response.data.message ||
+          `Request failed with status ${error.response.status}`
+      );
     } else {
       useErrorToast()(error.response.data.message || "Network error occurred.");
       throw new Error(error.response.data.message || "Network error occurred.");

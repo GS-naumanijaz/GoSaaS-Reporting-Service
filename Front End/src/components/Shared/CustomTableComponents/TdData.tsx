@@ -44,7 +44,7 @@ const TdData = ({
 
   useEffect(() => {
     if (isEditing) {
-      setError(""); // Reset the error state when isEditing changes
+      setError("");
     }
   }, [isEditing]);
 

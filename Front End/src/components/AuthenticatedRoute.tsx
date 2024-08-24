@@ -8,7 +8,7 @@ const AuthenticatedRoute = ({ element }: any) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch(`${BackendURL}/check-auth`, {
+        const response = await fetch(`${BackendURL}/checkAuth`, {
           method: "GET",
           credentials: "include",
         });
@@ -38,7 +38,7 @@ const AuthenticatedRoute = ({ element }: any) => {
       >
         <Spinner size={"xl"} color={primaryColor} />
       </div>
-    ); // Show a loader while authentication is being checked
+    );
   }
 
   return authenticated ? element : <Navigate to="/" />;
