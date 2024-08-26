@@ -45,12 +45,12 @@ logging:
       max-file-size: file-max-size
       max-history: file-max-history
 
-  # AWS Config
-  aws:
-    access:
-      key: your-aws-access-key
-    secret:
-      key: your-aws-secret-key
-    region: your-aws-region
-    bucket:
-      name: your-aws-bucket-name
+# AWS Config
+aws:
+  access:
+    key: your-aws-access-key
+  secret:
+    key: your-aws-secret-key
+  region: your-aws-region
+  bucket:
+    name: your-aws-bucket-name
