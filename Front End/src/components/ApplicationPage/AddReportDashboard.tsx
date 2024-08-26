@@ -650,6 +650,14 @@ const AddReportDashboard = () => {
               {isSaveButtonDisabled
                 ? "Please fill all the fields with valid information"
                 : "Are you sure you want to save these changes?"}
+              {selectedSource == "" && (
+                <Text color="red.500">Please select a source connection</Text>
+              )}
+              {selectedDestination == "" && (
+                <Text color="red.500">
+                  Please select a destination connection
+                </Text>
+              )}
             </AlertDialogBody>
 
             <AlertDialogFooter>
