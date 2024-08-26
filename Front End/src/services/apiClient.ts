@@ -1,9 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BackendURL } from "../configs";
 import { useErrorToast } from "../hooks/useErrorToast";
+import { ReportResponse } from "../hooks/useReportsQuery";
 
 export interface APIResponse<T> {
-  data?: T | null;
+  // data?: T | null;
+  data: T;
   httpStatus: string;
   message: string;
   timestamp: string;
@@ -53,16 +55,17 @@ class APIClient<T> {
     this.endpoint = endpoint;
   }
 
-  private handleResponse = <R>(
-    response: AxiosResponse<APIResponse<R>>
-  ): R | null => {
+  // Handles API responses
+  private handleResponse = <R>(response: AxiosResponse<APIResponse<R>>): R => {
     if (response.data.httpStatus !== "OK") {
       useErrorToast()(response.data.message || "An error occurred.");
       throw new Error(response.data.message || "An error occurred.");
     } else {
-      return response.data.data ?? null;
+      return response.data.data;
     }
   };
+
+  // Handles errors from API requests
 
   private handleError = (error: any) => {
     if (error.response) {
@@ -79,7 +82,6 @@ class APIClient<T> {
       throw new Error(error.response.data.message || "Network error occurred.");
     }
   };
-
   getAll = (config?: AxiosRequestConfig) => {
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
@@ -101,9 +103,10 @@ class APIClient<T> {
       .catch(this.handleError);
   };
 
-  create = (data: T, config?: AxiosRequestConfig) => {
+  // Update API client methods to return correct types
+  create = (data: T, config?: AxiosRequestConfig): Promise<ReportResponse> => {
     return axiosInstance
-      .post<APIResponse<T>>(this.endpoint, data, config)
+      .post<APIResponse<ReportResponse>>(this.endpoint, data, config)
       .then((res) => this.handleResponse(res))
       .catch(this.handleError);
   };
@@ -112,9 +115,13 @@ class APIClient<T> {
     urlParams: string,
     data: Partial<T>,
     config?: AxiosRequestConfig
-  ) => {
+  ): Promise<ReportResponse> => {
     return axiosInstance
-      .patch<APIResponse<T>>(`${this.endpoint}/${urlParams}`, data, config)
+      .patch<APIResponse<ReportResponse>>(
+        `${this.endpoint}/${urlParams}`,
+        data,
+        config
+      )
       .then((res) => this.handleResponse(res))
       .catch(this.handleError);
   };
@@ -144,6 +151,22 @@ class APIClient<T> {
         sourceIds,
         config
       )
+      .then((res) => this.handleResponse(res))
+      .catch(this.handleError);
+  };
+
+  upload = (file: File, reportId: number, config?: AxiosRequestConfig) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return axiosInstance
+      .post<APIResponse<T>>(`${this.endpoint}/upload/${reportId}`, formData, {
+        ...config,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          ...config?.headers,
+        },
+      })
       .then((res) => this.handleResponse(res))
       .catch(this.handleError);
   };

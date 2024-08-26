@@ -144,8 +144,6 @@ public class DatabaseUtilities {
                     System.err.println("SQL Exception during setting schema: " + e.getMessage());
                 }
 
-
-
             } else {
                 System.err.println("Failed to make connection to the database!");
             }

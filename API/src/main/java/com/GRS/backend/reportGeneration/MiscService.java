@@ -29,7 +29,7 @@ import java.util.Optional;
 public class MiscService {
 
     private final ApplicationService applicationService;
-    private final S3Client s3Client;
+    private final S3ClientProvider s3ClientProvider;
     private final JsonToXmlConverter jsonToXmlConverter;
     private final XmlToHtmlTransformer xmlToHtmlTransformer;
     private final HtmlToPdfConverter htmlToPdfConverter;
@@ -42,12 +42,12 @@ public class MiscService {
 
     @Autowired
     public MiscService(ApplicationService applicationService,
-                       S3Client s3Client,
+                       S3Client s3Client, S3ClientProvider s3ClientProvider,
                        JsonToXmlConverter jsonToXmlConverter,
                        XmlToHtmlTransformer xmlToHtmlTransformer,
                        HtmlToPdfConverter htmlToPdfConverter) {
         this.applicationService = Objects.requireNonNull(applicationService, "ApplicationService must not be null");
-        this.s3Client = Objects.requireNonNull(s3Client, "S3Client must not be null");
+        this.s3ClientProvider = s3ClientProvider;
         this.jsonToXmlConverter = Objects.requireNonNull(jsonToXmlConverter, "JsonToXmlConverter must not be null");
         this.xmlToHtmlTransformer = Objects.requireNonNull(xmlToHtmlTransformer, "XmlToHtmlTransformer must not be null");
         this.htmlToPdfConverter = Objects.requireNonNull(htmlToPdfConverter, "HtmlToPdfConverter must not be null");
@@ -87,7 +87,7 @@ public class MiscService {
         String xmlInputStream = jsonToXmlConverter.convertJsonToXml(jsonInputStream);
 
         // Load the XSL file from S3
-        InputStream s3XslInputStream = loadXslFromS3();
+        InputStream s3XslInputStream = loadXslFromS3(destination, report);
 
         // Transform the XML to HTML using the XSL file
         String html = null;
@@ -106,10 +106,11 @@ public class MiscService {
         return ResponseEntity.ok("PDF successfully generated and uploaded to S3.");
     }
 
-    private InputStream loadXslFromS3() {
+    private InputStream loadXslFromS3(DestinationConnection destination, Report report) {
+        S3Client s3Client = s3ClientProvider.createS3Client(destination);
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(xslFileKey)
+                .bucket(destination.getBucketName())
+                .key(report.getXslTemplate())
                 .build();
         return s3Client.getObject(getObjectRequest);
     }

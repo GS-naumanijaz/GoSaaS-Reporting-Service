@@ -17,6 +17,7 @@ export class ReportsConnection extends TableRowData {
   public application: Application;
   public isActive: boolean;
   public isPinned: boolean;
+  public xslTemplate: string;
 
   //Static variables
   private static tableHeader = "Reports";
@@ -38,7 +39,7 @@ export class ReportsConnection extends TableRowData {
     "10%",
     "10%",
     "10%",
-    "10%",  
+    "10%",
     "10%",
     "5%",
   ];
@@ -191,7 +192,8 @@ export class ReportsConnection extends TableRowData {
       updatedAt: "",
     },
     isActive: boolean = false,
-    isPinned: boolean = false
+    isPinned: boolean = false,
+    xslTemplate: string = ""
   ) {
     super();
     this.reportId = reportId;
@@ -206,6 +208,7 @@ export class ReportsConnection extends TableRowData {
     this.application = application;
     this.isActive = isActive;
     this.isPinned = isPinned;
+    this.xslTemplate = xslTemplate;
   }
 
   getId(): number {
@@ -322,7 +325,7 @@ export class ReportsConnection extends TableRowData {
   }
 
   getSwitchStatus(): boolean {
-    return this.isActive; 
+    return this.isActive;
   }
   setSwitchStatus(status: boolean) {
     this.isActive = status;
@@ -334,7 +337,6 @@ export class ReportsConnection extends TableRowData {
   requiresRedirect(): boolean {
     return false;
   }
-
 
   getApplication(): Application {
     return this.application;

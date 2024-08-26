@@ -86,6 +86,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         reportConnection.application,
         reportConnection.isActive,
         reportConnection.isPinned,
+        reportConnection.xslTemplate
       )
   );
 

@@ -3,15 +3,25 @@ package com.GRS.backend.entities.report;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.models.DTO.ReportDTO;
+import com.GRS.backend.reportGeneration.S3ClientProvider;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
+import javax.print.attribute.standard.Destination;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +37,11 @@ public class ReportService {
     @Autowired
     private ApplicationRepository applicationRepository;
 
+    private final S3ClientProvider s3ClientProvider;
+
+    public ReportService(S3ClientProvider s3ClientProvider) {
+        this.s3ClientProvider = s3ClientProvider;
+    }
 
     public Page<Report> getAllReports(int appId, String search, String searchBy, Pageable pageable) {
 
@@ -129,5 +144,37 @@ public class ReportService {
 //        return reportRepository.findAll(spec).stream()
 //                .map(report -> new ReportDTO(report.getId(), report.getAlias(), report.getDescription()))
 //                .collect(Collectors.toList());
+    }
+
+    public ResponseEntity<Object> uploadFile(MultipartFile file, int reportId) {
+        try {
+            // Retrieve the report and destination connection details
+            Report report = getReportById(reportId);
+            DestinationConnection destination = report.getDestinationConnection();
+            S3Client s3Client = s3ClientProvider.createS3Client(destination);
+
+            // Define the folder path and file name
+            String folderPath = "xsl-files/"; // Adjust as needed
+            String fileName = folderPath + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+            // Create the S3 PutObjectRequest
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(destination.getBucketName())
+                    .key(fileName)
+                    .build();
+
+            // Upload the file to S3
+            PutObjectResponse putObjectResponse = s3Client.putObject(putObjectRequest,
+                    RequestBody.fromBytes(file.getBytes()));
+
+            // save to db
+            report.setXslTemplate(fileName);
+            reportRepository.save(report);
+
+            // Return the file key path
+                return ResponseEntity.ok().body("File uploaded successfully. File key: " + fileName);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error uploading file: " + e.getMessage());
+        }
     }
 }

@@ -1,11 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ReportsConnection } from "../models/ReportsConnection";
 import APIClient from "../services/apiClient";
+import { report } from "process";
+
+export interface ReportResponse {
+  id: number; // Adjust the type if it's different (e.g., `string`)
+  // Other properties if needed
+}
 
 interface ReportRequestBody {
   report: Partial<ReportsConnection>;
   sourceId: number;
   destinationId: number;
+  id: number;
 }
 
 const createApiClient1 = (appId: number) =>
@@ -91,12 +98,28 @@ export const useBulkDeleteReport = (appId: number) => {
   });
 };
 
+// Hook to upload file
+export const useUploadFile = (appId: number) => {
+  const apiClient = createApiClient1(appId);
+
+  return useMutation({
+    mutationFn: (data: { file: File; reportId: number }) =>
+      apiClient.upload(data.file, data.reportId),
+    onError: (error) => {
+      console.error("File upload failed:", error);
+    },
+    onSuccess: () => {
+      console.log("File uploaded successfully.");
+    },
+  });
+};
+
 // Hook to add a new report
 export const useAddReport = (appId: number) => {
   const queryClient = useQueryClient();
   const apiClient = createApiClient2(appId);
 
-  return useMutation({
+  return useMutation<ReportResponse, Error, ReportRequestBody>({
     mutationFn: (newReport: ReportRequestBody) => apiClient.create(newReport),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -111,14 +134,13 @@ export const useEditReport = (appId: number) => {
   const queryClient = useQueryClient();
   const apiClient = createApiClient2(appId);
 
-  return useMutation({
-    mutationFn: ({
-      reportId,
-      updatedReport,
-    }: {
-      reportId: number;
-      updatedReport: ReportRequestBody;
-    }) => apiClient.update(`${reportId}`, updatedReport),
+  return useMutation<
+    ReportResponse,
+    Error,
+    { reportId: number; updatedReport: ReportRequestBody }
+  >({
+    mutationFn: ({ reportId, updatedReport }) =>
+      apiClient.update(`${reportId}`, updatedReport),
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidateReportsConnections(appId),

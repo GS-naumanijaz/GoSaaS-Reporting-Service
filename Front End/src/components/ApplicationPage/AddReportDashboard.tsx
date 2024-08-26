@@ -36,7 +36,11 @@ import {
   useGetSourceConnectionsListQuery,
 } from "../../hooks/useSourceConnectionQuery";
 import { useGetDestinationConnectionsListQuery } from "../../hooks/useDestinationConnectionQuery";
-import { useAddReport, useEditReport } from "../../hooks/useReportsQuery";
+import {
+  useAddReport,
+  useEditReport,
+  useUploadFile,
+} from "../../hooks/useReportsQuery";
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import { BsPin, BsFillPinFill } from "react-icons/bs";
@@ -75,7 +79,9 @@ const AddReportDashboard = () => {
 
   const [isPinned, setIsPinned] = useState(reportDetails?.isPinned ?? false);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(
+    reportDetails.xslTemplate
+  );
 
   const hasSetInitialSource = useRef(false);
   const hasSetInitialDestination = useRef(false);
@@ -113,6 +119,7 @@ const AddReportDashboard = () => {
 
   const { mutateAsync: addReport } = useAddReport(productDetails.id);
   const { mutateAsync: updateReport } = useEditReport(productDetails.id);
+  const { mutate: uploadFile } = useUploadFile(productDetails.id);
 
   const [selectedProcedure, setSelectedProcedure] = useState<number>(-1);
 
@@ -156,6 +163,15 @@ const AddReportDashboard = () => {
   const [isSaveOpen, setIsSaveOpen] = useState(false);
   const onSaveClose = () => setIsSaveOpen(false);
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
+
+  const isSaveButtonDisabled =
+    !reportAlias ||
+    !reportDescription ||
+    !selectedSource ||
+    !selectedDestination ||
+    selectedProcedure == -1 ||
+    !!aliasError ||
+    !!descriptionError;
 
   const onSave = async () => {
     if (isSaveButtonDisabled) {
@@ -241,32 +257,56 @@ const AddReportDashboard = () => {
       }
 
       if (isEditingMode) {
-        let reportId = reportDetails.id ?? reportDetails.reportId ?? -1;
-        await updateReport({ reportId, updatedReport: reportRequest });
+        const currentReportId =
+          reportDetails.id ?? reportDetails.reportId ?? -1;
+
+        try {
+          const response = await updateReport({
+            reportId: currentReportId,
+            updatedReport: reportRequest,
+          });
+
+          // Ensure `id` exists on `response`
+          if (response && "id" in response) {
+            const reportId = response.id;
+
+            if (selectedFile) {
+              uploadFile({ file: selectedFile, reportId }); // Passing an object
+            }
+          } else {
+            console.error("Update report response does not contain an id.");
+          }
+        } catch (error) {
+          console.error("Error updating report:", error);
+        }
       } else {
-        await addReport(reportRequest);
+        try {
+          const response = await addReport(reportRequest);
+
+          // Ensure `id` exists on `response`
+          if (response && "id" in response) {
+            const reportId = response.id;
+
+            if (selectedFile) {
+              uploadFile({ file: selectedFile, reportId }); // Passing an object
+            }
+          } else {
+            console.error("Add report response does not contain an id.");
+          }
+        } catch (error) {
+          console.error("Error adding report:", error);
+        }
       }
-    } catch {
-      console.log("failed to save");
-    }
 
-    setIsSaveOpen(false);
-    onSaveClose();
-    navigate(-1);
+      setIsSaveOpen(false);
+      onSaveClose();
+      navigate(-1);
 
-    // localStorage.removeItem("productDetails");
-    // localStorage.removeItem("reportDetails");
-    localStorage.removeItem("isEditing");
+      // localStorage.removeItem("productDetails");
+      // localStorage.removeItem("reportDetails");
+      localStorage.removeItem("isEditing");
+    } catch (error) {}
   };
-
-  const isSaveButtonDisabled =
-    !reportAlias ||
-    !reportDescription ||
-    !selectedSource ||
-    !selectedDestination ||
-    selectedProcedure == -1 ||
-    !!aliasError ||
-    !!descriptionError;
 
   useEffect(() => {
     if (selectedProcedure == -1) {
@@ -583,7 +623,9 @@ const AddReportDashboard = () => {
                   Upload XSL File
                 </Button>
                 {selectedFile && (
-                  <Text marginTop={2}>Selected File: {selectedFile.name}</Text>
+                  <Text marginTop={2}>
+                    Selected File: {selectedFile.toString()}
+                  </Text>
                 )}
               </Box>
             </>
