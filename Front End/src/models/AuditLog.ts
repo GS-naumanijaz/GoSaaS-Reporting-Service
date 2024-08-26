@@ -1,4 +1,3 @@
-import { ProductTable } from "./ProductTable";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 

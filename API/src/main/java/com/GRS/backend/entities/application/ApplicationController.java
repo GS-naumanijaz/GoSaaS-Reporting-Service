@@ -93,7 +93,7 @@ public class ApplicationController {
         return Response.responseBuilder("Application deleted successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/pinned-reports")
+    @GetMapping("/pinnedReports")
     public ResponseEntity<Object> getAllPinnedReports() {
         List<Report> allSourceConnections = reportService.getAllPinnedReports();
 

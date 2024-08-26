@@ -3,7 +3,7 @@ import { DestinationConnection } from "../models/DestinationConnection";
 import APIClient from "../services/apiClient";
 
 const createApiClient = (appId: number) =>
-  new APIClient<DestinationConnection>(`applications/${appId}/destination-connections`);
+  new APIClient<DestinationConnection>(`applications/${appId}/destinationConnections`);
 
 const invalidateDestinationAndReportsConnections = (appId: number) => (query: any) => {
   const queryKey = query.queryKey;

@@ -38,7 +38,7 @@ const AlertDialogButton = ({
   return (
     <>
       <Button variant={"ghost"} onClick={onOpen}>
-        {children}{" "}
+        {children}
       </Button>
 
       <AlertDialog

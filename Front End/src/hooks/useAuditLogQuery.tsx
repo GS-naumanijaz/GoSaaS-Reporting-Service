@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 
-
 const searchFieldMapping: Record<string, string> = {
   user: "userId",
   "created at": "createdAt",
-  module: "module", // already correct, but can be included for clarity
-  action: "action", // already correct, but can be included for clarity
-  details: "details", // already correct, but can be included for clarity
-  // Add other mappings as needed
+  module: "module",
+  action: "action",
+  details: "details",
 };
 
 // Define the fetch function for audit logs
@@ -28,16 +26,17 @@ const fetchAuditLogs = async (
   totalElements: number;
   empty: boolean;
 }> => {
-  // Use the mapping to get the correct field name
-  const normalizedSearchField = searchFieldMapping[searchField.toLowerCase()] || searchField;
-  const normalizedSortingBy = searchFieldMapping[sortingBy.toLowerCase()] || sortingBy;
+  const normalizedSearchField =
+    searchFieldMapping[searchField.toLowerCase()] || searchField;
+  const normalizedSortingBy =
+    searchFieldMapping[sortingBy.toLowerCase()] || sortingBy;
 
   const params = new URLSearchParams({
-    sort_by: normalizedSortingBy   || "createdAt",
+    sort_by: normalizedSortingBy || "createdAt",
     sort_order: sortingOrder || "desc",
     page: page.toString(),
     page_size: pageSize.toString(),
-    search_by: normalizedSearchField || "userId",  // Default to userId if not found
+    search_by: normalizedSearchField || "userId",
     search: searchTerm || "",
     module: selectedModule || "all",
     action: selectedAction || "all",
@@ -45,13 +44,10 @@ const fetchAuditLogs = async (
     end_date: selectedDates[1] || "9999-12-31",
   });
 
-  const response = await fetch(
-    `${BackendURL}/audit-log?${params.toString()}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${BackendURL}/auditLog?${params.toString()}`, {
+    method: "GET",
+    credentials: "include",
+  });
 
   const data = await response.json();
   return data.data;

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/applications/{appId}/destination-connections")
+@RequestMapping("/applications/{appId}/destinationConnections")
 public class DestinationConnectionController {
 
     @Autowired

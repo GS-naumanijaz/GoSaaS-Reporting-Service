@@ -10,12 +10,10 @@ interface Props {
 }
 
 const TdRedirect = ({ rowIndex, tableManager }: Props) => {
-  // navigation
   const navigate = useNavigate();
   const handleButtonClick = (rowIndex: number) => {
     const rowData = tableManager.getRowItem(rowIndex);
 
-    // Map the `ProductTable` instance to a `Product` object
     const product: Product = {
       id: rowData.productId,
       alias: rowData.alias,

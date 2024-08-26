@@ -48,7 +48,6 @@ const TableHeader = ({
   const handleAddApplicationSubmit = async (
     formData: Record<string, string>
   ) => {
-    console.log("Submitting application: ", formData);
     try {
       await saveAppMutation.mutateAsync({
         applicationName: formData.applicationName,

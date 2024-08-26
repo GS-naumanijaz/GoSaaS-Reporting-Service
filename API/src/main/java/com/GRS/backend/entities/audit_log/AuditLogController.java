@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/audit-log")
+@RequestMapping("/auditLog")
 public class AuditLogController {
 
     @Autowired
