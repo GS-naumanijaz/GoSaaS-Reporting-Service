@@ -50,23 +50,23 @@ public class DestinationConnection {
 //    @NotNull(message = "Port must not be null")
 //    private int port;
 
-    private Boolean isActive = true;
+    private Boolean isActive;
 
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
-    private Boolean lastTestResult = null;
+    private Boolean lastTestResult;
 
-    private String secretKey = "";
+    private String secretKey;
 
-    private String accessKey = "";
+    private String accessKey;
 
-    private String bucketName = "";
+    private String bucketName;
 
-    private String region = "";
+    private String region;
 
-    private String createdBy = "";
+    private String createdBy;
 
-    private String deletedBy = "";
+    private String deletedBy;
 
     private LocalDateTime creationDate;
 
@@ -87,6 +87,8 @@ public class DestinationConnection {
         this.deletedBy = "";
         this.isDeleted = false;
         this.deletionDate = null;
+        this.isActive = true;
+        this.lastTestResult = null;
     }
 
     @PreUpdate

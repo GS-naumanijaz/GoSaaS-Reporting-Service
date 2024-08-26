@@ -43,4 +43,7 @@ export abstract class TableRowData {
   toggleSwitchStatus() {
     throw new Error("This componnent does not have a switch");
   }
+  getPartialData(indexes: number[]): any {
+    return null;
+  }
 }

@@ -119,6 +119,7 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "username", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "databaseName", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "schema", sourceConnection);
 
             if (Boolean.FALSE.equals(existingSourceConnection.getIsActive())) {
                 List<Report> reportsToUpdate = new ArrayList<>(existingSourceConnection.getReports());
@@ -160,7 +161,7 @@ public class SourceConnectionService {
         return updatedConnections;
     }
 
-    public void deleteSourceConnection(int sourceConnectionId) {
+    public SourceConnection deleteSourceConnection(int sourceConnectionId) {
         Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
 
         if (existingSourceConnectionOpt.isPresent() && !existingSourceConnectionOpt.get().getIsDeleted()) {
@@ -178,13 +179,14 @@ public class SourceConnectionService {
             }
 
             sourceConnectionRepository.save(existingSourceConnection);
+            return existingSourceConnection;
         } else {
             throw new EntityNotFoundException("SourceConnection", sourceConnectionId);
         }
     }
 
-    public List<Integer> bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
-        List<Integer> deletedIds = new ArrayList<>();
+    public List<String> bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
+        List<String> deletedIds = new ArrayList<>();
 
         for (Integer id : sourceConnectionIds) {
             Optional<SourceConnection> optionalConnection = sourceConnectionRepository.findById(id);
@@ -204,7 +206,7 @@ public class SourceConnectionService {
                     }
 
                     sourceConnectionRepository.save(existingSourceConnection);
-                    deletedIds.add(existingSourceConnection.getId());
+                    deletedIds.add(existingSourceConnection.getAlias());
                 }
 
             }

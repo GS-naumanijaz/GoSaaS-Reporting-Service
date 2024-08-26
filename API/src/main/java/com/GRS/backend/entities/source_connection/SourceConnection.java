@@ -39,15 +39,15 @@ public class SourceConnection {
     @NotNull(message = "Type must not be null")
     private SourceConnectionType type;
 
-    private String host = "";
+    private String host;
 
-    private int port = 0;
+    private Integer port;
 
-    private Boolean isActive = true;
+    private Boolean isActive;
 
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
-    private Boolean lastTestResult = null;
+    private Boolean lastTestResult;
 
     @NotNull
     private String username;
@@ -55,11 +55,13 @@ public class SourceConnection {
     @NotNull
     private String password;
 
-    private String databaseName = "";
+    private String databaseName;
 
-    private String createdBy = "";
+    private String schema;
 
-    private String deletedBy = "";
+    private String createdBy;
+
+    private String deletedBy ;
 
     private LocalDateTime creationDate;
 
@@ -79,7 +81,9 @@ public class SourceConnection {
         this.createdBy = "";
         this.deletedBy = "";
         this.isDeleted = false;
+        this.isActive = true;
         this.deletionDate = null;
+        this.lastTestResult = null;
     }
 
     @PreUpdate

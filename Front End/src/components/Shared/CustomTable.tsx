@@ -129,7 +129,7 @@ const CustomTable = ({
 
   const handleEditSave = (rowIndex: number) => {
     let itemId = tableManager.getRowId(rowIndex);
-    let editedItem = tableManager.getRowItem(rowIndex);
+    let editedItem = tableManager.getPartialRowItem(rowIndex);
     onEdit!(itemId, editedItem);
   };
 

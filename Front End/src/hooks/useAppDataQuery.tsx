@@ -56,9 +56,6 @@ export const useAppDataMutation = () => {
     }) => {
       return saveApp(formData.applicationName, formData.applicationDescription);
     },
-    // onSuccess: (data) => {
-    //   // console.log("Application saved successfully:", data);
-    // },
     onError: (error) => {
       useErrorToast()(error.message);
     },

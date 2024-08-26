@@ -12,6 +12,7 @@ export class TableManager {
   private allRowsSelected: boolean;
   private isSelectingRows: boolean;
   private canSaveEditedRows: boolean[];
+  private preEditActiveStatus: boolean;
 
   constructor(dataType: TableRowData, data: TableRowData[], product?: Product) {
     this.defaultData = dataType;
@@ -23,6 +24,7 @@ export class TableManager {
     this.canSaveEditedRows = new Array(this.data.length).fill(false);
     this.allRowsSelected = false;
     this.isSelectingRows = false;
+    this.preEditActiveStatus = false;
   }
 
   pageSize(): number {
@@ -93,6 +95,24 @@ export class TableManager {
     return this.data[index];
   }
 
+  getPartialRowItem(index: number): any {
+    const differentIndexes: number[] = [];
+
+    for (let i = 0; i < this.preEditRows[index].length; i++) {
+      if (this.preEditRows[index][i] !== this.data[index].getTableData()[i]) {
+        differentIndexes.push(i);
+      }
+    }
+
+    let partialData = this.data[index].getPartialData(differentIndexes);
+
+    if (this.requiresStatusToggle() && this.data[index].getSwitchStatus() !== this.preEditActiveStatus) {
+      partialData = { ...partialData, isActive: this.data[index].getSwitchStatus()}
+    }
+
+    return partialData;
+  }
+
   setEditSaveOnRow(index: number, newValue: boolean) {
     this.canSaveEditedRows[index] = newValue;
   }
@@ -101,7 +121,9 @@ export class TableManager {
     this.isEditing[index] = !this.isEditing[index];
     if (this.isEditing[index]) {
       this.preEditRows[index] = this.data[index].getTableData();
+      this.preEditActiveStatus = this.data[index].getSwitchStatus();
     }
+    
   }
 
   requiresActions() {

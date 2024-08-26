@@ -36,19 +36,19 @@ public class Report {
     @NotNull(message = "Alias must not be null")
     private String alias;
 
-    private String description = "";
+    private String description;
 
-    private String storedProcedure = "";
+    private String storedProcedure;
 
     private String[] params;
 
-    private String xslTemplate = "";
+    private String xslTemplate;
 
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
-    private Boolean isPinned = false;
+    private Boolean isPinned;
 
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     private LocalDateTime creationDate;
 
@@ -56,9 +56,9 @@ public class Report {
 
     private LocalDateTime updatedAt;
 
-    private String createdBy = "";
+    private String createdBy;
 
-    private String deletedBy = "";
+    private String deletedBy;
 
 
     @PrePersist
@@ -68,6 +68,8 @@ public class Report {
         this.createdBy = "";
         this.deletedBy = "";
         this.isDeleted = false;
+        this.isPinned = false;
+        this.isActive = true;
         this.deletionDate = null;
     }
 

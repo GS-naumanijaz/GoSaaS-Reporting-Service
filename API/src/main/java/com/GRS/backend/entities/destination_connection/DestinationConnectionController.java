@@ -75,30 +75,30 @@ public class DestinationConnectionController {
 
         DestinationConnection createdDestinationConnection = destinationConnectionService.addDestinationConnection(destinationConnection);
 
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.DESTINATION, createdDestinationConnection.getId(), 1, appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.DESTINATION, createdDestinationConnection.getAlias(), 1, destinationApp.getAlias());
         return Response.responseBuilder("Destination Connection added successfully", HttpStatus.OK, createdDestinationConnection);
     }
 
     @PatchMapping("/{destinationId}")
     public ResponseEntity<Object> updateDestinationConnection(@RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId, @PathVariable int appId) {
-
+        Application destinationApp = applicationService.getApplicationById(appId);
         DestinationConnection updatedDestinationConnection = destinationConnectionService.updateDestinationConnection(destinationId, destinationConnection);
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, destinationId, 1, appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, updatedDestinationConnection.getAlias(), 1, destinationApp.getAlias());
         return Response.responseBuilder("Destination Connection updated successfully", HttpStatus.OK, updatedDestinationConnection);
     }
 
     @PatchMapping("")
     public ResponseEntity<Object> bulkUpdateDestinationConnections(@RequestBody List<Integer> destinationConnectionIds, @RequestParam boolean isActive, @   PathVariable int appId) {
-
+        Application destinationApp = applicationService.getApplicationById(appId);
         List<DestinationConnection> updatedConnections = destinationConnectionService.bulkUpdateIsActive(destinationConnectionIds, isActive);
-        int[] updatedIds = updatedConnections.stream()
-                .mapToInt(DestinationConnection::getId)
-                .toArray();
+        String[] updatedAliases = updatedConnections.stream()
+                .map(DestinationConnection::getAlias)
+                .toArray(String[]::new);
         if (updatedConnections.size() == destinationConnectionIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, updatedIds, 1, appId);
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, updatedAliases, 1, destinationApp.getAlias());
             return Response.responseBuilder("All Destination Connections updated successfully", HttpStatus.OK, updatedConnections);
         } else if (!updatedConnections.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, updatedIds, 1, appId);
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, updatedAliases, 1, destinationApp.getAlias());
             return Response.responseBuilder("Some Destination Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedConnections);
         } else {
             return Response.responseBuilder("Your Destination Connections could not be updated", HttpStatus.BAD_REQUEST, updatedConnections);
@@ -108,19 +108,21 @@ public class DestinationConnectionController {
 
     @DeleteMapping("/{destinationId}")
     public ResponseEntity<Object> deleteDestinationConnection(@PathVariable int destinationId, @PathVariable int appId) {
-        destinationConnectionService.deleteDestinationConnection(destinationId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.DESTINATION, destinationId, 1, appId);
+        Application destinationApp = applicationService.getApplicationById(appId);
+        DestinationConnection deletedDestination = destinationConnectionService.deleteDestinationConnection(destinationId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.DESTINATION, deletedDestination.getAlias(), 1, destinationApp.getAlias());
         return Response.responseBuilder("Destination Connection deleted successfully", HttpStatus.OK, null);
     }
 
     @DeleteMapping("")
     public ResponseEntity<Object> deleteDestinationConnections(@RequestBody List<Integer> destinationIds, @PathVariable int appId) {
-        List<Integer> deletedIds = destinationConnectionService.bulkDeleteDestinationConnections(destinationIds);
-        if (deletedIds.size() == destinationIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, deletedIds, 1, appId);
+        Application destinationApp = applicationService.getApplicationById(appId);
+        List<String> deletedAliases = destinationConnectionService.bulkDeleteDestinationConnections(destinationIds);
+        if (deletedAliases.size() == destinationIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, deletedAliases, 1, destinationApp.getAlias());
             return Response.responseBuilder("All Destination Connections deleted successfully", HttpStatus.OK);
-        } else if (!deletedIds.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, deletedIds, 1, appId);
+        } else if (!deletedAliases.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, deletedAliases, 1, destinationApp.getAlias());
             return Response.responseBuilder("Some Destination Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Destination Connections could not be deleted", HttpStatus.BAD_REQUEST);

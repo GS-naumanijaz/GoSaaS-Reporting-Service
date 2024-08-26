@@ -115,7 +115,6 @@ const AppHeader = ({ appData }: Props) => {
       return response.json();
     },
     onSuccess: async (savedApplication) => {
-      console.log("Application saved", savedApplication);
       await queryClient.refetchQueries({
         queryKey: ["products", currentPage, searchTerm],
       });

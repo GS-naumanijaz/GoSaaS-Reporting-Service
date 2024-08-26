@@ -152,7 +152,7 @@ public class DestinationConnectionService {
     }
 
 
-    public void deleteDestinationConnection(int destinationConnectionId) {
+    public DestinationConnection deleteDestinationConnection(int destinationConnectionId) {
         Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
 
         if (existingDestinationOpt.isPresent() && !existingDestinationOpt.get().getIsDeleted()) {
@@ -170,13 +170,14 @@ public class DestinationConnectionService {
             }
 
             destinationConnectionRepository.save(existingDestination);
+            return existingDestination;
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
         }
     }
 
-    public List<Integer> bulkDeleteDestinationConnections(List<Integer> destinationIds) {
-        List<Integer> deletedIds = new ArrayList<>();
+    public List<String> bulkDeleteDestinationConnections(List<Integer> destinationIds) {
+        List<String> deletedIds = new ArrayList<>();
 
         for (Integer id : destinationIds) {
             Optional<DestinationConnection> optionalConnection = destinationConnectionRepository.findById(id);
@@ -196,7 +197,7 @@ public class DestinationConnectionService {
                     }
 
                     destinationConnectionRepository.save(existingDestination);
-                    deletedIds.add(existingDestination.getId());
+                    deletedIds.add(existingDestination.getAlias());
                 }
             }
         }

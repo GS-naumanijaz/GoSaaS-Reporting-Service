@@ -98,30 +98,31 @@ public class SourceConnectionController {
         sourceConnection.setApplication(sourceApp);
 
         SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection);
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.SOURCE, createdSourceConnection.getId(), 1, appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.SOURCE, createdSourceConnection.getAlias(), 1, sourceApp.getAlias());
         return Response.responseBuilder("Source Connection added successfully", HttpStatus.OK, createdSourceConnection);
     }
 
     @PatchMapping("/{sourceId}")
     public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId) {
+        Application sourceApp = applicationService.getApplicationById(appId);
         SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection);
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, sourceId, 1, appId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedSourceConnection.getAlias(), 1, sourceApp.getAlias());
         return Response.responseBuilder("Source Connection updated successfully", HttpStatus.OK, updatedSourceConnection);
     }
 
     @PatchMapping("")
     public ResponseEntity<Object> bulkUpdateSourceConnections(@RequestBody List<Integer> sourceIds, @RequestParam boolean isActive, @PathVariable int appId) {
-
+        Application sourceApp = applicationService.getApplicationById(appId);
         List<SourceConnection> updatedSources = sourceConnectionService.bulkUpdateIsActive(sourceIds, isActive);
 
-        int[] updatedIds = updatedSources.stream()
-                .mapToInt(SourceConnection::getId)
-                .toArray();
+        String[] updatedAliases = updatedSources.stream()
+                .map(SourceConnection::getAlias)
+                .toArray(String[]::new);
         if (updatedSources.size() == sourceIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, sourceIds, 1, appId);
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, 1, sourceApp.getAlias());
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedSources);
         } else if (!updatedSources.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedIds, 1, appId);
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, 1, sourceApp.getAlias());
             return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedSources);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedSources);
@@ -131,19 +132,21 @@ public class SourceConnectionController {
 
     @DeleteMapping("/{sourceId}")
     public ResponseEntity<Object> deleteSourceConnection(@PathVariable int sourceId, @PathVariable int appId) {
-        sourceConnectionService.deleteSourceConnection(sourceId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.SOURCE, sourceId, 1, appId);
+        Application sourceApp = applicationService.getApplicationById(appId);
+        SourceConnection deleteSource = sourceConnectionService.deleteSourceConnection(sourceId);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.SOURCE, deleteSource.getAlias(), 1, sourceApp.getAlias());
         return Response.responseBuilder("Source Connection deleted successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("")
     public ResponseEntity<Object> deleteSourceConnection(@RequestBody List<Integer> sourceIds, @PathVariable int appId) {
-        List<Integer> deletedIds = sourceConnectionService.bulkDeleteSourceConnections(sourceIds);
-        if (deletedIds.size() == sourceIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, sourceIds, 1, appId);
+        Application sourceApp = applicationService.getApplicationById(appId);
+        List<String> deletedAliases = sourceConnectionService.bulkDeleteSourceConnections(sourceIds);
+        if (deletedAliases.size() == sourceIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, 1, sourceApp.getAlias());
             return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
-        } else if (!deletedIds.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedIds, 1, appId);
+        } else if (!deletedAliases.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, 1, sourceApp.getAlias());
             return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);

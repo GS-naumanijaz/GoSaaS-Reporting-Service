@@ -25,7 +25,7 @@ public class Notification {
 
     private String message;
 
-    private String createdBy = "";
+    private String createdBy;
 
     private LocalDateTime creationDate;
 

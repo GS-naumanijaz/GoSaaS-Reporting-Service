@@ -34,20 +34,20 @@ public class Request {
 
     private LocalDate date;
 
-    private int remoteUserId;
+    private Integer remoteUserId;
 
-    private String storedProcedure = "";
+    private String storedProcedure;
 
     private String[] params;
 
 //    @NotNull(message = "Status must not be null")
     private RequestStatus status;
 
-    private String reportLink = "";
+    private String reportLink;
 
-    private String createdBy = "";
+    private String createdBy;
 
-    private String deletedBy = "";
+    private String deletedBy;
 
     private LocalDateTime creationDate;
 

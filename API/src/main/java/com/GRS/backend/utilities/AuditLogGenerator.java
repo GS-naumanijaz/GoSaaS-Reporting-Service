@@ -33,42 +33,45 @@ public class AuditLogGenerator {
         return instance;
     }
 
-    public void log(AuditLogAction action, AuditLogModule module, int moduleId, int userId) {
+    public void log(AuditLogAction action, AuditLogModule module, String moduleAlias, int userId) {
 
-        String details = "User " + userId + " " + action + " " + module + " with id " + moduleId;
-
-        AuditLog auditLog = new AuditLog(module, action, details, userId);
-        auditLogService.addAuditLog(auditLog);
-    }
-
-    public void log(AuditLogAction action, AuditLogModule module, int moduleId, int userId, int appId) {
-
-        String details = "User " + userId + " " + action + " " + module + " with id " + moduleId + " in APPLICATION with id " + appId;
+        String details = "User " + userId + " " + action + " " + module + " '" + moduleAlias + "'";
 
         AuditLog auditLog = new AuditLog(module, action, details, userId);
         auditLogService.addAuditLog(auditLog);
     }
 
-    public void logBulk(AuditLogAction action, AuditLogModule module, int[] moduleIds, int userId, int appId) {
+    public void log(AuditLogAction action, AuditLogModule module, String moduleAlias, int userId, String appAlias) {
 
-        String details = "User " + userId + " BULK " + action + " " + module + " with ids " + arrayToString(moduleIds) + " in APPLICATION with id " + appId;
+        String details = "User " + userId + " " + action + " " + module + " '" + moduleAlias + "' in APPLICATION '" + appAlias + "'";
 
         AuditLog auditLog = new AuditLog(module, action, details, userId);
         auditLogService.addAuditLog(auditLog);
     }
 
-    public void logBulk(AuditLogAction action, AuditLogModule module, List<Integer> moduleIds, int userId, int appId) {
+    public void logBulk(AuditLogAction action, AuditLogModule module, String[] moduleAlaises, int userId, String appAlias) {
+
+        String details = "User " + userId + " BULK " + action + " " + module + "'s " + arrayToString(moduleAlaises) + " in APPLICATION '" + appAlias + "'";
+
+        AuditLog auditLog = new AuditLog(module, action, details, userId);
+        auditLogService.addAuditLog(auditLog);
+    }
+
+    public void logBulk(AuditLogAction action, AuditLogModule module, List<String> moduleIds, int userId, String appId) {
         // Convert List<Integer> to int[]
-        int[] moduleIdArray = moduleIds.stream().mapToInt(Integer::intValue).toArray();
+        String[] moduleIdArray = moduleIds.stream()
+                .map(String::valueOf)
+                .toArray(String[]::new);
 
-        String details = "User " + userId + " BULK " + action + " " + module + " with ids " + arrayToString(moduleIdArray) + " in APPLICATION with id " + appId;
+
+        String details = "User " + userId + " BULK " + action + " " + module + "'s " + arrayToString(moduleIdArray) + " in APPLICATION '" + appId + "'";
 
         AuditLog auditLog = new AuditLog(module, action, details, userId);
         auditLogService.addAuditLog(auditLog);
     }
 
 
-    private String arrayToString(int[] array) {
+    private String arrayToString(String[] array) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             sb.append(array[i]);

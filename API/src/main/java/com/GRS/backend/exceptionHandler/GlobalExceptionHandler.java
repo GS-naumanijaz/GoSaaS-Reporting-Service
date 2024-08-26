@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import software.amazon.awssdk.core.exception.SdkClientException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,13 +65,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         String message;
         if (fieldName != null && keyValue != null) {
-            message = "Field '" + fieldName + "' with value '" + keyValue + "' must be unique. An entity with this value already exists.";
+            message = "The selected " + fieldName + " is currently in use. Please choose an alternative " + fieldName + " to proceed.";
         } else {
             message = "A data integrity violation occurred.";
         }
 
+        return Response.responseBuilder(message, HttpStatus.CONFLICT);
+    }
 
-        return Response.responseBuilder(message, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(SdkClientException.class)
+    public ResponseEntity<Object> handleSdkClientException(SdkClientException ex) {
+        // Log the exception details
+        System.err.println("AWS SDK Client Exception: " + ex.getMessage());
+
+        // Return a response with a custom error message and appropriate HTTP status
+        return Response.responseBuilder("Sorry, there was an issue processing your request. Please check your input for accuracy, or try again later if the problem persists. AWS servers may be temporarily unavailable.", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     private String extractFieldName(String message) {
