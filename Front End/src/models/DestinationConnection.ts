@@ -106,9 +106,9 @@ export class DestinationConnection extends TableRowData {
         required: true,
         minLength: 8,
         maxLength: 100,
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).*$/,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
-          "Secret Key must be 8-100 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+          "Secret Key must be 8-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
       },
     },
   ];
@@ -270,7 +270,9 @@ export class DestinationConnection extends TableRowData {
       case 0:
         return { alias: this.alias } as Partial<DestinationConnection>;
       case 2:
-        return { databaseName: this.bucketName } as Partial<DestinationConnection>;
+        return {
+          databaseName: this.bucketName,
+        } as Partial<DestinationConnection>;
       case 3:
         return { host: this.region } as Partial<DestinationConnection>;
       case 1:
@@ -313,7 +315,6 @@ export class DestinationConnection extends TableRowData {
   requiresRedirect(): boolean {
     return false;
   }
-
 
   getSwitchStatus(): boolean {
     return this.isActive;

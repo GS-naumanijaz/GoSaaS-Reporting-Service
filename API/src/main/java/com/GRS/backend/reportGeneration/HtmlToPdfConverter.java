@@ -1,41 +1,40 @@
 package com.GRS.backend.reportGeneration;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.core.sync.RequestBody;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+
 
 @Component
 public class HtmlToPdfConverter {
 
-    @Value("${aws.bucket.name}")
-    private String bucketName;
-
-    private final S3Client s3Client;
-
     private static final Logger logger = LoggerFactory.getLogger(HtmlToPdfConverter.class);
 
-    public HtmlToPdfConverter(S3Client s3Client) {
-        this.s3Client = s3Client;
+    private final S3ClientProvider s3ClientProvider;
+
+    public HtmlToPdfConverter(S3ClientProvider s3ClientProvider) {
+        this.s3ClientProvider = s3ClientProvider;
     }
 
-    public void convertHtmlToPdfAndUpload(String htmlContent, String fileName) {
+    public void convertHtmlToPdfAndUpload(String htmlContent, String fileName, DestinationConnection destinationConnection) {
         try {
+            // Create the S3 client using the S3ClientProvider
+            S3Client s3Client = s3ClientProvider.createS3Client(destinationConnection);
+//            logger.info("S3Client created with region: {} and credentials alias={}", destinationConnection.getRegion(), destinationConnection.getAlias());
+
+            // Convert HTML to PDF
             byte[] pdfBytes = convertHtmlToPdf(htmlContent);
 
             // Upload the PDF to S3
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
+                    .bucket(destinationConnection.getBucketName())
                     .key(fileName)
                     .build();
 
@@ -49,7 +48,9 @@ public class HtmlToPdfConverter {
         }
     }
 
-    public byte[] convertHtmlToPdf(String htmlContent) {
+
+
+    private byte[] convertHtmlToPdf(String htmlContent) {
         try {
             String styledHtmlContent = addPageStyling(htmlContent);
 

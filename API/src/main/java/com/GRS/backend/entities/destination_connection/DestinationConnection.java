@@ -96,5 +96,24 @@ public class DestinationConnection {
         this.updatedAt = LocalDateTime.now();
     }
 
-
+    // Custom toString method for debugging
+    @Override
+    public String toString() {
+        return "DestinationConnection{" +
+                "id=" + id +
+                ", alias='" + alias + '\'' +
+                ", isActive=" + isActive +
+                ", isDeleted=" + isDeleted +
+                ", lastTestResult=" + lastTestResult +
+                ", secretKey='" + secretKey + '\'' +
+                ", accessKey='" + accessKey + '\'' +
+                ", bucketName='" + bucketName + '\'' +
+                ", region='" + region + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", deletedBy='" + deletedBy + '\'' +
+                ", creationDate=" + creationDate +
+                ", deletionDate=" + deletionDate +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

@@ -119,7 +119,7 @@ public class DatabaseUtilities {
                 query = new StringBuilder(query.substring(0, query.length() - 2));
                 query.append(");");
 
-                System.out.println(query);
+//                System.out.println(query);
 
 
                 try (Statement statement = connection.createStatement()) {
@@ -154,27 +154,4 @@ public class DatabaseUtilities {
         }
         return result;
     }
-
-    private static String resultSetToJson(ResultSet resultSet) throws SQLException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ArrayNode arrayNode = objectMapper.createArrayNode();
-
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-
-        while (resultSet.next()) {
-            ObjectNode rowObject = objectMapper.createObjectNode();
-
-            for (int i = 1; i <= columnCount; i++) {
-                String columnName = metaData.getColumnName(i);
-                String columnValue = resultSet.getString(i);
-                rowObject.put(columnName, columnValue);
-            }
-
-            arrayNode.add(rowObject);
-        }
-
-        return arrayNode.toString();
-    }
-
 }
