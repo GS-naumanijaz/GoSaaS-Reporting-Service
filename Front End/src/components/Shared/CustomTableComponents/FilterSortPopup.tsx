@@ -105,6 +105,17 @@ const FilterSortPopup = ({
       </Text>
     );
 
+  // Safely access dropdownFilter and sort it
+  const dropdownFilter = sortFilterOptions.dropdownFilter ?? [];
+  const sortedDropdownFilter = dropdownFilter
+    .filter((item) => item.toLowerCase() !== "all")
+    .sort((a, b) => a.localeCompare(b));
+
+  // Add "All" to the top of the sorted array
+  if (dropdownFilter.includes("All")) {
+    sortedDropdownFilter.unshift("All");
+  }
+
   return (
     <Box p={4}>
       <Popover placement="top">
@@ -153,7 +164,7 @@ const FilterSortPopup = ({
               </PopoverBody>
             </Box>
           )}
-          {sortFilterOptions.dropdownFilter && (
+          {sortedDropdownFilter && (
             <Box>
               <PopoverHeader>Filter By Options</PopoverHeader>
               <PopoverBody>
@@ -175,7 +186,7 @@ const FilterSortPopup = ({
                     overflowX="hidden"
                     sx={sx}
                   >
-                    {sortFilterOptions.dropdownFilter.map((item, index) => (
+                    {sortedDropdownFilter.map((item, index) => (
                       <MenuItem
                         key={index}
                         fontSize={16}
