@@ -92,7 +92,7 @@ public class ReportController {
         Report createdReport = reportService.addReport(report);
 
         AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.REPORT, createdReport.getAlias(), 1, reportApp.getAlias());
-        return Response.responseBuilder("Report added successfully", HttpStatus.OK, createdReport);
+        return Response.responseBuilder("Report added successfully", HttpStatus.CREATED, createdReport);
     }
 
     @PatchMapping("/{reportId}")

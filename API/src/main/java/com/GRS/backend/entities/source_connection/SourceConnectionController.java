@@ -87,7 +87,7 @@ public class SourceConnectionController {
 
     @GetMapping("/types")
     public ResponseEntity<Object> getSourceConnectionTypes() {
-        return Response.responseBuilder("Source Connection types returned successfully", HttpStatus.OK, SourceConnectionType.getDbTypes());
+        return Response.responseBuilder("Source Connection types returned successfully", HttpStatus.CREATED, SourceConnectionType.getDbTypes());
     }
 
     @PostMapping("")

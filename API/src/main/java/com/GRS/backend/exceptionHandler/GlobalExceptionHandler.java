@@ -57,7 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityIsInactiveException.class)
     public ResponseEntity<Object> handleEntityIsInactiveException(EntityIsInactiveException ex) {
-        return Response.responseBuilder(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return Response.responseBuilder(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

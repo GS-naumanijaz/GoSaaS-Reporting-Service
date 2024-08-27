@@ -76,7 +76,7 @@ public class DestinationConnectionController {
         DestinationConnection createdDestinationConnection = destinationConnectionService.addDestinationConnection(destinationConnection);
 
         AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.DESTINATION, createdDestinationConnection.getAlias(), 1, destinationApp.getAlias());
-        return Response.responseBuilder("Destination Connection added successfully", HttpStatus.OK, createdDestinationConnection);
+        return Response.responseBuilder("Destination Connection added successfully", HttpStatus.CREATED, createdDestinationConnection);
     }
 
     @PatchMapping("/{destinationId}")

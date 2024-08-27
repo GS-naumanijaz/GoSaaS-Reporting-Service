@@ -61,7 +61,7 @@ public class ApplicationController {
     public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application) {
         Application createdApplication = applicationService.addApplication(application);
         AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getAlias(), 1);
-        return Response.responseBuilder("Application added successfully", HttpStatus.OK, createdApplication);
+        return Response.responseBuilder("Application added successfully", HttpStatus.CREATED, createdApplication);
     }
 
     @PatchMapping("")

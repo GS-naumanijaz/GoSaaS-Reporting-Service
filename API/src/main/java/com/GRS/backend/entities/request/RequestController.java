@@ -84,7 +84,7 @@ public class RequestController {
 //            requestService.updateRequest(createdRequest);
 
 
-        return Response.responseBuilder("Request added successfully", HttpStatus.OK, createdRequest);
+        return Response.responseBuilder("Request added successfully", HttpStatus.CREATED, createdRequest);
 
     }
 

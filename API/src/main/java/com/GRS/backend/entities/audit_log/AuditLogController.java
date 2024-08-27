@@ -48,7 +48,7 @@ public class AuditLogController {
     @PostMapping
     public ResponseEntity<Object> addAuditLog(@RequestBody AuditLog auditLog) {
         AuditLog createdAuditLog = auditLogService.addAuditLog(auditLog);
-        return Response.responseBuilder("Audit Log added successfully", HttpStatus.OK, createdAuditLog);
+        return Response.responseBuilder("Audit Log added successfully", HttpStatus.CREATED, createdAuditLog);
     }
 
     @PatchMapping("/{logId}")

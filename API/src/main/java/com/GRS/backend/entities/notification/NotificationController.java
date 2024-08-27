@@ -53,7 +53,7 @@ public class NotificationController {
 
         Notification createdNotification = notificationService.addNotification(notification);
 
-        return Response.responseBuilder("Notification added successfully", HttpStatus.OK, createdNotification);
+        return Response.responseBuilder("Notification added successfully", HttpStatus.CREATED, createdNotification);
     }
 
     @PatchMapping("/{notificationId}")
