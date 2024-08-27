@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,6 +50,7 @@ public class ApplicationService {
         }
     }
 
+    @Transactional
     public Application getApplicationByAlias(String appAlias) {
         Optional<Application> app = applicationRepository.findByAlias(appAlias);
         if (app.isPresent()) {

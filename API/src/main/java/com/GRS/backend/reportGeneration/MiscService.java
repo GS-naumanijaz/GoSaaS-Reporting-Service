@@ -96,7 +96,6 @@ public class MiscService {
 
         // Load the XSL file from S3
         InputStream s3XslInputStream = loadXslFromS3(destination, report);
-        System.out.println(s3XslInputStream);
 
         // Transform the XML to HTML using the XSL file
         String html = null;

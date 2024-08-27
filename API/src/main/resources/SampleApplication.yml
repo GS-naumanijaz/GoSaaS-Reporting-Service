@@ -7,6 +7,7 @@ spring:
           google:
             client-id: your-google-client-id
             client-secret: your-google-client-secret
+            redirect-uri: your-google-redirect-uri
 
 # profiles
   profiles:
@@ -27,6 +28,12 @@ spring:
         dialect: your-hibernate-dialect
         format_sql: true
 
+  # RabbitMQ
+  rabbitmq:
+    host: your-rabbitmq-host
+    port: your-rabbitmq-port
+    username: your-rabbitmq-username
+    password: your-rabbitmq-password
 # Server
 frontend:
   url: your-frontend-url
