@@ -5,7 +5,6 @@ import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.report.ReportService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
-import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import com.GRS.backend.utilities.AuditLogGenerator;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/applications")
@@ -39,7 +37,6 @@ public class ApplicationController {
     public ResponseEntity<Object> getAllApplications(
             @QueryParams(pageSize = 6, searchBy = "alias") QueryArgumentResolver.QueryParamsContainer queryParams,
             @RequestParam(defaultValue = "all") String status) {
-
         String search = queryParams.getSearch();
         String searchBy = queryParams.getSearchBy();
         Pageable pageable = queryParams.getPageable();
