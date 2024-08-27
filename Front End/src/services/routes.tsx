@@ -1,9 +1,9 @@
-// import AuthenticatedRoute from "../components/AuthenticatedRoute";
 import { createBrowserRouter } from "react-router-dom";
 import Homepage from "../pages/Homepage";
 import LoginPage from "../pages/LoginPage";
 import Application from "../pages/Application";
 import AddReportPage from "../pages/AddReportPage";
+import AuthenticatedRoute from "../components/AuthenticatedRoute";
 
 const router = createBrowserRouter([
   {
@@ -12,20 +12,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/homepage",
-    element: <Homepage />,
+    // element: <Homepage />,
+    element: <AuthenticatedRoute element={<Homepage />} />,
   },
   {
     path: "/applications",
-    element: <Application />,
+    // element: <Application />,
+    element: <AuthenticatedRoute element={<Application />} />,
   },
   {
     path: "/addreports",
-    element: <AddReportPage />,
+    // element: <AddReportPage />,
+    element: <AuthenticatedRoute element={<AddReportPage />} />,
   },
 ]);
 
 export default router;
-
-// element: <AuthenticatedRoute element={<Homepage />} />,
-// element: <AuthenticatedRoute element={<Application />} />,
-// element: <AuthenticatedRoute element={<AddReportPage />} />,
