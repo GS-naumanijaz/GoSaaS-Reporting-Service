@@ -4,14 +4,14 @@ import {
   GoSaaSLabsLogo,
   primaryColor,
   secondaryColor,
-  FrontendURL,
+  BackendURL,
 } from "../../configs";
 
 const SignInCard = () => {
   const handleClick = async () => {
     // redirect to google oauth
-    // window.open(`${BackendURL}`, "_self");
-    window.open(`${FrontendURL}/homepage`, "_self");
+    window.open(`${BackendURL}`, "_self");
+    // window.open(`${FrontendURL}/homepage`, "_self");
   };
 
   return (

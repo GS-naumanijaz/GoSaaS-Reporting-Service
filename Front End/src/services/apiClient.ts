@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BackendURL } from "../configs";
 import { useErrorToast } from "../hooks/useErrorToast";
 import { ReportResponse } from "../hooks/useReportsQuery";
+import { useUser } from "../components/Login/UserContext";
 
 export interface APIResponse<T> {
   // data?: T | null;
@@ -39,7 +40,6 @@ export interface PageableResponse<T> {
   numberOfElements: number;
   empty: boolean;
 }
-
 const axiosInstance = axios.create({
   baseURL: BackendURL,
   withCredentials: true,
@@ -47,6 +47,23 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Add a request interceptor to include the auth token
+axiosInstance.interceptors.request.use(
+  (config) => {
+    // Retrieve the auth token from your storage (localStorage, context, etc.)
+    const user = useUser();
+    const authToken = user?.accessTokenHash; // Replace with your actual method of storing the token
+
+    if (authToken) {
+      config.headers.Authorization = `Bearer ${authToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 class APIClient<T> {
   endpoint: string;
