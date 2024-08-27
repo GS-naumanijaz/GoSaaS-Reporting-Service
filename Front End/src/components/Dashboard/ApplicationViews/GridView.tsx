@@ -111,6 +111,10 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     setCurrentPage(newPage);
   };
 
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+  }
+
   // Animation variants
   const itemVariants = {
     hidden: { opacity: 0, x: -50 },
@@ -194,6 +198,8 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
               itemVariants={itemVariants}
               isEmpty={data?.empty ?? false}
               isFetching={isFetching}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
             />
           </motion.div>
         )}

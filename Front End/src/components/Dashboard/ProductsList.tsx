@@ -1,8 +1,22 @@
-import { Box, Flex, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  SimpleGrid,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import PageSelector from "./PageSelector";
 import ProductElement from "./ProductElement";
 import { Product } from "./Products";
+import { FaChevronDown } from "react-icons/fa";
+import { sx } from "../../configs";
 
 interface Props {
   products: Product[];
@@ -16,6 +30,8 @@ interface Props {
   };
   isEmpty: boolean;
   isFetching: boolean; // Added prop for loading state
+  pageSize: number;
+  onPageSizeChange: (newPageSize: number) => void;
 }
 
 const ProductsList = ({
@@ -27,6 +43,8 @@ const ProductsList = ({
   itemVariants,
   isEmpty,
   isFetching, // Destructure the isFetching prop
+  pageSize,
+  onPageSizeChange,
 }: Props) => {
   if (isFetching) {
     return (
@@ -47,10 +65,32 @@ const ProductsList = ({
     );
   }
 
+  const generatePageSizes = (
+    lowerBound: number,
+    upperBound: number,
+    step: number
+  ) => {
+    const sizes: number[] = [];
+
+    if (upperBound > 0 && lowerBound > 0 && lowerBound <= upperBound) {
+      let currentSize = lowerBound;
+      while (currentSize <= upperBound) {
+        sizes.push(currentSize);
+        currentSize += step;
+      }
+      if (sizes.length === 0 || sizes[sizes.length - 1] < upperBound) {
+        sizes.push(upperBound);
+      }
+    }
+    return sizes.length > 0 ? sizes : [lowerBound];
+  };
+
+  const pageSizes = generatePageSizes(4, 16, 2);
+
   return (
     <>
       <Box height={420}>
-        <SimpleGrid columns={{ lg: 3 }} padding={10} spacing={10}>
+        <SimpleGrid columns={{ lg: pageSize / 2 }} padding={10} spacing={10}>
           {products.map((product, index) => (
             <motion.div
               key={product.id} // Assuming each product has a unique 'id'
@@ -66,7 +106,10 @@ const ProductsList = ({
       </Box>
 
       <Flex alignItems="center" marginX={12} mt={6}>
-        <Box flex="1" />
+        <Box flex="1" textAlign="left">
+          <Text>{`Showing ${products.length} of ${totalElements} Applications`}</Text>
+        </Box>
+
         {/* {totalPages > 1 && ( */}
         <Box>
           <PageSelector
@@ -75,9 +118,35 @@ const ProductsList = ({
             setCurrentPage={setCurrentPage}
           />
         </Box>
-
-        <Box flex="1" textAlign="right">
-          <Text>{`${products.length} of ${totalElements} Applications`}</Text>
+        <Box flex="1">
+          <HStack justifyContent="flex-end">
+            <Text>Max Rows per Page</Text>
+            <Menu>
+              <MenuButton
+                bg="white"
+                border="1px"
+                borderColor="gray.200"
+                as={Button}
+                textAlign="left"
+                fontWeight="normal"
+                rightIcon={<FaChevronDown />}
+              >
+                {pageSize}
+              </MenuButton>
+              <MenuList
+                maxHeight="30vh"
+                overflowY="auto"
+                overflowX="hidden"
+                sx={sx}
+              >
+                {pageSizes.map((size) => (
+                  <MenuItem key={size} onClick={() => onPageSizeChange(size)}>
+                    {size}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          </HStack>
         </Box>
       </Flex>
     </>

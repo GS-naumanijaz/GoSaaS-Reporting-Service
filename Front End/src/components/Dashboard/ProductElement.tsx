@@ -38,7 +38,15 @@ const ProductElement = ({ product }: Props) => {
         borderRadius="0 20px 0 50px"
       />
 
-      <Text fontSize={["sm", "md", "lg"]}>{product.alias}</Text>
+      <Text
+        fontSize={["sm", "md", "lg"]}
+        whiteSpace="normal"
+        wordBreak="break-word"
+        overflowWrap="break-word"
+        noOfLines={5} // This limits the text to 2 lines
+      >
+        {product.alias}
+      </Text> 
     </Box>
   );
 };
