@@ -48,23 +48,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add a request interceptor to include the auth token
-axiosInstance.interceptors.request.use(
-  (config) => {
-    // Retrieve the auth token from your storage (localStorage, context, etc.)
-    const user = useUser();
-    const authToken = user?.accessTokenHash; // Replace with your actual method of storing the token
-
-    if (authToken) {
-      config.headers.Authorization = `Bearer ${authToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
 class APIClient<T> {
   endpoint: string;
 
@@ -74,7 +57,7 @@ class APIClient<T> {
 
   // Handles API responses
   private handleResponse = <R>(response: AxiosResponse<APIResponse<R>>): R => {
-    if (response.data.httpStatus !== "OK") {
+    if (response.data.httpStatus !== "OK" && response.data.httpStatus !== "CREATED") {
       useErrorToast()(response.data.message || "An error occurred.");
       throw new Error(response.data.message || "An error occurred.");
     } else {
@@ -100,6 +83,7 @@ class APIClient<T> {
     }
   };
   getAll = (config?: AxiosRequestConfig) => {
+    console.log("hello in getall");
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
       .then((res) => this.handleResponse(res))

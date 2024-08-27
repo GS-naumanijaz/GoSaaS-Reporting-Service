@@ -60,7 +60,7 @@ const AuditLogData = () => {
           log.action,
           log.createdAt,
           log.details,
-          log.userId
+          log.username
         )
     ) || [];
 

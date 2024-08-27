@@ -7,7 +7,7 @@ export class AuditLog extends TableRowData {
   private action: string;
   private createdAt: string;
   private details: string;
-  private userId: number;
+  private username: string;
 
   private static tableHeader = "Audit Log";
   private static tableHeadings = [
@@ -65,7 +65,6 @@ export class AuditLog extends TableRowData {
         required: false,
       },
     },
-    
   ];
 
 
@@ -101,7 +100,7 @@ export class AuditLog extends TableRowData {
     action: string = "",
     createdAt: string = "",
     details: string = "",
-    userId: number = 0
+    username: string = ""
   ) {
     super();
     this.id = id;
@@ -109,14 +108,14 @@ export class AuditLog extends TableRowData {
     this.action = action;
     this.createdAt = createdAt;
     this.details = details;
-    this.userId = userId;
+    this.username = username;
   }
 
   getId(): number {
     return this.id;
   }
   getTableData(): string[] {
-    return [String(this.userId), this.module, this.action, this.details, this.createdAt];
+    return [this.username, this.module, this.action, this.details, this.createdAt];
   }
   getTableHeadings(): string[] {
     return AuditLog.tableHeadings;

@@ -114,7 +114,6 @@
         public void prePersist() {
             this.creationDate = LocalDateTime.now();
             this.updatedAt = LocalDateTime.now();
-            this.createdBy = "";
             this.deletedBy = "";
             this.isDeleted = false;
             this.isActive = true;
