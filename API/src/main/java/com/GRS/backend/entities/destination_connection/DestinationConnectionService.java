@@ -43,7 +43,9 @@ public class DestinationConnectionService {
             if (search != null && !search.isEmpty()) {
                 spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
             }
-            return destinationConnectionRepository.findAll(spec, pageable);
+            Page<DestinationConnection> destinationPages = destinationConnectionRepository.findAll(spec, pageable);
+            destinationPages.forEach(DestinationConnection::decryptSecretKey);
+            return destinationPages;
         }
 
         throw new EntityNotFoundException("Application", appId);
@@ -71,7 +73,11 @@ public class DestinationConnectionService {
     public DestinationConnection getDestinationConnectionById(int destinationConnectionId) {
         Optional<DestinationConnection> connection = destinationConnectionRepository.findById(destinationConnectionId);
         if (connection.isPresent()) {
-            return connection.get();
+            DestinationConnection destination = connection.get();
+            System.out.println("before" + destination.getSecretKey());
+            destination.decryptSecretKey();
+            System.out.println("after" + destination.getSecretKey());
+            return destination;
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
         }
@@ -79,21 +85,28 @@ public class DestinationConnectionService {
 
     public boolean testDestinationConnection(DestinationConnection destinationConnection) {
 //
+        System.out.println(destinationConnection.getSecretKey());
         String accessKey = destinationConnection.getAccessKey();
         String secretKey = destinationConnection.getSecretKey();
 
         String bucketName = destinationConnection.getBucketName();
         String region = destinationConnection.getRegion();
 
+
+
+
         boolean testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
 
-        destinationConnection.setLastTestResult(testResult);
-        updateDestinationConnection(destinationConnection.getId(), destinationConnection);
+        destinationConnection.encryptSecretKey();
+        DestinationConnection updatedDestination = new DestinationConnection();
+        updatedDestination.setLastTestResult(testResult);
+        updateDestinationConnection(destinationConnection.getId(), updatedDestination);
 
         return testResult;
     }
 
     public DestinationConnection addDestinationConnection(DestinationConnection destinationConnection) {
+        destinationConnection.encryptSecretKey();
         return destinationConnectionRepository.save(destinationConnection);
     }
 
@@ -103,6 +116,7 @@ public class DestinationConnectionService {
         if (existingDestinationOpt.isPresent()) {
             DestinationConnection existingDestination = existingDestinationOpt.get();
 
+            existingDestination.decryptSecretKey();
 
             FieldUpdater.updateField(existingDestination, "alias", destinationConnection);
             FieldUpdater.updateField(existingDestination, "bucketName", destinationConnection);
@@ -119,7 +133,7 @@ public class DestinationConnectionService {
                     reportRepository.save(report);
                 }
             }
-
+            existingDestination.encryptSecretKey();
             return destinationConnectionRepository.save(existingDestination);
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);

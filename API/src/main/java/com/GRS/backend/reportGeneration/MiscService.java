@@ -5,6 +5,7 @@ import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.source_connection.SourceConnection;
+import com.GRS.backend.exceptionHandler.exceptions.EntityIsInactiveException;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.models.DTO.GenerateReportDTO;
 import com.GRS.backend.utilities.DatabaseUtilities;
@@ -65,8 +66,15 @@ public class MiscService {
         }
 
         Report report = optionalReport.get();
+
+        if (Boolean.FALSE.equals(report.getIsActive())) {
+            throw new EntityIsInactiveException("report", report.getId());
+        }
+
         SourceConnection source = report.getSourceConnection();
+        source.decryptPassword();
         DestinationConnection destination = report.getDestinationConnection();
+        destination.decryptSecretKey();
 
         // Call the stored procedure on the source database
         Object jsonResponse = DatabaseUtilities.callStoredProcedureOnDatabase(source, report, generateReportDTO.getData().getParameterValues());
@@ -88,6 +96,7 @@ public class MiscService {
 
         // Load the XSL file from S3
         InputStream s3XslInputStream = loadXslFromS3(destination, report);
+        System.out.println(s3XslInputStream);
 
         // Transform the XML to HTML using the XSL file
         String html = null;

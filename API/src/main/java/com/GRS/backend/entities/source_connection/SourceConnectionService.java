@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,25 +38,28 @@ public class SourceConnectionService {
 
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
+        if (existingApplicationOpt.isPresent() && Boolean.TRUE.equals(!existingApplicationOpt.get().getIsDeleted())) {
             Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
             if (search != null && !search.isEmpty()) {
                 spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
             }
 
-            return sourceConnectionRepository.findAll(spec, pageable);
+            Page<SourceConnection> sourcePages = sourceConnectionRepository.findAll(spec, pageable);
+
+            sourcePages.forEach(SourceConnection::decryptPassword);
+
+            return sourcePages;
         }
 
         throw new EntityNotFoundException("Application", appId);
-
     }
 
     public List<SourceConnectionDTO> getAllSourceConnections(int appId) {
 
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
+        if (existingApplicationOpt.isPresent() && Boolean.TRUE.equals(!existingApplicationOpt.get().getIsDeleted())) {
             Specification<SourceConnection> spec = Specification
                     .<SourceConnection>where(BaseSpecification.belongsTo("application", appId))
                     .and(BaseSpecification.isActive());
@@ -74,7 +76,9 @@ public class SourceConnectionService {
     public SourceConnection getSourceConnectionById(int sourceConnectionId) {
         Optional<SourceConnection> connection = sourceConnectionRepository.findById(sourceConnectionId);
         if (connection.isPresent()) {
-            return connection.get();
+            SourceConnection source = connection.get();
+            source.decryptPassword();
+            return source;
         } else {
             throw new EntityNotFoundException("Source Connection", sourceConnectionId);
         }
@@ -95,14 +99,17 @@ public class SourceConnectionService {
 
         boolean testResult = DatabaseUtilities.tryConnect(url, username, password, driverClassName);
 
-        sourceConnection.setLastTestResult(testResult);
-        updateSourceConnection(sourceConnection.getId(), sourceConnection);
+        sourceConnection.encryptPassword();
+        SourceConnection updatedSource = new SourceConnection();
+        updatedSource.setLastTestResult(testResult);
+        updateSourceConnection(sourceConnection.getId(), updatedSource);
 
         return testResult;
     }
 
     public SourceConnection addSourceConnection(SourceConnection sourceConnection) {
-        return sourceConnectionRepository.save(sourceConnection);
+            sourceConnection.encryptPassword();
+            return sourceConnectionRepository.save(sourceConnection);
     }
 
     public SourceConnection updateSourceConnection(int sourceConnectionId, SourceConnection sourceConnection) {
@@ -110,6 +117,8 @@ public class SourceConnectionService {
 
         if (existingSourceConnectionOpt.isPresent()) {
             SourceConnection existingSourceConnection = existingSourceConnectionOpt.get();
+
+            existingSourceConnection.decryptPassword();
 
             FieldUpdater.updateField(existingSourceConnection, "alias", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "type", sourceConnection);
@@ -120,6 +129,7 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "password", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "databaseName", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "schema", sourceConnection);
+            FieldUpdater.updateField(existingSourceConnection, "lastTestResult", sourceConnection);
 
             if (Boolean.FALSE.equals(existingSourceConnection.getIsActive())) {
                 List<Report> reportsToUpdate = new ArrayList<>(existingSourceConnection.getReports());
@@ -129,7 +139,7 @@ public class SourceConnectionService {
                     reportRepository.save(report);
                 }
             }
-
+            existingSourceConnection.encryptPassword();
             return sourceConnectionRepository.save(existingSourceConnection);
         } else {
             throw new EntityNotFoundException("Source Connection", sourceConnectionId);

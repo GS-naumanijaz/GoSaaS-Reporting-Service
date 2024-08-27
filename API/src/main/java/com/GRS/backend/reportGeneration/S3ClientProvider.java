@@ -38,6 +38,7 @@ public class S3ClientProvider {
     }
 
     public S3Client createS3Client(DestinationConnection destinationConnection) {
+
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
                 destinationConnection.getAccessKey(),
                 destinationConnection.getSecretKey()

@@ -80,7 +80,7 @@ const AddReportDashboard = () => {
   const [isPinned, setIsPinned] = useState(reportDetails?.isPinned ?? false);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(
-    reportDetails.xslTemplate
+    reportDetails?.xslTemplate ?? null
   );
 
   const hasSetInitialSource = useRef(false);

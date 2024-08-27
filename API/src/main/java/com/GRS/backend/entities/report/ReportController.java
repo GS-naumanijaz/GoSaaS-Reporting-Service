@@ -74,7 +74,7 @@ public class ReportController {
 
         if (reportRequest.sourceId != null) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
-
+            sourceConnection.encryptPassword();
             sourceConnection.addReport(report);
 
 //            sourceConnectionService.addSourceConnection(sourceConnection);
@@ -82,6 +82,7 @@ public class ReportController {
 
         if (reportRequest.destinationId != null) {
             DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId);
+            destinationConnection.encryptSecretKey();
 
             destinationConnection.addReport(report);
 
@@ -101,13 +102,14 @@ public class ReportController {
 
         if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSourceConnection().getId()) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
-
+            sourceConnection.encryptPassword();
             sourceConnection.addReport(updatedReport);
             sourceConnectionService.addSourceConnection(sourceConnection);
         }
 
         if (reportRequest.destinationId != null && reportRequest.destinationId != updatedReport.getDestinationConnection().getId()) {
             DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId);
+            destinationConnection.encryptSecretKey();
             destinationConnection.addReport(updatedReport);
             destinationConnectionService.addDestinationConnection(destinationConnection);
         }

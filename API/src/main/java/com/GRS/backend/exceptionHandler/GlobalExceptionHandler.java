@@ -1,9 +1,11 @@
 package com.GRS.backend.exceptionHandler;
 
+import com.GRS.backend.exceptionHandler.exceptions.EntityIsInactiveException;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.exceptionHandler.exceptions.InvalidQueryParamException;
 import com.GRS.backend.response.Response;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -53,6 +55,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return Response.responseBuilder(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EntityIsInactiveException.class)
+    public ResponseEntity<Object> handleEntityIsInactiveException(EntityIsInactiveException ex) {
+        return Response.responseBuilder(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDataIntegrityViolationException(
             DataIntegrityViolationException ex, WebRequest request) {
@@ -80,6 +87,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         // Return a response with a custom error message and appropriate HTTP status
         return Response.responseBuilder("Sorry, there was an issue processing your request. Please check your input for accuracy, or try again later if the problem persists. AWS servers may be temporarily unavailable.", HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentExcepton(IllegalArgumentException e) {
+        System.err.println("Illegal Argument Exception " + e.getMessage());
+
+        return Response.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<Object> handlePropertyReferenceException(PropertyReferenceException e) {
+        return Response.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     private String extractFieldName(String message) {

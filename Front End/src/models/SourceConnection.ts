@@ -15,6 +15,7 @@ export class SourceConnection extends TableRowData {
   private application: Application;
   private isActive: boolean;
   public lastTestResult?: boolean;
+  private schema: string;
 
   private static dbTypes = [
     "All",
@@ -47,6 +48,7 @@ export class SourceConnection extends TableRowData {
     "",
     "Alias",
     "Connection Type",
+    "Schema",
     "Database Name",
     "Host",
     "Port",
@@ -59,13 +61,14 @@ export class SourceConnection extends TableRowData {
   ];
   private static columnWidths = [
     "2.5%",
-    "12.5%",
-    "12.5%",
+    "10%",
+    "10%",
+    "7.5%",
     "10%",
     "10%",
     "10%",
     "10%",
-    "12.5%",
+    "10%",
     "5%",
     "5%",
     "5%",
@@ -95,6 +98,20 @@ export class SourceConnection extends TableRowData {
       validation: {
         required: true,
         customErrorMessage: "Connection type is required.",
+      },
+    },
+    {
+      name: "Schema (if applicable)",
+      label: "schema",
+      isSelectable: false,
+      type: "text",
+      validation: {
+        required: false,
+        minLength: 3,
+        maxLength: 50,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Schema must be 3-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
       },
     },
     {
@@ -201,6 +218,11 @@ export class SourceConnection extends TableRowData {
       isSearchable: true,
     },
     {
+      isEnabled: true,
+      isSortable: true,
+      isSearchable: true,
+    },
+    {
       isEnabled: false,
     },
     {
@@ -240,7 +262,8 @@ export class SourceConnection extends TableRowData {
       updatedAt: "",
     },
     isActive: boolean = false,
-    lastTestResult?: boolean
+    lastTestResult?: boolean,
+    schema: string = ""
   ) {
     super();
     this.id = connectionId;
@@ -254,6 +277,7 @@ export class SourceConnection extends TableRowData {
     this.isActive = isActive;
     this.application = application;
     this.lastTestResult = lastTestResult;
+    this.schema = schema;
   }
 
   getId(): number {
@@ -292,6 +316,7 @@ export class SourceConnection extends TableRowData {
     return [
       this.alias,
       this.type,
+      this.schema,
       this.databaseName,
       this.host,
       this.port,
@@ -321,18 +346,21 @@ export class SourceConnection extends TableRowData {
         this.type = newValue;
         break;
       case 2:
-        this.databaseName = newValue;
+        this.schema = newValue;
         break;
       case 3:
-        this.host = newValue;
+        this.databaseName = newValue;
         break;
       case 4:
-        this.port = newValue;
+        this.host = newValue;
         break;
       case 5:
-        this.username = newValue;
+        this.port = newValue;
         break;
       case 6:
+        this.username = newValue;
+        break;
+      case 7:
         this.password = newValue;
         break;
     }
@@ -341,11 +369,12 @@ export class SourceConnection extends TableRowData {
   editCompleteRow(newValue: string[]) {
     this.alias = newValue[0];
     this.type = newValue[1];
-    this.databaseName = newValue[2];
-    this.host = newValue[3];
-    this.port = newValue[4];
-    this.username = newValue[5];
-    this.password = newValue[6];
+    this.schema = newValue[2];
+    this.databaseName = newValue[3];
+    this.host = newValue[4];
+    this.port = newValue[5];
+    this.username = newValue[6];
+    this.password = newValue[7];
   }
 
   getPartialData(indexes: number[]): Partial<SourceConnection> {
@@ -361,21 +390,21 @@ export class SourceConnection extends TableRowData {
       case 1:
         return { type: this.type } as Partial<SourceConnection>;
       case 2:
-        return { databaseName: this.databaseName } as Partial<SourceConnection>;
+        return { schema: this.schema } as Partial<SourceConnection>;
       case 3:
-        return { host: this.host } as Partial<SourceConnection>;
+        return { databaseName: this.databaseName } as Partial<SourceConnection>;
       case 4:
-        return { port: this.port } as Partial<SourceConnection>;
+        return { host: this.host } as Partial<SourceConnection>;
       case 5:
-        return { username: this.username } as Partial<SourceConnection>;
+        return { port: this.port } as Partial<SourceConnection>;
       case 6:
+        return { username: this.username } as Partial<SourceConnection>;
+      case 7:
         return { password: this.password } as Partial<SourceConnection>;
       default:
         return {} as Partial<SourceConnection>;
     }
   }
-
-  
 
   getInputFields(): InputField[] {
     return SourceConnection.inputFields;
@@ -386,7 +415,7 @@ export class SourceConnection extends TableRowData {
   }
 
   getEditAccess(): boolean[] {
-    return [true, true, true, true, true, true, true];
+    return [true, true, true, true, true, true, true, true];
   }
 
   requiresCheckBox(): boolean {

@@ -36,6 +36,13 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
         String startDateStr = webRequest.getParameter("start_date") != null ? webRequest.getParameter("start_date") : annotation.startDate();
         String endDateStr = webRequest.getParameter("end_date") != null ? webRequest.getParameter("end_date") : annotation.endDate();
 
+        int maxLength = 50;
+        if (search.length() > maxLength || searchBy.length() > maxLength ||
+                sortBy.length() > maxLength || sortOrder.length() > maxLength ||
+                startDateStr.length() > maxLength || endDateStr.length() > maxLength) {
+            throw new IllegalArgumentException("One or more query parameters exceed the maximum allowed length of " + maxLength + " characters.");
+        }
+
         LocalDate startDate = LocalDate.parse(startDateStr, DATE_FORMATTER);
         LocalDate endDate = endDateStr.isEmpty() ? LocalDate.now() : LocalDate.parse(endDateStr, DATE_FORMATTER);
 

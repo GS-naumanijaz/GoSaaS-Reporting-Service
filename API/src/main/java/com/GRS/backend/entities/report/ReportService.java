@@ -151,6 +151,7 @@ public class ReportService {
             // Retrieve the report and destination connection details
             Report report = getReportById(reportId);
             DestinationConnection destination = report.getDestinationConnection();
+            destination.decryptSecretKey();
             S3Client s3Client = s3ClientProvider.createS3Client(destination);
 
             // Define the folder path and file name
@@ -168,8 +169,11 @@ public class ReportService {
                     RequestBody.fromBytes(file.getBytes()));
 
             // save to db
+
             report.setXslTemplate(fileName);
+            destination.encryptSecretKey();
             reportRepository.save(report);
+
 
             // Return the file key path
                 return ResponseEntity.ok().body("File uploaded successfully. File key: " + fileName);

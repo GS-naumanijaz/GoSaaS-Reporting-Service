@@ -4,6 +4,7 @@ package com.GRS.backend.entities.destination_connection;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.request.Request;
+import com.GRS.backend.utilities.EncryptionUtility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -74,9 +76,41 @@ public class DestinationConnection {
 
     private LocalDateTime updatedAt;
 
+    @JsonIgnore
+    private String key;
+
     public void addReport(Report report) {
         this.reports.add(report);
         report.setDestinationConnection(this);
+    }
+
+    public void decryptSecretKey() {
+        try {
+            SecretKey key = EncryptionUtility.decodeKey(this.key);
+            this.secretKey = EncryptionUtility.decrypt(this.secretKey, key);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decrypt Secret Key", e);
+        }
+    }
+
+    public String retrieveDecryptedSecretKey() {
+        try {
+            SecretKey key = EncryptionUtility.decodeKey(this.key);
+            return EncryptionUtility.decrypt(this.secretKey, key);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decrypt Secret Key", e);
+        }
+    }
+
+    public void encryptSecretKey() {
+        try {
+            SecretKey key = EncryptionUtility.generateKey();
+            String encryptedSecretKey = EncryptionUtility.encrypt(this.secretKey, key);
+            this.secretKey = encryptedSecretKey;
+            this.key = EncryptionUtility.encodeKey(key);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to encrypt Secret Key", e);
+        }
     }
 
     @PrePersist

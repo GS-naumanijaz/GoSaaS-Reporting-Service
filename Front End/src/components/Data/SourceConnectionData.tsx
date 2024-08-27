@@ -83,7 +83,8 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         sourceConnection.password,
         sourceConnection.application,
         sourceConnection.isActive,
-        sourceConnection.lastTestResult
+        sourceConnection.lastTestResult,
+        sourceConnection.schema
       )
   );
 
