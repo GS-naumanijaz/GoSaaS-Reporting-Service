@@ -83,7 +83,7 @@ public class DestinationConnectionService {
         }
     }
 
-    public boolean testDestinationConnection(DestinationConnection destinationConnection) {
+    public boolean testDestinationConnection(DestinationConnection destinationConnection, String username) {
 //
         System.out.println(destinationConnection.getSecretKey());
         String accessKey = destinationConnection.getAccessKey();
@@ -100,17 +100,18 @@ public class DestinationConnectionService {
         destinationConnection.encryptSecretKey();
         DestinationConnection updatedDestination = new DestinationConnection();
         updatedDestination.setLastTestResult(testResult);
-        updateDestinationConnection(destinationConnection.getId(), updatedDestination);
+        updateDestinationConnection(destinationConnection.getId(), updatedDestination, username);
 
         return testResult;
     }
 
-    public DestinationConnection addDestinationConnection(DestinationConnection destinationConnection) {
+    public DestinationConnection addDestinationConnection(DestinationConnection destinationConnection, String username) {
         destinationConnection.encryptSecretKey();
+        destinationConnection.setCreatedBy(username);
         return destinationConnectionRepository.save(destinationConnection);
     }
 
-    public DestinationConnection updateDestinationConnection(int destinationConnectionId, DestinationConnection destinationConnection) {
+    public DestinationConnection updateDestinationConnection(int destinationConnectionId, DestinationConnection destinationConnection, String username) {
         Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
 
         if (existingDestinationOpt.isPresent()) {
@@ -133,6 +134,7 @@ public class DestinationConnectionService {
                     reportRepository.save(report);
                 }
             }
+            existingDestination.setLastUpdatedBy(username);
             existingDestination.encryptSecretKey();
             return destinationConnectionRepository.save(existingDestination);
         } else {
@@ -140,7 +142,7 @@ public class DestinationConnectionService {
         }
     }
 
-    public List<DestinationConnection> bulkUpdateIsActive(List<Integer> destinationConnectionIds, boolean isActive) {
+    public List<DestinationConnection> bulkUpdateIsActive(List<Integer> destinationConnectionIds, boolean isActive, String username) {
         List<DestinationConnection> updatedConnections = new ArrayList<>();
 
         for (Integer id : destinationConnectionIds) {
@@ -148,12 +150,12 @@ public class DestinationConnectionService {
             if (optionalConnection.isPresent()) {
                 DestinationConnection connection = optionalConnection.get();
                 connection.setIsActive(isActive);
-
+                connection.setLastUpdatedBy(username);
                 if (!isActive) {
                     List<Report> reportsToUpdate = new ArrayList<>(connection.getReports());
                     for (Report report: reportsToUpdate) {
                         report.setIsActive(false);
-
+                        report.setLastUpdatedBy(username);
                         reportRepository.save(report);
                     }
                 }
@@ -166,7 +168,7 @@ public class DestinationConnectionService {
     }
 
 
-    public DestinationConnection deleteDestinationConnection(int destinationConnectionId) {
+    public DestinationConnection deleteDestinationConnection(int destinationConnectionId, String username) {
         Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
 
         if (existingDestinationOpt.isPresent() && !existingDestinationOpt.get().getIsDeleted()) {
@@ -174,11 +176,13 @@ public class DestinationConnectionService {
 
             existingDestination.setIsDeleted(true);
             existingDestination.setDeletionDate(LocalDateTime.now());
+            existingDestination.setDeletedBy(username);
 
             List<Report> reportsToDelete = new ArrayList<>(existingDestination.getReports());
             for (Report report: reportsToDelete) {
                 report.setIsDeleted(true);
                 report.setDeletionDate(LocalDateTime.now());
+                report.setDeletedBy(username);
 
                 reportRepository.save(report);
             }
@@ -190,7 +194,7 @@ public class DestinationConnectionService {
         }
     }
 
-    public List<String> bulkDeleteDestinationConnections(List<Integer> destinationIds) {
+    public List<String> bulkDeleteDestinationConnections(List<Integer> destinationIds, String username) {
         List<String> deletedIds = new ArrayList<>();
 
         for (Integer id : destinationIds) {
@@ -201,11 +205,13 @@ public class DestinationConnectionService {
                 if (!existingDestination.getIsDeleted()) {
                     existingDestination.setIsDeleted(true);
                     existingDestination.setDeletionDate(LocalDateTime.now());
+                    existingDestination.setDeletedBy(username);
 
                     List<Report> reportsToDelete = new ArrayList<>(existingDestination.getReports());
                     for (Report report: reportsToDelete) {
                         report.setIsDeleted(true);
                         report.setDeletionDate(LocalDateTime.now());
+                        report.setDeletedBy(username);
 
                         reportRepository.save(report);
                     }

@@ -63,6 +63,8 @@
 
         private String createdBy;
 
+        private String lastUpdatedBy;
+
         private String deletedBy ;
 
         private LocalDateTime creationDate;

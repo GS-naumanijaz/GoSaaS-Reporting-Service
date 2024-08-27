@@ -30,16 +30,16 @@ public class AuditLog {
     private String details;
 
     @NotNull
-    private Integer userId;
+    private String username;
 
     public AuditLog() {
     }
 
-    public AuditLog(AuditLogModule module, AuditLogAction action, String details, int userId) {
+    public AuditLog(AuditLogModule module, AuditLogAction action, String details, String username) {
         this.module = module;
         this.action = action;
         this.details = details;
-        this.userId = userId;
+        this.username = username;
     }
 
     @PrePersist

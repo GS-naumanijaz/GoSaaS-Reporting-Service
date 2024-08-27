@@ -5,6 +5,8 @@ import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.entities.user.User;
+import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.enums.SourceConnectionType;
@@ -13,12 +15,14 @@ import com.GRS.backend.models.StoredProcedure;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import com.GRS.backend.utilities.AuditLogGenerator;
+import com.GRS.backend.utilities.OAuthUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +38,9 @@ public class SourceConnectionController {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<Object> getAllSourceConnections(@PathVariable int appId, @QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
@@ -64,10 +71,11 @@ public class SourceConnectionController {
     }
 
     @GetMapping("/{sourceId}/test")
-    public ResponseEntity<Object> testSourceConnection(@PathVariable int sourceId) {
+    public ResponseEntity<Object> testSourceConnection(@PathVariable int sourceId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         SourceConnection connectionToTest = sourceConnectionService.getSourceConnectionById(sourceId);
 
-        if (sourceConnectionService.testSourceConnection(connectionToTest)) {
+        if (sourceConnectionService.testSourceConnection(connectionToTest, username)) {
 
             return Response.responseBuilder("Source Connection was tested successfully", HttpStatus.OK);
         } else {
@@ -91,38 +99,40 @@ public class SourceConnectionController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int appId) {
-
+    public ResponseEntity<Object> addSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
 
         sourceConnection.setApplication(sourceApp);
 
-        SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection);
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.SOURCE, createdSourceConnection.getAlias(), 1, sourceApp.getAlias());
+        SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.SOURCE, createdSourceConnection.getAlias(), username, sourceApp.getAlias());
         return Response.responseBuilder("Source Connection added successfully", HttpStatus.OK, createdSourceConnection);
     }
 
     @PatchMapping("/{sourceId}")
-    public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId) {
+    public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
-        SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection);
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedSourceConnection.getAlias(), 1, sourceApp.getAlias());
+        SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedSourceConnection.getAlias(), username, sourceApp.getAlias());
         return Response.responseBuilder("Source Connection updated successfully", HttpStatus.OK, updatedSourceConnection);
     }
 
     @PatchMapping("")
-    public ResponseEntity<Object> bulkUpdateSourceConnections(@RequestBody List<Integer> sourceIds, @RequestParam boolean isActive, @PathVariable int appId) {
+    public ResponseEntity<Object> bulkUpdateSourceConnections(@RequestBody List<Integer> sourceIds, @RequestParam boolean isActive, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
-        List<SourceConnection> updatedSources = sourceConnectionService.bulkUpdateIsActive(sourceIds, isActive);
+        List<SourceConnection> updatedSources = sourceConnectionService.bulkUpdateIsActive(sourceIds, isActive, username);
 
         String[] updatedAliases = updatedSources.stream()
                 .map(SourceConnection::getAlias)
                 .toArray(String[]::new);
         if (updatedSources.size() == sourceIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, 1, sourceApp.getAlias());
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, username, sourceApp.getAlias());
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedSources);
         } else if (!updatedSources.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, 1, sourceApp.getAlias());
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, username, sourceApp.getAlias());
             return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedSources);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedSources);
@@ -131,22 +141,24 @@ public class SourceConnectionController {
     }
 
     @DeleteMapping("/{sourceId}")
-    public ResponseEntity<Object> deleteSourceConnection(@PathVariable int sourceId, @PathVariable int appId) {
+    public ResponseEntity<Object> deleteSourceConnection(@PathVariable int sourceId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
-        SourceConnection deleteSource = sourceConnectionService.deleteSourceConnection(sourceId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.SOURCE, deleteSource.getAlias(), 1, sourceApp.getAlias());
+        SourceConnection deleteSource = sourceConnectionService.deleteSourceConnection(sourceId, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.SOURCE, deleteSource.getAlias(), username, sourceApp.getAlias());
         return Response.responseBuilder("Source Connection deleted successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("")
-    public ResponseEntity<Object> deleteSourceConnection(@RequestBody List<Integer> sourceIds, @PathVariable int appId) {
+    public ResponseEntity<Object> deleteSourceConnection(@RequestBody List<Integer> sourceIds, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
-        List<String> deletedAliases = sourceConnectionService.bulkDeleteSourceConnections(sourceIds);
+        List<String> deletedAliases = sourceConnectionService.bulkDeleteSourceConnections(sourceIds, username);
         if (deletedAliases.size() == sourceIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, 1, sourceApp.getAlias());
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, username, sourceApp.getAlias());
             return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
         } else if (!deletedAliases.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, 1, sourceApp.getAlias());
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, username, sourceApp.getAlias());
             return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);

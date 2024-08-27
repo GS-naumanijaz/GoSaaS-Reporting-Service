@@ -76,11 +76,12 @@ public class ReportService {
         }
     }
 
-    public Report addReport(Report report) {
+    public Report addReport(Report report, String username) {
+        report.setCreatedBy(username);
         return reportRepository.save(report);
     }
 
-    public Report updateReport(int reportId, Report report) {
+    public Report updateReport(int reportId, Report report, String username) {
         Optional<Report> existingReportOpt = reportRepository.findById(reportId);
 
         if (existingReportOpt.isPresent()) {
@@ -94,14 +95,14 @@ public class ReportService {
             FieldUpdater.updateField(existingReport, "isPinned", report);
             FieldUpdater.updateField(existingReport, "isActive", report);
 
-
+            existingReport.setLastUpdatedBy(username);
             return reportRepository.save(existingReport);
         } else {
             throw new EntityNotFoundException("Report", reportId);
         }
     }
 
-    public Report deleteReport(int reportId) {
+    public Report deleteReport(int reportId, String username) {
         Optional<Report> existingReportOpt = reportRepository.findById(reportId);
 
         if (existingReportOpt.isPresent() && !existingReportOpt.get().getIsDeleted()) {
@@ -109,6 +110,7 @@ public class ReportService {
 
             existingReport.setIsDeleted(true);
             existingReport.setDeletionDate(LocalDateTime.now());
+            existingReport.setDeletedBy(username);
 
             reportRepository.save(existingReport);
             return existingReport;
@@ -117,7 +119,7 @@ public class ReportService {
         }
     }
 
-    public List<String> bulkDeleteReports(List<Integer> reportIds) {
+    public List<String> bulkDeleteReports(List<Integer> reportIds, String username) {
         List<String> deletedIds = new ArrayList<>();
 
         for (Integer id : reportIds) {
@@ -128,6 +130,7 @@ public class ReportService {
                 if (!existingReport.getIsDeleted()) {
                     existingReport.setIsDeleted(true);
                     existingReport.setDeletionDate(LocalDateTime.now());
+                    existingReport.setDeletedBy(username);
 
                     reportRepository.save(existingReport);
                     deletedIds.add(existingReport.getAlias());

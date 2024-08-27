@@ -7,6 +7,7 @@ import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.destination_connection.DestinationConnectionService;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import com.GRS.backend.entities.source_connection.SourceConnectionService;
+import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.models.DTO.ReportDTO;
@@ -14,12 +15,14 @@ import com.GRS.backend.models.ReportRequestBody;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import com.GRS.backend.utilities.AuditLogGenerator;
+import com.GRS.backend.utilities.OAuthUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +43,9 @@ public class ReportController {
 
     @Autowired
     private DestinationConnectionService destinationConnectionService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<Object> getAllReports(@PathVariable int appId, @QueryParams QueryArgumentResolver.QueryParamsContainer paginationParams) {
@@ -63,8 +69,8 @@ public class ReportController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int appId) {
-
+    public ResponseEntity<Object> addReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application reportApp = applicationService.getApplicationById(appId);
 
         Report report = reportRequest.report;
@@ -89,54 +95,57 @@ public class ReportController {
 //            destinationConnectionService.addDestinationConnection(destinationConnection);
         }
 
-        Report createdReport = reportService.addReport(report);
+        Report createdReport = reportService.addReport(report, username);
 
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.REPORT, createdReport.getAlias(), 1, reportApp.getAlias());
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.REPORT, createdReport.getAlias(), username, reportApp.getAlias());
         return Response.responseBuilder("Report added successfully", HttpStatus.CREATED, createdReport);
     }
 
     @PatchMapping("/{reportId}")
-    public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId, @PathVariable int appId) {
+    public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application reportApp = applicationService.getApplicationById(appId);
-        Report updatedReport = reportService.updateReport(reportId, reportRequest.report);
+        Report updatedReport = reportService.updateReport(reportId, reportRequest.report, username);
 
         if (reportRequest.sourceId != null && reportRequest.sourceId != updatedReport.getSourceConnection().getId()) {
             SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(reportRequest.sourceId);
             sourceConnection.encryptPassword();
             sourceConnection.addReport(updatedReport);
-            sourceConnectionService.addSourceConnection(sourceConnection);
+            sourceConnectionService.addSourceConnection(sourceConnection, username);
         }
 
         if (reportRequest.destinationId != null && reportRequest.destinationId != updatedReport.getDestinationConnection().getId()) {
             DestinationConnection destinationConnection = destinationConnectionService.getDestinationConnectionById(reportRequest.destinationId);
             destinationConnection.encryptSecretKey();
             destinationConnection.addReport(updatedReport);
-            destinationConnectionService.addDestinationConnection(destinationConnection);
+            destinationConnectionService.addDestinationConnection(destinationConnection, username);
         }
 
-        reportService.addReport(updatedReport);
+        reportService.addReport(updatedReport, username);
 
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.REPORT, updatedReport.getAlias(), 1, reportApp.getAlias());
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.REPORT, updatedReport.getAlias(), username, reportApp.getAlias());
         return Response.responseBuilder("Report updated successfully", HttpStatus.OK, updatedReport);
     }
 
     @DeleteMapping("/{reportId}")
-    public ResponseEntity<Object> deleteReport(@PathVariable int reportId, @PathVariable int appId) {
+    public ResponseEntity<Object> deleteReport(@PathVariable int reportId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application reportApp = applicationService.getApplicationById(appId);
-        Report deletedReport = reportService.deleteReport(reportId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedReport.getAlias(), 1, reportApp.getAlias());
+        Report deletedReport = reportService.deleteReport(reportId, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedReport.getAlias(), username, reportApp.getAlias());
         return Response.responseBuilder("Report deleted successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("")
-    public ResponseEntity<Object> deleteReports(@RequestBody List<Integer> reportIds, @PathVariable int appId) {
+    public ResponseEntity<Object> deleteReports(@RequestBody List<Integer> reportIds, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application reportApp = applicationService.getApplicationById(appId);
-        List<String> deletedAliases = reportService.bulkDeleteReports(reportIds);
+        List<String> deletedAliases = reportService.bulkDeleteReports(reportIds, username);
         if (deletedAliases.size() == reportIds.size()) {
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedAliases, 1, reportApp.getAlias());
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedAliases, username, reportApp.getAlias());
             return Response.responseBuilder("All Reports deleted successfully", HttpStatus.OK);
         } else if (!deletedAliases.isEmpty()){
-            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedAliases, 1, reportApp.getAlias());
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.REPORT, deletedAliases, username, reportApp.getAlias());
             return Response.responseBuilder("Some Reports could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Reports could not be deleted", HttpStatus.BAD_REQUEST);
@@ -144,7 +153,7 @@ public class ReportController {
     }
 
     @PostMapping("/upload/{reportId}")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable int reportId ) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable int reportId) {
         try {
             Object response = reportService.uploadFile(file, reportId);
             return ResponseEntity.ok("File uploaded successfully");

@@ -84,7 +84,7 @@ public class SourceConnectionService {
         }
     }
 
-    public Boolean testSourceConnection(SourceConnection sourceConnection) {
+    public Boolean testSourceConnection(SourceConnection sourceConnection, String user) {
 //        "jdbc:postgresql://localhost:5432/gosaas_reporting_service";
 
         String type = sourceConnection.getType().getDbType();
@@ -102,17 +102,18 @@ public class SourceConnectionService {
         sourceConnection.encryptPassword();
         SourceConnection updatedSource = new SourceConnection();
         updatedSource.setLastTestResult(testResult);
-        updateSourceConnection(sourceConnection.getId(), updatedSource);
+        updateSourceConnection(sourceConnection.getId(), updatedSource, user);
 
         return testResult;
     }
 
-    public SourceConnection addSourceConnection(SourceConnection sourceConnection) {
+    public SourceConnection addSourceConnection(SourceConnection sourceConnection, String username) {
             sourceConnection.encryptPassword();
+            sourceConnection.setCreatedBy(username);
             return sourceConnectionRepository.save(sourceConnection);
     }
 
-    public SourceConnection updateSourceConnection(int sourceConnectionId, SourceConnection sourceConnection) {
+    public SourceConnection updateSourceConnection(int sourceConnectionId, SourceConnection sourceConnection, String username) {
         Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
 
         if (existingSourceConnectionOpt.isPresent()) {
@@ -139,6 +140,7 @@ public class SourceConnectionService {
                     reportRepository.save(report);
                 }
             }
+            existingSourceConnection.setLastUpdatedBy(username);
             existingSourceConnection.encryptPassword();
             return sourceConnectionRepository.save(existingSourceConnection);
         } else {
@@ -146,7 +148,7 @@ public class SourceConnectionService {
         }
     }
 
-    public List<SourceConnection> bulkUpdateIsActive(List<Integer> sourceConnectionIds, boolean isActive) {
+    public List<SourceConnection> bulkUpdateIsActive(List<Integer> sourceConnectionIds, boolean isActive, String username) {
         List<SourceConnection> updatedConnections = new ArrayList<>();
 
         for (Integer id : sourceConnectionIds) {
@@ -154,12 +156,13 @@ public class SourceConnectionService {
             if (optionalConnection.isPresent()) {
                 SourceConnection connection = optionalConnection.get();
                 connection.setIsActive(isActive);
+                connection.setLastUpdatedBy(username);
 
                 if (!isActive) {
                     List<Report> reportsToUpdate = new ArrayList<>(connection.getReports());
                     for (Report report: reportsToUpdate) {
                         report.setIsActive(false);
-
+                        report.setLastUpdatedBy(username);
                         reportRepository.save(report);
                     }
                 }
@@ -171,7 +174,7 @@ public class SourceConnectionService {
         return updatedConnections;
     }
 
-    public SourceConnection deleteSourceConnection(int sourceConnectionId) {
+    public SourceConnection deleteSourceConnection(int sourceConnectionId, String username) {
         Optional<SourceConnection> existingSourceConnectionOpt = sourceConnectionRepository.findById(sourceConnectionId);
 
         if (existingSourceConnectionOpt.isPresent() && !existingSourceConnectionOpt.get().getIsDeleted()) {
@@ -184,6 +187,7 @@ public class SourceConnectionService {
             for (Report report: reportsToDelete) {
                 report.setIsDeleted(true);
                 report.setDeletionDate(LocalDateTime.now());
+                report.setDeletedBy(username);
 
                 reportRepository.save(report);
             }
@@ -195,7 +199,7 @@ public class SourceConnectionService {
         }
     }
 
-    public List<String> bulkDeleteSourceConnections(List<Integer> sourceConnectionIds) {
+    public List<String> bulkDeleteSourceConnections(List<Integer> sourceConnectionIds, String username) {
         List<String> deletedIds = new ArrayList<>();
 
         for (Integer id : sourceConnectionIds) {
@@ -206,11 +210,13 @@ public class SourceConnectionService {
                 if (!existingSourceConnection.getIsDeleted()) {
                     existingSourceConnection.setIsDeleted(true);
                     existingSourceConnection.setDeletionDate(LocalDateTime.now());
+                    existingSourceConnection.setDeletedBy(username);
 
                     List<Report> reportsToDelete = new ArrayList<>(existingSourceConnection.getReports());
                     for (Report report: reportsToDelete) {
                         report.setIsDeleted(true);
                         report.setDeletionDate(LocalDateTime.now());
+                        report.setDeletedBy(username);
 
                         reportRepository.save(report);
                     }

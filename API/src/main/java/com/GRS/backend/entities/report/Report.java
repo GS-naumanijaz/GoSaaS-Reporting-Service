@@ -58,6 +58,8 @@ public class Report {
 
     private String createdBy;
 
+    private String lastUpdatedBy;
+
     private String deletedBy;
 
 

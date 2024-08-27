@@ -3,11 +3,13 @@ package com.GRS.backend.entities.application;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.report.ReportService;
+import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import com.GRS.backend.utilities.AuditLogGenerator;
+import com.GRS.backend.utilities.OAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.validation.Valid;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -30,6 +33,9 @@ public class ApplicationController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private UserService userService;
 
     Logger logger = LoggerFactory.getLogger(ApplicationController.class);
 
@@ -55,16 +61,17 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application) {
-        Application createdApplication = applicationService.addApplication(application);
-        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getAlias(), 1);
+    public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application,OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        Application createdApplication = applicationService.addApplication(application, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getAlias(), username);
         return Response.responseBuilder("Application added successfully", HttpStatus.CREATED, createdApplication);
     }
 
     @PatchMapping("")
-    public ResponseEntity<Object> bulkUpdateApplications(@RequestBody List<Integer> applicationIds, @RequestParam boolean isActive) {
-
-        List<Application> updatedApps = applicationService.bulkUpdateIsActive(applicationIds, isActive);
+    public ResponseEntity<Object> bulkUpdateApplications(@RequestBody List<Integer> applicationIds, @RequestParam boolean isActive, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        List<Application> updatedApps = applicationService.bulkUpdateIsActive(applicationIds, isActive, username);
 
         if (updatedApps.size() == applicationIds.size()) {
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedApps);
@@ -77,16 +84,18 @@ public class ApplicationController {
     }
 
     @PatchMapping("/{appId}")
-    public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId) {
-        Application updatedApplication = applicationService.updateApplication(appId, application);
-        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedApplication.getAlias(), 1);
+    public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        Application updatedApplication = applicationService.updateApplication(appId, application, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedApplication.getAlias(), username);
         return Response.responseBuilder("Application updated successfully", HttpStatus.OK, updatedApplication);
     }
 
     @DeleteMapping("/{appId}")
-    public ResponseEntity<Object> deleteApplication(@PathVariable int appId) {
-        Application deletedApplication = applicationService.deleteApplication(appId);
-        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.APPLICATION, deletedApplication.getAlias(), 1);
+    public ResponseEntity<Object> deleteApplication(@PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        Application deletedApplication = applicationService.deleteApplication(appId, username);
+        AuditLogGenerator.getInstance().log(AuditLogAction.DELETED, AuditLogModule.APPLICATION, deletedApplication.getAlias(), username);
         return Response.responseBuilder("Application deleted successfully", HttpStatus.OK);
     }
 
@@ -100,8 +109,9 @@ public class ApplicationController {
 
 
     @DeleteMapping("")
-    public ResponseEntity<Object> deleteApplication(@RequestBody List<Integer> applicationIds) {
-        Integer deletedCount = applicationService.bulkDeleteApplications(applicationIds);
+    public ResponseEntity<Object> deleteApplication(@RequestBody List<Integer> applicationIds, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        Integer deletedCount = applicationService.bulkDeleteApplications(applicationIds, username);
         if (deletedCount == applicationIds.size()) {
             return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
         } else if (deletedCount != 0){

@@ -58,11 +58,13 @@ public class ApplicationService {
         }
     }
 
-    public Application addApplication(Application application) {
+    public Application addApplication(Application application, String username) {
+        application.setCreatedBy(username);
+        application.setLastUpdatedBy(username);
         return applicationRepository.save(application);
     }
 
-    public Application updateApplication(int appId, Application application) {
+    public Application updateApplication(int appId, Application application, String username) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
         if (existingApplicationOpt.isPresent()) {
@@ -72,13 +74,15 @@ public class ApplicationService {
             FieldUpdater.updateField(existingApplication, "description", application);
             FieldUpdater.updateField(existingApplication, "isActive", application);
 
+            existingApplication.setLastUpdatedBy(username);
+
             return applicationRepository.save(existingApplication);
         } else {
             throw new EntityNotFoundException("Application", appId);
         }
     }
 
-    public List<Application> bulkUpdateIsActive(List<Integer> ApplicationIds, boolean isActive) {
+    public List<Application> bulkUpdateIsActive(List<Integer> ApplicationIds, boolean isActive, String username) {
         List<Application> applicationList = new ArrayList<>();
 
         for (Integer id : ApplicationIds) {
@@ -86,6 +90,7 @@ public class ApplicationService {
             if (optionalConnection.isPresent()) {
                 Application connection = optionalConnection.get();
                 connection.setIsActive(isActive);
+                connection.setLastUpdatedBy(username);
                 applicationList.add(applicationRepository.save(connection));
             }
         }
@@ -93,7 +98,7 @@ public class ApplicationService {
         return applicationList;
     }
 
-    public Application deleteApplication(int appId) {
+    public Application deleteApplication(int appId, String username) {
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
@@ -101,6 +106,7 @@ public class ApplicationService {
 
             existingApplication.setIsDeleted(true);
             existingApplication.setDeletionDate(LocalDateTime.now());
+            existingApplication.setDeletedBy(username);
 
             applicationRepository.save(existingApplication);
             return existingApplication;
@@ -109,7 +115,7 @@ public class ApplicationService {
         }
     }
 
-    public Integer bulkDeleteApplications(List<Integer> applicationIds) {
+    public Integer bulkDeleteApplications(List<Integer> applicationIds, String username) {
         Integer deletedCount = 0;
 
         for (Integer id : applicationIds) {
@@ -118,6 +124,7 @@ public class ApplicationService {
                 Application existingApplication = optionalConnection.get();
 
                 if (!existingApplication.getIsDeleted()) {
+                    existingApplication.setDeletedBy(username);
                     existingApplication.setIsDeleted(true);
                     existingApplication.setDeletionDate(LocalDateTime.now());
                     applicationRepository.save(existingApplication);
