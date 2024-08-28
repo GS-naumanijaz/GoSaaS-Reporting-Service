@@ -3,7 +3,7 @@ import { BackendURL } from "../configs";
 
 const searchFieldMapping: Record<string, string> = {
   name: "name",
-  "application": "application",
+  application: "application",
   createdAt: "createdAt",
   createdBy: "createdBy",
   issues: "issues",
@@ -91,6 +91,23 @@ export const useRequestsQuery = (
         selectedAction,
         selectedDates
       ),
+    refetchOnWindowFocus: true,
+    gcTime: 0, // cache time
+  });
+};
+
+export const useRequestCount = () => {
+  return useQuery({
+    queryKey: ["requestCount"],
+    queryFn: async () => {
+      const response = await fetch(`${BackendURL}/requests/statusCounts`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+      return data.data;
+    },
     refetchOnWindowFocus: true,
     gcTime: 0, // cache time
   });

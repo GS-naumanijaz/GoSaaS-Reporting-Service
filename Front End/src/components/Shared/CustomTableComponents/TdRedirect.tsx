@@ -27,6 +27,7 @@ const TdRedirect = ({ rowIndex, tableManager }: Props) => {
     };
 
     navigate("/applications", { state: product });
+    localStorage.setItem("selectedApplicationComponent", "Application");
   };
 
   return (
