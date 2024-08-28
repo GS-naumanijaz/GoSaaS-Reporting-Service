@@ -1,58 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
+import { AuditLog } from "../models/AuditLog";
+import APIClient from "../services/apiClient";
 
 const searchFieldMapping: Record<string, string> = {
-  user: "userId",
+  user: "username",
   "created at": "createdAt",
   module: "module",
   action: "action",
   details: "details",
 };
 
-// Define the fetch function for audit logs
-const fetchAuditLogs = async (
-  sortingBy: string,
-  sortingOrder: string,
-  page: number,
-  pageSize: number,
-  searchTerm: string,
-  searchField: string,
-  selectedModule: string,
-  selectedAction: string,
-  selectedDates: string[]
-): Promise<{
-  content: any[];
-  totalPages: number;
-  totalElements: number;
-  empty: boolean;
-}> => {
-  const normalizedSearchField =
-    searchFieldMapping[searchField.toLowerCase()] || searchField;
-  const normalizedSortingBy =
-    searchFieldMapping[sortingBy.toLowerCase()] || sortingBy;
+const apiClient = new APIClient<AuditLog>(`auditLog`);
 
-  const params = new URLSearchParams({
-    sort_by: normalizedSortingBy || "createdAt",
-    sort_order: sortingOrder || "desc",
-    page: page.toString(),
-    page_size: pageSize.toString(),
-    search_by: normalizedSearchField || "userId",
-    search: searchTerm || "",
-    module: selectedModule || "all",
-    action: selectedAction || "all",
-    start_date: selectedDates[0] || "0000-01-01",
-    end_date: selectedDates[1] || "9999-12-31",
-  });
-
-  const response = await fetch(`${BackendURL}/auditLog?${params.toString()}`, {
-    method: "GET",
-    credentials: "include",
-  });
-
-  const data = await response.json();
-  return data.data;
-};
-
+//fetch all destination connections pagination
 // Define the query hook for audit logs
 export const useAuditLogsQuery = (
   sortingBy: string,
@@ -65,6 +26,7 @@ export const useAuditLogsQuery = (
   selectedAction: string,
   selectedDates: string[]
 ) => {
+
   return useQuery({
     queryKey: [
       "auditLogs",
@@ -79,18 +41,21 @@ export const useAuditLogsQuery = (
       selectedDates,
     ],
     queryFn: () =>
-      fetchAuditLogs(
-        sortingBy,
-        sortingOrder,
-        page,
-        pageSize,
-        searchTerm,
-        searchField,
-        selectedModule,
-        selectedAction,
-        selectedDates
-      ),
-    refetchOnWindowFocus: true,
-    gcTime: 0, // cache time
+      apiClient.getAll({
+        params: {
+          sort_by: searchFieldMapping[sortingBy.toLowerCase()] || sortingBy,
+          sort_order: sortingOrder || "desc",
+          page: page.toString(),
+          page_size: pageSize.toString(),
+          search_by: searchFieldMapping[searchField.toLowerCase()] || searchField,
+          search: searchTerm || "",
+          module: selectedModule || "all",
+          action: selectedAction || "all",
+          start_date: selectedDates[0] || "0000-01-01",
+          end_date: selectedDates[1] || "9999-12-31",
+        },
+      }),
+    staleTime: 1000 * 60 * 5, // same as used in useDestinationConnections
+    refetchOnWindowFocus: true
   });
 };

@@ -190,7 +190,7 @@ const AppHeader = ({ appData }: Props) => {
               <AiOutlineSave size={"35"} />
             </Button>
           </Tooltip>
-          <Tooltip hasArrow label="Save" bg={primaryColor}>
+          <Tooltip hasArrow label="Delete" bg={primaryColor}>
             <Button
               variant="link"
               p={0}
