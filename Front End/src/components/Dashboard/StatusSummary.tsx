@@ -1,19 +1,24 @@
 import { Box, Divider, Text } from "@chakra-ui/react";
 import ReactApexChart from "react-apexcharts";
 import { statusSummaryHeight, sx } from "../../configs";
+import { useRequestCount } from "../../hooks/useRequestsQuery";
 
 const StatusSummary = () => {
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "donut",
     },
-    labels: ["Successful", "In Progress", "Pending", "Failed"],
+    labels: ["In Progress", "Successful", "Failed"],
     dataLabels: {
       enabled: false,
     },
   };
 
-  const series = [15, 23, 43, 13]; // Sample data
+  const { data } = useRequestCount();
+  if (!data) return null;
+
+  // format: inprogress, completed, failed
+  const series: number[] = Object.values(data) ?? [0, 0, 0];
 
   return (
     <Box height={statusSummaryHeight} p={2}>
