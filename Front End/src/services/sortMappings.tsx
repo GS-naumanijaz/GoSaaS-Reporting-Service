@@ -29,6 +29,9 @@ export const fieldMapping = {
   Destination: "destinationConnection",
   "Stored Procedures": "storedProcedure",
   Parameters: "params",
+  // AuditLog
+  User: "username",
+  Details: "details",
 } as const;
 
 //

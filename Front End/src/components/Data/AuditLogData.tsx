@@ -115,7 +115,6 @@ const AuditLogData = () => {
       marginX={3}
       marginTop={2}
       textAlign="center"
-      h="55%"
       overflowY="auto"
       sx={sx}
     >

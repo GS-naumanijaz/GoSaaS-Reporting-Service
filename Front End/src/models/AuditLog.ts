@@ -16,13 +16,13 @@ export class AuditLog extends TableRowData {
     "Action",
     "Details",
     "Created at",
-  ]
+  ];
   private static columnWidths = ["15%", "15%", "15%", "15%", "40%"];
 
   private static inputFields: InputField[] = [
     {
-      name: "dummy",
-      label: "dummy",
+      name: "User",
+      label: "user",
       isSelectable: false,
       type: "text",
       validation: {
@@ -30,8 +30,8 @@ export class AuditLog extends TableRowData {
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Module",
+      label: "module",
       isSelectable: false,
       type: "text",
       validation: {
@@ -39,8 +39,8 @@ export class AuditLog extends TableRowData {
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Action",
+      label: "action",
       isSelectable: false,
       type: "text",
       validation: {
@@ -48,8 +48,8 @@ export class AuditLog extends TableRowData {
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Details",
+      label: "details",
       isSelectable: false,
       type: "text",
       validation: {
@@ -57,16 +57,16 @@ export class AuditLog extends TableRowData {
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Created at",
+      label: "createdAt",
       isSelectable: false,
-      type: "text",
+      type: "date",
+      isDate: true,
       validation: {
         required: false,
       },
     },
   ];
-
 
   private static sortFilterOptions: ColumnSortFilterOptions[] = [
     {
@@ -76,11 +76,25 @@ export class AuditLog extends TableRowData {
     },
     {
       isEnabled: true,
-      dropdownFilter: ["USER", "APPLICATION", "DESTINATION", "SOURCE", "REPORT"],
+      dropdownFilter: [
+        "All",
+        "USER",
+        "APPLICATION",
+        "DESTINATION",
+        "SOURCE",
+        "REPORT",
+      ],
     },
     {
       isEnabled: true,
-      dropdownFilter: ["CREATED", "MODIFIED", "DELETED", "LOGIN", "LOGOUT"],
+      dropdownFilter: [
+        "All",
+        "CREATED",
+        "MODIFIED",
+        "DELETED",
+        "LOGIN",
+        "LOGOUT",
+      ],
     },
     {
       isEnabled: true,
@@ -92,7 +106,7 @@ export class AuditLog extends TableRowData {
       isSortable: true,
       DateItem: true,
     },
-  ]
+  ];
 
   constructor(
     id: number = 0,
@@ -115,7 +129,13 @@ export class AuditLog extends TableRowData {
     return this.id;
   }
   getTableData(): string[] {
-    return [this.username, this.module, this.action, this.details, this.createdAt];
+    return [
+      this.username,
+      this.module,
+      this.action,
+      this.details,
+      this.createdAt,
+    ];
   }
   getTableHeadings(): string[] {
     return AuditLog.tableHeadings;
@@ -149,6 +169,4 @@ export class AuditLog extends TableRowData {
   requiresActions(): boolean {
     return false;
   }
-  
-
 }
