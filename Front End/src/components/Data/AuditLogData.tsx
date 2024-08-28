@@ -5,6 +5,8 @@ import { TableManager } from "../../models/TableManager";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useAuditLogStore from "../../store/AuditLogStore";
 import CustomTable from "../Shared/CustomTable";
+import { Box } from "@chakra-ui/react";
+import { sx } from "../../configs";
 
 const AuditLogData = () => {
   const {
@@ -105,28 +107,50 @@ const AuditLogData = () => {
   }
 
   return (
-    <CustomTable
-      tableManager={manager}
-      onSort={handleSort}
-      onSearch={handleSearch}
-      onPageChange={handlePageChange}
-      onPageSizeChange={handlePageSizeChange}
-      page={page}
-      pageSize={pageSize}
-      totalElements={totalElements ?? 0}
-      searchObject={{
-        searchField: searchField || "",
-        searchTerm: searchTerm || "",
-        selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
-      }}
-      handleClearSearch={handleClearSearch}
-      onDateSearch={handleDateSearch}
-      handleClearDates={handleClearDate} 
-      onDelete={function (_: number): void {
-        throw new Error("audit cannot delete");
-      } } onBulkDelete={function (_: number[]): void {
-        throw new Error("audit cannot bulk delete");
-      } }    />
+    <Box
+      bg={"white"}
+      borderColor={"lightgrey"}
+      borderWidth={2}
+      borderRadius="md"
+      marginX={3}
+      marginTop={2}
+      textAlign="center"
+      h="55%"
+      overflowY="auto"
+      sx={sx}
+    >
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        marginX={10}
+        marginTop={5}
+      >
+        <CustomTable
+          tableManager={manager}
+          onSort={handleSort}
+          onSearch={handleSearch}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          page={page}
+          pageSize={pageSize}
+          totalElements={totalElements ?? 0}
+          searchObject={{
+            searchField: searchField || "",
+            searchTerm: searchTerm || "",
+            selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
+          }}
+          handleClearSearch={handleClearSearch}
+          onDateSearch={handleDateSearch}
+          handleClearDates={handleClearDate}
+          onDelete={function (_: number): void {
+            throw new Error("audit cannot delete");
+          }}
+          onBulkDelete={function (_: number[]): void {
+            throw new Error("audit cannot bulk delete");
+          }}
+        />
+      </Box>
+    </Box>
   );
 };
 
