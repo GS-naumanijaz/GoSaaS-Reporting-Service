@@ -1,5 +1,7 @@
 package com.GRS.backend.models.DTO;
 
+import com.GRS.backend.entities.application.Application;
+
 public class GenerateReportDTO {
     private String name;
     private ReportDataDTO data;
@@ -29,4 +31,5 @@ public class GenerateReportDTO {
     public void setData(ReportDataDTO data) {
         this.data = data;
     }
+
 }

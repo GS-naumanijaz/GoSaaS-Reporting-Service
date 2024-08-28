@@ -23,11 +23,10 @@ public class HtmlToPdfConverter {
         this.s3ClientProvider = s3ClientProvider;
     }
 
-    public void convertHtmlToPdfAndUpload(String htmlContent, String fileName, DestinationConnection destinationConnection) {
+    public String convertHtmlToPdfAndUpload(String htmlContent, String fileName, DestinationConnection destinationConnection) {
         try {
             // Create the S3 client using the S3ClientProvider
             S3Client s3Client = s3ClientProvider.createS3Client(destinationConnection);
-//            logger.info("S3Client created with region: {} and credentials alias={}", destinationConnection.getRegion(), destinationConnection.getAlias());
 
             // Convert HTML to PDF
             byte[] pdfBytes = convertHtmlToPdf(htmlContent);
@@ -41,9 +40,17 @@ public class HtmlToPdfConverter {
             PutObjectResponse putObjectResponse = s3Client.putObject(putObjectRequest,
                     RequestBody.fromBytes(pdfBytes));
 
-            logger.info("PDF uploaded successfully to S3. ETag: {}", putObjectResponse.eTag());
+            // Construct the S3 console URL
+            String s3ConsoleUrl = String.format("https://%s.console.aws.amazon.com/s3/object/%s?region=%s&bucketType=general&prefix=",
+                    destinationConnection.getRegion(),
+                    destinationConnection.getBucketName(),
+                    destinationConnection.getRegion());
+
+            logger.info("PDF uploaded successfully to S3. ETag: {}. File location: {}", putObjectResponse.eTag(), s3ConsoleUrl);
+
+            // Return the S3 console URL
+            return s3ConsoleUrl;
         } catch (Exception e) {
-            logger.error("Error while uploading PDF to S3", e);
             throw new RuntimeException("Error while uploading PDF to S3", e);
         }
     }

@@ -119,14 +119,10 @@ public class DatabaseUtilities {
                 query = new StringBuilder(query.substring(0, query.length() - 2));
                 query.append(");");
 
-//                System.out.println(query);
-
-
                 try (Statement statement = connection.createStatement()) {
                     try (ResultSet resultSet = statement.executeQuery(query.toString())) {
                         ResultSetMetaData metadata = resultSet.getMetaData();
                         int columnCount = metadata.getColumnCount();
-
                         // Build the list of maps
                         while (resultSet.next()) {
                             Map<String, String> rowMap = new HashMap<>();

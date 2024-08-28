@@ -109,9 +109,10 @@ public class MiscService {
         String reportName = generateReportName(generateReportDTO.getName());
 
         // Convert the HTML to PDF and upload to S3
-        htmlToPdfConverter.convertHtmlToPdfAndUpload(html, reportName, destination);
+        String s3FileUrl = htmlToPdfConverter.convertHtmlToPdfAndUpload(html, reportName, destination);
 
-        return ResponseEntity.ok("PDF successfully generated and uploaded to S3.");
+        String formattedName = reportName.replace(" ", "+");
+        return ResponseEntity.ok(s3FileUrl+formattedName);
     }
 
     private InputStream loadXslFromS3(DestinationConnection destination, Report report) {

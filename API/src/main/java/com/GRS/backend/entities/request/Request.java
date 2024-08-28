@@ -7,16 +7,14 @@ import com.GRS.backend.enums.RequestStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "requests")
 @Setter
 @Getter
-@ToString
 public class Request {
 
     @Id
@@ -24,19 +22,15 @@ public class Request {
     private int id;
 
     //Foreign keys
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "app_id", referencedColumnName = "id")
     private Application application;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "destination_id", referencedColumnName = "id")
     private DestinationConnection destination_connection;
 
-    private LocalDate date;
-
-    private Integer remoteUserId;
-
-    private String storedProcedure;
+    private String reportName;
 
     private String[] params;
 
@@ -45,24 +39,25 @@ public class Request {
 
     private String reportLink;
 
-    private String createdBy;
-
-    private String lastUpdatedBy;
-
-    private String deletedBy;
-
     private LocalDateTime creationDate;
 
-    private Boolean isDeleted = false;
-
-    private LocalDateTime deletionDate;
 
     @PrePersist
     public void prePersist() {
         this.creationDate = LocalDateTime.now();
-        this.deletedBy = "";
-        this.isDeleted = false;
-        this.deletionDate = null;
     }
 
+    @Override
+    public String toString() {
+        return "Request{" +
+                "id=" + id +
+                ", application=" + application +
+                ", destination_connection=" + destination_connection +
+                ", storedProcedure='" + reportName + '\'' +
+                ", params=" + Arrays.toString(params) +
+                ", status=" + status +
+                ", reportLink='" + reportLink + '\'' +
+                ", creationDate=" + creationDate +
+                '}';
+    }
 }

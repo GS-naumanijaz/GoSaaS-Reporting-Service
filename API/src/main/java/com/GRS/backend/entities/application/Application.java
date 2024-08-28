@@ -18,7 +18,6 @@ import java.util.Set;
 @Table(name = "applications")
 @Setter
 @Getter
-@ToString
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,6 +66,11 @@ public class Application {
         report.setApplication(this);
     }
 
+    public void addRequest(Request request) {
+        this.requests.add(request);
+        request.setApplication(this);
+    }
+
     @PrePersist
     public void prePersist() {
         this.creationDate = LocalDateTime.now();
@@ -82,4 +86,24 @@ public class Application {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public String toString() {
+        return "Application{" +
+                "id=" + id +
+//                ", reports=" + reports +
+//                ", destination_connections=" + destination_connections +
+//                ", source_connections=" + source_connections +
+//                ", requests=" + requests +
+                ", alias='" + alias + '\'' +
+                ", description='" + description + '\'' +
+                ", isActive=" + isActive +
+                ", isDeleted=" + isDeleted +
+                ", createdBy='" + createdBy + '\'' +
+                ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
+                ", deletedBy='" + deletedBy + '\'' +
+                ", creationDate=" + creationDate +
+                ", deletionDate=" + deletionDate +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }
