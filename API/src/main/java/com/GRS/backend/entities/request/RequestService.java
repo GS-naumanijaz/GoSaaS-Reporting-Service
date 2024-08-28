@@ -3,12 +3,17 @@ package com.GRS.backend.entities.request;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.enums.RequestStatus;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RequestService {
@@ -27,6 +32,28 @@ public class RequestService {
         }
 
         return requestRepository.findAll(spec, pageable);
+    }
+
+    public Map<String, Integer> getStatusCounts() {
+    List<Request> allRequests = requestRepository.findAll();
+    int inprogress = 0;
+    int completed = 0;
+    int failed = 0;
+        for (Request request : allRequests) {
+            if (request.getStatus().equals(RequestStatus.valueOf("inprogress"))) {
+                inprogress++;
+            } else if (request.getStatus().equals(RequestStatus.valueOf("successful"))) {
+                completed++;
+            } else if (request.getStatus().equals(RequestStatus.valueOf("failed"))) {
+                failed++;
+            }
+        }
+        Map<String, Integer> statusCounts = new HashMap<String, Integer>();
+        statusCounts.put("inprogress", inprogress);
+        statusCounts.put("completed", completed);
+        statusCounts.put("failed", failed);
+
+        return statusCounts;
     }
 
     public Request getRequestById(int requestId) {

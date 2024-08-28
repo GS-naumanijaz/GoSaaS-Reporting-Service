@@ -8,8 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/requests")
@@ -26,22 +25,15 @@ public class RequestController {
         return Response.responseBuilder("Requests retrieved successfully", HttpStatus.OK, allRequests);
     }
 
-    @GetMapping("/{requestId}")
-    public ResponseEntity<Object> getRequestById(@PathVariable int requestId) {
-        Request requestToAdd = requestService.getRequestById(requestId);
-        return Response.responseBuilder("Request found successfully", HttpStatus.OK, requestToAdd);
+    @GetMapping("/statusCounts")
+    public ResponseEntity<Object> getStatusCounts() {
+        Map<String, Integer> requests = requestService.getStatusCounts();
+        return Response.responseBuilder("Requests retrieved successfully", HttpStatus.OK, requests);
     }
 
-    @PatchMapping("/{requestId}")
-    public ResponseEntity<Object> updateRequest(@RequestBody Request request,
-                                                @PathVariable int requestId) {
-        Request updatedRequest = requestService.updateRequest(requestId, request);
-        return Response.responseBuilder("Request updated successfully", HttpStatus.OK, updatedRequest);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<Object> addRequest(@RequestBody Request request) {
-        Request requestToAdd = requestService.addRequest(request);
-        return Response.responseBuilder("Request added successfully", HttpStatus.CREATED, requestToAdd);
-    }
+//    @GetMapping("/{requestId}")
+//    public ResponseEntity<Object> getRequestById(@PathVariable int requestId) {
+//        Request requestToAdd = requestService.getRequestById(requestId);
+//        return Response.responseBuilder("Request found successfully", HttpStatus.OK, requestToAdd);
+//    }
 }
