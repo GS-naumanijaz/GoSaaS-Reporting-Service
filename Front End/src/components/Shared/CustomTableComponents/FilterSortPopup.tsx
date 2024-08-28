@@ -29,6 +29,7 @@ interface Props {
   onSort: (field: FieldMappingKey, order: string) => void;
   onSearch: (searchTerm: string, field: string) => void;
   onDateSearch: (date: string[]) => void;
+  isClear?: boolean;
 }
 
 function formatDateToYYYYMMDD(date: Date): string {
@@ -55,9 +56,10 @@ const FilterSortPopup = ({
   onSort,
   onSearch,
   onDateSearch,
+  isClear,
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState("All");
-  const [selectedDate, setSelectedDate] = useState<Date[] | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date[] | undefined>([]);
   const hasCalledOnDateSearchRef = useRef(false);
 
   const handleChange = (
@@ -82,6 +84,12 @@ const FilterSortPopup = ({
     }
     setSelectedItem(selected);
   };
+
+  useEffect(() => {
+    if (isClear) {
+      setSelectedDate([]);
+    }
+  }, [isClear]);
 
   useEffect(() => {
     if (selectedDate?.length === 2 && !hasCalledOnDateSearchRef.current) {
@@ -164,7 +172,7 @@ const FilterSortPopup = ({
               </PopoverBody>
             </Box>
           )}
-          {sortedDropdownFilter && (
+          {sortedDropdownFilter.length > 2 ? (
             <Box>
               <PopoverHeader>Filter By Options</PopoverHeader>
               <PopoverBody>
@@ -199,7 +207,7 @@ const FilterSortPopup = ({
                 </Menu>
               </PopoverBody>
             </Box>
-          )}
+          ) : null}
           {sortFilterOptions.DateItem && (
             <Stack
               display="flex"
@@ -225,7 +233,7 @@ const FilterSortPopup = ({
                     ? `${selectedDate
                         .map((date) => date.toLocaleDateString())
                         .join(" - ")}.`
-                    : "Please pick a date."
+                    : "Select (MM/DD/YYYY)"
                 }
               />
             </Stack>

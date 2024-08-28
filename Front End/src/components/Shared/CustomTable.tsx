@@ -172,6 +172,7 @@ const CustomTable = ({
   // search field prompt box
   const searchField = searchObject?.searchField ?? "";
   const mappedSearchField = reverseFieldMapping[searchField] || searchField;
+
   return (
     <Box
       borderWidth={3}
@@ -191,10 +192,8 @@ const CustomTable = ({
         productDetails={tableManager.getTableProduct()}
         onAddNew={onAddNew}
         isConnection={
-          tableManager.getTableHeader() ===
-            "Source Connections" ||
-          tableManager.getTableHeader() ===
-            "Destination Connections"
+          tableManager.getTableHeader() === "Source Connections" ||
+          tableManager.getTableHeader() === "Destination Connections"
         }
       />
       {searchObject?.searchTerm && (
@@ -219,7 +218,12 @@ const CustomTable = ({
                 <strong>"</strong>
               </Text>{" "}
               <Spacer />
-              <Button variant={"ghost"} onClick={() => handleClearSearch()}>
+              <Button
+                variant={"ghost"}
+                onClick={() => {
+                  handleClearSearch();
+                }}
+              >
                 <ImCross size={13} />
               </Button>
             </HStack>
@@ -270,6 +274,10 @@ const CustomTable = ({
                     onSort={onSort}
                     onSearch={onSearch}
                     onDateSearch={onDateSearch}
+                    isClear={searchObject?.selectedDates?.every(
+                      (date, index) =>
+                        ["0000-01-01", "9999-12-31"][index] === date
+                    )}
                   />
                 </Th>
               ))}
