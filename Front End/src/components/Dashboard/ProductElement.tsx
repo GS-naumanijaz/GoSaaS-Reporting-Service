@@ -25,6 +25,7 @@ const ProductElement = ({ product }: Props) => {
       _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
       onClick={() => {
         navigate("/applications", { state: product });
+        localStorage.setItem("selectedApplicationComponent", "Application");
       }}
     >
       {/* Red Semi-circle */}
@@ -46,7 +47,7 @@ const ProductElement = ({ product }: Props) => {
         noOfLines={5} // This limits the text to 2 lines
       >
         {product.alias}
-      </Text> 
+      </Text>
     </Box>
   );
 };

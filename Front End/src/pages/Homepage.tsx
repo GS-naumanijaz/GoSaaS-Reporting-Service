@@ -1,8 +1,7 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import { secondaryColor, tertiaryColor } from "../configs";
-
 import Dashboard from "../components/Dashboard/Dashboard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuditTrail from "../components/AuditTrail/AuditTrail";
 import Requests from "../components/Requests/Requests";
 import NavBar from "../components/Common/NavBar";
@@ -10,11 +9,13 @@ import Sidebar from "../components/Common/Sidebar";
 import { useUser } from "../components/Login/UserContext";
 
 const Homepage = () => {
-  const [selectedComponent, setSelectedComponent] =
-    useState<string>("Dashboard");
+  const [selectedComponent, setSelectedComponent] = useState<string>(
+    () => localStorage.getItem("selectedComponent") || "Dashboard"
+  );
 
   const onSelected = (passedSelection: string) => {
     setSelectedComponent(passedSelection);
+    localStorage.setItem("selectedComponent", passedSelection);
   };
 
   const user = useUser();

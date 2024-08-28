@@ -10,8 +10,9 @@ import AuditLogData from "../components/Data/AuditLogData";
 
 const Application = () => {
   const navigate = useNavigate();
-  const [selectedComponent, setSelectedComponent] =
-    useState<string>("Application");
+  const [selectedComponent, setSelectedComponent] = useState<string>(
+    () => localStorage.getItem("selectedApplicationComponent") || "Application"
+  );
 
   useEffect(() => {
     if (selectedComponent === "Dashboard") {
@@ -21,6 +22,7 @@ const Application = () => {
 
   const onSelected = (passedSelection: string) => {
     setSelectedComponent(passedSelection);
+    localStorage.setItem("selectedApplicationComponent", passedSelection);
   };
 
   const renderComponent = () => {
