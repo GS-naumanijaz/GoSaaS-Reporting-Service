@@ -16,7 +16,7 @@ export class Request extends TableRowData {
   private static tableHeadings = [
     "Name",
     "Application",
-    "Creation Time",
+    "Creation At",
     "Status",
     "",
   ];
@@ -24,8 +24,8 @@ export class Request extends TableRowData {
 
   private static inputFields: InputField[] = [
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Name",
+      label: "name",
       isSelectable: false,
       type: "text",
       validation: {
@@ -33,8 +33,8 @@ export class Request extends TableRowData {
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Application",
+      label: "application",
       isSelectable: false,
       type: "text",
       validation: {
@@ -42,17 +42,18 @@ export class Request extends TableRowData {
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Created At",
+      label: "createdAt",
       isSelectable: false,
-      type: "text",
+      type: "date",
+      isDate: true,
       validation: {
         required: false,
       },
     },
     {
-      name: "dummy",
-      label: "dummy",
+      name: "Status",
+      label: "status",
       isSelectable: false,
       type: "text",
       validation: {
@@ -93,7 +94,7 @@ export class Request extends TableRowData {
     createdBy: string = "",
     status: string = "",
     reportLink: string = "",
-    destination: DestinationConnection = new DestinationConnection(),
+    destination: DestinationConnection = new DestinationConnection()
   ) {
     super();
     this.id = id;

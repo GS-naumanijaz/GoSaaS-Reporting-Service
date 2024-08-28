@@ -8,6 +8,8 @@ import { Request } from "../../models/Request";
 import { useRequestsQuery } from "../../hooks/useRequestsQuery";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { Box } from "@chakra-ui/react";
+import { sx } from "../../configs";
 
 const RequestData = () => {
   const {
@@ -115,7 +117,6 @@ const RequestData = () => {
     console.log(request);
     console.log(destination);
 
-
     const s3 = new S3Client({
       region: destination.region,
       credentials: {
@@ -149,31 +150,50 @@ const RequestData = () => {
   }
 
   return (
-    <CustomTable
-      tableManager={manager}
-      onSort={handleSort}
-      onSearch={handleSearch}
-      onPageChange={handlePageChange}
-      onPageSizeChange={handlePageSizeChange}
-      page={page}
-      pageSize={pageSize}
-      totalElements={totalElements ?? 0}
-      searchObject={{
-        searchField: searchField || "",
-        searchTerm: searchTerm || "",
-        selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
-      }}
-      handleClearSearch={handleClearSearch}
-      onDateSearch={handleDateSearch}
-      handleClearDates={handleClearDate}
-      onDelete={function (_: number): void {
-        throw new Error("request cannot delete");
-      }}
-      onBulkDelete={function (_: number[]): void {
-        throw new Error("request cannot bulk delete");
-      }}
-      handleDownload={handleDownload}
-    />
+    <Box
+      bg={"white"}
+      borderColor={"lightgrey"}
+      borderWidth={2}
+      borderRadius="md"
+      marginX={3}
+      marginTop={2}
+      textAlign="center"
+      overflowY="auto"
+      sx={sx}
+    >
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        marginX={10}
+        marginTop={5}
+      >
+        <CustomTable
+          tableManager={manager}
+          onSort={handleSort}
+          onSearch={handleSearch}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          page={page}
+          pageSize={pageSize}
+          totalElements={totalElements ?? 0}
+          searchObject={{
+            searchField: searchField || "",
+            searchTerm: searchTerm || "",
+            selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
+          }}
+          handleClearSearch={handleClearSearch}
+          onDateSearch={handleDateSearch}
+          handleClearDates={handleClearDate}
+          onDelete={function (_: number): void {
+            throw new Error("request cannot delete");
+          }}
+          onBulkDelete={function (_: number[]): void {
+            throw new Error("request cannot bulk delete");
+          }}
+          handleDownload={handleDownload}
+        />
+      </Box>
+    </Box>
   );
 };
 
