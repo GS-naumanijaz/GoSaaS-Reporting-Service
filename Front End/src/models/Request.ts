@@ -1,23 +1,26 @@
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
 
-export class AuditLog extends TableRowData {
-  private id: number;
-  private module: string;
-  private action: string;
-  private createdAt: string;
-  private details: string;
-  private username: string;
 
-  private static tableHeader = "Audit Log";
+export class Request extends TableRowData {
+  private id: number;
+  private name: string;
+  private applicationAlias: string;
+  private createdAt: string;
+  private createdBy: string;
+  private issues: string;
+  private status: string;
+
+  private static tableHeader = "Request";
   private static tableHeadings = [
-    "User",
-    "Module",
-    "Action",
-    "Details",
-    "Created at",
+    "Name",
+    "Application",
+    "Creation Time",
+    "Created By",
+    "Issues",
+    "Status"
   ]
-  private static columnWidths = ["15%", "15%", "15%", "15%", "40%"];
+  private static columnWidths = ["20%", "20%", "15%", "15%", "15%", "15%"];
 
   private static inputFields: InputField[] = [
     {
@@ -65,22 +68,22 @@ export class AuditLog extends TableRowData {
         required: false,
       },
     },
+    {
+      name: "dummy",
+      label: "dummy",
+      isSelectable: false,
+      type: "text",
+      validation: {
+        required: false,
+      },
+    },
   ];
-
 
   private static sortFilterOptions: ColumnSortFilterOptions[] = [
     {
       isEnabled: true,
       isSearchable: true,
       isSortable: true,
-    },
-    {
-      isEnabled: true,
-      dropdownFilter: ["USER", "APPLICATION", "DESTINATION", "SOURCE", "REPORT"],
-    },
-    {
-      isEnabled: true,
-      dropdownFilter: ["CREATED", "MODIFIED", "DELETED", "LOGIN", "LOGOUT"],
     },
     {
       isEnabled: true,
@@ -92,39 +95,55 @@ export class AuditLog extends TableRowData {
       isSortable: true,
       DateItem: true,
     },
+    {
+      isEnabled: true,
+      isSearchable: true,
+      isSortable: true,
+    },
+    {
+      isEnabled: true,
+      isSearchable: true,
+      isSortable: true,
+    },
+    {
+      isEnabled: true,
+      dropdownFilter: ["PASS", "FAIL", "PENDING"],
+    },
   ]
 
   constructor(
     id: number = 0,
-    module: string = "",
-    action: string = "",
+    name: string = "",
+    applicationAlias: string = "",
     createdAt: string = "",
-    details: string = "",
-    username: string = ""
+    createdBy: string = "",
+    issues: string = "",
+    status: string = "",
   ) {
     super();
     this.id = id;
-    this.module = module;
-    this.action = action;
+    this.name = name;
+    this.applicationAlias = applicationAlias;
     this.createdAt = createdAt;
-    this.details = details;
-    this.username = username;
+    this.createdBy = createdBy;
+    this.issues = issues;
+    this.status = status
   }
 
   getId(): number {
     return this.id;
   }
   getTableData(): string[] {
-    return [this.username, this.module, this.action, this.details, this.createdAt];
+    return [this.name, this.applicationAlias, this.createdAt, this.createdBy, this.issues, this.status];
   }
   getTableHeadings(): string[] {
-    return AuditLog.tableHeadings;
+    return Request.tableHeadings;
   }
   getTableHeader(): string {
-    return AuditLog.tableHeader;
+    return Request.tableHeader;
   }
-  getColumnWidths(): string[] {
-    return AuditLog.columnWidths;
+  getColumnWidths(): string [] {
+    return Request.columnWidths;
   }
   editRowData(_: number, __: string): void {
     console.log("cannot edit rows in audit log");
@@ -133,10 +152,10 @@ export class AuditLog extends TableRowData {
     console.log("cannot edit rows in audit log");
   }
   getInputFields(): InputField[] {
-    return AuditLog.inputFields;
+    return Request.inputFields;
   }
   getSortFilterOptions(): ColumnSortFilterOptions[] {
-    return AuditLog.sortFilterOptions;
+    return Request.sortFilterOptions;
   }
   getEditAccess(): boolean[] {
     return [false, false, false, false, false];
@@ -149,6 +168,5 @@ export class AuditLog extends TableRowData {
   requiresActions(): boolean {
     return false;
   }
-  
 
 }
