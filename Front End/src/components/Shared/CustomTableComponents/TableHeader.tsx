@@ -20,6 +20,7 @@ interface Props {
   handleBulkDeleteRows: () => void;
   productDetails?: Product;
   onAddNew: () => void;
+  isConnection?: boolean;
 }
 
 const TableHeader = ({
@@ -30,6 +31,7 @@ const TableHeader = ({
   handleBulkDeleteRows,
   productDetails,
   onAddNew,
+  isConnection = false,
 }: Props) => {
   const navigate = useNavigate();
   const [isAddApplicationOpen, setIsAddApplicationOpen] = useState(false);
@@ -95,9 +97,7 @@ const TableHeader = ({
         </Button>
       );
     } else if (tableHeading === "Audit Log") {
-      return (
-        <></>
-      );
+      return <></>;
     } else {
       return (
         <Button
@@ -141,7 +141,11 @@ const TableHeader = ({
               )}
               <AlertDialogButton
                 header="Delete Connection"
-                body="Are you sure you want to delete this connection?"
+                body={
+                  isConnection
+                    ? "Are you sure you want to delete these connections? Any associated reports will also be deleted"
+                    : "Are you sure you want to delete these connections?"
+                }
                 cancelText="Cancel"
                 confirmText="Confirm"
                 onConfirm={handleBulkDeleteRows}

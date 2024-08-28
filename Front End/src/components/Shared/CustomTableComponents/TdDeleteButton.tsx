@@ -4,14 +4,15 @@ import AlertDialogButton from "../AlertDialogButton";
 
 interface Props {
   handleDeleteRow: () => void;
+  isConnection?: boolean;
 }
 
-const TdDeleteButton = ({ handleDeleteRow }: Props) => {
+const TdDeleteButton = ({ handleDeleteRow, isConnection = false }: Props) => {
   return (
     <Td textAlign="center">
       <AlertDialogButton
         header="Delete Connection"
-        body="Are you sure you want to delete this connection?"
+        body={isConnection ? "Are you sure you want to delete this connection? Any associated reports will also be deleted" :"Are you sure you want to delete this connection?"}
         cancelText="Cancel"
         confirmText="Confirm"
         onConfirm={handleDeleteRow}

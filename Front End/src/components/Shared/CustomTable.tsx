@@ -190,6 +190,12 @@ const CustomTable = ({
         handleBulkDeleteRows={handleBulkDeleteRows}
         productDetails={tableManager.getTableProduct()}
         onAddNew={onAddNew}
+        isConnection={
+          tableManager.getTableHeader() ===
+            "Source Connections" ||
+          tableManager.getTableHeader() ===
+            "Destination Connections"
+        }
       />
       {searchObject?.searchTerm && (
         <Stack spacing={4}>
@@ -303,31 +309,42 @@ const CustomTable = ({
                       }}
                     />
                   )}
-                  {tableManager.requiresActions() && <>
-                    {tableManager.requiresRedirect() ? (
-                      <TdRedirect
-                        tableManager={tableManager}
-                        rowIndex={rowIndex}
-                      />
-                    ) : (
-                      <TdEditButton
-                        isEditingMode={isEditingMode()}
-                        isEditing={isEditing[rowIndex]}
-                        isDisabled={tableManager.getCanSaveEditedRows()[rowIndex]}
-                        // handleEditToggle={() => handleEditToggle(rowIndex)}
-                        handleEditToggle={
-                          onClickEdit
-                            ? () => onClickEdit(tableManager.getRowItem(rowIndex))
-                            : () => handleEditToggle(rowIndex)
+                  {tableManager.requiresActions() && (
+                    <>
+                      {tableManager.requiresRedirect() ? (
+                        <TdRedirect
+                          tableManager={tableManager}
+                          rowIndex={rowIndex}
+                        />
+                      ) : (
+                        <TdEditButton
+                          isEditingMode={isEditingMode()}
+                          isEditing={isEditing[rowIndex]}
+                          isDisabled={
+                            tableManager.getCanSaveEditedRows()[rowIndex]
+                          }
+                          // handleEditToggle={() => handleEditToggle(rowIndex)}
+                          handleEditToggle={
+                            onClickEdit
+                              ? () =>
+                                  onClickEdit(tableManager.getRowItem(rowIndex))
+                              : () => handleEditToggle(rowIndex)
+                          }
+                          revertEdit={() => revertEdit(rowIndex)}
+                          saveEdit={() => handleEditSave(rowIndex)}
+                        />
+                      )}
+                      <TdDeleteButton
+                        handleDeleteRow={() => handleDeleteRow(row.getId())}
+                        isConnection={
+                          tableManager.getTableHeader() ===
+                            "Source Connections" ||
+                          tableManager.getTableHeader() ===
+                            "Destination Connections"
                         }
-                        revertEdit={() => revertEdit(rowIndex)}
-                        saveEdit={() => handleEditSave(rowIndex)}
                       />
-                    )}
-                    <TdDeleteButton
-                      handleDeleteRow={() => handleDeleteRow(row.getId())}
-                    />
-                  </>}
+                    </>
+                  )}
                   {tableManager.requiresTestButton() && (
                     <TdTestButton
                       onClick={() => onTestConnection!(row.getId())}
