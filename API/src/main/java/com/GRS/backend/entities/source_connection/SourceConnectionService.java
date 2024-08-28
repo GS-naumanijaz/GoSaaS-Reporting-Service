@@ -132,14 +132,15 @@ public class SourceConnectionService {
             FieldUpdater.updateField(existingSourceConnection, "schema", sourceConnection);
             FieldUpdater.updateField(existingSourceConnection, "lastTestResult", sourceConnection);
 
-            if (Boolean.FALSE.equals(existingSourceConnection.getIsActive())) {
-                List<Report> reportsToUpdate = new ArrayList<>(existingSourceConnection.getReports());
-                for (Report report: reportsToUpdate) {
-                    report.setIsActive(false);
 
-                    reportRepository.save(report);
-                }
+            List<Report> reportsToUpdate = new ArrayList<>(existingSourceConnection.getReports());
+            for (Report report: reportsToUpdate) {
+                report.setIsActive(false);
+                report.setLastUpdatedBy(username);
+
+                reportRepository.save(report);
             }
+
             existingSourceConnection.setLastUpdatedBy(username);
             existingSourceConnection.encryptPassword();
             return sourceConnectionRepository.save(existingSourceConnection);
