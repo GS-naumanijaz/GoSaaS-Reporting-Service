@@ -163,4 +163,8 @@ export class Request extends TableRowData {
   requiresDeleteButton(): boolean {
     return false;
   }
+
+  getDisableDownload(): boolean {
+    return this.status !== "successful";
+  }
 }

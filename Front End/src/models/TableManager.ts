@@ -226,4 +226,8 @@ export class TableManager {
       .map((item, index) => (this.checkedState[index] ? item.getId() : null))
       .filter((id) => id !== null) as number[];
   }
+
+  getDisableDownload(index: number): boolean {
+    return this.data[index].getDisableDownload();
+  }
 }

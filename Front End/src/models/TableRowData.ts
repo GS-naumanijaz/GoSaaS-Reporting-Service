@@ -54,4 +54,7 @@ export abstract class TableRowData {
   getPartialData(indexes: number[]): any {
     return null;
   }
+  getDisableDownload(): boolean {
+    return true;
+  }
 }
