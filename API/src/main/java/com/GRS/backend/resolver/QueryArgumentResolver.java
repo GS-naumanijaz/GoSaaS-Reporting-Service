@@ -1,6 +1,8 @@
 package com.GRS.backend.resolver;
 
 import com.GRS.backend.annotations.QueryParams;
+import com.GRS.backend.annotations.QueryParamsConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,14 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
+    @Autowired
+    private final QueryParamsConfig queryParamsConfig;
+
+    @Autowired
+    public QueryArgumentResolver(QueryParamsConfig queryParamsConfig) {
+        this.queryParamsConfig = queryParamsConfig;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(QueryParams.class);
@@ -27,15 +37,16 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         QueryParams annotation = parameter.getParameterAnnotation(QueryParams.class);
 
-        String search = webRequest.getParameter("search") != null ? webRequest.getParameter("search") : annotation.search();
-        String searchBy = webRequest.getParameter("search_by") != null ? webRequest.getParameter("search_by") : annotation.searchBy();
-        int page = webRequest.getParameter("page") != null ? Integer.parseInt(webRequest.getParameter("page")) : annotation.page();
-        int pageSize = webRequest.getParameter("page_size") != null ? Integer.parseInt(webRequest.getParameter("page_size")) : annotation.pageSize();
-        String sortBy = webRequest.getParameter("sort_by") != null ? webRequest.getParameter("sort_by") : annotation.sortBy();
-        String sortOrder = webRequest.getParameter("sort_order") != null ? webRequest.getParameter("sort_order") : annotation.sortOrder();
-        String startDateStr = webRequest.getParameter("start_date") != null ? webRequest.getParameter("start_date") : annotation.startDate();
-        String endDateStr = webRequest.getParameter("end_date") != null ? webRequest.getParameter("end_date") : annotation.endDate();
+        String search = webRequest.getParameter("search") != null ? webRequest.getParameter("search") : getOrDefault(annotation.search(), queryParamsConfig.getSearch());
+        String searchBy = webRequest.getParameter("search_by") != null ? webRequest.getParameter("search_by") : getOrDefault(annotation.searchBy(), queryParamsConfig.getSearchBy());
+        int page = webRequest.getParameter("page") != null ? Integer.parseInt(webRequest.getParameter("page")) : getOrDefault(annotation.page(), queryParamsConfig.getPage());
+        int pageSize = webRequest.getParameter("page_size") != null ? Integer.parseInt(webRequest.getParameter("page_size")) : getOrDefault(annotation.pageSize(), queryParamsConfig.getPageSize());
+        String sortBy = webRequest.getParameter("sort_by") != null ? webRequest.getParameter("sort_by") : getOrDefault(annotation.sortBy(), queryParamsConfig.getSortBy());
+        String sortOrder = webRequest.getParameter("sort_order") != null ? webRequest.getParameter("sort_order") : getOrDefault(annotation.sortOrder(), queryParamsConfig.getSortOrder());
+        String startDateStr = webRequest.getParameter("start_date") != null ? webRequest.getParameter("start_date") : getOrDefault(annotation.startDate(), queryParamsConfig.getStartDate());
+        String endDateStr = webRequest.getParameter("end_date") != null ? webRequest.getParameter("end_date") : getOrDefault(annotation.endDate(), queryParamsConfig.getEndDate());
 
+        // Validation
         int maxLength = 50;
         if (search.length() > maxLength || searchBy.length() > maxLength ||
                 sortBy.length() > maxLength || sortOrder.length() > maxLength ||
@@ -50,7 +61,10 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortBy));
 
         return new QueryParamsContainer(search, searchBy, startDate, endDate, pageable);
+    }
 
+    private <T> T getOrDefault(T annotationValue, T configValue) {
+        return annotationValue.equals("") ? configValue : annotationValue;
     }
 
     public static class QueryParamsContainer {
@@ -89,5 +103,3 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
         }
     }
 }
-
-

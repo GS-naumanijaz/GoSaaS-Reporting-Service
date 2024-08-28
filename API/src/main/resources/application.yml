@@ -2,3 +2,22 @@
 spring:
   profiles:
     active: local
+
+# default values
+queryparams:
+  search:
+    default: ""
+  searchBy:
+    default: "id"
+  page:
+    default: 0
+  pageSize:
+    default: 10
+  sortBy:
+    default: "updatedAt"
+  sortOrder:
+    default: "desc"
+  startDate:
+    default: "0000-01-01"
+  endDate:
+    default: ""
