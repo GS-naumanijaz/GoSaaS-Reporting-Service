@@ -13,6 +13,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import {
@@ -172,30 +173,34 @@ const AppHeader = ({ appData }: Props) => {
         </Text>
         <Spacer />
         <HStack spacing={5}>
-          <Button
-            variant="link"
-            p={0}
-            _active={
-              validationCheck(newAppData)
-                ? { color: primaryColor }
-                : { color: secondaryColor }
-            }
-            color={validationCheck(newAppData) ? primaryColor : secondaryColor}
-            onClick={() => {
-              validationCheck(newAppData) ? setIsSaveOpen(true) : null;
-            }}
-          >
-            <AiOutlineSave size={"35"} />
-          </Button>
-          <Button
-            variant="link"
-            p={0}
-            _active={{ color: primaryColor }}
-            color={primaryColor}
-            onClick={() => setIsDeleteOpen(true)}
-          >
-            <AiOutlineDelete size={"35"} />
-          </Button>
+          <Tooltip hasArrow label="Save" bg={primaryColor}>
+            <Button
+              variant="link"
+              p={0}
+              _active={
+                validationCheck(newAppData)
+                  ? { color: primaryColor }
+                  : { color: secondaryColor }
+              }
+              color={validationCheck(newAppData) ? primaryColor : secondaryColor}
+              onClick={() => {
+                validationCheck(newAppData) ? setIsSaveOpen(true) : null;
+              }}
+            >
+              <AiOutlineSave size={"35"} />
+            </Button>
+          </Tooltip>
+          <Tooltip hasArrow label="Save" bg={primaryColor}>
+            <Button
+              variant="link"
+              p={0}
+              _active={{ color: primaryColor }}
+              color={primaryColor}
+              onClick={() => setIsDeleteOpen(true)}
+            >
+              <AiOutlineDelete size={"35"} />
+            </Button>
+          </Tooltip>
         </HStack>
       </HStack>
 

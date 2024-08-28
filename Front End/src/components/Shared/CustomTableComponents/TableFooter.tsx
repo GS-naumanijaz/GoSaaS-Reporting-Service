@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useState, useEffect } from "react";
@@ -73,21 +74,25 @@ const TableFooter = ({
         <HStack spacing={4} justifyContent="center" flex="1">
           {showPagination && (
             <>
-              <Button
-                variant={"ghost"}
-                onClick={() => onPageChange(page - 1)}
-                isDisabled={page === 0}
-              >
-                <FaChevronLeft />
-              </Button>
+              <Tooltip hasArrow label="Last Page">
+                <Button
+                  variant={"ghost"}
+                  onClick={() => onPageChange(page - 1)}
+                  isDisabled={page === 0}
+                >
+                  <FaChevronLeft />
+                </Button>
+              </Tooltip>
               <Text>{`${page + 1} of ${totalPages}`}</Text>
-              <Button
-                variant={"ghost"}
-                onClick={() => onPageChange(page + 1)}
-                isDisabled={page >= totalPages - 1}
-              >
-                <FaChevronRight />
-              </Button>
+              <Tooltip hasArrow label="Next Page">
+                <Button
+                  variant={"ghost"}
+                  onClick={() => onPageChange(page + 1)}
+                  isDisabled={page >= totalPages - 1}
+                >
+                  <FaChevronRight />
+                </Button>
+              </Tooltip>
             </>
           )}
         </HStack>

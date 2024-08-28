@@ -16,6 +16,9 @@ const TdDeleteButton = ({ handleDeleteRow, isConnection = false }: Props) => {
         cancelText="Cancel"
         confirmText="Confirm"
         onConfirm={handleDeleteRow}
+        tooltipLabel="Delete"
+        tooltipColor="red"
+        tooltipHasArrow
       >
         <FaRegTrashCan color="red" size={20} />
       </AlertDialogButton>

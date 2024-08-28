@@ -7,6 +7,7 @@ import {
   AlertDialogOverlay,
   Button,
   useDisclosure,
+  Tooltip,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -17,6 +18,9 @@ interface Props {
   confirmText: string;
   onConfirm: () => void;
   children: React.ReactNode;
+  tooltipLabel?: string;
+  tooltipColor?: string;
+  tooltipHasArrow?: boolean;
 }
 
 const AlertDialogButton = ({
@@ -26,6 +30,9 @@ const AlertDialogButton = ({
   confirmText,
   onConfirm: onDelete,
   children,
+  tooltipLabel,
+  tooltipColor = "gray.300",
+  tooltipHasArrow = false,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -35,11 +42,25 @@ const AlertDialogButton = ({
     onClose();
   };
 
+  const button = (
+    <Button variant={"ghost"} onClick={onOpen}>
+      {children}
+    </Button>
+  );
+
   return (
     <>
-      <Button variant={"ghost"} onClick={onOpen}>
-        {children}
-      </Button>
+      {tooltipLabel ? (
+        <Tooltip
+          label={tooltipLabel}
+          bg={tooltipColor}
+          hasArrow={tooltipHasArrow}
+        >
+          {button}
+        </Tooltip>
+      ) : (
+        button
+      )}
 
       <AlertDialog
         isOpen={isOpen}

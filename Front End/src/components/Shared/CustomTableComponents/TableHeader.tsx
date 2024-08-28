@@ -1,4 +1,4 @@
-import { Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack, Text, Tooltip } from "@chakra-ui/react";
 import { FaPlus } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import AlertDialogButton from "../AlertDialogButton";
@@ -77,24 +77,28 @@ const TableHeader = ({
           header={"Add New " + tableHeading}
           inputFields={inputFields}
           onSubmit={onAddNew}
+          tooltipLabel="Add new"
+          tooltipHasArrow
         />
       );
     } else if (tableHeading === "Reports") {
       return (
-        <Button
-          variant={"ghost"}
-          onClick={() => {
-            localStorage.setItem("isEditingMode", JSON.stringify(false));
-            localStorage.setItem(
-              "productDetails",
-              JSON.stringify(productDetails)
-            );
-            localStorage.removeItem("reportDetails");
-            navigate("/addreports");
-          }}
-        >
-          <FaPlus color={primaryColor} />
-        </Button>
+        <Tooltip hasArrow label="Add new" bg={primaryColor}>
+          <Button
+            variant={"ghost"}
+            onClick={() => {
+              localStorage.setItem("isEditingMode", JSON.stringify(false));
+              localStorage.setItem(
+                "productDetails",
+                JSON.stringify(productDetails)
+              );
+              localStorage.removeItem("reportDetails");
+              navigate("/addreports");
+            }}
+          >
+            <FaPlus color={primaryColor} />
+          </Button>
+        </Tooltip>
       );
     } else if (tableHeading === "Audit Log") {
       return <></>;
@@ -149,6 +153,9 @@ const TableHeader = ({
                 cancelText="Cancel"
                 confirmText="Confirm"
                 onConfirm={handleBulkDeleteRows}
+                tooltipLabel="Delete"
+                tooltipColor="red"
+                tooltipHasArrow
               >
                 <FaRegTrashCan color="red" size={20} />
               </AlertDialogButton>

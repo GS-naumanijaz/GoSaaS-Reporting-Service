@@ -15,6 +15,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -27,12 +28,18 @@ interface Props {
   header: string;
   inputFields: InputField[];
   onSubmit: (formData: Record<string, string>) => void;
+  tooltipLabel?: string;
+  tooltipColor?: string;
+  tooltipHasArrow?: boolean;
 }
 
 const AddRowDialogButton: React.FC<Props> = ({
   header,
   inputFields,
   onSubmit,
+  tooltipLabel,
+  tooltipColor = "gray.800",
+  tooltipHasArrow = true,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -73,11 +80,25 @@ const AddRowDialogButton: React.FC<Props> = ({
     onOpen();
   };
 
+  const button = (
+    <Button variant={"ghost"} onClick={handleOpen}>
+      <FaPlus />
+    </Button>
+  );
+
   return (
     <>
-      <Button variant={"ghost"} onClick={handleOpen}>
-        <FaPlus />
-      </Button>
+      {tooltipLabel ? (
+        <Tooltip
+          label={tooltipLabel}
+          bg={tooltipColor}
+          hasArrow={tooltipHasArrow}
+        >
+          {button}
+        </Tooltip>
+      ) : (
+        button
+      )}
 
       <AlertDialog
         isOpen={isOpen}
