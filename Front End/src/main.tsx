@@ -14,6 +14,10 @@ const queryClient = new QueryClient({
 
 const { ToastContainer } = createStandaloneToast();
 
+// Polyfill global for AWS SDK v2
+window.global = window;
+
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>

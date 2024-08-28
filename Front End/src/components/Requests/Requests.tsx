@@ -1,5 +1,7 @@
+import RequestData from "../Data/RequestData";
+
 const Requests = () => {
-  return <div>Requests</div>;
+  return <RequestData />;
 };
 
 export default Requests;

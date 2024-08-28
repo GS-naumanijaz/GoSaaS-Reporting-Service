@@ -1,46 +1,28 @@
+import { report } from "process";
 import { ColumnSortFilterOptions, InputField } from "./TableManagementModels";
 import { TableRowData } from "./TableRowData";
-
+import { DestinationConnection } from "./DestinationConnection";
 
 export class Request extends TableRowData {
   private id: number;
-  private name: string;
+  private reportName: string;
   private applicationAlias: string;
-  private createdAt: string;
   private createdBy: string;
-  private issues: string;
   private status: string;
+  public reportLink: string;
+  private destination: DestinationConnection;
 
   private static tableHeader = "Request";
   private static tableHeadings = [
     "Name",
     "Application",
     "Creation Time",
-    "Created By",
-    "Issues",
-    "Status"
-  ]
-  private static columnWidths = ["20%", "20%", "15%", "15%", "15%", "15%"];
+    "Status",
+    "",
+  ];
+  private static columnWidths = ["25%", "25%", "25%", "20%", "5%"];
 
   private static inputFields: InputField[] = [
-    {
-      name: "dummy",
-      label: "dummy",
-      isSelectable: false,
-      type: "text",
-      validation: {
-        required: false,
-      },
-    },
-    {
-      name: "dummy",
-      label: "dummy",
-      isSelectable: false,
-      type: "text",
-      validation: {
-        required: false,
-      },
-    },
     {
       name: "dummy",
       label: "dummy",
@@ -97,44 +79,49 @@ export class Request extends TableRowData {
     },
     {
       isEnabled: true,
-      isSearchable: true,
-      isSortable: true,
-    },
-    {
-      isEnabled: true,
-      isSearchable: true,
-      isSortable: true,
-    },
-    {
-      isEnabled: true,
       dropdownFilter: ["PASS", "FAIL", "PENDING"],
     },
-  ]
+    {
+      isEnabled: false,
+    },
+  ];
 
   constructor(
     id: number = 0,
     name: string = "",
     applicationAlias: string = "",
-    createdAt: string = "",
     createdBy: string = "",
-    issues: string = "",
     status: string = "",
+    reportLink: string = "",
+    destination: DestinationConnection = new DestinationConnection(),
   ) {
     super();
     this.id = id;
-    this.name = name;
+    this.reportName = name;
     this.applicationAlias = applicationAlias;
-    this.createdAt = createdAt;
     this.createdBy = createdBy;
-    this.issues = issues;
-    this.status = status
+    this.status = status;
+    this.reportLink = reportLink;
+    this.destination = destination;
   }
 
   getId(): number {
     return this.id;
   }
+  getReportLink(): string {
+    return this.reportLink;
+  }
+  getDestination(): DestinationConnection {
+    return this.destination;
+  }
+
   getTableData(): string[] {
-    return [this.name, this.applicationAlias, this.createdAt, this.createdBy, this.issues, this.status];
+    return [
+      this.reportName,
+      this.applicationAlias,
+      this.createdBy,
+      this.status,
+    ];
   }
   getTableHeadings(): string[] {
     return Request.tableHeadings;
@@ -142,7 +129,7 @@ export class Request extends TableRowData {
   getTableHeader(): string {
     return Request.tableHeader;
   }
-  getColumnWidths(): string [] {
+  getColumnWidths(): string[] {
     return Request.columnWidths;
   }
   editRowData(_: number, __: string): void {
@@ -158,7 +145,7 @@ export class Request extends TableRowData {
     return Request.sortFilterOptions;
   }
   getEditAccess(): boolean[] {
-    return [false, false, false, false, false];
+    return [false, false, false, false];
   }
 
   requiresCheckBox(): boolean {
@@ -166,7 +153,14 @@ export class Request extends TableRowData {
   }
 
   requiresActions(): boolean {
-    return false;
+    return true;
   }
 
+  requiresDownloadButton(): boolean {
+    return true;
+  }
+
+  requiresDeleteButton(): boolean {
+    return false;
+  }
 }

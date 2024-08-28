@@ -34,6 +34,14 @@ export abstract class TableRowData {
     return true;
   }
 
+  requiresDownloadButton(): boolean {
+    return false;
+  }
+
+  requiresDeleteButton(): boolean {
+    return true;
+  }
+
   getSwitchStatus(): boolean {
     throw new Error("This componnent does not have a switch");
   }

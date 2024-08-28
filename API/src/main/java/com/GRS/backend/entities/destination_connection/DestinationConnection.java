@@ -88,8 +88,11 @@ public class DestinationConnection {
 
     public void decryptSecretKey() {
         try {
-            SecretKey key = EncryptionUtility.decodeKey(this.key);
-            this.secretKey = EncryptionUtility.decrypt(this.secretKey, key);
+            if (this.key != null) {
+                SecretKey key = EncryptionUtility.decodeKey(this.key);
+                this.secretKey = EncryptionUtility.decrypt(this.secretKey, key);
+                this.key = null;
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to decrypt Secret Key", e);
         }

@@ -18,7 +18,6 @@ const Homepage = () => {
   };
 
   const user = useUser();
-  console.log("User: ", user);
 
   return (
     <Grid

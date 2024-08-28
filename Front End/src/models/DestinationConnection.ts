@@ -5,10 +5,10 @@ import { TableRowData } from "./TableRowData";
 export class DestinationConnection extends TableRowData {
   public id: number;
   public alias: string;
-  private accessKey: string;
-  private secretKey: string;
-  private bucketName: string;
-  private region: string;
+  public accessKey: string;
+  public secretKey: string;
+  public bucketName: string;
+  public region: string;
   private application: Application;
   private isActive: boolean;
 

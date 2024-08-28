@@ -12,6 +12,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ import {
 import { ReportsConnection } from "../../models/ReportsConnection";
 import { ImCross } from "react-icons/im";
 import TdRedirect from "./CustomTableComponents/TdRedirect";
+import { FaDownload } from "react-icons/fa";
 
 interface Props {
   tableManager: TableManager;
@@ -58,6 +60,7 @@ interface Props {
   onAddNew?: any;
   handleClearSearch: () => void;
   handleClearDates: () => void;
+  handleDownload?: (reportIndex: number) => void;
 }
 
 const CustomTable = ({
@@ -80,6 +83,7 @@ const CustomTable = ({
   onAddNew,
   handleClearSearch,
   handleClearDates,
+  handleDownload,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -191,10 +195,8 @@ const CustomTable = ({
         productDetails={tableManager.getTableProduct()}
         onAddNew={onAddNew}
         isConnection={
-          tableManager.getTableHeader() ===
-            "Source Connections" ||
-          tableManager.getTableHeader() ===
-            "Destination Connections"
+          tableManager.getTableHeader() === "Source Connections" ||
+          tableManager.getTableHeader() === "Destination Connections"
         }
       />
       {searchObject?.searchTerm && (
@@ -311,7 +313,19 @@ const CustomTable = ({
                   )}
                   {tableManager.requiresActions() && (
                     <>
-                      {tableManager.requiresRedirect() ? (
+                      {tableManager.requiresDownload() ? (
+                        <Tooltip hasArrow label="Download">
+                          <Button
+                            onClick={
+                              handleDownload
+                                ? () => handleDownload(rowIndex)
+                                : () => console.log("need download function ")
+                            }
+                          >
+                            <FaDownload />
+                          </Button>
+                        </Tooltip>
+                      ) : tableManager.requiresRedirect() ? (
                         <TdRedirect
                           tableManager={tableManager}
                           rowIndex={rowIndex}
@@ -323,7 +337,6 @@ const CustomTable = ({
                           isDisabled={
                             tableManager.getCanSaveEditedRows()[rowIndex]
                           }
-                          // handleEditToggle={() => handleEditToggle(rowIndex)}
                           handleEditToggle={
                             onClickEdit
                               ? () =>
@@ -334,15 +347,17 @@ const CustomTable = ({
                           saveEdit={() => handleEditSave(rowIndex)}
                         />
                       )}
-                      <TdDeleteButton
-                        handleDeleteRow={() => handleDeleteRow(row.getId())}
-                        isConnection={
-                          tableManager.getTableHeader() ===
-                            "Source Connections" ||
-                          tableManager.getTableHeader() ===
-                            "Destination Connections"
-                        }
-                      />
+                      {tableManager.requiresDeleteButton() && (
+                        <TdDeleteButton
+                          handleDeleteRow={() => handleDeleteRow(row.getId())}
+                          isConnection={
+                            tableManager.getTableHeader() ===
+                              "Source Connections" ||
+                            tableManager.getTableHeader() ===
+                              "Destination Connections"
+                          }
+                        />
+                      )}
                     </>
                   )}
                   {tableManager.requiresTestButton() && (

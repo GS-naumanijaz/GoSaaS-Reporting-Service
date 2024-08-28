@@ -5,6 +5,9 @@ import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import CustomTable from "../Shared/CustomTable";
 import useRequestStore from "../../store/RequestStore";
 import { Request } from "../../models/Request";
+import { useRequestsQuery } from "../../hooks/useRequestsQuery";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const RequestData = () => {
   const {
@@ -37,32 +40,33 @@ const RequestData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  // const { data } = useAuditLogsQuery(
-  //   sortField,
-  //   sortOrder,
-  //   page,
-  //   pageSize,
-  //   searchTerm,
-  //   actualSearchField,
-  //   selectedModule,
-  //   selectedAction,
-  //   selectedDates
-  // );
+  const { data } = useRequestsQuery(
+    sortField,
+    sortOrder,
+    page,
+    pageSize,
+    searchTerm,
+    actualSearchField,
+    selectedModule,
+    selectedAction,
+    selectedDates
+  );
 
   const { content: requests, totalElements } = data || {};
 
-  // const AuditLogList: AuditLog[] =
-  //   auditLogs?.map(
-  //     (log: any) =>
-  //       new AuditLog(
-  //         log.id,
-  //         log.module,
-  //         log.action,
-  //         log.createdAt,
-  //         log.details,
-  //         log.username
-  //       )
-  //   ) || [];
+  const RequestList: Request[] =
+    requests?.map(
+      (request: any) =>
+        new Request(
+          request.id,
+          request.reportName,
+          request.application.alias,
+          request.creationDate,
+          request.status,
+          request.reportLink,
+          request.destination_connection
+        )
+    ) || [];
 
   const manager = new TableManager(new Request(), RequestList);
 
@@ -104,6 +108,46 @@ const RequestData = () => {
     setCurrentPage(0);
   }
 
+  function handleDownload(index: number) {
+    let request = RequestList[index];
+    let destination = request.getDestination();
+
+    console.log(request);
+    console.log(destination);
+
+
+    const s3 = new S3Client({
+      region: destination.region,
+      credentials: {
+        accessKeyId: destination.accessKey,
+        secretAccessKey: destination.secretKey,
+      },
+    });
+
+    async function generatePresignedUrl() {
+      const command = new GetObjectCommand({
+        Bucket: destination.bucketName,
+        Key: request.reportLink,
+      });
+
+      return await getSignedUrl(s3, command, { expiresIn: 3600 });
+    }
+
+    generatePresignedUrl().then((downloadUrl) => {
+      if (!downloadUrl) {
+        console.error("Invalid index or URL not found.");
+        return;
+      }
+
+      // Create an anchor element and trigger the download
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadUrl;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    });
+  }
+
   return (
     <CustomTable
       tableManager={manager}
@@ -121,12 +165,15 @@ const RequestData = () => {
       }}
       handleClearSearch={handleClearSearch}
       onDateSearch={handleDateSearch}
-      handleClearDates={handleClearDate} 
+      handleClearDates={handleClearDate}
       onDelete={function (_: number): void {
         throw new Error("request cannot delete");
-      } } onBulkDelete={function (_: number[]): void {
+      }}
+      onBulkDelete={function (_: number[]): void {
         throw new Error("request cannot bulk delete");
-      } }    />
+      }}
+      handleDownload={handleDownload}
+    />
   );
 };
 

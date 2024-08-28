@@ -146,6 +146,14 @@ export class TableManager {
     return this.defaultData.requiresRedirect();
   }
 
+  requiresDownload(): boolean {
+    return this.defaultData.requiresDownloadButton();
+  }
+
+  requiresDeleteButton(): boolean {
+    return this.defaultData.requiresDeleteButton();
+  }
+
   handleToggleSwitch(id: number) {
     this.data = this.data.map((row) => {
       if (row.getId() === id) {

@@ -31,7 +31,14 @@ public class RequestService {
             spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
         }
 
-        return requestRepository.findAll(spec, pageable);
+        Page<Request> requestPage = requestRepository.findAll(spec, pageable);
+        requestPage.forEach(request -> {
+            System.out.println("hello before" + request.getDestination_connection().getSecretKey());
+            request.getDestination_connection().decryptSecretKey();
+            System.out.println("hello after" + request.getDestination_connection().getSecretKey());
+        });
+
+        return requestPage;
     }
 
     public Map<String, Integer> getStatusCounts() {

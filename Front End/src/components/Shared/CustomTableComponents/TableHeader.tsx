@@ -100,7 +100,7 @@ const TableHeader = ({
           </Button>
         </Tooltip>
       );
-    } else if (tableHeading === "Audit Log") {
+    } else if (tableHeading === "Audit Log" || tableHeading === "Request") {
       return <></>;
     } else {
       return (

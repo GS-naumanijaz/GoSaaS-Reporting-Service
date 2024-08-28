@@ -45,7 +45,7 @@ const fetchRequests = async (
     end_date: selectedDates[1] || "9999-12-31",
   });
 
-  const response = await fetch(`${BackendURL}/request?${params.toString()}`, {
+  const response = await fetch(`${BackendURL}/requests?${params.toString()}`, {
     method: "GET",
     credentials: "include",
   });

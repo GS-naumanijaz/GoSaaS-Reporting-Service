@@ -112,7 +112,7 @@ public class MiscService {
         String s3FileUrl = htmlToPdfConverter.convertHtmlToPdfAndUpload(html, reportName, destination);
 
         String formattedName = reportName.replace(" ", "+");
-        return ResponseEntity.ok(s3FileUrl+formattedName);
+        return ResponseEntity.ok(reportName);
     }
 
     private InputStream loadXslFromS3(DestinationConnection destination, Report report) {

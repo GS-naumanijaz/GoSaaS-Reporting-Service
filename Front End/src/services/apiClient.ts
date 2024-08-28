@@ -83,7 +83,6 @@ class APIClient<T> {
     }
   };
   getAll = (config?: AxiosRequestConfig) => {
-    console.log("hello in getall");
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
       .then((res) => this.handleResponse(res))
