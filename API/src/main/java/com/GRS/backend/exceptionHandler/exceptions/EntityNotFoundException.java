@@ -8,4 +8,8 @@ public class EntityNotFoundException extends RuntimeException {
     public EntityNotFoundException(String entityName, String alias) {
         super(entityName + " not found with alias: " + alias);
     }
+
+    public EntityNotFoundException(String applicationNotFound) {
+        super(applicationNotFound);
+    }
 }

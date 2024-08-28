@@ -112,35 +112,29 @@ public class DestinationConnectionService {
     }
 
     public DestinationConnection updateDestinationConnection(int destinationConnectionId, DestinationConnection destinationConnection, String username) {
-        Optional<DestinationConnection> existingDestinationOpt = destinationConnectionRepository.findById(destinationConnectionId);
+        DestinationConnection existingDestination = destinationConnectionRepository.findById(destinationConnectionId)
+                .orElseThrow(() -> new EntityNotFoundException("Destination Connection", destinationConnectionId));
 
-        if (existingDestinationOpt.isPresent()) {
-            DestinationConnection existingDestination = existingDestinationOpt.get();
+        existingDestination.decryptSecretKey();
+        FieldUpdater.updateField(existingDestination, "alias", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "bucketName", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "region", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "isActive", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
 
-            existingDestination.decryptSecretKey();
-
-            FieldUpdater.updateField(existingDestination, "alias", destinationConnection);
-            FieldUpdater.updateField(existingDestination, "bucketName", destinationConnection);
-            FieldUpdater.updateField(existingDestination, "region", destinationConnection);
-            FieldUpdater.updateField(existingDestination, "isActive", destinationConnection);
-            FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
-            FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
-
-            if (Boolean.FALSE.equals(existingDestination.getIsActive())) {
-                List<Report> reportsToUpdate = new ArrayList<>(existingDestination.getReports());
-                for (Report report: reportsToUpdate) {
-                    report.setIsActive(false);
-
-                    reportRepository.save(report);
-                }
+        if (!Boolean.TRUE.equals(existingDestination.getIsActive())) {
+            for (Report report : existingDestination.getReports()) {
+                report.setIsActive(false);
+                reportRepository.save(report);
             }
-            existingDestination.setLastUpdatedBy(username);
-            existingDestination.encryptSecretKey();
-            return destinationConnectionRepository.save(existingDestination);
-        } else {
-            throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
         }
+
+        existingDestination.setLastUpdatedBy(username);
+        existingDestination.encryptSecretKey();
+        return destinationConnectionRepository.save(existingDestination); // Save attached entity
     }
+
 
     public List<DestinationConnection> bulkUpdateIsActive(List<Integer> destinationConnectionIds, boolean isActive, String username) {
         List<DestinationConnection> updatedConnections = new ArrayList<>();
