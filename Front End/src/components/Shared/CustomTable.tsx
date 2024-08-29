@@ -326,7 +326,11 @@ const CustomTable = ({
                       {tableManager.requiresDownload() ? (
                         <Tooltip hasArrow label="Download">
                           <Button
-                            isDisabled={tableManager.getDisableDownload(rowIndex)}
+                            isDisabled={
+                              tableManager.getDisableDownload
+                                ? tableManager.getDisableDownload(rowIndex)
+                                : false
+                            }
                             onClick={
                               handleDownload
                                 ? () => handleDownload(rowIndex)

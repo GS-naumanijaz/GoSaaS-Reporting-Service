@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 
-const searchFieldMapping: Record<string, string> = {
-  name: "name",
-  application: "application",
-  createdAt: "createdAt",
-  createdBy: "createdBy",
-  issues: "issues",
-  status: "status",
-};
+// const searchFieldMapping: Record<string, string> = {
+//   name: "name",
+//   application: "application",
+//   createdAt: "createdAt",
+//   createdBy: "createdBy",
+//   issues: "issues",
+//   status: "status",
+// };
 
 // Define the fetch function for audit logs
 const fetchRequests = async (
@@ -18,8 +18,6 @@ const fetchRequests = async (
   pageSize: number,
   searchTerm: string,
   searchField: string,
-  selectedModule: string,
-  selectedAction: string,
   selectedDates: string[]
 ): Promise<{
   content: any[];
@@ -27,20 +25,13 @@ const fetchRequests = async (
   totalElements: number;
   empty: boolean;
 }> => {
-  const normalizedSearchField =
-    searchFieldMapping[searchField.toLowerCase()] || searchField;
-  const normalizedSortingBy =
-    searchFieldMapping[sortingBy.toLowerCase()] || sortingBy;
-
   const params = new URLSearchParams({
-    sort_by: normalizedSortingBy || "createdAt",
+    sort_by: sortingBy || "createdAt",
     sort_order: sortingOrder || "desc",
     page: page.toString(),
     page_size: pageSize.toString(),
-    search_by: normalizedSearchField || "userId",
+    search_by: searchField || "reportName",
     search: searchTerm || "",
-    module: selectedModule || "all",
-    action: selectedAction || "all",
     start_date: selectedDates[0] || "0000-01-01",
     end_date: selectedDates[1] || "9999-12-31",
   });
@@ -62,8 +53,6 @@ export const useRequestsQuery = (
   pageSize: number,
   searchTerm: string,
   searchField: string,
-  selectedModule: string,
-  selectedAction: string,
   selectedDates: string[]
 ) => {
   return useQuery({
@@ -75,8 +64,6 @@ export const useRequestsQuery = (
       pageSize,
       searchTerm,
       searchField,
-      selectedModule,
-      selectedAction,
       selectedDates,
     ],
     queryFn: () =>
@@ -87,8 +74,6 @@ export const useRequestsQuery = (
         pageSize,
         searchTerm,
         searchField,
-        selectedModule,
-        selectedAction,
         selectedDates
       ),
     refetchOnWindowFocus: true,
