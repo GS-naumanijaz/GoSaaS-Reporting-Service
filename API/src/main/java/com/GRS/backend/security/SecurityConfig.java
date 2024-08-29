@@ -28,6 +28,11 @@ public class SecurityConfig {
     private String frontendUrl;
 
     @Bean
+    public OAuth2LoginFailureHandler oAuth2LoginFailureHandler() {
+        return new OAuth2LoginFailureHandler();
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable) // disable CSRF
@@ -39,14 +44,14 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint().userService(customOAuth2UserService).and()
                         .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler())
                 )
                 .build();
-//         return http
-//         .csrf().disable() // Disable CSRF protection for simplicity (not recommended for production)
-//         .authorizeHttpRequests()
-//         .anyRequest().permitAll().and().build();
+    //         return http
+    //         .csrf().disable() // Disable CSRF protection for simplicity (not recommended for production)
+    //         .authorizeHttpRequests()
+    //         .anyRequest().permitAll().and().build();
     }
-
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -60,5 +65,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", cors);
         return source;
     }
-
 }
