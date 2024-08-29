@@ -90,6 +90,18 @@ class APIClient<T> {
       throw new Error(error.response.data.message || "Network error occurred.");
     }
   };
+
+  // Check if data is empty or contains empty objects
+  private isValidBody = (data: any): boolean => {
+    if (data && typeof data === "object") {
+      return Object.keys(data).some(key => {
+        const value = data[key];
+        return value && (typeof value !== "object" || Object.keys(value).length > 0);
+      });
+    }
+    return false;
+  };
+
   getAll = (config?: AxiosRequestConfig) => {
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
@@ -111,8 +123,11 @@ class APIClient<T> {
       .catch(this.handleError);
   };
 
-  // Update API client methods to return correct types
-  create = (data: T, config?: AxiosRequestConfig): Promise<ReportResponse> => {
+  create = (data: T, config?: AxiosRequestConfig): Promise<ReportResponse | null> => {
+    if (!this.isValidBody(data)) {
+      return Promise.resolve(null); // Just return null if the data is invalid
+    }
+
     return axiosInstance
       .post<APIResponse<ReportResponse>>(this.endpoint, data, config)
       .then((res) => this.handleResponse(res))
@@ -123,7 +138,11 @@ class APIClient<T> {
     urlParams: string,
     data: Partial<T>,
     config?: AxiosRequestConfig
-  ): Promise<ReportResponse> => {
+  ): Promise<ReportResponse | null> => {
+    if (!this.isValidBody(data)) {
+      return Promise.resolve(null); // Just return null if the data is invalid
+    }
+
     return axiosInstance
       .patch<APIResponse<ReportResponse>>(
         `${this.endpoint}/${urlParams}`,
