@@ -49,7 +49,7 @@ export const useDeleteApplicationMutation = () => {
     onSuccess: async () => {
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === "products" || query.queryKey[0] === "application",
+          query.queryKey[0] === "products" || query.queryKey[0] === "application" || query.queryKey[0] === "auditLogs",
       });
       navigate(`/homepage`);
     },
@@ -77,7 +77,7 @@ export const useSaveApplicationMutation = () => {
     onSuccess: async (savedApplication) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === "products" || query.queryKey[0] === "application",
+          query.queryKey[0] === "products" || query.queryKey[0] === "application" || query.queryKey[0] === "auditLogs",
       });
       navigate(`/homepage`);
     },

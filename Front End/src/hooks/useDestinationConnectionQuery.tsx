@@ -10,7 +10,8 @@ const invalidateDestinationAndReportsConnections = (appId: number) => (query: an
   return (
     (queryKey[0] === "destinationConnections" && queryKey[1] === appId) ||
     (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
-    (queryKey[0] === "destinationConnections" && queryKey[1] === "list")
+    (queryKey[0] === "destinationConnections" && queryKey[1] === "list") ||
+    query.queryKey[0] === "auditLogs"
   );
 };
 

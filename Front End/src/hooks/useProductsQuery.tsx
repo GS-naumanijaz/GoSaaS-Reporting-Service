@@ -63,7 +63,7 @@ export const useUpdateApplicationStatus = () => {
     }) => apiClient.updateStatus(status, updateIds),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "products",
+        predicate: (query) => query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
       });
     },
   });
@@ -77,7 +77,7 @@ export const useBulkDeleteApplications = () => {
     mutationFn: (ids: number[]) => apiClient.bulkDelete(ids),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "products",
+        predicate: (query) => query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
       });
     },
   });
@@ -91,7 +91,7 @@ export const useDeleteApplication = () => {
     mutationFn: (deleteId: number) => apiClient.delete(`${deleteId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "products",
+        predicate: (query) => query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
       });
     },
   });

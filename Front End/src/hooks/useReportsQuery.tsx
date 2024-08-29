@@ -25,7 +25,8 @@ const invalidateReportsConnections = (appId: number) => (query: any) => {
   const queryKey = query.queryKey;
   return (
     (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
-    queryKey[0] === "pinnedReports"
+    queryKey[0] === "pinnedReports" || 
+    query.queryKey[0] === "auditLogs"
   );
 };
 
