@@ -54,7 +54,7 @@ export class Request extends TableRowData {
       name: "Status",
       label: "status",
       isSelectable: false,
-      type: "text",
+      isLogo: true,
       validation: {
         required: false,
       },

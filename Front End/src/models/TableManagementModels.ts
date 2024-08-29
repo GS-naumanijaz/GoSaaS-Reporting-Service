@@ -9,6 +9,7 @@ export interface InputField {
   options?: string[];
   isHidden?: boolean;
   isDate?: boolean;
+  isLogo?: boolean;
 }
 
 export interface ColumnSortFilterOptions {

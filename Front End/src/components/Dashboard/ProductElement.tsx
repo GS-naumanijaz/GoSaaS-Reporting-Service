@@ -44,6 +44,7 @@ const ProductElement = ({ product }: Props) => {
         whiteSpace="normal"
         wordBreak="break-word"
         overflowWrap="break-word"
+        cursor="pointer"
         noOfLines={5} // This limits the text to 2 lines
       >
         {product.alias}

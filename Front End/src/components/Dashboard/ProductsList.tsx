@@ -85,7 +85,7 @@ const ProductsList = ({
     return sizes.length > 0 ? sizes : [lowerBound];
   };
 
-  const pageSizes = generatePageSizes(4, 16, 2);
+  const pageSizes = generatePageSizes(1, 6, 2);
 
   return (
     <>

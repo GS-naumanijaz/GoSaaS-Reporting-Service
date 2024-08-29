@@ -12,7 +12,13 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import {
+  FaCheck,
+  FaChevronDown,
+  FaExclamationTriangle,
+  FaSpinner,
+} from "react-icons/fa";
+import { FaXmark } from "react-icons/fa6";
 import { InputField } from "../../../models/TableManagementModels";
 import { validateField } from "../../../models/ValidationRule";
 import { sx } from "../../../configs";
@@ -26,16 +32,16 @@ interface Props {
   columnWidth: string;
 }
 
-const TdData = ({
+const TdData: React.FC<Props> = ({
   isEditing,
   isEditable,
   data,
   inputField,
   handleInputChange,
   columnWidth,
-}: Props) => {
+}) => {
   const [error, setError] = useState<string>("");
-  const [selectedItem, setSelectedItem] = useState(data);
+  const [selectedItem, setSelectedItem] = useState<string>(data);
 
   const handleMenuItemClick = (item: string) => {
     setSelectedItem(item);
@@ -79,6 +85,47 @@ const TdData = ({
       return <Text>{new Date(data).toLocaleDateString()}</Text>;
     }
 
+    if (inputField.isLogo) {
+      const renderLogoStatus = (status: string) => {
+        switch (status) {
+          case "successful":
+            return (
+              <Tooltip label="successful" placement="top" bg="green">
+                <Box display="inline-block">
+                  <FaCheck color="green" size={20} />
+                </Box>
+              </Tooltip>
+            );
+          case "failed":
+            return (
+              <Tooltip label="failed" placement="top" bg="red">
+                <Box display="inline-block">
+                  <FaXmark color="red" size={27} />
+                </Box>
+              </Tooltip>
+            );
+          case "inprogress":
+            return (
+              <Tooltip label="in progress" placement="top" bg="grey">
+                <Box display="inline-block">
+                  <FaSpinner color="black" size={20} />
+                </Box>
+              </Tooltip>
+            );
+          default:
+            return (
+              <Tooltip label="unknown status" placement="top" bg="orange">
+                <Box display="inline-block">
+                  <FaExclamationTriangle color="orange" size={20} />
+                </Box>
+              </Tooltip>
+            );
+        }
+      };
+
+      return renderLogoStatus(data);
+    }
+
     return <Text>{data}</Text>;
   };
 
@@ -105,7 +152,7 @@ const TdData = ({
                 overflowX="hidden"
                 sx={sx}
               >
-                {inputField.options!.map((item, index) => (
+                {inputField.options?.map((item, index) => (
                   <MenuItem
                     key={index}
                     fontSize={16}
