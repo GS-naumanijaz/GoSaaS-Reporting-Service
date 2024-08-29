@@ -13,6 +13,10 @@ const Homepage = () => {
     () => localStorage.getItem("selectedComponent") || "Dashboard"
   );
 
+  useEffect(() => {
+    localStorage.setItem("selectedComponent", "Dashboard");
+  }, []);
+
   const onSelected = (passedSelection: string) => {
     setSelectedComponent(passedSelection);
     localStorage.setItem("selectedComponent", passedSelection);
