@@ -29,8 +29,6 @@ public class RequestService {
     public Page<Request> getAllRequests(String search, String searchBy, Pageable pageable, LocalDate startDate, LocalDate endDate) {
         Specification<Request> spec = Specification.where(null);
 
-        System.out.println("search: " + search + " searchBy: " + searchBy);
-        System.out.println("Specs: " + spec.toString());
         if (search != null && !search.isEmpty()) {
             if ("application".equals(searchBy)) {
                 spec = spec.and(BaseSpecification.containsTextIn("application.alias", search));

@@ -36,6 +36,7 @@ export const fieldMapping = {
   Name: "reportName",
   Application: "application",
   Status: "status",
+  "Creation At": "createdAt",
 } as const;
 
 //

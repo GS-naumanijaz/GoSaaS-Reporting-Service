@@ -41,8 +41,6 @@ const RequestData = () => {
     selectedDates
   );
 
-  console.log("Data: ", data);
-
   const { content: requests, totalElements } = data || {};
 
   const RequestList: Request[] =
@@ -62,13 +60,13 @@ const RequestData = () => {
   const manager = new TableManager(new Request(), RequestList);
 
   function handleSearch(searchTerm: string, field: string): void {
-    console.log("Search Term: ", searchTerm, "Field: ", field);
     setSearchTerm(searchTerm);
     setSearchField(field);
     setCurrentPage(0);
   }
 
   function handleSort(field: string, order: string): void {
+    console.log("Order: ", order);
     const mappedField = fieldMapping[field as FieldMappingKey] || field;
     setSortField(mappedField);
     setSortOrder(order);
@@ -78,6 +76,13 @@ const RequestData = () => {
   function handleClearSearch(): void {
     setSearchTerm("");
     setSearchField("");
+    setCurrentPage(0);
+  }
+
+  function handleClearSort(): void {
+    console.log("Clearing sort");
+    setSortField("createdAt");
+    setSortOrder("desc");
     setCurrentPage(0);
   }
 
@@ -170,9 +175,12 @@ const RequestData = () => {
             searchField: searchField || "",
             searchTerm: searchTerm || "",
             selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
+            sortOrder: sortOrder,
+            sortField: sortField,
           }}
           handleClearSearch={handleClearSearch}
           onDateSearch={handleDateSearch}
+          handleClearSort={handleClearSort}
           handleClearDates={handleClearDate}
           onDelete={function (_: number): void {
             throw new Error("request cannot delete");

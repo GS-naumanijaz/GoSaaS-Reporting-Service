@@ -1,15 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { BackendURL } from "../configs";
 
-// const searchFieldMapping: Record<string, string> = {
-//   name: "name",
-//   application: "application",
-//   createdAt: "createdAt",
-//   createdBy: "createdBy",
-//   issues: "issues",
-//   status: "status",
-// };
-
 // Define the fetch function for audit logs
 const fetchRequests = async (
   sortingBy: string,

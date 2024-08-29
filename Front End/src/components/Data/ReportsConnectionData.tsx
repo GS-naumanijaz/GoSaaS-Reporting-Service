@@ -96,6 +96,12 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     setSortOrder(order);
   };
 
+  function handleClearSort(): void {
+    setSortField("updatedAt");
+    setSortOrder("desc");
+    setPage(0);
+  }
+
   const handleSearch = (searchTerm: string, field: string) => {
     setSearchTerm(searchTerm);
     setSearchField(field);
@@ -154,9 +160,12 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       searchObject={{
         searchField: actualSearchField,
         searchTerm: searchTerm,
+        sortField: sortField,
+        sortOrder: sortOrder,
       }}
       onAddNew={() => navigate("/addreports", { state: { product } })}
       handleClearSearch={handleClearSearch}
+      handleClearSort={handleClearSort}
       onDateSearch={function (date: string[]): void {
         throw new Error("onDateSearch function not implemented." + date);
       }}

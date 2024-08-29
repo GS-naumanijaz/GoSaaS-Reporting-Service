@@ -56,10 +56,13 @@ interface Props {
     searchField: string;
     searchTerm: string;
     selectedDates?: string[];
+    sortOrder?: string;
+    sortField?: string;
   };
   onAddNew?: any;
   handleClearSearch: () => void;
   handleClearDates: () => void;
+  handleClearSort: () => void;
   handleDownload?: (reportIndex: number) => void;
 }
 
@@ -82,6 +85,7 @@ const CustomTable = ({
   searchObject,
   onAddNew,
   handleClearSearch,
+  handleClearSort,
   handleClearDates,
   handleDownload,
 }: Props) => {
@@ -200,40 +204,74 @@ const CustomTable = ({
           tableManager.getTableHeader() === "Destination Connections"
         }
       />
-      {searchObject?.searchTerm && (
-        <Stack spacing={4}>
+      <Stack spacing={6} align="stretch" width="100%" maxW="500px" mx="auto">
+        {searchObject?.sortField &&
+        searchObject.sortField !== "createdAt" &&
+        searchObject.sortField !== "updatedAt" ? (
           <Box
-            mb={4}
-            p={2}
+            p={4}
             borderWidth={1}
             borderColor={secondaryColor}
-            borderRadius={50}
-            width={"38%"}
-            mx="auto"
+            borderRadius="md"
+            bg="gray.50"
+            boxShadow="sm"
           >
-            <Text fontWeight="bold">Search Results:</Text>
-
-            <HStack spacing={4} display={"flex"} justifyContent="space-between">
-              <Spacer />
+            <Text fontWeight="bold" fontSize="lg">
+              Sorting Information
+            </Text>
+            <HStack spacing={10} gap={10} justifyContent="center">
               <Text>
-                <strong>Finding " </strong>
-                {searchObject.searchTerm} <strong>" in "</strong>
-                {mappedSearchField}
-                <strong>"</strong>
-              </Text>{" "}
-              <Spacer />
+                <strong>Finding "</strong>
+                {searchObject.sortField} <strong>" with "</strong>
+                {searchObject.sortOrder}
+                <strong>" order</strong>
+              </Text>
+
               <Button
-                variant={"ghost"}
-                onClick={() => {
-                  handleClearSearch();
-                }}
+                variant="outline"
+                colorScheme="red"
+                size="sm"
+                onClick={handleClearSort}
               >
                 <ImCross size={13} />
               </Button>
             </HStack>
           </Box>
-        </Stack>
-      )}
+        ) : null}
+
+        {searchObject?.searchTerm && (
+          <Box
+            p={4}
+            borderWidth={1}
+            borderColor={secondaryColor}
+            borderRadius="md"
+            bg="gray.50"
+            boxShadow="sm"
+          >
+            <Text fontWeight="bold" fontSize="lg">
+              Search Results
+            </Text>
+            <HStack spacing={10} gap={10} justifyContent="center">
+              <Text>
+                <strong>Finding "</strong>
+                {searchObject.searchTerm}
+                <strong>" in "</strong>
+                {mappedSearchField}
+                <strong>"</strong>
+              </Text>
+              <Button
+                variant="outline"
+                colorScheme="red"
+                size="sm"
+                onClick={handleClearSearch}
+              >
+                <ImCross size={13} />
+              </Button>
+            </HStack>
+          </Box>
+        )}
+      </Stack>
+
       {searchObject?.selectedDates &&
         searchObject?.selectedDates.toString() !==
           ["0000-01-01", "9999-12-31"].toString() && (
@@ -323,7 +361,8 @@ const CustomTable = ({
                   )}
                   {tableManager.requiresActions() && (
                     <>
-                      {tableManager.requiresDownload() ? (
+                      {/* Handle Download */}
+                      {tableManager.requiresDownload() && (
                         <Tooltip hasArrow label="Download">
                           <Button
                             isDisabled={
@@ -340,28 +379,40 @@ const CustomTable = ({
                             <FaDownload />
                           </Button>
                         </Tooltip>
-                      ) : tableManager.requiresRedirect() ? (
-                        <TdRedirect
-                          tableManager={tableManager}
-                          rowIndex={rowIndex}
-                        />
-                      ) : (
-                        <TdEditButton
-                          isEditingMode={isEditingMode()}
-                          isEditing={isEditing[rowIndex]}
-                          isDisabled={
-                            tableManager.getCanSaveEditedRows()[rowIndex]
-                          }
-                          handleEditToggle={
-                            onClickEdit
-                              ? () =>
-                                  onClickEdit(tableManager.getRowItem(rowIndex))
-                              : () => handleEditToggle(rowIndex)
-                          }
-                          revertEdit={() => revertEdit(rowIndex)}
-                          saveEdit={() => handleEditSave(rowIndex)}
-                        />
                       )}
+
+                      {/* Handle Redirect */}
+                      {!tableManager.requiresDownload() &&
+                        tableManager.requiresRedirect() && (
+                          <TdRedirect
+                            tableManager={tableManager}
+                            rowIndex={rowIndex}
+                          />
+                        )}
+
+                      {/* Handle Edit Button */}
+                      {!tableManager.requiresDownload() &&
+                        !tableManager.requiresRedirect() && (
+                          <TdEditButton
+                            isEditingMode={isEditingMode()}
+                            isEditing={isEditing[rowIndex]}
+                            isDisabled={
+                              tableManager.getCanSaveEditedRows()[rowIndex]
+                            }
+                            handleEditToggle={
+                              onClickEdit
+                                ? () =>
+                                    onClickEdit(
+                                      tableManager.getRowItem(rowIndex)
+                                    )
+                                : () => handleEditToggle(rowIndex)
+                            }
+                            revertEdit={() => revertEdit(rowIndex)}
+                            saveEdit={() => handleEditSave(rowIndex)}
+                          />
+                        )}
+
+                      {/* Handle Delete Button */}
                       {tableManager.requiresDeleteButton() && (
                         <TdDeleteButton
                           handleDeleteRow={() => handleDeleteRow(row.getId())}
@@ -375,6 +426,8 @@ const CustomTable = ({
                       )}
                     </>
                   )}
+
+                  {/* Handle Test Button */}
                   {tableManager.requiresTestButton() && (
                     <TdTestButton
                       onClick={() => onTestConnection!(row.getId())}
