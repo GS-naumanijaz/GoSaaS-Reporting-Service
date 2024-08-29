@@ -1,6 +1,7 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useErrorToast } from "./useErrorToast";
 import APIClient from "../services/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const createApiClient = () => new APIClient<any>(`applications`);
 
@@ -34,6 +35,55 @@ export const useAppDataMutation = () => {
     },
     onError: (error: any) => {
       useErrorToast()(error.message);
+    },
+  });
+};
+
+export const useDeleteApplicationMutation = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const apiClient = createApiClient();
+
+  return useMutation({
+    mutationFn: (id: number) => apiClient.delete(`${id}`),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "products" || query.queryKey[0] === "application",
+      });
+      navigate(`/homepage`);
+    },
+    onError: (error: any) => {
+      useErrorToast()(error.message);
+      console.error("Error deleting application", error);
+    },
+  });
+};
+
+export const useSaveApplicationMutation = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const apiClient = createApiClient();
+
+  return useMutation({
+    mutationFn: async (appData: any) => {
+      const { id, ...appDataToSend } = appData;
+      if (id) {
+        return apiClient.update(`${id}`, appDataToSend);
+      } else {
+        return apiClient.create(appDataToSend);
+      }
+    },
+    onSuccess: async (savedApplication) => {
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "products" || query.queryKey[0] === "application",
+      });
+      navigate(`/homepage`);
+    },
+    onError: (error: any) => {
+      useErrorToast()(error.message);
+      console.error("Error saving application", error);
     },
   });
 };

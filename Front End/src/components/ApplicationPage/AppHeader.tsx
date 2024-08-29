@@ -29,6 +29,7 @@ import { Application } from "./AppDashboard";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
+import { useDeleteApplicationMutation, useSaveApplicationMutation } from "../../hooks/useAppDataQuery";
 
 interface Props {
   appData?: Application;
@@ -62,7 +63,6 @@ const AppHeader = ({ appData }: Props) => {
   const user = { fullName: "testUser" };
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { currentPage, searchTerm } = useProductStore();
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isSaveOpen, setIsSaveOpen] = useState(false);
@@ -71,66 +71,11 @@ const AppHeader = ({ appData }: Props) => {
   const cancelDeleteRef = useRef<HTMLButtonElement | null>(null);
   const cancelSaveRef = useRef<HTMLButtonElement | null>(null);
 
-  const deleteMutation = useMutation({
-    // refactor later into useAppData
-    mutationFn: async (id: number) => {
-      const response = await fetch(`${BackendURL}/applications/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Failed to delete application");
-    },
-    onSuccess: async () => {
-      await queryClient.refetchQueries({
-        queryKey: ["products", currentPage, searchTerm],
-      });
-      await queryClient.refetchQueries({
-        queryKey: ["application", appData?.id],
-      });
-      navigate(`/homepage`);
-    },
-    onError: (error: any) => {
-      console.error("Error deleting application", error);
-    },
-  });
-
-  const saveMutation = useMutation({
-    // refactor later into useAppData
-    mutationFn: async (appData: Application) => {
-      const { id, ...appDataToSend } = appData;
-      const method = id ? "PATCH" : "POST";
-      const response = await fetch(
-        `${BackendURL}/applications${id ? `/${id}` : ""}`,
-        {
-          method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(appDataToSend),
-          credentials: "include",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to save application");
-      }
-      return response.json();
-    },
-    onSuccess: async (savedApplication) => {
-      await queryClient.refetchQueries({
-        queryKey: ["products", currentPage, searchTerm],
-      });
-      await queryClient.refetchQueries({
-        queryKey: ["application", appData?.id],
-      });
-      navigate(`/homepage`);
-    },
-    onError: (error: any) => {
-      console.error("Error saving application", error);
-    },
-  });
+  const deleteApplication = useDeleteApplicationMutation();
+  const saveApplication = useSaveApplicationMutation();
 
   const handleDelete = () => {
-    if (appData?.id) deleteMutation.mutate(appData.id);
+    if (appData?.id) deleteApplication.mutate(appData.id);
     onDeleteClose();
   };
 
@@ -140,7 +85,7 @@ const AppHeader = ({ appData }: Props) => {
       ...prev,
       createdBy: user?.fullName || "",
     }));
-    saveMutation.mutate(newAppData);
+    saveApplication.mutate(newAppData);
     onSaveClose();
   };
 
