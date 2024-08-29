@@ -90,7 +90,7 @@ const TdData: React.FC<Props> = ({
         switch (status) {
           case "successful":
             return (
-              <Tooltip label="successful" placement="top" bg="green">
+              <Tooltip label="successful" placement="bottom" bg="green">
                 <Box display="inline-block">
                   <FaCheck color="green" size={20} />
                 </Box>
@@ -98,7 +98,7 @@ const TdData: React.FC<Props> = ({
             );
           case "failed":
             return (
-              <Tooltip label="failed" placement="top" bg="red">
+              <Tooltip label="failed" placement="bottom" bg="red">
                 <Box display="inline-block">
                   <FaXmark color="red" size={27} />
                 </Box>
@@ -106,7 +106,7 @@ const TdData: React.FC<Props> = ({
             );
           case "inprogress":
             return (
-              <Tooltip label="in progress" placement="top" bg="grey">
+              <Tooltip label="in progress" placement="bottom" bg="grey">
                 <Box display="inline-block">
                   <FaSpinner color="black" size={20} />
                 </Box>
@@ -114,7 +114,7 @@ const TdData: React.FC<Props> = ({
             );
           default:
             return (
-              <Tooltip label="unknown status" placement="top" bg="orange">
+              <Tooltip label="unknown status" placement="bottom" bg="orange">
                 <Box display="inline-block">
                   <FaExclamationTriangle color="orange" size={20} />
                 </Box>
