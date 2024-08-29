@@ -3,6 +3,7 @@ import { TableManager } from "../../../models/TableManager";
 import { useNavigate } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 import { Button, Tooltip } from "@chakra-ui/react";
+import { secondaryColor } from "../../../configs";
 
 interface Props {
   rowIndex: number;
@@ -31,7 +32,7 @@ const TdRedirect = ({ rowIndex, tableManager }: Props) => {
   };
 
   return (
-    <Tooltip hasArrow label="Open Application">
+    <Tooltip bg={secondaryColor} color="black"  hasArrow label="Open Application">
       <Button
         pt={4}
         variant={"ghost"}

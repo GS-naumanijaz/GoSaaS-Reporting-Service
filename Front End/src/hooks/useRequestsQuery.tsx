@@ -30,14 +30,12 @@ export const useRequestsQuery = (
     queryFn: () =>
       apiClient.getAll({
         params: {
-          sort_by: searchFieldMapping[sortingBy.toLowerCase()] || sortingBy,
+          sort_by: sortingBy || "createdAt",
           sort_order: sortingOrder || "desc",
           page: page.toString(),
           page_size: pageSize.toString(),
-          search_by: searchFieldMapping[searchField.toLowerCase()] || searchField,
+          search_by: searchField,
           search: searchTerm || "",
-          module: selectedModule || "all",
-          action: selectedAction || "all",
           start_date: selectedDates[0] || "0000-01-01",
           end_date: selectedDates[1] || "9999-12-31",
         },

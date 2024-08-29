@@ -21,7 +21,12 @@ import {
 import { FaXmark } from "react-icons/fa6";
 import { InputField } from "../../../models/TableManagementModels";
 import { validateField } from "../../../models/ValidationRule";
-import { sx } from "../../../configs";
+import { secondaryColor, sx } from "../../../configs";
+import { formatDistanceToNow } from "date-fns";
+
+function formatRelativeTime(date: Date): string {
+  return formatDistanceToNow(date, { addSuffix: true });
+}
 
 interface Props {
   isEditing: boolean;
@@ -30,6 +35,45 @@ interface Props {
   inputField: InputField;
   handleInputChange: (value: string, error: string) => void;
   columnWidth: string;
+}
+
+function formatDateToCustomFormat(date: Date): string {
+  // Helper function to get the ordinal suffix for a day
+  const getDaySuffix = (day: number): string => {
+    if (day >= 11 && day <= 13) return "th";
+    switch (day % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  // Create a formatter for the day of the week and full date
+  const dayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const timeFormatter = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  const dayOfWeek = dayFormatter.format(date);
+  const day = date.getDate();
+  const dateFormatted = dateFormatter
+    .format(date)
+    .replace(day.toString(), day + getDaySuffix(day));
+  const timeFormatted = timeFormatter.format(date).toLowerCase();
+
+  return `${dayOfWeek}, ${dateFormatted}. ${timeFormatted}`;
 }
 
 const TdData: React.FC<Props> = ({
@@ -82,7 +126,11 @@ const TdData: React.FC<Props> = ({
     }
 
     if (inputField.isDate) {
-      return <Text>{new Date(data).toLocaleDateString()}</Text>;
+      return (
+        <Tooltip bg={secondaryColor} color="black" label={formatDateToCustomFormat(new Date(data))}>
+          <Text>{formatRelativeTime(new Date(data))}</Text>
+        </Tooltip>
+      );
     }
 
     if (inputField.isLogo) {

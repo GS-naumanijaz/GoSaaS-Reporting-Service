@@ -1,5 +1,5 @@
 import { Switch, Td, Tooltip } from "@chakra-ui/react";
-import { primaryColor } from "../../../configs";
+import { primaryColor, secondaryColor } from "../../../configs";
 import { TableRowData } from "../../../models/TableRowData";
 
 interface Props {
@@ -10,7 +10,11 @@ interface Props {
 
 const TdSwitch = ({ row, isEditable, handleToggleSwitch }: Props) => {
   return (
-    <Tooltip label={row.getSwitchStatus() ? "active" : "inactive"}>
+    <Tooltip
+      bg={secondaryColor}
+      color="black"
+      label={row.getSwitchStatus() ? "active" : "inactive"}
+    >
       <Td textAlign="center">
         <Switch
           isChecked={row.getSwitchStatus()}
