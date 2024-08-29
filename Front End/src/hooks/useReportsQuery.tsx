@@ -25,7 +25,7 @@ const invalidateReportsConnections = (appId: number) => (query: any) => {
   const queryKey = query.queryKey;
   return (
     (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
-    queryKey[0] === "pinnedReports" || 
+    queryKey[0] === "pinnedReports" ||
     query.queryKey[0] === "auditLogs"
   );
 };
@@ -120,7 +120,13 @@ export const useAddReport = (appId: number) => {
   const apiClient = createApiClient2(appId);
 
   return useMutation<ReportResponse, Error, ReportRequestBody>({
-    mutationFn: (newReport: ReportRequestBody) => apiClient.create(newReport),
+    mutationFn: async (newReport: ReportRequestBody) => {
+      const response = await apiClient.create(newReport);
+      if (response === null) {
+        throw new Error("Invalid request: No report data to send.");
+      }
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidateReportsConnections(appId),
@@ -139,8 +145,13 @@ export const useEditReport = (appId: number) => {
     Error,
     { reportId: number; updatedReport: ReportRequestBody }
   >({
-    mutationFn: ({ reportId, updatedReport }) =>
-      apiClient.update(`${reportId}`, updatedReport),
+    mutationFn: async ({ reportId, updatedReport }) => {
+      const response = await apiClient.update(`${reportId}`, updatedReport);
+      if (response === null) {
+        throw new Error("Invalid request: No report data to send.");
+      }
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidateReportsConnections(appId),
@@ -148,7 +159,7 @@ export const useEditReport = (appId: number) => {
     },
   });
 };
-
+  
 // Hook to get the list of all pinned reports
 export const useGetPinnedReports = () => {
   const apiClient = new APIClient<ReportsConnection>(`applications`);
