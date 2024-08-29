@@ -78,8 +78,9 @@ export class Request extends TableRowData {
       DateItem: true,
     },
     {
+      isSortable: true,
       isEnabled: true,
-      dropdownFilter: ["PASS", "FAIL", "PENDING"],
+      dropdownFilter: ["All", "successful", "failed", "inprogress"],
     },
     {
       isEnabled: false,

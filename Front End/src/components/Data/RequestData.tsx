@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { AuditLog } from "../../models/AuditLog";
 import { TableManager } from "../../models/TableManager";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import CustomTable from "../Shared/CustomTable";
@@ -19,10 +17,6 @@ const RequestData = () => {
     pageSize,
     searchTerm,
     searchField,
-    setSelectedModule,
-    selectedModule,
-    setSelectedAction,
-    selectedAction,
     setCurrentPage,
     setSearchTerm,
     setSearchField,
@@ -34,11 +28,6 @@ const RequestData = () => {
     setSelectedDates,
   } = useRequestStore();
 
-  useEffect(() => {
-    setSelectedModule("All");
-    setSelectedAction("All");
-  }, [setSelectedModule, setSelectedAction]);
-
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
@@ -49,10 +38,10 @@ const RequestData = () => {
     pageSize,
     searchTerm,
     actualSearchField,
-    selectedModule,
-    selectedAction,
     selectedDates
   );
+
+  console.log("Data: ", data);
 
   const { content: requests, totalElements } = data || {};
 
@@ -63,7 +52,7 @@ const RequestData = () => {
           request.id,
           request.reportName,
           request.application.alias,
-          request.creationDate,
+          request.createdAt,
           request.status,
           request.reportLink,
           request.destination_connection
@@ -73,6 +62,7 @@ const RequestData = () => {
   const manager = new TableManager(new Request(), RequestList);
 
   function handleSearch(searchTerm: string, field: string): void {
+    console.log("Search Term: ", searchTerm, "Field: ", field);
     setSearchTerm(searchTerm);
     setSearchField(field);
     setCurrentPage(0);

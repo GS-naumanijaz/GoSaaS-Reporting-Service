@@ -32,6 +32,10 @@ export const fieldMapping = {
   // AuditLog
   User: "username",
   Details: "details",
+  // Request
+  Name: "reportName",
+  Application: "application",
+  Status: "status",
 } as const;
 
 //
