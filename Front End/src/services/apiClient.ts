@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BackendURL } from "../configs";
 import { useErrorToast } from "../hooks/useErrorToast";
 import { ReportResponse } from "../hooks/useReportsQuery";
-import { useUser } from "../components/Login/UserContext";
+import { v4 as uuidv4 } from "uuid";
 
 export interface APIResponse<T> {
   // data?: T | null;
@@ -46,6 +46,14 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const traceId = uuidv4();
+  config.headers['X-Trace-ID'] = traceId;
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 class APIClient<T> {
