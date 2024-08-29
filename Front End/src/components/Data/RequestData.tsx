@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { AuditLog } from "../../models/AuditLog";
 import { TableManager } from "../../models/TableManager";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import CustomTable from "../Shared/CustomTable";
@@ -19,10 +17,6 @@ const RequestData = () => {
     pageSize,
     searchTerm,
     searchField,
-    setSelectedModule,
-    selectedModule,
-    setSelectedAction,
-    selectedAction,
     setCurrentPage,
     setSearchTerm,
     setSearchField,
@@ -34,11 +28,6 @@ const RequestData = () => {
     setSelectedDates,
   } = useRequestStore();
 
-  useEffect(() => {
-    setSelectedModule("All");
-    setSelectedAction("All");
-  }, [setSelectedModule, setSelectedAction]);
-
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
@@ -49,8 +38,6 @@ const RequestData = () => {
     pageSize,
     searchTerm,
     actualSearchField,
-    selectedModule,
-    selectedAction,
     selectedDates
   );
 
@@ -63,7 +50,7 @@ const RequestData = () => {
           request.id,
           request.reportName,
           request.application.alias,
-          request.creationDate,
+          request.createdAt,
           request.status,
           request.reportLink,
           request.destination_connection
@@ -79,6 +66,7 @@ const RequestData = () => {
   }
 
   function handleSort(field: string, order: string): void {
+    console.log("Order: ", order);
     const mappedField = fieldMapping[field as FieldMappingKey] || field;
     setSortField(mappedField);
     setSortOrder(order);
@@ -88,6 +76,13 @@ const RequestData = () => {
   function handleClearSearch(): void {
     setSearchTerm("");
     setSearchField("");
+    setCurrentPage(0);
+  }
+
+  function handleClearSort(): void {
+    console.log("Clearing sort");
+    setSortField("createdAt");
+    setSortOrder("desc");
     setCurrentPage(0);
   }
 
@@ -180,9 +175,12 @@ const RequestData = () => {
             searchField: searchField || "",
             searchTerm: searchTerm || "",
             selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
+            sortOrder: sortOrder,
+            sortField: sortField,
           }}
           handleClearSearch={handleClearSearch}
           onDateSearch={handleDateSearch}
+          handleClearSort={handleClearSort}
           handleClearDates={handleClearDate}
           onDelete={function (_: number): void {
             throw new Error("request cannot delete");

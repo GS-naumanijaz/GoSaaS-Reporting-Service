@@ -38,7 +38,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         System.out.println("at_hash: " + atHash);
         // redirect after user is saved
         this.setAlwaysUseDefaultTargetUrl(true);
-        this.setDefaultTargetUrl("http://localhost:5173/homepage");
+        this.setDefaultTargetUrl(frontendUrl+"/homepage");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

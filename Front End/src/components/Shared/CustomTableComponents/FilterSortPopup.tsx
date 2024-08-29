@@ -68,6 +68,8 @@ const FilterSortPopup = ({
     field: FieldMappingKey
   ) => {
     if (event.key === "Enter") {
+      console.log("field: ", value, field);
+
       if (value.length === 0) {
         onSearch("", fieldMapping[field]);
         return;

@@ -72,7 +72,7 @@ const TableFooter = ({
           </Text>
         )}
         <HStack spacing={4} justifyContent="center" flex="1">
-          {showPagination && (
+          {showPagination ? (
             <>
               <Tooltip hasArrow label="Last Page">
                 <Button
@@ -94,7 +94,7 @@ const TableFooter = ({
                 </Button>
               </Tooltip>
             </>
-          )}
+          ): <Text>1 of 1</Text>}
         </HStack>
 
         <HStack flex="1" justifyContent="flex-end">

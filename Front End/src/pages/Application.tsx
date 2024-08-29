@@ -5,8 +5,8 @@ import NavBar from "../components/Common/NavBar";
 import Sidebar from "../components/Common/Sidebar";
 import { useNavigate } from "react-router-dom";
 import AppDashboard from "../components/ApplicationPage/AppDashboard";
-import Requests from "../components/Requests/Requests";
 import AuditLogData from "../components/Data/AuditLogData";
+import RequestData from "../components/Data/RequestData";
 
 const Application = () => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Application = () => {
         navigate("/homepage");
         return null;
       default:
-        return <Requests />;
+        return <RequestData />;
     }
   };
 

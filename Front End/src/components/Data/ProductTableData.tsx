@@ -63,11 +63,11 @@ const ProductTableData = () => {
           product.alias,
           product.description,
           product.isActive,
-          product.isDeleted, 
+          product.isDeleted,
           product.creationDate,
           product.updatedAt,
-          product.deletedBy, 
-          product.deletionDate 
+          product.deletedBy,
+          product.deletionDate
         )
     ) || [];
 
@@ -90,6 +90,12 @@ const ProductTableData = () => {
     setSearchTerm("");
     setSearchField("");
     setCurrentPage(0);
+  }
+
+  function handleClearSort(): void {
+    setSortField("updatedAt");
+    setSortOrder("desc");
+    setPage(0);
   }
 
   function handlePageChange(newPage: number): void {
@@ -142,8 +148,11 @@ const ProductTableData = () => {
         searchField: searchField || "",
         searchTerm: searchTerm || "",
         selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
+        sortOrder: sortOrder,
+        sortField: sortField,
       }}
       handleClearSearch={handleClearSearch}
+      handleClearSort={handleClearSort}
       onDateSearch={handleDateSearch}
       handleClearDates={handleClearDate}
     />

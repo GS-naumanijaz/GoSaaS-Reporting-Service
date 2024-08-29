@@ -106,8 +106,14 @@ export class TableManager {
 
     let partialData = this.data[index].getPartialData(differentIndexes);
 
-    if (this.requiresStatusToggle() && this.data[index].getSwitchStatus() !== this.preEditActiveStatus) {
-      partialData = { ...partialData, isActive: this.data[index].getSwitchStatus()}
+    if (
+      this.requiresStatusToggle() &&
+      this.data[index].getSwitchStatus() !== this.preEditActiveStatus
+    ) {
+      partialData = {
+        ...partialData,
+        isActive: this.data[index].getSwitchStatus(),
+      };
     }
 
     return partialData;
@@ -123,7 +129,6 @@ export class TableManager {
       this.preEditRows[index] = this.data[index].getTableData();
       this.preEditActiveStatus = this.data[index].getSwitchStatus();
     }
-    
   }
 
   requiresActions() {
@@ -228,6 +233,9 @@ export class TableManager {
   }
 
   getDisableDownload(index: number): boolean {
-    return this.data[index].getDisableDownload();
+    if (this.data[index]?.getDisableDownload()) {
+      return true
+    }
+    return false;
   }
 }

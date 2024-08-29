@@ -1,4 +1,4 @@
-import { Switch, Td } from "@chakra-ui/react";
+import { Switch, Td, Tooltip } from "@chakra-ui/react";
 import { primaryColor } from "../../../configs";
 import { TableRowData } from "../../../models/TableRowData";
 
@@ -10,22 +10,24 @@ interface Props {
 
 const TdSwitch = ({ row, isEditable, handleToggleSwitch }: Props) => {
   return (
-    <Td textAlign="center">
-      <Switch
-        isChecked={row.getSwitchStatus()}
-        onChange={() => handleToggleSwitch(row.getId())}
-        isDisabled={!isEditable}
-        // size="lg"
-        sx={{
-          "& .chakra-switch__track": {
-            bg: row.getSwitchStatus() ? primaryColor : "gray.200",
-          },
-          "& .chakra-switch__thumb": {
-            bg: row.getSwitchStatus() ? "white" : "gray.500",
-          },
-        }}
-      />
-    </Td>
+    <Tooltip label={row.getSwitchStatus() ? "active" : "inactive"}>
+      <Td textAlign="center">
+        <Switch
+          isChecked={row.getSwitchStatus()}
+          onChange={() => handleToggleSwitch(row.getId())}
+          isDisabled={!isEditable}
+          // size="lg"
+          sx={{
+            "& .chakra-switch__track": {
+              bg: row.getSwitchStatus() ? primaryColor : "gray.200",
+            },
+            "& .chakra-switch__thumb": {
+              bg: row.getSwitchStatus() ? "white" : "gray.500",
+            },
+          }}
+        />
+      </Td>
+    </Tooltip>
   );
 };
 

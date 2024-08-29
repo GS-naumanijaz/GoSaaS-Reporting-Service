@@ -3,6 +3,7 @@ package com.GRS.backend.entities.request;
 import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.application.ApplicationSpecification;
 import com.GRS.backend.enums.RequestStatus;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,18 +26,23 @@ public class RequestService {
     @Autowired
     private ApplicationRepository applicationRepository;
 
-    public Page<Request> getAllRequests(String search, String searchBy, Pageable pageable) {
+    public Page<Request> getAllRequests(String search, String searchBy, Pageable pageable, LocalDate startDate, LocalDate endDate) {
         Specification<Request> spec = Specification.where(null);
 
         if (search != null && !search.isEmpty()) {
+            if ("application".equals(searchBy)) {
+                spec = spec.and(BaseSpecification.containsTextIn("application.alias", search));
+            } else if ("destination_connection".equals(searchBy)) {
+                spec = spec.and(BaseSpecification.containsTextIn("destination_connection.alias", search));
+            } else {
             spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
-        }
+        }}
+
+        spec = spec.and(ApplicationSpecification.betweenDates("updatedAt", startDate, endDate));
 
         Page<Request> requestPage = requestRepository.findAll(spec, pageable);
         requestPage.forEach(request -> {
-            System.out.println("hello before" + request.getDestination_connection().getSecretKey());
             request.getDestination_connection().decryptSecretKey();
-            System.out.println("hello after" + request.getDestination_connection().getSecretKey());
         });
 
         return requestPage;

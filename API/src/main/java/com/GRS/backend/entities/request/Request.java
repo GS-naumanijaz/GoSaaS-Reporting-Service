@@ -39,12 +39,14 @@ public class Request {
 
     private String reportLink;
 
-    private LocalDateTime creationDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 
     @PrePersist
     public void prePersist() {
-        this.creationDate = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @Override
@@ -57,7 +59,7 @@ public class Request {
                 ", params=" + Arrays.toString(params) +
                 ", status=" + status +
                 ", reportLink='" + reportLink + '\'' +
-                ", creationDate=" + creationDate +
+                ", creationDate=" + createdAt +
                 '}';
     }
 }

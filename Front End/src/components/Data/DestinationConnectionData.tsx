@@ -120,6 +120,12 @@ const DestinationConnectionData = ({
     return testDestinationMutation.mutateAsync(testId);
   };
 
+  function handleClearSort(): void {
+    setSortField("updatedAt");
+    setSortOrder("desc");
+    setPage(0);
+  }
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -172,9 +178,12 @@ const DestinationConnectionData = ({
       searchObject={{
         searchField: actualSearchField,
         searchTerm: searchTerm,
+        sortField: sortField,
+        sortOrder: sortOrder,
       }}
       onAddNew={handleAddNew}
       handleClearSearch={handleClearSearch}
+      handleClearSort={handleClearSort}
       onDateSearch={function (date: string[]): void {
         throw new Error("onDateSearch function not implemented." + date);
       }}

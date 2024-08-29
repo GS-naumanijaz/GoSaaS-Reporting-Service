@@ -87,6 +87,12 @@ const AuditLogData = () => {
     setCurrentPage(0);
   }
 
+  function handleClearSort(): void {
+    setSortField("createdAt");
+    setSortOrder("desc");
+    setCurrentPage(0);
+  }
+
   function handlePageChange(newPage: number): void {
     setPage(newPage);
     setCurrentPage(newPage);
@@ -137,9 +143,12 @@ const AuditLogData = () => {
             searchField: searchField || "",
             searchTerm: searchTerm || "",
             selectedDates: selectedDates || ["0000-01-01", "9999-12-31"],
+            sortOrder: sortOrder,
+            sortField: sortField,
           }}
           handleClearSearch={handleClearSearch}
           onDateSearch={handleDateSearch}
+          handleClearSort={handleClearSort}
           handleClearDates={handleClearDate}
           onDelete={function (_: number): void {
             throw new Error("audit cannot delete");

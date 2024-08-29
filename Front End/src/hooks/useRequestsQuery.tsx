@@ -2,15 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import { Request } from "../models/Request";
 
-const searchFieldMapping: Record<string, string> = {
-  name: "name",
-  application: "application",
-  createdAt: "createdAt",
-  createdBy: "createdBy",
-  issues: "issues",
-  status: "status",
-};
-
 const createApiClient = () => new APIClient<Request>(`requests`);
 
 // Define the query hook for requests
@@ -21,8 +12,6 @@ export const useRequestsQuery = (
   pageSize: number,
   searchTerm: string,
   searchField: string,
-  selectedModule: string,
-  selectedAction: string,
   selectedDates: string[]
 ) => {
   const apiClient = createApiClient();
@@ -36,8 +25,6 @@ export const useRequestsQuery = (
       pageSize,
       searchTerm,
       searchField,
-      selectedModule,
-      selectedAction,
       selectedDates,
     ],
     queryFn: () =>
