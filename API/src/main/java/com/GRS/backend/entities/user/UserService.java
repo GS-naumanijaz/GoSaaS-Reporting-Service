@@ -1,5 +1,7 @@
 package com.GRS.backend.entities.user;
 
+import com.GRS.backend.enums.AuditLogAction;
+import com.GRS.backend.utilities.AuditLogGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ public class UserService {
 
     public void saveOrUpdateUser(User user) {
         User existingUser = userRepository.findByEmail(user.getEmail());
+        AuditLogGenerator.getInstance().log(AuditLogAction.LOGIN, user.getUsername());
         if (existingUser == null) {
             userRepository.save(user);
         } else {

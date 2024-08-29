@@ -33,8 +33,14 @@ public class AuditLogGenerator {
         return instance;
     }
 
-    public void log(AuditLogAction action, AuditLogModule module, String moduleAlias, String username) {
+    public void log(AuditLogAction action, String username) {
+        String details = "User " + username + " " + action;
 
+        AuditLog auditLog = new AuditLog(AuditLogModule.USER, action, details, username);
+        auditLogService.addAuditLog(auditLog);
+    }
+
+    public void log(AuditLogAction action, AuditLogModule module, String moduleAlias, String username) {
         String details = "User " + username + " " + action + " " + module + " '" + moduleAlias + "'";
 
         AuditLog auditLog = new AuditLog(module, action, details, username);

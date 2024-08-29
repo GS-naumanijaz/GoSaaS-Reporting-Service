@@ -2,6 +2,7 @@ package com.GRS.backend.security;
 
 import com.GRS.backend.entities.user.User;
 import com.GRS.backend.entities.user.UserService;
+import com.GRS.backend.utilities.AuditLogGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +36,6 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         userService.saveOrUpdateUser(user);
 
         String atHash = (String) oauth2User.getAttributes().get("at_hash");
-        System.out.println("at_hash: " + atHash);
         // redirect after user is saved
         this.setAlwaysUseDefaultTargetUrl(true);
         this.setDefaultTargetUrl(frontendUrl+"/homepage");

@@ -65,7 +65,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             DataIntegrityViolationException ex, WebRequest request) {
 
         String rootMessage = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
-        System.out.println("DataIntegrityViolationException message: " + rootMessage);
 
         String fieldName = extractFieldName(rootMessage);
         String keyValue = extractKeyValue(rootMessage);
