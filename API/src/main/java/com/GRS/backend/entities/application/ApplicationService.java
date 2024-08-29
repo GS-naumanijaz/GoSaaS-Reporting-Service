@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,8 +118,8 @@ public class ApplicationService {
         }
     }
 
-    public Integer bulkDeleteApplications(List<Integer> applicationIds, String username) {
-        Integer deletedCount = 0;
+    public List<String> bulkDeleteApplications(List<Integer> applicationIds, String username) {
+        List<String> deletedApps = new ArrayList<>();
 
         for (Integer id : applicationIds) {
             Optional<Application> optionalConnection = applicationRepository.findById(id);
@@ -130,10 +131,10 @@ public class ApplicationService {
                     existingApplication.setIsDeleted(true);
                     existingApplication.setDeletionDate(LocalDateTime.now());
                     applicationRepository.save(existingApplication);
-                    deletedCount++;
+                    deletedApps.add(existingApplication.getAlias());
                 }
             }
         }
-        return deletedCount;
+        return deletedApps;
     }
 }

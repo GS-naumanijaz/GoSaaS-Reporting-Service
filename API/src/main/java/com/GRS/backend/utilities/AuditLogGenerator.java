@@ -49,6 +49,26 @@ public class AuditLogGenerator {
         auditLogService.addAuditLog(auditLog);
     }
 
+    public void logBulk(AuditLogAction action, AuditLogModule module, String[] moduleAlaises, String username) {
+
+        String details = "User " + username + " BULK " + action + " " + module + "'s " + arrayToString(moduleAlaises);
+
+        AuditLog auditLog = new AuditLog(module, action, details, username);
+        auditLogService.addAuditLog(auditLog);
+    }
+
+    public void logBulk(AuditLogAction action, AuditLogModule module, List<String> moduleAlaises, String username) {
+
+        String[] moduleAliasArray = moduleAlaises.stream()
+                .map(String::valueOf)
+                .toArray(String[]::new);
+
+        String details = "User " + username + " BULK " + action + " " + module + "'s " + arrayToString(moduleAliasArray);
+
+        AuditLog auditLog = new AuditLog(module, action, details, username);
+        auditLogService.addAuditLog(auditLog);
+    }
+
     public void logBulk(AuditLogAction action, AuditLogModule module, String[] moduleAlaises, String username, String appAlias) {
 
         String details = "User " + username + " BULK " + action + " " + module + "'s " + arrayToString(moduleAlaises) + " in APPLICATION '" + appAlias + "'";
@@ -58,7 +78,6 @@ public class AuditLogGenerator {
     }
 
     public void logBulk(AuditLogAction action, AuditLogModule module, List<String> moduleIds, String username, String appId) {
-        // Convert List<Integer> to int[]
         String[] moduleIdArray = moduleIds.stream()
                 .map(String::valueOf)
                 .toArray(String[]::new);

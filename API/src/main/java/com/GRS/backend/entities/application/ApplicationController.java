@@ -72,10 +72,14 @@ public class ApplicationController {
     public ResponseEntity<Object> bulkUpdateApplications(@RequestBody List<Integer> applicationIds, @RequestParam boolean isActive, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         List<Application> updatedApps = applicationService.bulkUpdateIsActive(applicationIds, isActive, username);
-
+        String[] updatedAliases = updatedApps.stream()
+                .map(Application::getAlias)
+                .toArray(String[]::new);
         if (updatedApps.size() == applicationIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedAliases, username);
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedApps);
         } else if (updatedApps.size() != 0){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedAliases, username);
             return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedApps);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedApps);
@@ -111,10 +115,13 @@ public class ApplicationController {
     @DeleteMapping("")
     public ResponseEntity<Object> deleteApplication(@RequestBody List<Integer> applicationIds, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
-        Integer deletedCount = applicationService.bulkDeleteApplications(applicationIds, username);
-        if (deletedCount == applicationIds.size()) {
+        List<String> deletedApps = applicationService.bulkDeleteApplications(applicationIds, username);
+
+        if (deletedApps.size() == applicationIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, deletedApps, username);
             return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
-        } else if (deletedCount != 0){
+        } else if (!deletedApps.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, deletedApps, username);
             return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);
