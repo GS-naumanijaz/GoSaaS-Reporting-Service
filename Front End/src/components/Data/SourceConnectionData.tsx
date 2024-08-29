@@ -125,6 +125,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
 
   const handleAddNew = (formData: Record<string, string>) => {
     let sourceForm = mapFormDataKeys(formData);
+    console.log(sourceForm);
     let newSource = new SourceConnection(
       undefined,
       sourceForm.alias,
@@ -133,7 +134,11 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
       sourceForm.host,
       sourceForm.port,
       sourceForm.username,
-      sourceForm.password
+      sourceForm.password,
+      undefined,
+      undefined,
+      undefined,
+      sourceForm.schema
     );
     addSourceConnection(newSource);
   };
