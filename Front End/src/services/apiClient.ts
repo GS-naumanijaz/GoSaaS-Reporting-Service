@@ -48,13 +48,16 @@ const axiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const traceId = uuidv4();
-  config.headers['X-Trace-ID'] = traceId;
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const traceId = uuidv4();
+    config.headers["X-Trace-ID"] = traceId;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 class APIClient<T> {
   endpoint: string;
@@ -65,7 +68,10 @@ class APIClient<T> {
 
   // Handles API responses
   private handleResponse = <R>(response: AxiosResponse<APIResponse<R>>): R => {
-    if (response.data.httpStatus !== "OK" && response.data.httpStatus !== "CREATED") {
+    if (
+      response.data.httpStatus !== "OK" &&
+      response.data.httpStatus !== "CREATED"
+    ) {
       useErrorToast()(response.data.message || "An error occurred.");
       throw new Error(response.data.message || "An error occurred.");
     } else {
@@ -94,9 +100,14 @@ class APIClient<T> {
   // Check if data is empty or contains empty objects
   private isValidBody = (data: any): boolean => {
     if (data && typeof data === "object") {
-      return Object.keys(data).some(key => {
+      return Object.keys(data).some((key) => {
         const value = data[key];
-        return value && (typeof value !== "object" || Object.keys(value).length > 0);
+        // Check if value is not an object or if it is an object with keys
+        return (
+          value !== undefined &&
+          (typeof value !== "object" ||
+            (value && Object.keys(value).length > 0))
+        );
       });
     }
     return false;
@@ -123,7 +134,10 @@ class APIClient<T> {
       .catch(this.handleError);
   };
 
-  create = (data: T, config?: AxiosRequestConfig): Promise<ReportResponse | null> => {
+  create = (
+    data: T,
+    config?: AxiosRequestConfig
+  ): Promise<ReportResponse | null> => {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
@@ -142,7 +156,6 @@ class APIClient<T> {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
-
     return axiosInstance
       .patch<APIResponse<ReportResponse>>(
         `${this.endpoint}/${urlParams}`,

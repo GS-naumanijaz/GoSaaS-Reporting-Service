@@ -87,3 +87,30 @@ export const useSaveApplicationMutation = () => {
     },
   });
 };
+
+export const useEditApplicationMutation = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const apiClient = createApiClient();
+
+  return useMutation({
+    mutationFn: async (appData: any & { id: number }) => {
+      console.log("in hook", appData);
+      const { id, ...appDataToSend } = appData;
+      return apiClient.update(`${id}`, appDataToSend);
+    },
+    onSuccess: async (updatedApplication) => {
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === "products" ||
+          query.queryKey[0] === "application" ||
+          query.queryKey[0] === "auditLogs",
+      });
+      navigate(`/homepage`);
+    },
+    onError: (error: any) => {
+      useErrorToast()(error.message);
+      console.error("Error editing application", error);
+    },
+  });
+};

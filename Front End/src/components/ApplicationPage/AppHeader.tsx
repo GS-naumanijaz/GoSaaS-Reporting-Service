@@ -29,7 +29,7 @@ import { Application } from "./AppDashboard";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
-import { useDeleteApplicationMutation, useSaveApplicationMutation } from "../../hooks/useAppDataQuery";
+import { useDeleteApplicationMutation, useEditApplicationMutation, useSaveApplicationMutation } from "../../hooks/useAppDataQuery";
 
 interface Props {
   appData?: Application;
@@ -60,7 +60,6 @@ const AppHeader = ({ appData }: Props) => {
   );
 
   const [touched, setTouched] = useState({ alias: false, description: false });
-  const user = { fullName: "testUser" };
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -73,19 +72,62 @@ const AppHeader = ({ appData }: Props) => {
 
   const deleteApplication = useDeleteApplicationMutation();
   const saveApplication = useSaveApplicationMutation();
+  const editApplication = useEditApplicationMutation();
 
   const handleDelete = () => {
     if (appData?.id) deleteApplication.mutate(appData.id);
     onDeleteClose();
   };
 
+  // const handleSave = () => {
+  //   // First, update the state with the created_by field
+  //   setNewAppData((prev) => ({
+  //     ...prev,
+  //     createdBy: user?.fullName || "",
+  //   }));
+  //   saveApplication.mutate(newAppData);
+  //   onSaveClose();
+  // };
+
+  function assignUpdatedField<K extends keyof Application>(
+    obj: Partial<Application>,
+    key: K,
+    value: Application[K]
+  ) {
+    obj[key] = value;
+  }
+  
   const handleSave = () => {
-    // First, update the state with the created_by field
-    setNewAppData((prev) => ({
-      ...prev,
-      createdBy: user?.fullName || "",
-    }));
-    saveApplication.mutate(newAppData);
+  
+    const updatedFields: Partial<Application> = {};
+  
+    // Compare newAppData with originalApp and only add changed fields to updatedFields
+    Object.keys(newAppData).forEach((key) => {
+      const keyTyped = key as keyof Application;
+      if (newAppData[keyTyped] !== appData?.[keyTyped]) {
+        assignUpdatedField(updatedFields, keyTyped, newAppData[keyTyped]);
+      }
+    });
+  
+    console.log(updatedFields);
+    // If there are any updated fields, send the update request
+    if (Object.keys(updatedFields).length > 0) {
+      console.log("in if");
+      if (appData?.id) {
+        console.log("in if 2");
+        console.log({ id: appData.id, ...updatedFields });
+        // Use the edit mutation if appData exists (this means we are editing)
+        editApplication.mutate({ id: appData.id, ...updatedFields });
+      } else {
+        console.log("in toher else");
+        // Otherwise, use the add mutation (this means we are adding a new application)
+        saveApplication.mutate(updatedFields);
+      }
+    } else {
+      console.log("at else");
+      navigate('/homepage');
+    }
+    console.log("at end");
     onSaveClose();
   };
 
