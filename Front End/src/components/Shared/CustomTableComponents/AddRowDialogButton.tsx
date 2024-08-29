@@ -159,7 +159,7 @@ const AddRowDialogButton: React.FC<Props> = ({
                     <FormControl isInvalid={!!formErrors[field.name]}>
                       <FormLabel>{field.name}</FormLabel>
                       <Input
-                        type={field.type || "text"}
+                        type={field.type ?? "text"}
                         value={formData[field.name]}
                         onChange={handleChange(field.name)}
                         placeholder={`Enter ${field.name.toLowerCase()}`}

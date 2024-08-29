@@ -36,3 +36,6 @@ build/
 API/.env
 API/src/main/resources/application-host.yml
 API/src/main/resources/application-local.yml
+
+#logs
+app.log.*.gz

@@ -17,6 +17,7 @@ export const fieldMapping = {
   "Database Name": "databaseName",
   Username: "username",
   Password: "password",
+  "Schema (if applicable)": "schema",
   // destination
   "Active Status": "isActive",
   "Bucket Name": "bucketName",

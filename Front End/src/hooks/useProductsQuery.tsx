@@ -1,45 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Product } from "../components/Dashboard/Products";
-import { BackendURL } from "../configs";
+import APIClient from "../services/apiClient";
 
-// Define the fetch function
-const fetchProducts = async (
-  sortingBy: string,
-  sortingOrder: string,
-  page: number,
-  pageSize: number,
-  searchTerm: string,
-  searchField: string,
-  selectedFilter: string,
-  selectedDates: string[]
-): Promise<{
-  content: Product[];
-  totalPages: number;
-  totalElements: number;
-  empty: boolean;
-}> => {
-  const params = new URLSearchParams({
-    sort_by: sortingBy || "alias",
-    sort_order: sortingOrder || "desc",
-    page: page.toString(),
-    page_size: pageSize.toString(),
-    search_by: searchField || "alias",
-    search: searchTerm || "",
-    status: selectedFilter || "all",
-    start_date: selectedDates[0] || "2024-01-01",
-    end_date: selectedDates[1] || "9999-12-31",
-  });
-  const response = await fetch(
-    `${BackendURL}/applications?${params.toString()}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  );
-
-  const data = await response.json();
-  return data.data;
-};
+const createApiClient = () => new APIClient<Product>(`applications`);
 
 // Define the query hook
 export const useProductsQuery = (
@@ -52,6 +15,8 @@ export const useProductsQuery = (
   selectedFilter: string,
   selectedDates: string[]
 ) => {
+  const apiClient = createApiClient();
+
   return useQuery({
     queryKey: [
       "products",
@@ -65,23 +30,23 @@ export const useProductsQuery = (
       selectedDates,
     ],
     queryFn: () =>
-      fetchProducts(
-        sortingBy,
-        sortingOrder,
-        page,
-        pageSize,
-        searchTerm,
-        searchField,
-        selectedFilter,
-        selectedDates
-      ),
+      apiClient.getAll({
+        params: {
+          sort_by: sortingBy || "alias",
+          sort_order: sortingOrder || "desc",
+          page: page.toString(),
+          page_size: pageSize.toString(),
+          search_by: searchField || "alias",
+          search: searchTerm || "",
+          status: selectedFilter || "all",
+          start_date: selectedDates[0] || "2024-01-01",
+          end_date: selectedDates[1] || "9999-12-31",
+        },
+      }),
+    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: true,
-    gcTime: 0, // cache time
   });
 };
-
-import APIClient from "../services/apiClient";
-const createApiClient = () => new APIClient<Product>(`applications`);
 
 // mutation
 export const useUpdateApplicationStatus = () => {
