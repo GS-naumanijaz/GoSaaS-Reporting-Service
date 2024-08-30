@@ -95,6 +95,7 @@ export class SourceConnection extends TableRowData {
       label: "connection type",
       isSelectable: true,
       options: this.dbTypes,
+      type: "text",
       validation: {
         required: true,
         customErrorMessage: "Connection type is required.",
@@ -137,7 +138,7 @@ export class SourceConnection extends TableRowData {
         required: true,
         minLength: 4,
         maxLength: 50,
-        pattern: /^[a-zA-Z0-9 .-]+$/,
+        pattern: /^[a-zA-Z0-9 ._-]+$/,
         customErrorMessage:
           "Host must be 4-50 characters long and contain only letters, numbers, dots, spaces, or hyphens.",
       },

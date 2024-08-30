@@ -4,7 +4,7 @@ export interface InputField {
   label: string;
   name: string;
   isSelectable: boolean;
-  type?: string;
+  type: string;
   validation?: ValidationRule;
   options?: string[];
   isHidden?: boolean;

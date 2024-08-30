@@ -38,12 +38,16 @@ interface Props {
   appData?: Application;
 }
 
+const pattern = /^[a-zA-Z0-9 _-]+$/; // Pattern to match only allowed characters
+
 const validationCheck = ({ alias, description }: Application) => {
   return (
     alias.length >= minimumAppName &&
     alias.length <= maximumAppName &&
     description.length >= minimumAppDescription &&
-    description.length <= maximumAppDescription
+    description.length <= maximumAppDescription &&
+    pattern.test(alias) &&
+    pattern.test(description)
   );
 };
 
@@ -116,11 +120,14 @@ const AppHeader = ({ appData }: Props) => {
     (field: keyof Application, maxLength: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.slice(0, maxLength);
-      setTouched((prev) => ({ ...prev, [field]: true }));
-      setNewAppData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
+
+      if (pattern.test(value)) {
+        setTouched((prev) => ({ ...prev, [field]: true }));
+        setNewAppData((prev) => ({
+          ...prev,
+          [field]: value,
+        }));
+      }
     };
 
   return (
@@ -201,14 +208,15 @@ const AppHeader = ({ appData }: Props) => {
           />
           {touched.alias &&
             (newAppData.alias.length < minimumAppName ||
-              newAppData.alias.length > maximumAppName) && (
+              newAppData.alias.length > maximumAppName ||
+              !pattern.test(newAppData.alias)) && (
               <Text
                 color="red"
                 fontSize="sm"
                 position="absolute"
                 bottom="-25px"
               >
-                {`Application name must be between ${minimumAppName} and ${maximumAppName} characters`}
+                {`Application name must be between ${minimumAppName} and ${maximumAppName} characters and only contain letters, numbers, spaces, hyphens, and underscores.`}
               </Text>
             )}
         </Stack>
@@ -230,14 +238,15 @@ const AppHeader = ({ appData }: Props) => {
           />
           {touched.description &&
             (newAppData.description.length < minimumAppDescription ||
-              newAppData.description.length > maximumAppDescription) && (
+              newAppData.description.length > maximumAppDescription ||
+              !pattern.test(newAppData.description)) && (
               <Text
                 color="red"
                 fontSize="sm"
                 position="absolute"
                 bottom="-25px"
               >
-                {`Application description must be between ${minimumAppDescription} and ${maximumAppDescription} characters`}
+                {`Application description must be between ${minimumAppDescription} and ${maximumAppDescription} characters and only contain letters, numbers, spaces, hyphens, and underscores.`}
               </Text>
             )}
         </Stack>

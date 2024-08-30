@@ -290,7 +290,7 @@ const CustomTable = ({
           </HStack>
         )}
       <TableContainer sx={sx}>
-        <Table variant="simple" size="sm">
+        <Table variant="simple" size="sm" style={{ tableLayout: "fixed" }}>
           <Thead>
             <Tr>
               {tableManager.requiresCheckBox() && (

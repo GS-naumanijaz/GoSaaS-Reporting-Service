@@ -39,13 +39,15 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
+  const pattern = /^[a-zA-Z0-9 _-]+$/; // Pattern to match only allowed characters
+
   const handleChange =
     (field: string, maxLength: number) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
 
-      // Restrict input length based on the maxLength
-      if (newValue.length <= maxLength) {
+      // Validate input based on the allowed pattern and length
+      if (newValue.length <= maxLength && pattern.test(newValue)) {
         setFormData({ ...formData, [field]: newValue });
       }
     };
@@ -65,6 +67,16 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
       formData.applicationDescription.length > maximumAppDescription
     ) {
       newErrors.applicationDescription = `Application Description must be between ${minimumAppDescription} and ${maximumAppDescription} characters.`;
+    }
+
+    if (!pattern.test(formData.applicationName)) {
+      newErrors.applicationName =
+        "Application Name can only contain letters, numbers, spaces, hyphens, and underscores.";
+    }
+
+    if (!pattern.test(formData.applicationDescription)) {
+      newErrors.applicationDescription =
+        "Application Description can only contain letters, numbers, spaces, hyphens, and underscores.";
     }
 
     if (Object.keys(newErrors).length > 0) {

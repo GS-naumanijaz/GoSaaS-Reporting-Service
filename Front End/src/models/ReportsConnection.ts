@@ -69,6 +69,7 @@ export class ReportsConnection extends TableRowData {
         required: true,
         minLength: 3,
         maxLength: 255,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
           "Description is required and must be at least 3 characters long.",
       },

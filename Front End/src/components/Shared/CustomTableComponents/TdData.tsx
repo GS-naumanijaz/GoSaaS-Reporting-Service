@@ -127,7 +127,11 @@ const TdData: React.FC<Props> = ({
 
     if (inputField.isDate) {
       return (
-        <Tooltip bg={secondaryColor} color="black" label={formatDateToCustomFormat(new Date(data))}>
+        <Tooltip
+          bg={secondaryColor}
+          color="black"
+          label={formatDateToCustomFormat(new Date(data))}
+        >
           <Text>{formatRelativeTime(new Date(data))}</Text>
         </Tooltip>
       );
@@ -178,7 +182,18 @@ const TdData: React.FC<Props> = ({
   };
 
   return (
-    <Td textAlign="center" width={columnWidth} m={0} p={0} height={50}>
+    <Td
+      textAlign="center"
+      width={columnWidth}
+      m={0}
+      p={0}
+      height={50}
+      style={{
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+      }} // Apply overflow styles
+    >
       {isEditing && isEditable ? (
         <Box>
           {inputField.isSelectable ? (
@@ -191,6 +206,11 @@ const TdData: React.FC<Props> = ({
                 borderColor="gray.200"
                 fontWeight="normal"
                 rightIcon={<FaChevronDown />}
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }} // Apply overflow styles
               >
                 {selectedItem.toLowerCase()}
               </MenuButton>
@@ -205,6 +225,11 @@ const TdData: React.FC<Props> = ({
                     key={index}
                     fontSize={16}
                     onClick={() => handleMenuItemClick(item)}
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }} // Apply overflow styles
                   >
                     {item.toLowerCase()}
                   </MenuItem>
@@ -226,6 +251,11 @@ const TdData: React.FC<Props> = ({
                   textAlign="center"
                   value={data}
                   onChange={handleChange}
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }} // Apply overflow styles
                 />
               </Tooltip>
             </FormControl>
