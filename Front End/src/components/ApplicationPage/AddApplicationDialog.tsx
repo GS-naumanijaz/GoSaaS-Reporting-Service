@@ -40,8 +40,14 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({ ...formData, [field]: event.target.value });
+    (field: string, maxLength: number) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = event.target.value;
+
+      // Restrict input length based on the maxLength
+      if (newValue.length <= maxLength) {
+        setFormData({ ...formData, [field]: newValue });
+      }
     };
 
   const handleSubmit = () => {
@@ -89,7 +95,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
                 <Input
                   type="text"
                   value={formData.applicationName}
-                  onChange={handleChange("applicationName")}
+                  onChange={handleChange("applicationName", maximumAppName)}
                   placeholder="Enter application name"
                 />
                 <FormErrorMessage>
@@ -103,7 +109,10 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
                 <Input
                   type="text"
                   value={formData.applicationDescription}
-                  onChange={handleChange("applicationDescription")}
+                  onChange={handleChange(
+                    "applicationDescription",
+                    maximumAppDescription
+                  )}
                   placeholder="Enter application description"
                 />
                 <FormErrorMessage>

@@ -1,6 +1,6 @@
 import { Flex, Button, Input, Box, Tooltip } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { primaryColor } from "../../configs";
+import { maximumAppName, primaryColor } from "../../configs";
 
 interface Props {
   onSearch: (searchTerm: string) => void;
@@ -19,13 +19,19 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchTerm(value);
-    if (value.length === 0) {
+
+    // Ensure the value does not exceed the maximum allowed length
+    const trimmedValue =
+      value.length <= maximumAppName ? value : value.slice(0, maximumAppName);
+
+    setSearchTerm(trimmedValue);
+
+    if (trimmedValue.length === 0) {
       setErrorField("");
       onSearch("");
-    } else if (value.length >= 3) {
+    } else if (trimmedValue.length >= 3) {
       setErrorField("");
-      onSearch(value);
+      onSearch(trimmedValue);
     } else {
       setErrorField("Search term must be at least 3 characters long");
     }

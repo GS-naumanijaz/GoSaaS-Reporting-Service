@@ -113,6 +113,30 @@ class APIClient<T> {
     return false;
   };
 
+  private edgeTrimmer = (data: any): any => {
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      return Object.keys(data).reduce((acc, key) => {
+        let value = data[key];
+
+        // Trim string values
+        if (typeof value === "string") {
+          value = value.trim();
+        }
+
+        // Recursively trim nested objects
+        if (typeof value === "object" && value !== null) {
+          value = this.edgeTrimmer(value);
+        }
+
+        acc[key] = value;
+
+        return acc;
+      }, {} as { [key: string]: any });
+    }
+
+    return data;
+  };
+
   getAll = (config?: AxiosRequestConfig) => {
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
@@ -141,7 +165,7 @@ class APIClient<T> {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
-
+    data = this.edgeTrimmer(data);
     return axiosInstance
       .post<APIResponse<ReportResponse>>(this.endpoint, data, config)
       .then((res) => this.handleResponse(res))
@@ -156,6 +180,7 @@ class APIClient<T> {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
+    data = this.edgeTrimmer(data);
     return axiosInstance
       .patch<APIResponse<ReportResponse>>(
         `${this.endpoint}/${urlParams}`,

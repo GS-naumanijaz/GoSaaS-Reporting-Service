@@ -21,7 +21,7 @@ import { DayPicker } from "react-day-picker";
 import { FaChevronDown } from "react-icons/fa";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { primaryColor, sx } from "../../../configs";
+import { maximumAppName, primaryColor, sx } from "../../../configs";
 
 interface Props {
   heading: string;
@@ -60,21 +60,25 @@ const FilterSortPopup = ({
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState("All");
   const [selectedDate, setSelectedDate] = useState<Date[] | undefined>([]);
+  const [truncatedValue, setTruncatedValue] = useState(""); // State for the truncated value
   const hasCalledOnDateSearchRef = useRef(false);
+
+  // Adjust the length constraints as needed
 
   const handleChange = (
     event: React.KeyboardEvent<HTMLInputElement>,
     value: string,
     field: FieldMappingKey
   ) => {
-    if (event.key === "Enter") {
-      console.log("field: ", value, field);
+    const trimmedValue = value.slice(0, maximumAppName); // Enforce max length
+    setTruncatedValue(trimmedValue); // Update truncated value state
 
+    if (event.key === "Enter") {
       if (value.length === 0) {
         onSearch("", fieldMapping[field]);
         return;
       }
-      onSearch(value, fieldMapping[field]);
+      onSearch(trimmedValue, fieldMapping[field]);
     }
   };
 
@@ -163,6 +167,8 @@ const FilterSortPopup = ({
                 <Input
                   placeholder={`Enter ${heading}`}
                   size="sm"
+                  value={truncatedValue} // Use truncated value in the input
+                  onChange={(e) => setTruncatedValue(e.target.value)} // Update input value state
                   onKeyDown={(e) =>
                     handleChange(
                       e,

@@ -20,16 +20,19 @@ import {
   maximumAppDescription,
   maximumAppName,
   minimumAppDescription,
+  minimumAppName,
   primaryColor,
   secondaryColor,
-  minimumAppName,
-  BackendURL,
 } from "../../configs";
 import { Application } from "./AppDashboard";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
-import { useDeleteApplicationMutation, useEditApplicationMutation, useSaveApplicationMutation } from "../../hooks/useAppDataQuery";
+import {
+  useDeleteApplicationMutation,
+  useEditApplicationMutation,
+  useSaveApplicationMutation,
+} from "../../hooks/useAppDataQuery";
 
 interface Props {
   appData?: Application;
@@ -43,6 +46,14 @@ const validationCheck = ({ alias, description }: Application) => {
     description.length <= maximumAppDescription
   );
 };
+
+function assignUpdatedField<K extends keyof Application>(
+  obj: Partial<Application>,
+  key: K,
+  value: Application[K]
+) {
+  obj[key] = value;
+}
 
 const AppHeader = ({ appData }: Props) => {
   const [newAppData, setNewAppData] = useState<Application>(
@@ -79,57 +90,38 @@ const AppHeader = ({ appData }: Props) => {
     onDeleteClose();
   };
 
-  // const handleSave = () => {
-  //   // First, update the state with the created_by field
-  //   setNewAppData((prev) => ({
-  //     ...prev,
-  //     createdBy: user?.fullName || "",
-  //   }));
-  //   saveApplication.mutate(newAppData);
-  //   onSaveClose();
-  // };
-
-  function assignUpdatedField<K extends keyof Application>(
-    obj: Partial<Application>,
-    key: K,
-    value: Application[K]
-  ) {
-    obj[key] = value;
-  }
-  
   const handleSave = () => {
-  
     const updatedFields: Partial<Application> = {};
-  
-    // Compare newAppData with originalApp and only add changed fields to updatedFields
+
     Object.keys(newAppData).forEach((key) => {
       const keyTyped = key as keyof Application;
       if (newAppData[keyTyped] !== appData?.[keyTyped]) {
         assignUpdatedField(updatedFields, keyTyped, newAppData[keyTyped]);
       }
     });
-  
-    console.log(updatedFields);
-    // If there are any updated fields, send the update request
+
     if (Object.keys(updatedFields).length > 0) {
-      console.log("in if");
       if (appData?.id) {
-        console.log("in if 2");
-        console.log({ id: appData.id, ...updatedFields });
-        // Use the edit mutation if appData exists (this means we are editing)
         editApplication.mutate({ id: appData.id, ...updatedFields });
       } else {
-        console.log("in toher else");
-        // Otherwise, use the add mutation (this means we are adding a new application)
         saveApplication.mutate(updatedFields);
       }
     } else {
-      console.log("at else");
-      navigate('/homepage');
+      navigate("/homepage");
     }
-    console.log("at end");
     onSaveClose();
   };
+
+  const handleInputChange =
+    (field: keyof Application, maxLength: number) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.slice(0, maxLength);
+      setTouched((prev) => ({ ...prev, [field]: true }));
+      setNewAppData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
 
   return (
     <>
@@ -169,7 +161,9 @@ const AppHeader = ({ appData }: Props) => {
                   ? { color: primaryColor }
                   : { color: secondaryColor }
               }
-              color={validationCheck(newAppData) ? primaryColor : secondaryColor}
+              color={
+                validationCheck(newAppData) ? primaryColor : secondaryColor
+              }
               onClick={() => {
                 validationCheck(newAppData) ? setIsSaveOpen(true) : null;
               }}
@@ -203,14 +197,7 @@ const AppHeader = ({ appData }: Props) => {
             focusBorderColor={primaryColor}
             placeholder="Enter application name"
             value={newAppData.alias}
-            onChange={(e) => {
-              const alias = e.target.value;
-              setTouched((prev) => ({ ...prev, alias: true }));
-              setNewAppData((prev) => ({
-                ...prev,
-                alias,
-              }));
-            }}
+            onChange={handleInputChange("alias", maximumAppName)}
           />
           {touched.alias &&
             (newAppData.alias.length < minimumAppName ||
@@ -239,14 +226,7 @@ const AppHeader = ({ appData }: Props) => {
             focusBorderColor={primaryColor}
             placeholder="Enter Application Description"
             value={newAppData.description}
-            onChange={(e) => {
-              const description = e.target.value;
-              setTouched((prev) => ({ ...prev, description: true }));
-              setNewAppData((prev) => ({
-                ...prev,
-                description,
-              }));
-            }}
+            onChange={handleInputChange("description", maximumAppDescription)}
           />
           {touched.description &&
             (newAppData.description.length < minimumAppDescription ||
