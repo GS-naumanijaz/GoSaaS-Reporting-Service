@@ -178,7 +178,15 @@ const TdData: React.FC<Props> = ({
       return renderLogoStatus(data);
     }
 
-    return <Text>{data}</Text>;
+    return (
+      <Tooltip
+        label={inputField.name + ": " + data}
+        bg={secondaryColor}
+        color="black"
+      >
+        <Text>{data}</Text>
+      </Tooltip>
+    );
   };
 
   return (

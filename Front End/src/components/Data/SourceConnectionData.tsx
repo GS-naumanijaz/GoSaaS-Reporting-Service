@@ -58,7 +58,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useSourceConnections(
+  const { data, isLoading } = useSourceConnections(
     appId,
     sortField,
     sortOrder,
@@ -192,6 +192,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
       handleClearDates={function (): void {
         throw new Error("handleClearDates function not implemented.");
       }}
+      isLoading={isLoading}
     />
   );
 };

@@ -58,7 +58,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useReports(
+  const { data, isLoading } = useReports(
     productId,
     sortField,
     sortOrder,
@@ -172,6 +172,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       handleClearDates={function (): void {
         throw new Error("Function not implemented.");
       }}
+      isLoading={isLoading}
     />
   );
 };

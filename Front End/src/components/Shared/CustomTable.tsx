@@ -4,6 +4,7 @@ import {
   Checkbox,
   HStack,
   Spacer,
+  Spinner,
   Stack,
   Table,
   TableContainer,
@@ -64,6 +65,7 @@ interface Props {
   handleClearDates: () => void;
   handleClearSort: () => void;
   handleDownload?: (reportIndex: number) => void;
+  isLoading?: boolean;
 }
 
 const CustomTable = ({
@@ -88,6 +90,7 @@ const CustomTable = ({
   handleClearSort,
   handleClearDates,
   handleDownload,
+  isLoading,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -118,7 +121,6 @@ const CustomTable = ({
       onBulkUpdateStatus(tableManager.getCheckedIds(), newStatus);
     }
   };
-
   const selectAllCheckBoxes = () => {
     tableManager.selectAllCheckBoxes();
     updateState();
@@ -203,6 +205,7 @@ const CustomTable = ({
           tableManager.getTableHeader() === "Source Connections" ||
           tableManager.getTableHeader() === "Destination Connections"
         }
+        checkedStatuses={tableManager.getCheckedStatuses()}
       />
       <Stack spacing={6} align="stretch" width="100%" maxW="500px" mx="auto">
         {searchObject?.sortField &&
@@ -454,14 +457,18 @@ const CustomTable = ({
                   }
                   textAlign="center"
                 >
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    height="20px"
-                  >
-                    <Text>No data to show</Text>
-                  </Box>
+                  {isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      height="20px"
+                    >
+                      <Text>No data to show</Text>
+                    </Box>
+                  )}
                 </Td>
               </Tr>
             </Tbody>

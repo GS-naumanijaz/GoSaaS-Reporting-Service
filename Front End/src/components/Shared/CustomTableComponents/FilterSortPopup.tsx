@@ -21,7 +21,8 @@ import { DayPicker } from "react-day-picker";
 import { FaChevronDown } from "react-icons/fa";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { maximumAppName, primaryColor, sx } from "../../../configs";
+import { maximumAppName, primaryColor, secondaryColor, sx } from "../../../configs";
+import { useErrorToast } from "../../../hooks/useErrorToast";
 
 interface Props {
   heading: string;
@@ -63,8 +64,6 @@ const FilterSortPopup = ({
   const [truncatedValue, setTruncatedValue] = useState(""); // State for the truncated value
   const hasCalledOnDateSearchRef = useRef(false);
 
-  // Adjust the length constraints as needed
-
   const handleChange = (
     event: React.KeyboardEvent<HTMLInputElement>,
     value: string,
@@ -105,6 +104,16 @@ const FilterSortPopup = ({
       hasCalledOnDateSearchRef.current = false;
     }
   }, [selectedDate, onDateSearch]);
+
+  // Handle date selection and validation
+  const handleDateSelect = (dates: Date[]) => {
+    if (dates.length === 2 && dates[0] > dates[1]) {
+      useErrorToast()("Selected first date cannot be before the second date");
+      setSelectedDate([]); // Clear the selected dates
+    } else {
+      setSelectedDate(dates);
+    }
+  };
 
   if (!sortFilterOptions.isEnabled)
     return (
@@ -221,6 +230,7 @@ const FilterSortPopup = ({
               display="flex"
               justifyContent="center"
               alignItems="center"
+              pb={2}
               sx={{
                 ".rdp-footer": {
                   color: primaryColor,
@@ -235,7 +245,7 @@ const FilterSortPopup = ({
                 required
                 showOutsideDays={false}
                 selected={selectedDate}
-                onSelect={setSelectedDate}
+                onSelect={handleDateSelect} // Use the updated date select handler
                 footer={
                   selectedDate?.length
                     ? `${selectedDate
@@ -244,6 +254,7 @@ const FilterSortPopup = ({
                     : "Select (MM/DD/YYYY)"
                 }
               />
+              <Text color="black">Select a date range: start, then end.</Text>
             </Stack>
           )}
         </PopoverContent>

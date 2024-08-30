@@ -31,7 +31,7 @@ const RequestData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useRequestsQuery(
+  const { data, isLoading } = useRequestsQuery(
     sortField,
     sortOrder,
     page,
@@ -189,6 +189,7 @@ const RequestData = () => {
             throw new Error("request cannot bulk delete");
           }}
           handleDownload={handleDownload}
+          isLoading={isLoading}
         />
       </Box>
     </Box>

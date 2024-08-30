@@ -39,7 +39,7 @@ const ProductTableData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useProductsQuery(
+  const { data, isLoading } = useProductsQuery(
     sortField,
     sortOrder,
     page,
@@ -155,6 +155,7 @@ const ProductTableData = () => {
       handleClearSort={handleClearSort}
       onDateSearch={handleDateSearch}
       handleClearDates={handleClearDate}
+      isLoading={isLoading}
     />
   );
 };

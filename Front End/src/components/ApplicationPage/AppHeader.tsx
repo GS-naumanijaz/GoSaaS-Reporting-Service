@@ -142,17 +142,28 @@ const AppHeader = ({ appData }: Props) => {
         borderBottomColor={"lightgrey"}
         borderBottomWidth={3}
       >
-        <Switch
-          size="lg"
-          colorScheme="red"
-          isChecked={newAppData.isActive}
-          onChange={() => {
-            setNewAppData((prev) => ({
-              ...prev,
-              isActive: !prev.isActive,
-            }));
-          }}
-        />
+        <Tooltip
+          label={
+            newAppData.isActive
+              ? "Application Status: Active"
+              : "Application Status: Inactive"
+          }
+          placement="top-start"
+          bg={primaryColor}
+          fontSize={"lg"}
+        >
+          <Switch
+            size="lg"
+            colorScheme="red"
+            isChecked={newAppData.isActive}
+            onChange={() => {
+              setNewAppData((prev) => ({
+                ...prev,
+                isActive: !prev.isActive,
+              }));
+            }}
+          />
+        </Tooltip>
         <Spacer />
         <Text fontSize={25} textAlign="center">
           Application Registration
@@ -197,15 +208,22 @@ const AppHeader = ({ appData }: Props) => {
           Name:
         </Text>
         <Stack spacing={2} width="100%" position="relative">
-          <Input
-            size="md"
-            variant="outline"
-            width={"20%"}
-            focusBorderColor={primaryColor}
-            placeholder="Enter application name"
-            value={newAppData.alias}
-            onChange={handleInputChange("alias", maximumAppName)}
-          />
+          <Tooltip label={newAppData.alias} bg={primaryColor}>
+            <Input
+              size="md"
+              variant="outline"
+              width={"20%"}
+              focusBorderColor={primaryColor}
+              placeholder="Enter application name"
+              value={newAppData.alias}
+              onChange={handleInputChange("alias", maximumAppName)}
+              sx={{
+                overflow: "hidden", // Hide overflowed text
+                textOverflow: "ellipsis", // Add ellipsis for overflowed text
+                whiteSpace: "nowrap", // Prevent text wrapping
+              }}
+            />
+          </Tooltip>
           {touched.alias &&
             (newAppData.alias.length < minimumAppName ||
               newAppData.alias.length > maximumAppName ||
@@ -227,15 +245,22 @@ const AppHeader = ({ appData }: Props) => {
           Description:
         </Text>
         <Stack spacing={2} width="100%">
-          <Input
-            size="md"
-            width="50%"
-            variant="outline"
-            focusBorderColor={primaryColor}
-            placeholder="Enter Application Description"
-            value={newAppData.description}
-            onChange={handleInputChange("description", maximumAppDescription)}
-          />
+          <Tooltip label={newAppData.description} bg={primaryColor}>
+            <Input
+              size="md"
+              width="40%"
+              variant="outline"
+              focusBorderColor={primaryColor}
+              placeholder="Enter Application Description"
+              value={newAppData.description}
+              onChange={handleInputChange("description", maximumAppDescription)}
+              sx={{
+                overflow: "hidden", // Hide overflowed text
+                textOverflow: "ellipsis", // Add ellipsis for overflowed text
+                whiteSpace: "nowrap", // Prevent text wrapping
+              }}
+            />
+          </Tooltip>
           {touched.description &&
             (newAppData.description.length < minimumAppDescription ||
               newAppData.description.length > maximumAppDescription ||

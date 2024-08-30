@@ -39,7 +39,7 @@ const AuditLogData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useAuditLogsQuery(
+  const { data, isLoading } = useAuditLogsQuery(
     sortField,
     sortOrder,
     page,
@@ -156,6 +156,7 @@ const AuditLogData = () => {
           onBulkDelete={function (_: number[]): void {
             throw new Error("audit cannot bulk delete");
           }}
+          isLoading={isLoading}
         />
       </Box>
     </Box>

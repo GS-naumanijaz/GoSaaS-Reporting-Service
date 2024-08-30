@@ -21,6 +21,7 @@ interface Props {
   productDetails?: Product;
   onAddNew: () => void;
   isConnection?: boolean;
+  checkedStatuses: boolean[];
 }
 
 const TableHeader = ({
@@ -32,10 +33,10 @@ const TableHeader = ({
   productDetails,
   onAddNew,
   isConnection = false,
+  checkedStatuses,
 }: Props) => {
   const navigate = useNavigate();
   const [isAddApplicationOpen, setIsAddApplicationOpen] = useState(false);
-
   const addProduct = () => {
     setIsAddApplicationOpen(true);
   };
@@ -43,7 +44,6 @@ const TableHeader = ({
   const handleAddApplicationClose = () => {
     setIsAddApplicationOpen(false);
   };
-
   const saveAppMutation = useAppDataMutation();
   const queryClient = useQueryClient();
 
@@ -107,6 +107,7 @@ const TableHeader = ({
         <Button
           onClick={addProduct}
           border={"1px"}
+          isDisabled={checkedStatuses.length > 0}
           bg={primaryColor}
           color={"white"}
           _hover={{
@@ -135,12 +136,18 @@ const TableHeader = ({
             <HStack spacing={6}>
               {tableHeading !== "Reports" && (
                 <>
-                  <Button onClick={() => handleBulkSwitchActions(true)}>
-                    Activate All
-                  </Button>
-                  <Button onClick={() => handleBulkSwitchActions(false)}>
-                    Deactivate All
-                  </Button>
+                  {checkedStatuses.length > 0 &&
+                  checkedStatuses.every((value) => value === true) ? null : (
+                    <Button onClick={() => handleBulkSwitchActions(true)}>
+                      Activate All
+                    </Button>
+                  )}
+                  {checkedStatuses.length > 0 &&
+                  checkedStatuses.every((value) => value === false) ? null : (
+                    <Button onClick={() => handleBulkSwitchActions(false)}>
+                      Deactivate All
+                    </Button>
+                  )}
                 </>
               )}
               <AlertDialogButton

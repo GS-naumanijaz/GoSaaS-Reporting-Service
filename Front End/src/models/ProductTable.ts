@@ -18,12 +18,13 @@ export class ProductTable extends TableRowData {
   private static tableHeadings = [
     "",
     "Alias",
+    "Description",
     "Last Modified",
     "Active Status",
     "View",
     "Delete",
   ];
-  private static columnWidths = ["5%", "25%", "25%", "25%", "5%", "5%"];
+  private static columnWidths = ["5%", "20%", "25%", "15%", "15%", "5%", "5%"];
 
   private static inputFields: InputField[] = [
     {
@@ -41,6 +42,20 @@ export class ProductTable extends TableRowData {
       },
     },
     {
+      name: "Description",
+      label: "description",
+      isSelectable: false,
+      type: "text",
+      validation: {
+        required: true,
+        minLength: 50,
+        maxLength: 255,
+        pattern: /^[a-zA-Z0-9 _-]+$/,
+        customErrorMessage:
+          "Alias must be 50-255 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+      },
+    },
+    {
       name: "Last Modified",
       label: "updatedAt",
       isSelectable: false,
@@ -54,6 +69,11 @@ export class ProductTable extends TableRowData {
   ];
 
   private static sortFilterOptions: ColumnSortFilterOptions[] = [
+    {
+      isEnabled: true,
+      isSearchable: true,
+      isSortable: true,
+    },
     {
       isEnabled: true,
       isSearchable: true,
@@ -108,7 +128,7 @@ export class ProductTable extends TableRowData {
   }
 
   getTableData(): string[] {
-    return [this.alias, this.updatedAt];
+    return [this.alias, this.description, this.updatedAt];
   }
 
   getProductData(): Product {

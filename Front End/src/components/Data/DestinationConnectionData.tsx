@@ -63,7 +63,7 @@ const DestinationConnectionData = ({
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useDestinationConnections(
+  const { data, isLoading } = useDestinationConnections(
     appId,
     sortField,
     sortOrder,
@@ -190,6 +190,7 @@ const DestinationConnectionData = ({
       handleClearDates={function (): void {
         throw new Error("Function not implemented.");
       }}
+      isLoading={isLoading}
     />
   );
 };

@@ -232,9 +232,15 @@ export class TableManager {
       .filter((id) => id !== null) as number[];
   }
 
+  getCheckedStatuses(): boolean[] {
+    return this.data
+      .filter((_, index) => this.checkedState[index]) // Filter the rows based on the checked state
+      .map((row) => row.getSwitchStatus()); // Extract and return only the status
+  }
+
   getDisableDownload(index: number): boolean {
     if (this.data[index]?.getDisableDownload()) {
-      return true
+      return true;
     }
     return false;
   }
