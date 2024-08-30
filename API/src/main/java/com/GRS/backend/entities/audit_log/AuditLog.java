@@ -19,17 +19,14 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
     private AuditLogModule module;
 
-    @NotNull
     private AuditLogAction action;
 
     private LocalDateTime createdAt;
 
     private String details;
 
-    @NotNull
     private String username;
 
     public AuditLog() {

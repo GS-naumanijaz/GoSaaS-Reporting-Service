@@ -3,6 +3,7 @@ package com.GRS.backend.exceptionHandler;
 import com.GRS.backend.exceptionHandler.exceptions.EntityIsInactiveException;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import com.GRS.backend.exceptionHandler.exceptions.InvalidQueryParamException;
+import com.GRS.backend.exceptionHandler.exceptions.InvalidRequestBodyException;
 import com.GRS.backend.response.Response;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -98,6 +100,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<Object> handlePropertyReferenceException(PropertyReferenceException e) {
         return Response.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidRequestBodyException.class)
+    public ResponseEntity<Object> handleInvalidRequestBodyException(InvalidRequestBodyException e) {
+        return Response.responseBuilder("Invalid Request Body", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex, WebRequest request) {
+        return Response.responseBuilder("We're sorry, but something went wrong on our server. Our team has been notified, and we're working to resolve the issue. Please try again in a few minutes.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private String extractFieldName(String message) {

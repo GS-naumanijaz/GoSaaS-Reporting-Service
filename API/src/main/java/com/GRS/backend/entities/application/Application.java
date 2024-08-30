@@ -5,6 +5,7 @@ import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
-    @NotNull(message = "Alias must not be null")
+    @NotBlank(message = "Alias must not be blank")
     private String alias;
 
     private String description;

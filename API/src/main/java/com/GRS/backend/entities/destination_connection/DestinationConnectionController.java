@@ -55,14 +55,16 @@ public class DestinationConnectionController {
     }
 
     @GetMapping("/{destinationId}")
-    public ResponseEntity<Object> getDestinationConnectionById(@PathVariable int destinationId) {
+    public ResponseEntity<Object> getDestinationConnectionById(@PathVariable int destinationId, @PathVariable int appId) {
+        Application application = applicationService.getApplicationById(appId);
         DestinationConnection connectionToAdd = destinationConnectionService.getDestinationConnectionById(destinationId);
         return Response.responseBuilder("Destination Connection found successfully", HttpStatus.OK, connectionToAdd);
 
     }
 
     @GetMapping("/{destinationId}/test")
-    public ResponseEntity<Object> testDestinationConnection(@PathVariable int destinationId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> testDestinationConnection(@PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        Application application = applicationService.getApplicationById(appId);
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         DestinationConnection connectionToTest = destinationConnectionService.getDestinationConnectionById(destinationId);
 
@@ -88,7 +90,7 @@ public class DestinationConnectionController {
     }
 
     @PatchMapping("/{destinationId}")
-    public ResponseEntity<Object> updateDestinationConnection(@RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> updateDestinationConnection(@Valid @RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application destinationApp = applicationService.getApplicationById(appId);
         DestinationConnection updatedDestinationConnection = destinationConnectionService.updateDestinationConnection(destinationId, destinationConnection, username);
@@ -109,7 +111,7 @@ public class DestinationConnectionController {
             return Response.responseBuilder("All Destination Connections updated successfully", HttpStatus.OK, updatedConnections);
         } else if (!updatedConnections.isEmpty()){
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, updatedAliases, username, destinationApp.getAlias());
-            return Response.responseBuilder("Some Destination Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedConnections);
+            return Response.responseBuilder("Some Destination Connections could not be updated", HttpStatus.MULTI_STATUS, updatedConnections);
         } else {
             return Response.responseBuilder("Your Destination Connections could not be updated", HttpStatus.BAD_REQUEST, updatedConnections);
         }
@@ -127,6 +129,7 @@ public class DestinationConnectionController {
 
     @DeleteMapping("")
     public ResponseEntity<Object> deleteDestinationConnections(@RequestBody List<Integer> destinationIds, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application destinationApp = applicationService.getApplicationById(appId);
         List<String> deletedAliases = destinationConnectionService.bulkDeleteDestinationConnections(destinationIds, username);
@@ -135,10 +138,12 @@ public class DestinationConnectionController {
             return Response.responseBuilder("All Destination Connections deleted successfully", HttpStatus.OK);
         } else if (!deletedAliases.isEmpty()){
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.DESTINATION, deletedAliases, username, destinationApp.getAlias());
-            return Response.responseBuilder("Some Destination Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+            return Response.responseBuilder("Some Destination Connections could not be deleted", HttpStatus.MULTI_STATUS);
         } else {
             return Response.responseBuilder("None of the Destination Connections could not be deleted", HttpStatus.BAD_REQUEST);
         }
     }
-    
+
+
+
 }

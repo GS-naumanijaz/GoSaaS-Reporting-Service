@@ -7,6 +7,7 @@ import com.GRS.backend.entities.request.Request;
 import com.GRS.backend.utilities.EncryptionUtility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ public class DestinationConnection {
     @OneToMany(mappedBy = "destination_connection", cascade = CascadeType.ALL)
     private Set<Request> requests = new HashSet<>();
 
-    @NotNull(message = "Alias must not be null")
+    @NotBlank(message = "Alias must not be blank")
     private String alias;
 
 ////    @NotNull(message = "Type must not be null")
@@ -81,6 +82,12 @@ public class DestinationConnection {
     @JsonIgnore
     private String key;
 
+    public DestinationConnection () {}
+
+    public DestinationConnection (int id) {
+        this.id = id;
+    }
+
     public void addReport(Report report) {
         this.reports.add(report);
         report.setDestinationConnection(this);
@@ -109,10 +116,12 @@ public class DestinationConnection {
 
     public void encryptSecretKey() {
         try {
-            SecretKey key = EncryptionUtility.generateKey();
-            String encryptedSecretKey = EncryptionUtility.encrypt(this.secretKey, key);
-            this.secretKey = encryptedSecretKey;
-            this.key = EncryptionUtility.encodeKey(key);
+            if (this.secretKey != null) {
+                SecretKey key = EncryptionUtility.generateKey();
+                String encryptedSecretKey = EncryptionUtility.encrypt(this.secretKey, key);
+                this.secretKey = encryptedSecretKey;
+                this.key = EncryptionUtility.encodeKey(key);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to encrypt Secret Key", e);
         }

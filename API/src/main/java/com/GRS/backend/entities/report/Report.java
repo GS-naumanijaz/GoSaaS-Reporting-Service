@@ -4,6 +4,7 @@ import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.source_connection.SourceConnection;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class Report {
     @JoinColumn(name = "source_id", referencedColumnName = "id")
     private SourceConnection sourceConnection;
 
-    @NotNull(message = "Alias must not be null")
+    @NotBlank(message = "Alias must not be blank")
     private String alias;
 
     private String description;

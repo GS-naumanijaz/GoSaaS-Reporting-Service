@@ -39,10 +39,4 @@ public class RequestController {
         Map<String, Integer> requests = requestService.getStatusCounts();
         return Response.responseBuilder("Requests retrieved successfully", HttpStatus.OK, requests);
     }
-
-//    @GetMapping("/{requestId}")
-//    public ResponseEntity<Object> getRequestById(@PathVariable int requestId) {
-//        Request requestToAdd = requestService.getRequestById(requestId);
-//        return Response.responseBuilder("Request found successfully", HttpStatus.OK, requestToAdd);
-//    }
 }

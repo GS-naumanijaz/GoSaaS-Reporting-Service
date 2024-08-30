@@ -34,33 +34,5 @@ public class AuditLogController {
         return Response.responseBuilder("Audit Logs retrieved successfully", HttpStatus.OK, allAuditLogs);
 
     }
-
-    @GetMapping("/{logId}")
-    public ResponseEntity<Object> getAuditLogById(@PathVariable int logId) {
-        Optional<AuditLog> logToAdd = auditLogService.getAuditLogById(logId);
-        if (logToAdd.isPresent()) {
-            return Response.responseBuilder("Audit Log found successfully", HttpStatus.OK, logToAdd);
-        } else {
-            return Response.responseBuilder("Failed to find log", HttpStatus.OK, null);
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<Object> addAuditLog(@RequestBody AuditLog auditLog) {
-        AuditLog createdAuditLog = auditLogService.addAuditLog(auditLog);
-        return Response.responseBuilder("Audit Log added successfully", HttpStatus.CREATED, createdAuditLog);
-    }
-
-    @PatchMapping("/{logId}")
-    public ResponseEntity<Object> updateAuditLog(@RequestBody AuditLog auditLog, @PathVariable int logId) {
-        AuditLog updatedAuditLog = auditLogService.updateAuditLog(logId, auditLog);
-        return Response.responseBuilder("Audit Log updated successfully", HttpStatus.OK, updatedAuditLog);
-    }
-
-    @DeleteMapping("/{logId}")
-    public ResponseEntity<Object> deleteAuditLog(@PathVariable int logId) {
-        auditLogService.deleteAuditLog(logId);
-        return Response.responseBuilder("Audit Log deleted successfully", HttpStatus.OK, null);
-    }
     
 }
