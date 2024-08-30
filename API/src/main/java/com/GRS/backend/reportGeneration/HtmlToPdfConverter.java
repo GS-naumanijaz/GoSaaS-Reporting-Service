@@ -23,7 +23,7 @@ public class HtmlToPdfConverter {
         this.s3ClientProvider = s3ClientProvider;
     }
 
-    public String convertHtmlToPdfAndUpload(String htmlContent, String fileName, DestinationConnection destinationConnection) {
+    public void convertHtmlToPdfAndUpload(String htmlContent, String fileName, DestinationConnection destinationConnection) {
         try {
             // Create the S3 client using the S3ClientProvider
             S3Client s3Client = s3ClientProvider.createS3Client(destinationConnection);
@@ -49,7 +49,7 @@ public class HtmlToPdfConverter {
             logger.info("PDF uploaded successfully to S3. ETag: {}. File location: {}", putObjectResponse.eTag(), s3ConsoleUrl);
 
             // Return the S3 console URL
-            return s3ConsoleUrl;
+//            return s3ConsoleUrl;
         } catch (Exception e) {
             throw new RuntimeException("Error while uploading PDF to S3", e);
         }

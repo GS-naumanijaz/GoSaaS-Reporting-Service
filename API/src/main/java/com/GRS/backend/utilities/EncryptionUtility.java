@@ -40,6 +40,9 @@ public class EncryptionUtility {
 
     // Convert a String back to SecretKey
     public static SecretKey decodeKey(String encodedKey) {
+        if (encodedKey == null) {
+            throw new IllegalArgumentException("Encoded key cannot be null");
+        }
         byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGORITHM);
     }

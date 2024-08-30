@@ -12,12 +12,14 @@ import com.GRS.backend.utilities.DatabaseUtilities;
 import com.GRS.backend.utilities.FieldUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +40,7 @@ public class SourceConnectionService {
 
         Optional<Application> existingApplicationOpt = applicationRepository.findById(appId);
 
-        if (existingApplicationOpt.isPresent() && Boolean.TRUE.equals(!existingApplicationOpt.get().getIsDeleted())) {
+        if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<SourceConnection> spec = Specification.where(BaseSpecification.belongsTo("application", appId));
 
             if (search != null && !search.isEmpty()) {
@@ -46,13 +48,21 @@ public class SourceConnectionService {
             }
 
             Page<SourceConnection> sourcePages = sourceConnectionRepository.findAll(spec, pageable);
-
+            if (sourcePages == null) {
+                sourcePages = createEmptyPage(pageable);
+                return sourcePages;
+            }
             sourcePages.forEach(SourceConnection::decryptPassword);
 
             return sourcePages;
-        }
 
+        }
         throw new EntityNotFoundException("Application", appId);
+
+    }
+
+    public Page<SourceConnection> createEmptyPage(Pageable pageable) {
+        return new PageImpl<>(Collections.emptyList(), pageable, 0);
     }
 
     public List<SourceConnectionDTO> getAllSourceConnections(int appId) {

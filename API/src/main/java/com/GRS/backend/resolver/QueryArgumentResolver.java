@@ -64,7 +64,10 @@ public class QueryArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private <T> T getOrDefault(T annotationValue, T configValue) {
-        return annotationValue.equals("") ? configValue : annotationValue;
+        if (annotationValue == null || annotationValue.toString().isEmpty() || annotationValue.equals(0) || annotationValue.equals("")) {
+            return configValue;
+        }
+        return annotationValue;
     }
 
     public static class QueryParamsContainer {

@@ -108,6 +108,11 @@ public class DestinationConnection {
     }
 
     public void encryptSecretKey() {
+        if (this.secretKey == null) {
+            this.key = "";
+            return;
+        }
+
         try {
             SecretKey key = EncryptionUtility.generateKey();
             String encryptedSecretKey = EncryptionUtility.encrypt(this.secretKey, key);
@@ -117,6 +122,7 @@ public class DestinationConnection {
             throw new RuntimeException("Failed to encrypt Secret Key", e);
         }
     }
+
 
     @PrePersist
     public void prePersist() {

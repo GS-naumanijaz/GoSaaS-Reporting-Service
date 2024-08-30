@@ -95,7 +95,26 @@ public class MiscService {
         String xmlInputStream = jsonToXmlConverter.convertJsonToXml(jsonInputStream);
 
         // Load the XSL file from S3
-        InputStream s3XslInputStream = loadXslFromS3(destination, report);
+        InputStream s3XslInputStream;
+        try {
+            s3XslInputStream = loadXslFromS3(destination, report);
+        } catch (Exception e) {
+            // Fallback to a dummy XSL in case of an error
+            String dummyXsl = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+                    <xsl:template match="/">
+                        <html>
+                            <body>
+                                <h2>Dummy XSL Template</h2>
+                                <p>This is a fallback XSL template used when the original one cannot be loaded from S3.</p>
+                            </body>
+                        </html>
+                    </xsl:template>
+                </xsl:stylesheet>
+            """;
+            s3XslInputStream = new ByteArrayInputStream(dummyXsl.getBytes(StandardCharsets.UTF_8));
+        }
 
         // Transform the XML to HTML using the XSL file
         String html = null;
@@ -109,9 +128,8 @@ public class MiscService {
         String reportName = generateReportName(generateReportDTO.getName());
 
         // Convert the HTML to PDF and upload to S3
-        String s3FileUrl = htmlToPdfConverter.convertHtmlToPdfAndUpload(html, reportName, destination);
+        htmlToPdfConverter.convertHtmlToPdfAndUpload(html, reportName, destination);
 
-        String formattedName = reportName.replace(" ", "+");
         return ResponseEntity.ok(reportName);
     }
 
