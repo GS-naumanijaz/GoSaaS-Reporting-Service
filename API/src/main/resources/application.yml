@@ -1,7 +1,10 @@
 ## Profile
 spring:
   profiles:
-    active: host
+    active: local
+server:
+  port: 9090
+
 
 # default values
 queryparams:

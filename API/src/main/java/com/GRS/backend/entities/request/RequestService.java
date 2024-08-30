@@ -35,18 +35,22 @@ public class RequestService {
             } else if ("destination_connection".equals(searchBy)) {
                 spec = spec.and(BaseSpecification.containsTextIn("destination_connection.alias", search));
             } else {
-            spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
-        }}
+                spec = spec.and(BaseSpecification.containsTextIn(searchBy, search));
+            }
+        }
 
         spec = spec.and(ApplicationSpecification.betweenDates("updatedAt", startDate, endDate));
 
         Page<Request> requestPage = requestRepository.findAll(spec, pageable);
         requestPage.forEach(request -> {
-            request.getDestination_connection().decryptSecretKey();
+            if (request.getDestination_connection() != null) {
+                request.getDestination_connection().decryptSecretKey();
+            }
         });
 
         return requestPage;
     }
+
 
     public Map<String, Integer> getStatusCounts() {
     List<Request> allRequests = requestRepository.findAll();

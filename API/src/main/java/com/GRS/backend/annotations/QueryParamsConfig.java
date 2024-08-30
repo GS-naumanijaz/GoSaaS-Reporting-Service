@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 public class QueryParamsConfig {
 
     @Value("${queryparams.search.default:}")
-    private String search;
+    private String search = "";
 
     @Value("${queryparams.searchBy.default:id}")
-    private String searchBy;
+    private String searchBy = "";
 
     @Value("${queryparams.page.default:0}")
-    private int page;
+    private int page = 1;
 
     @Value("${queryparams.pageSize.default:10}")
-    private int pageSize;
+    private int pageSize = 1;
 
     @Value("${queryparams.sortBy.default:updatedAt}")
     private String sortBy;

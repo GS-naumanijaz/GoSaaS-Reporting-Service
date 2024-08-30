@@ -34,23 +34,23 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable) // disable CSRF
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/logout", "/generateReport").permitAll() // Allow unauthenticated access to /logout
-                        .anyRequest().authenticated() // all requests must be authenticated
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint().userService(customOAuth2UserService).and()
-                        .successHandler(oAuth2LoginSuccessHandler)
-                        .failureHandler(oAuth2LoginFailureHandler())
-                )
-                .build();
-    //         return http
-    //         .csrf().disable() // Disable CSRF protection for simplicity (not recommended for production)
-    //         .authorizeHttpRequests()
-    //         .anyRequest().permitAll().and().build();
+//        return http
+//                .csrf(AbstractHttpConfigurer::disable) // disable CSRF
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/logout", "/generateReport").permitAll() // Allow unauthenticated access to /logout
+//                        .anyRequest().authenticated() // all requests must be authenticated
+//                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .userInfoEndpoint().userService(customOAuth2UserService).and()
+//                        .successHandler(oAuth2LoginSuccessHandler)
+//                        .failureHandler(oAuth2LoginFailureHandler())
+//                )
+//                .build();
+             return http
+             .csrf().disable() // Disable CSRF protection for simplicity (not recommended for production)
+             .authorizeHttpRequests()
+             .anyRequest().permitAll().and().build();
     }
 
     @Bean

@@ -47,7 +47,7 @@
 
         private Boolean isActive;
 
-        private Boolean isDeleted;
+        private Boolean isDeleted = false;
 
         private Boolean lastTestResult;
 
@@ -82,6 +82,11 @@
         }
 
         public void decryptPassword() {
+            if (this.key == null || this.password == null) {
+//                throw new RuntimeException("Cannot decrypt password: key or password is null");
+                this.password = "";
+                return;
+            }
             try {
                 SecretKey key = EncryptionUtility.decodeKey(this.key);
                 this.password = EncryptionUtility.decrypt(this.password, key);
@@ -90,16 +95,25 @@
             }
         }
 
-        public String retrieveDecryptedPassword() {
-            try {
-                SecretKey key = EncryptionUtility.decodeKey(this.key);
-                return EncryptionUtility.decrypt(this.password, key);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to decrypt password", e);
-            }
-        }
+//        public String retrieveDecryptedPassword() {
+//            if (this.key == null || this.password == null) {
+//                throw new RuntimeException("Cannot retrieve decrypted password: key or password is null");
+//            }
+//            try {
+//                SecretKey key = EncryptionUtility.decodeKey(this.key);
+//                return EncryptionUtility.decrypt(this.password, key);
+//            } catch (Exception e) {
+//                throw new RuntimeException("Failed to decrypt password", e);
+//            }
+//        }
+
 
         public void encryptPassword() {
+            if (this.password == null) {
+                this.key = "";
+                return;
+            }
+
             try {
                 SecretKey key = EncryptionUtility.generateKey();
                 String encryptedPassword = EncryptionUtility.encrypt(this.password, key);
