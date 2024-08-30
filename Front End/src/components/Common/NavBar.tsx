@@ -25,7 +25,7 @@ const NavBar = () => {
       </Button>
 
       <HStack marginRight={5} spacing={8}>
-        <NotificationPopup />
+        {/* <NotificationPopup /> */}
         <AvatarPopup />
       </HStack>
     </HStack>
