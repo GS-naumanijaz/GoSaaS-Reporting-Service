@@ -136,10 +136,10 @@ export class SourceConnection extends TableRowData {
       validation: {
         required: true,
         minLength: 4,
-        maxLength: 255,
+        maxLength: 50,
         pattern: /^[a-zA-Z0-9 .-]+$/,
         customErrorMessage:
-          "Host must be 4-255 characters long and contain only letters, numbers, dots, spaces, or hyphens.",
+          "Host must be 4-50 characters long and contain only letters, numbers, dots, spaces, or hyphens.",
       },
     },
     {

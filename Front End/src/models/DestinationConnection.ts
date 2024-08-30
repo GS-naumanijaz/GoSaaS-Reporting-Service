@@ -62,10 +62,10 @@ export class DestinationConnection extends TableRowData {
       validation: {
         required: true,
         minLength: 2,
-        maxLength: 100,
+        maxLength: 50,
         pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
-          "Bucket Name must be 2-100 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+          "Bucket Name must be 2-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
       },
     },
     {
@@ -76,10 +76,10 @@ export class DestinationConnection extends TableRowData {
       validation: {
         required: true,
         minLength: 2,
-        maxLength: 100,
+        maxLength: 30,
         pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
-          "Region must be 2-100 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+          "Region must be 2-30 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
       },
     },
     {
@@ -105,10 +105,10 @@ export class DestinationConnection extends TableRowData {
       validation: {
         required: true,
         minLength: 8,
-        maxLength: 100,
+        maxLength: 30,
         pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
-          "Secret Key must be 8-50 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
+          "Secret Key must be 8-30 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
       },
     },
   ];

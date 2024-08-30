@@ -54,8 +54,13 @@ const AddRowDialogButton: React.FC<Props> = ({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({ ...formData, [field]: event.target.value });
+    (field: string, maxLength: number) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value.slice(0, maxLength); // Enforce max length
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [field]: value,
+      }));
     };
 
   const handleSubmit = () => {
@@ -161,7 +166,10 @@ const AddRowDialogButton: React.FC<Props> = ({
                       <Input
                         type={field.type ?? "text"}
                         value={formData[field.name]}
-                        onChange={handleChange(field.name)}
+                        onChange={handleChange(
+                          field.name,
+                          field.validation?.maxLength ?? 50
+                        )}
                         placeholder={`Enter ${field.name.toLowerCase()}`}
                       />
                       <FormErrorMessage>
