@@ -26,12 +26,9 @@ public abstract class BaseSpecification<T> {
             }
 
             Class<?> fieldType = path.getJavaType();
-            System.out.println(1);
             if (fieldType.equals(String.class)) {
-                System.out.println(2);
                 return criteriaBuilder.like(criteriaBuilder.lower((Expression<String>) path), searchTerm);
             } else if (Enum.class.isAssignableFrom(fieldType)) {
-                System.out.println(3);
                 String searchLower = search.toLowerCase();
                 @SuppressWarnings("unchecked")
                 Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) fieldType;
@@ -40,14 +37,11 @@ public abstract class BaseSpecification<T> {
                         .collect(Collectors.toList());
 
                 if (matchingEnums.isEmpty()) {
-                    System.out.println(4);
                     return criteriaBuilder.disjunction(); // No match, return empty
                 } else {
-                    System.out.println(5);
                     return path.in(matchingEnums);
                 }
             } else if (fieldType.equals(Boolean.class)) {
-                System.out.println(6);
                 boolean booleanValue;
                 if ("active".equalsIgnoreCase(search)) {
                     booleanValue = true;
@@ -58,7 +52,6 @@ public abstract class BaseSpecification<T> {
                 }
                 return criteriaBuilder.equal(path, booleanValue);
             } else {
-                System.out.println(7);
                 return criteriaBuilder.like(criteriaBuilder.lower(path.as(String.class)), searchTerm);
             }
         };

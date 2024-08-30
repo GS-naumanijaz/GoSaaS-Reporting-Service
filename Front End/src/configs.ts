@@ -1,8 +1,8 @@
 // URLS
-export const FrontendURL = "http://10.8.0.32.nip.io:5173";
-export const BackendURL = "http://10.8.0.32.nip.io:8080";
-// export const FrontendURL = "http://localhost:5173";
-// export const BackendURL = "http://localhost:8080";
+// export const FrontendURL = "http://10.8.0.32.nip.io:5173";
+// export const BackendURL = "http://10.8.0.32.nip.io:8080";
+export const FrontendURL = "http://localhost:5173";
+export const BackendURL = "http://localhost:8080";
 
 // Color palette
 export const primaryColor = "#D40B0B";

@@ -12,18 +12,23 @@ import { RiLogoutBoxRLine } from "react-icons/ri";
 
 const AvatarPopup = () => {
   const handleLogout = async () => {
+    
     try {
+      console.log(1);
       const response = await fetch(`${BackendURL}/logout`, {
         method: "POST",
         credentials: "include",
       });
 
-      if (response.ok) {
+
+      if (response.ok || response.status == 302)   {
+        
         window.location.href = "/";
       } else {
         console.error("Logout failed");
       }
     } catch (error) {
+      window.location.href = "/";
       console.error("An error occurred during logout", error);
     }
   };

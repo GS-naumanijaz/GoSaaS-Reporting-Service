@@ -74,9 +74,7 @@ public class DestinationConnectionService {
         Optional<DestinationConnection> connection = destinationConnectionRepository.findById(destinationConnectionId);
         if (connection.isPresent()) {
             DestinationConnection destination = connection.get();
-            System.out.println("before" + destination.getSecretKey());
             destination.decryptSecretKey();
-            System.out.println("after" + destination.getSecretKey());
             return destination;
         } else {
             throw new EntityNotFoundException("Destination Connection", destinationConnectionId);
@@ -85,7 +83,6 @@ public class DestinationConnectionService {
 
     public boolean testDestinationConnection(DestinationConnection destinationConnection, String username) {
 //
-        System.out.println(destinationConnection.getSecretKey());
         String accessKey = destinationConnection.getAccessKey();
         String secretKey = destinationConnection.getSecretKey();
 
