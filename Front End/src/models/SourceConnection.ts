@@ -18,7 +18,6 @@ export class SourceConnection extends TableRowData {
   private schema: string;
 
   private static dbTypes = [
-    "All",
     "SQL",
     "POSTGRES",
     "MYSQL",
@@ -152,7 +151,7 @@ export class SourceConnection extends TableRowData {
         required: true,
         minLength: 1,
         maxLength: 5,
-        pattern: /^[0-9]+$/,
+        pattern: /^\d+$/,
         customErrorMessage:
           "Port must be 1-5 characters long and must contain only numbers.",
       },
