@@ -24,7 +24,17 @@ public class UserService {
 
     public void saveOrUpdateUser(User user) {
         User existingUser = userRepository.findByEmail(user.getEmail());
-        AuditLogGenerator.getInstance().log(AuditLogAction.LOGIN, user.getUsername());
+
+        try {
+            AuditLogGenerator auditLogGenerator = AuditLogGenerator.getInstance();
+            if (auditLogGenerator != null) {
+                auditLogGenerator.log(AuditLogAction.LOGIN, user.getUsername());
+            }
+        } catch (IllegalStateException e) {
+            // Handle the case where AuditLogGenerator is not initialized,
+            // e.g., log a warning or ignore the logging step
+        }
+
         if (existingUser == null) {
             userRepository.save(user);
         } else {
@@ -33,4 +43,5 @@ public class UserService {
             userRepository.save(existingUser);
         }
     }
+
 }

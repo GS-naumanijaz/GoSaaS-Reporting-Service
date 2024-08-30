@@ -2,10 +2,13 @@ package com.GRS.backend.entities.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(SpringExtension.class)
 public class UserServiceUT{
 
     @Mock
@@ -59,7 +63,6 @@ public class UserServiceUT{
         User newUser = new User();
         newUser.setEmail("newuser@example.com");
         when(userRepository.findByEmail(newUser.getEmail())).thenReturn(null);
-
         userService.saveOrUpdateUser(newUser);
 
         verify(userRepository, times(1)).save(newUser);
