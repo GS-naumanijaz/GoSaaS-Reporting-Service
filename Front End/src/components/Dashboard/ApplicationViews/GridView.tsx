@@ -200,6 +200,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
               isFetching={isFetching}
               pageSize={pageSize}
               onPageSizeChange={handlePageSizeChange}
+              searchTerm={searchTerm}
             />
           </motion.div>
         )}

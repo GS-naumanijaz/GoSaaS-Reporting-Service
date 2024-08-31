@@ -32,6 +32,7 @@ interface Props {
   isFetching: boolean; // Added prop for loading state
   pageSize: number;
   onPageSizeChange: (newPageSize: number) => void;
+  searchTerm: string;
 }
 
 const ProductsList = ({
@@ -45,6 +46,7 @@ const ProductsList = ({
   isFetching, // Destructure the isFetching prop
   pageSize,
   onPageSizeChange,
+  searchTerm
 }: Props) => {
   if (isFetching) {
     return (
@@ -60,7 +62,7 @@ const ProductsList = ({
   if (isEmpty) {
     return (
       <Box marginY={10} padding={15} textAlign="center">
-        <Text fontSize={30}>No search items found</Text>
+        <Text fontSize={30}>{searchTerm ? "No search items found" : "No existing applications"}</Text>
       </Box>
     );
   }
