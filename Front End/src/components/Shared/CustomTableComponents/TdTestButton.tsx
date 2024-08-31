@@ -24,7 +24,7 @@ const TdTestButton = ({ onClick, isEditingMode, lastTestResult, setLastTestResul
   }, [isEditingMode]);
 
   useEffect(() => {
-    if (lastTestResult === null) {
+    if (lastTestResult === null || lastTestResult === undefined) {
       handleTest();
     }
   }, [lastTestResult, canTest]);

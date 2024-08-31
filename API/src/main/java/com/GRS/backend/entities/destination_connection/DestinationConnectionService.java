@@ -145,6 +145,10 @@ public class DestinationConnectionService {
             }
         }
 
+        if (destinationConnection.getLastTestResult() == null) {
+            existingDestination.setLastTestResult(null);
+        }
+
         existingDestination.setLastUpdatedBy(username);
         existingDestination.encryptSecretKey();
         return destinationConnectionRepository.save(existingDestination); // Save attached entity

@@ -104,7 +104,7 @@ public class ReportController {
     @PatchMapping("/{reportId}")
     public ResponseEntity<Object> updateReport(@RequestBody ReportRequestBody reportRequest, @PathVariable int reportId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         Report report = reportRequest.report;
-        if (report == null || report.getAlias() == null || report.getAlias().isEmpty()) {
+        if (report == null) {
             throw new InvalidRequestBodyException("The report object in the request body is invalid or empty.");
         }
 

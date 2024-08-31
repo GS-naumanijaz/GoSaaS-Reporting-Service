@@ -152,6 +152,10 @@ public class SourceConnectionService {
                 reportRepository.save(report);
             }
 
+            if (sourceConnection.getLastTestResult() == null) {
+                existingSourceConnection.setLastTestResult(null);
+            }
+
             existingSourceConnection.setLastUpdatedBy(username);
             existingSourceConnection.encryptPassword();
 
