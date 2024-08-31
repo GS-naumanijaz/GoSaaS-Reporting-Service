@@ -21,6 +21,7 @@ interface Props {
   productDetails?: Product;
   onAddNew: () => void;
   isConnection?: boolean;
+  setCanTest: (newValue: boolean) => void;
 }
 
 const TableHeader = ({
@@ -32,6 +33,7 @@ const TableHeader = ({
   productDetails,
   onAddNew,
   isConnection = false,
+  setCanTest
 }: Props) => {
   const navigate = useNavigate();
   const [isAddApplicationOpen, setIsAddApplicationOpen] = useState(false);
@@ -42,6 +44,7 @@ const TableHeader = ({
 
   const handleAddApplicationClose = () => {
     setIsAddApplicationOpen(false);
+    
   };
 
   const saveAppMutation = useAppDataMutation();
@@ -79,6 +82,7 @@ const TableHeader = ({
           onSubmit={onAddNew}
           tooltipLabel="Add new"
           tooltipHasArrow
+          setCanTest={setCanTest}
         />
       );
     } else if (tableHeading === "Reports") {

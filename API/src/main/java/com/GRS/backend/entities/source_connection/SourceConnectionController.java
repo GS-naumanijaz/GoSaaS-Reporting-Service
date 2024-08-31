@@ -82,7 +82,6 @@ public class SourceConnectionController {
         } else {
             return Response.responseBuilder("Source Connection failed test", HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @GetMapping("/{sourceId}/storedProcedures")
@@ -113,7 +112,7 @@ public class SourceConnectionController {
     }
 
     @PatchMapping("/{sourceId}")
-    public ResponseEntity<Object> updateSourceConnection(@Valid @RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
         SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection, username);

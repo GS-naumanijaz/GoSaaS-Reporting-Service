@@ -90,13 +90,21 @@ public class DestinationConnectionService {
         String region = destinationConnection.getRegion();
 
 
+        System.out.println("before test");
+        boolean testResult;
+        try {
+            testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
+        } catch (Exception e) {
+            e.printStackTrace();
+            testResult = false;
+        }
 
-
-        boolean testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
+        System.out.println("hello setting the new test result to " + testResult);
 
         destinationConnection.encryptSecretKey();
         DestinationConnection updatedDestination = new DestinationConnection();
         updatedDestination.setLastTestResult(testResult);
+        System.out.println("result = " + updatedDestination.getLastTestResult());
         updateDestinationConnection(destinationConnection.getId(), updatedDestination, username);
 
         return testResult;
@@ -119,6 +127,8 @@ public class DestinationConnectionService {
         FieldUpdater.updateField(existingDestination, "isActive", destinationConnection);
         FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
         FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "lastTestResult", destinationConnection);
+
 
         if (!Boolean.TRUE.equals(existingDestination.getIsActive())) {
             for (Report report : existingDestination.getReports()) {

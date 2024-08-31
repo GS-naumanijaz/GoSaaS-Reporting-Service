@@ -31,6 +31,7 @@ interface Props {
   tooltipLabel?: string;
   tooltipColor?: string;
   tooltipHasArrow?: boolean;
+  setCanTest: (newValue: boolean) => void;
 }
 
 const AddRowDialogButton: React.FC<Props> = ({
@@ -40,6 +41,7 @@ const AddRowDialogButton: React.FC<Props> = ({
   tooltipLabel,
   tooltipColor = "gray.800",
   tooltipHasArrow = true,
+  setCanTest
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -71,6 +73,11 @@ const AddRowDialogButton: React.FC<Props> = ({
     } else {
       onSubmit(formData);
       onClose();
+      console.log("setting can test")
+      setCanTest(false);
+      setTimeout(() => {
+        setCanTest(true);
+      }, 1000);
     }
   };
 

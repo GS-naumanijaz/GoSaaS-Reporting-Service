@@ -90,7 +90,7 @@ public class DestinationConnectionController {
     }
 
     @PatchMapping("/{destinationId}")
-    public ResponseEntity<Object> updateDestinationConnection(@Valid @RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> updateDestinationConnection(@RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application destinationApp = applicationService.getApplicationById(appId);
         DestinationConnection updatedDestinationConnection = destinationConnectionService.updateDestinationConnection(destinationId, destinationConnection, username);

@@ -11,6 +11,7 @@ export class DestinationConnection extends TableRowData {
   public region: string;
   private application: Application;
   private isActive: boolean;
+  public lastTestResult?: boolean;
 
   //Static variables
   private static tableHeader = "Destination Connections";
@@ -171,7 +172,8 @@ export class DestinationConnection extends TableRowData {
       deletionDate: null,
       updatedAt: "",
     },
-    isActive: boolean = false
+    isActive: boolean = false,
+    lastTestResult?: boolean
   ) {
     super();
     this.id = connectionId;
@@ -180,9 +182,9 @@ export class DestinationConnection extends TableRowData {
     this.region = region;
     this.accessKey = access_key;
     this.secretKey = secret_key;
-    // this.appId = appId;
     this.application = application;
     this.isActive = isActive;
+    this.lastTestResult = lastTestResult;
   }
 
   getId(): number {
@@ -229,6 +231,14 @@ export class DestinationConnection extends TableRowData {
 
   getColumnWidths(): string[] {
     return DestinationConnection.columnWidths.slice(1);
+  }
+
+  getLastTestResult(): boolean | undefined {
+    return this.lastTestResult;
+  }
+
+  setLastTestResult(result: boolean | undefined): void {
+    this.lastTestResult = result;
   }
 
   editRowData(elementIndex: number, newValue: string): void {

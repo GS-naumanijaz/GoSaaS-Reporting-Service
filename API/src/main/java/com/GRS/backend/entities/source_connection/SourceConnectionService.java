@@ -143,6 +143,7 @@ public class SourceConnectionService {
 
             existingSourceConnection.setLastUpdatedBy(username);
             existingSourceConnection.encryptPassword();
+
             return sourceConnectionRepository.save(existingSourceConnection);
         } else {
             throw new EntityNotFoundException("Source Connection", sourceConnectionId);

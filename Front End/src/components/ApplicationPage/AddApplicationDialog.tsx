@@ -19,6 +19,7 @@ import {
   minimumAppDescription,
   minimumAppName,
 } from "../../configs";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AddApplicationDialogProps {
   isOpen: boolean;
@@ -45,6 +46,8 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
     };
 
   const handleSubmit = () => {
+
+
     const newErrors: Record<string, string> = {};
 
     if (
@@ -64,6 +67,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
     } else {
+      
       onSubmit(formData);
       onClose();
     }

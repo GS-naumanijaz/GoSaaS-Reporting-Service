@@ -86,7 +86,8 @@ const DestinationConnectionData = ({
           destinationConnection.bucketName,
           destinationConnection.region,
           destinationConnection.application,
-          destinationConnection.isActive
+          destinationConnection.isActive,
+          destinationConnection.lastTestResult
         )
     );
 
