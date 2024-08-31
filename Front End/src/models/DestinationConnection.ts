@@ -28,15 +28,15 @@ export class DestinationConnection extends TableRowData {
   ];
   private static columnWidths = [
     "5%",
-    "25%",
-    "20%",
     "10%",
+    "10%",
+    "7.5%",
+    "12%",
     "10%",
     "10%",
     "5%",
     "5%",
     "5%",
-    "5",
   ];
 
   private static inputFields: InputField[] = [

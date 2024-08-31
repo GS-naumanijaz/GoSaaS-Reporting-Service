@@ -22,7 +22,7 @@ export const useAppDataQuery = (appId: number | null) => {
 };
 
 // Mutation to save a new application
-export const useAppDataMutation = (onclose: any) => {
+export const useAppDataMutation = (onclose: () => void) => {
   const apiClient = createApiClient();
 
   return useMutation({
@@ -36,9 +36,11 @@ export const useAppDataMutation = (onclose: any) => {
       });
     },
     onError: (error: any) => {
+      console.log("Fail");
       useErrorToast()(error.message);
     },
     onSuccess: () => {
+      console.log("Success");
       onclose();
     },
   });

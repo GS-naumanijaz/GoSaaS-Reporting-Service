@@ -34,13 +34,13 @@ export class ReportsConnection extends TableRowData {
   ];
   private static columnWidths = [
     "5%",
-    "25%",
+    "10%",
     "15%",
+    "12.5%",
+    "12.5%",
     "10%",
     "10%",
-    "10%",
-    "10%",
-    "10%",
+    "5%",
     "5%",
   ];
 

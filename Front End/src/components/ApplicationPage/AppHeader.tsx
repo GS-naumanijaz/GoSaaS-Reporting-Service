@@ -27,8 +27,6 @@ import {
 } from "../../configs";
 import { Application } from "./AppDashboard";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import useProductStore from "../../store/ProductStore";
 import {
   useDeleteApplicationMutation,
   useEditApplicationMutation,
@@ -77,7 +75,6 @@ const AppHeader = ({ appData }: Props) => {
 
   const [touched, setTouched] = useState({ alias: false, description: false });
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isSaveOpen, setIsSaveOpen] = useState(false);

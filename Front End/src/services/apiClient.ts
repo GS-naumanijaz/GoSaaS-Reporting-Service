@@ -137,6 +137,43 @@ class APIClient<T> {
     return data;
   };
 
+  private InvalidChecker = (data: any): Promise<never> | false => {
+    if (data && typeof data === "object") {
+      const hasInvalidField = Object.entries(data).some(([key, value]) => {
+        // General validation for empty, null, or undefined values
+        if (value === "" || value === null || value === undefined) {
+          return true;
+        }
+
+        // Specific validation for 'alias'
+        if (key === "alias" && typeof value === "string" && value.length < 3) {
+          return true;
+        }
+
+        // Specific validation for 'description'
+        if (
+          key === "description" &&
+          typeof value === "string" &&
+          value.length < 20
+        ) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (hasInvalidField) {
+        return Promise.reject(
+          new Error(
+            "Please fill in the required fields properly. Ensure 'alias' is at least 3 characters and 'description' is at least 20 characters long."
+          )
+        );
+      }
+    }
+
+    return false;
+  };
+
   getAll = (config?: AxiosRequestConfig) => {
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
@@ -160,12 +197,22 @@ class APIClient<T> {
 
   create = (
     data: T,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<ReportResponse | null> => {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
+
+    console.log("data before trim: ", data);
     data = this.edgeTrimmer(data);
+
+    // Check for invalid fields before proceeding
+    const validationError = this.InvalidChecker(data);
+    if (validationError) {
+      return validationError; // Return the rejected promise
+    }
+
+    console.log("data after trim: ", data);
     return axiosInstance
       .post<APIResponse<ReportResponse>>(this.endpoint, data, config)
       .then((res) => this.handleResponse(res))
@@ -181,6 +228,11 @@ class APIClient<T> {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
     data = this.edgeTrimmer(data);
+
+    if (this.InvalidChecker(data)) {
+      return Promise.resolve(null);
+    }
+
     return axiosInstance
       .patch<APIResponse<ReportResponse>>(
         `${this.endpoint}/${urlParams}`,

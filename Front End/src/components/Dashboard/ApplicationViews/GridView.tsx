@@ -72,7 +72,8 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     setIsAddApplicationOpen(false);
   };
 
-  const saveAppMutation = useAppDataMutation(onclose);
+  const onclose: (() => void) | null = null;
+  const saveAppMutation = useAppDataMutation(onclose ?? (() => {}));
   const queryClient = useQueryClient();
 
   const handleAddApplicationSubmit = async (

@@ -17,7 +17,7 @@ export class AuditLog extends TableRowData {
     "Details",
     "Created at",
   ];
-  private static columnWidths = ["15%", "15%", "15%", "15%", "40%"];
+  private static columnWidths = ["15%", "15%", "15%", "45%", "15%"];
 
   private static inputFields: InputField[] = [
     {

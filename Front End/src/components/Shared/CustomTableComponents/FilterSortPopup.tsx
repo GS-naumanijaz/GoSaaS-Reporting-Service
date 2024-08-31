@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
+  HStack,
   Input,
   Menu,
   MenuButton,
@@ -19,7 +20,11 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { DayPicker } from "react-day-picker";
-import { FaChevronDown } from "react-icons/fa";
+import {
+  FaChevronDown,
+  FaRegCaretSquareDown,
+  FaRegCaretSquareUp,
+} from "react-icons/fa";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
 import {
@@ -149,7 +154,10 @@ const FilterSortPopup = ({
     <Box p={4}>
       <Popover placement="top">
         <PopoverTrigger>
-          <Button variant={"ghost"}>{heading}</Button>
+          <HStack justifyContent={"center"}>
+            <Button variant={"ghost"}>{heading}</Button>
+            <FaRegCaretSquareUp color={primaryColor} size={25} />
+          </HStack>
         </PopoverTrigger>
         <PopoverContent>
           <PopoverArrow />

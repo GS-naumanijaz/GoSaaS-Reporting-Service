@@ -308,6 +308,11 @@ const CustomTable = ({
                 <Th
                   key={index}
                   textAlign="center"
+                  _hover={{
+                    bg: "#f0f0f0",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
                   width={tableManager.getColumnWidths()[index]}
                 >
                   <FilterSortPopup
