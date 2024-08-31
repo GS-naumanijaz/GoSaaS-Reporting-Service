@@ -44,6 +44,8 @@ import {
 import { SourceConnection } from "../../models/SourceConnection";
 import { DestinationConnection } from "../../models/DestinationConnection";
 import { BsPin, BsFillPinFill } from "react-icons/bs";
+import { FaBackward } from "react-icons/fa";
+import { IoArrowBack } from "react-icons/io5";
 
 const AddReportDashboard = () => {
   const navigate = useNavigate();
@@ -393,6 +395,15 @@ const AddReportDashboard = () => {
             borderBottomWidth={3}
             width={"100%"}
           >
+            <Button
+                variant="link"
+                p={0}
+                _active={{ color: primaryColor }}
+                color={primaryColor}
+                onClick={() => navigate(-1)}
+              >
+                <IoArrowBack size={35} />
+              </Button>
             <Switch
               size="lg"
               colorScheme="red"

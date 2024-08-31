@@ -29,7 +29,12 @@ import { Application } from "./AppDashboard";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import useProductStore from "../../store/ProductStore";
-import { useDeleteApplicationMutation, useEditApplicationMutation, useSaveApplicationMutation } from "../../hooks/useAppDataQuery";
+import {
+  useDeleteApplicationMutation,
+  useEditApplicationMutation,
+  useSaveApplicationMutation,
+} from "../../hooks/useAppDataQuery";
+import { IoArrowBack } from "react-icons/io5";
 
 interface Props {
   appData?: Application;
@@ -96,11 +101,10 @@ const AppHeader = ({ appData }: Props) => {
   ) {
     obj[key] = value;
   }
-  
+
   const handleSave = () => {
-  
     const updatedFields: Partial<Application> = {};
-  
+
     // Compare newAppData with originalApp and only add changed fields to updatedFields
     Object.keys(newAppData).forEach((key) => {
       const keyTyped = key as keyof Application;
@@ -108,7 +112,7 @@ const AppHeader = ({ appData }: Props) => {
         assignUpdatedField(updatedFields, keyTyped, newAppData[keyTyped]);
       }
     });
-  
+
     // If there are any updated fields, send the update request
     if (Object.keys(updatedFields).length > 0) {
       if (appData?.id) {
@@ -119,7 +123,7 @@ const AppHeader = ({ appData }: Props) => {
         saveApplication.mutate(updatedFields);
       }
     } else {
-      navigate('/homepage');
+      navigate("/homepage");
     }
     onSaveClose();
   };
@@ -136,6 +140,15 @@ const AppHeader = ({ appData }: Props) => {
         borderBottomColor={"lightgrey"}
         borderBottomWidth={3}
       >
+        <Button
+          variant="link"
+          p={0}
+          _active={{ color: primaryColor }}
+          color={primaryColor}
+          onClick={() => navigate(-1)}
+        >
+          <IoArrowBack size={35} />
+        </Button>
         <Switch
           size="lg"
           colorScheme="red"
@@ -162,7 +175,9 @@ const AppHeader = ({ appData }: Props) => {
                   ? { color: primaryColor }
                   : { color: secondaryColor }
               }
-              color={validationCheck(newAppData) ? primaryColor : secondaryColor}
+              color={
+                validationCheck(newAppData) ? primaryColor : secondaryColor
+              }
               onClick={() => {
                 validationCheck(newAppData) ? setIsSaveOpen(true) : null;
               }}
