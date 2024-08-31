@@ -8,6 +8,7 @@ import {
   useBulkDeleteReport,
   useDeleteReport,
   useReports,
+  useBulkUpdateReportStatus,
 } from "../../hooks/useReportsQuery";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import useReportsConnectionStore from "../../store/ReportsStore";
@@ -54,6 +55,8 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
 
   const { mutate: deleteReport } = useDeleteReport(productId);
   const { mutate: bulkDeleteReport } = useBulkDeleteReport(productId);
+  const { mutate: bulkUpdateReportStatus } =
+    useBulkUpdateReportStatus(productId);
 
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
@@ -115,6 +118,10 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
     bulkDeleteReport(reportIds);
   };
 
+  const handleBulkUpdateStatus = (reportIds: number[], isActive: boolean) => {
+    bulkUpdateReportStatus({ reportIds, status: isActive });
+  };
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -151,6 +158,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
       onSearch={handleSearch}
       onDelete={handleDelete}
       onBulkDelete={handleBulkDelete}
+      onBulkUpdateStatus={handleBulkUpdateStatus}
       onClickEdit={handleEdit}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}

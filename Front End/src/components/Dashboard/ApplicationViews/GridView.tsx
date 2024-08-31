@@ -1,4 +1,4 @@
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Box, Button, HStack, Tooltip } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FaSearch } from "react-icons/fa";
 import AddApplicationDialog from "../../ApplicationPage/AddApplicationDialog";
@@ -72,7 +72,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
     setIsAddApplicationOpen(false);
   };
 
-  const saveAppMutation = useAppDataMutation();
+  const saveAppMutation = useAppDataMutation(onclose);
   const queryClient = useQueryClient();
 
   const handleAddApplicationSubmit = async (
@@ -84,14 +84,12 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
         applicationDescription: formData.applicationDescription,
       });
 
+      // Refetch queries if needed
       await queryClient.refetchQueries({
         queryKey: ["products"],
       });
     } catch (error) {
       console.error("Failed to save application:", error);
-    } finally {
-      handleAddApplicationClose();
-      setIsAddApplicationOpen(false);
     }
   };
 
@@ -113,7 +111,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
-  }
+  };
 
   // Animation variants
   const itemVariants = {
@@ -210,6 +208,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
           isOpen={isAddApplicationOpen}
           onClose={handleAddApplicationClose}
           onSubmit={handleAddApplicationSubmit}
+          isFetching={saveAppMutation.status === "pending"}
         />
       )}
     </Box>

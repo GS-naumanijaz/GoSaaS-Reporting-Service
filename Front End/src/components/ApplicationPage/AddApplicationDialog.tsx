@@ -24,12 +24,14 @@ interface AddApplicationDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (formData: Record<string, string>) => void;
+  isFetching?: boolean;
 }
 
 const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
+  isFetching,
 }) => {
   const cancelRef = React.useRef<HTMLButtonElement>(null);
 
@@ -38,7 +40,6 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
     applicationDescription: "",
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
   const pattern = /^[a-zA-Z0-9 _-]+$/; // Pattern to match only allowed characters
 
   const handleChange =
@@ -55,6 +56,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
   const handleSubmit = () => {
     const newErrors: Record<string, string> = {};
 
+    // Validate application name
     if (
       formData.applicationName.length < minimumAppName ||
       formData.applicationName.length > maximumAppName
@@ -62,6 +64,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
       newErrors.applicationName = `Application Name must be between ${minimumAppName} and ${maximumAppName} characters.`;
     }
 
+    // Validate application description
     if (
       formData.applicationDescription.length < minimumAppDescription ||
       formData.applicationDescription.length > maximumAppDescription
@@ -69,21 +72,24 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
       newErrors.applicationDescription = `Application Description must be between ${minimumAppDescription} and ${maximumAppDescription} characters.`;
     }
 
+    // Check for valid characters in the name
     if (!pattern.test(formData.applicationName)) {
       newErrors.applicationName =
         "Application Name can only contain letters, numbers, spaces, hyphens, and underscores.";
     }
 
+    // Check for valid characters in the description
     if (!pattern.test(formData.applicationDescription)) {
       newErrors.applicationDescription =
         "Application Description can only contain letters, numbers, spaces, hyphens, and underscores.";
     }
 
+    // If there are validation errors, do not close the dialog and show errors
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
     } else {
+      // If validation is successful, submit the form and close the dialog
       onSubmit(formData);
-      onClose();
     }
   };
 
@@ -109,6 +115,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
                   value={formData.applicationName}
                   onChange={handleChange("applicationName", maximumAppName)}
                   placeholder="Enter application name"
+                  autoComplete="off"
                 />
                 <FormErrorMessage>
                   {formErrors.applicationName}
@@ -126,6 +133,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
                     maximumAppDescription
                   )}
                   placeholder="Enter application description"
+                  autoComplete="off"
                 />
                 <FormErrorMessage>
                   {formErrors.applicationDescription}
@@ -138,8 +146,13 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="red" onClick={handleSubmit} ml={3}>
-              Add
+            <Button
+              colorScheme="red"
+              onClick={handleSubmit}
+              ml={3}
+              isDisabled={isFetching}
+            >
+              {isFetching ? "Loading..." : "Add"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

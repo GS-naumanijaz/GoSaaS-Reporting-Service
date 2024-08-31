@@ -14,6 +14,7 @@ import {
   AlertDialogOverlay,
   Stack,
   Tooltip,
+  Box,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import {
@@ -152,17 +153,19 @@ const AppHeader = ({ appData }: Props) => {
           bg={primaryColor}
           fontSize={"lg"}
         >
-          <Switch
-            size="lg"
-            colorScheme="red"
-            isChecked={newAppData.isActive}
-            onChange={() => {
-              setNewAppData((prev) => ({
-                ...prev,
-                isActive: !prev.isActive,
-              }));
-            }}
-          />
+          <Box>
+            <Switch
+              size="lg"
+              colorScheme="red"
+              isChecked={newAppData.isActive}
+              onChange={() => {
+                setNewAppData((prev) => ({
+                  ...prev,
+                  isActive: !prev.isActive,
+                }));
+              }}
+            />
+          </Box>
         </Tooltip>
         <Spacer />
         <Text fontSize={25} textAlign="center">

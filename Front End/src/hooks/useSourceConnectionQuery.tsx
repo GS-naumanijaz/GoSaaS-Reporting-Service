@@ -16,7 +16,7 @@ const invalidateSourceAndReportsConnections =
     return (
       (queryKey[0] === "sourceConnections" && queryKey[1] === appId) ||
       (queryKey[0] === "reportsConnections" && queryKey[1] === appId) ||
-      (queryKey[0] === "sourceConnections" && queryKey[1] === "list") || 
+      (queryKey[0] === "sourceConnections" && queryKey[1] === "list") ||
       query.queryKey[0] === "auditLogs"
     );
   };

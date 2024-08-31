@@ -16,12 +16,18 @@ import {
   PopoverTrigger,
   Stack,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { DayPicker } from "react-day-picker";
 import { FaChevronDown } from "react-icons/fa";
 import { fieldMapping, FieldMappingKey } from "../../../services/sortMappings";
 import { ColumnSortFilterOptions } from "../../../models/TableManagementModels";
-import { maximumAppName, primaryColor, secondaryColor, sx } from "../../../configs";
+import {
+  maximumAppName,
+  primaryColor,
+  secondaryColor,
+  sx,
+} from "../../../configs";
 import { useErrorToast } from "../../../hooks/useErrorToast";
 
 interface Props {
@@ -173,19 +179,25 @@ const FilterSortPopup = ({
             <Box>
               <PopoverHeader>Search by {heading}</PopoverHeader>
               <PopoverBody>
-                <Input
-                  placeholder={`Enter ${heading}`}
-                  size="sm"
-                  value={truncatedValue} // Use truncated value in the input
-                  onChange={(e) => setTruncatedValue(e.target.value)} // Update input value state
-                  onKeyDown={(e) =>
-                    handleChange(
-                      e,
-                      (e.target as HTMLInputElement).value,
-                      heading as FieldMappingKey
-                    )
-                  }
-                />
+                <Tooltip
+                  label="Press Enter to Search"
+                  bg={secondaryColor}
+                  color="black"
+                >
+                  <Input
+                    placeholder={`Enter ${heading}`}
+                    size="sm"
+                    value={truncatedValue} // Use truncated value in the input
+                    onChange={(e) => setTruncatedValue(e.target.value)} // Update input value state
+                    onKeyDown={(e) =>
+                      handleChange(
+                        e,
+                        (e.target as HTMLInputElement).value,
+                        heading as FieldMappingKey
+                      )
+                    }
+                  />
+                </Tooltip>
               </PopoverBody>
             </Box>
           )}

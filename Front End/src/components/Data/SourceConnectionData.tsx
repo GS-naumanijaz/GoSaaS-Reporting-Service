@@ -51,7 +51,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatus(appId);
   const { mutateAsync: testSourceConnection } = useTestSourceConnection(appId);
-  const { mutate: addSourceConnection } = useAddSourceConnection(appId);
+  const { mutate: addSourceConnection } = useAddSourceConnection(appId, onclose);
   const { mutate: editSourceConnection } = useEditSourceConnection(appId);
 
   // Determine the actual field to search by, using fieldMapping if it exists

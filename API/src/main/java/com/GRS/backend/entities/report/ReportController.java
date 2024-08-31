@@ -127,6 +127,26 @@ public class ReportController {
         return Response.responseBuilder("Report updated successfully", HttpStatus.OK, updatedReport);
     }
 
+    @PatchMapping("")
+    public ResponseEntity<Object> bulkUpdateReports(@RequestBody List<Integer> reportIds,  @RequestParam boolean isActive, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        Application reportApp = applicationService.getApplicationById(appId);
+        List<Report> updatedReports = reportService.bulkUpdateReports(reportIds, isActive, username);
+
+        String[] updatedReportAliases = updatedReports.stream()
+                .map(Report::getAlias)
+                .toArray(String[]::new);
+        if (updatedReports.size() == reportIds.size()) {
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.REPORT, updatedReportAliases, username, reportApp.getAlias());
+            return Response.responseBuilder("All Reports updated successfully", HttpStatus.OK, updatedReports);
+        } else if (!updatedReports.isEmpty()){
+            AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.REPORT, updatedReportAliases, username, reportApp.getAlias());
+            return Response.responseBuilder("Some Reports could not be updated", HttpStatus.PARTIAL_CONTENT, updatedReports);
+        } else {
+            return Response.responseBuilder("None of the Reports could not be updated", HttpStatus.BAD_REQUEST, updatedReports);
+        }
+    }
+
     @DeleteMapping("/{reportId}")
     public ResponseEntity<Object> deleteReport(@PathVariable int reportId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));

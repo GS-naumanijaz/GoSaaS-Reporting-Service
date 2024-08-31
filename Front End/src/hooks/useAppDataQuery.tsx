@@ -21,13 +21,15 @@ export const useAppDataQuery = (appId: number | null) => {
   });
 };
 
-
 // Mutation to save a new application
-export const useAppDataMutation = () => {
+export const useAppDataMutation = (onclose: any) => {
   const apiClient = createApiClient();
 
   return useMutation({
-    mutationFn: (formData: { applicationName: string; applicationDescription: string }) => {
+    mutationFn: (formData: {
+      applicationName: string;
+      applicationDescription: string;
+    }) => {
       return apiClient.create({
         alias: formData.applicationName,
         description: formData.applicationDescription,
@@ -35,6 +37,9 @@ export const useAppDataMutation = () => {
     },
     onError: (error: any) => {
       useErrorToast()(error.message);
+    },
+    onSuccess: () => {
+      onclose();
     },
   });
 };
@@ -49,7 +54,9 @@ export const useDeleteApplicationMutation = () => {
     onSuccess: async () => {
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === "products" || query.queryKey[0] === "application" || query.queryKey[0] === "auditLogs",
+          query.queryKey[0] === "products" ||
+          query.queryKey[0] === "application" ||
+          query.queryKey[0] === "auditLogs",
       });
       navigate(`/homepage`);
     },
@@ -77,7 +84,9 @@ export const useSaveApplicationMutation = () => {
     onSuccess: async (savedApplication) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === "products" || query.queryKey[0] === "application" || query.queryKey[0] === "auditLogs",
+          query.queryKey[0] === "products" ||
+          query.queryKey[0] === "application" ||
+          query.queryKey[0] === "auditLogs",
       });
       navigate(`/homepage`);
     },

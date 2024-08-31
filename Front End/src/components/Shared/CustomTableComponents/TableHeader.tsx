@@ -44,7 +44,7 @@ const TableHeader = ({
   const handleAddApplicationClose = () => {
     setIsAddApplicationOpen(false);
   };
-  const saveAppMutation = useAppDataMutation();
+  const saveAppMutation = useAppDataMutation(onclose);
   const queryClient = useQueryClient();
 
   const handleAddApplicationSubmit = async (
@@ -59,11 +59,11 @@ const TableHeader = ({
       await queryClient.refetchQueries({
         queryKey: ["products"],
       });
+      setIsAddApplicationOpen(false);
     } catch (error) {
       console.error("Failed to save application:", error);
-    } finally {
-      handleAddApplicationClose();
-      setIsAddApplicationOpen(false);
+      // } finally {
+      //   handleAddApplicationClose();
     }
   };
 
@@ -134,22 +134,25 @@ const TableHeader = ({
         <HStack>
           {isSelectingRows && (
             <HStack spacing={6}>
-              {tableHeading !== "Reports" && (
-                <>
-                  {checkedStatuses.length > 0 &&
-                  checkedStatuses.every((value) => value === true) ? null : (
-                    <Button onClick={() => handleBulkSwitchActions(true)}>
-                      Activate All
-                    </Button>
-                  )}
-                  {checkedStatuses.length > 0 &&
-                  checkedStatuses.every((value) => value === false) ? null : (
-                    <Button onClick={() => handleBulkSwitchActions(false)}>
-                      Deactivate All
-                    </Button>
-                  )}
-                </>
-              )}
+              {/* {tableHeading !== "Reports" && ( */}
+              <>
+                {checkedStatuses.length > 0 &&
+                checkedStatuses.every((value) => value === true) ? null : (
+                  <Button onClick={() => handleBulkSwitchActions(true)}>
+                    {checkedStatuses.length === 1 ? "Activate" : "Active All"}
+                  </Button>
+                )}
+                {checkedStatuses.length > 0 &&
+                checkedStatuses.every((value) => value === false) ? null : (
+                  <Button onClick={() => handleBulkSwitchActions(false)}>
+                    {checkedStatuses.length === 1
+                      ? "Deactivate"
+                      : "Deactive All"}
+                  </Button>
+                )}
+              </>
+              {/* )} */}
+
               <AlertDialogButton
                 header="Delete Connection"
                 body={
@@ -176,6 +179,7 @@ const TableHeader = ({
           isOpen={isAddApplicationOpen}
           onClose={handleAddApplicationClose}
           onSubmit={handleAddApplicationSubmit}
+          isFetching={saveAppMutation.status === "pending"}
         />
       )}
     </>

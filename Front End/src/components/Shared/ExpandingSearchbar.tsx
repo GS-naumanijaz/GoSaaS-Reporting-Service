@@ -1,5 +1,5 @@
 import { Flex, Button, Input, Box, Tooltip } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { maximumAppName, primaryColor } from "../../configs";
 
 interface Props {
@@ -12,6 +12,8 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [errorField, setErrorField] = useState("");
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -37,6 +39,12 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (isExpanded && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isExpanded]);
+
   return (
     <Box position="relative">
       <Flex alignItems="center" direction="column">
@@ -50,18 +58,21 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
             placement="bottom"
           >
             <Box>
-              <Button
-                onClick={toggleExpand}
-                right={isExpanded ? "0" : "unset"}
-                zIndex={isExpanded ? "-1" : "1"}
-                transition="width 0.3s ease"
-                width={isExpanded ? "0" : "auto"}
-                overflow="hidden"
-                bg={bg}
-              >
-                {children}
-              </Button>
+              <Tooltip label="Search Applications" bg={primaryColor}>
+                <Button
+                  onClick={toggleExpand}
+                  right={isExpanded ? "0" : "unset"}
+                  zIndex={isExpanded ? "-1" : "1"}
+                  transition="width 0.3s ease"
+                  width={isExpanded ? "0" : "auto"}
+                  overflow="hidden"
+                  bg={bg}
+                >
+                  {children}
+                </Button>
+              </Tooltip>
               <Input
+                ref={inputRef}
                 placeholder="Search..."
                 pl={isExpanded ? "2rem" : "0"}
                 width={isExpanded ? "200px" : "0"}

@@ -3,7 +3,6 @@ import {
   Button,
   Checkbox,
   HStack,
-  Spacer,
   Spinner,
   Stack,
   Table,

@@ -119,6 +119,26 @@ public class ReportService {
         }
     }
 
+    public List<Report> bulkUpdateReports(List<Integer> reportIds, Boolean isActive , String username) {
+        List<Report> updatedReports = new ArrayList<>();
+
+        for (Integer id : reportIds) {
+            Optional<Report> optionalReport = reportRepository.findById(id);
+            if (optionalReport.isPresent()) {
+                Report existingReport = optionalReport.get();
+
+                if (!existingReport.getIsDeleted()) {
+                    existingReport.setLastUpdatedBy(username);
+                    existingReport.setIsActive(isActive);
+                    existingReport.setUpdatedAt(LocalDateTime.now());
+                    reportRepository.save(existingReport);
+                    updatedReports.add(existingReport);
+                }
+            }
+        }
+        return updatedReports;
+    }
+
     public List<String> bulkDeleteReports(List<Integer> reportIds, String username) {
         List<String> deletedIds = new ArrayList<>();
 

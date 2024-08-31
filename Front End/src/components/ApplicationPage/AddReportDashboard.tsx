@@ -17,6 +17,7 @@ import {
   Spinner,
   Switch,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   maximumAppDescription,
@@ -393,35 +394,55 @@ const AddReportDashboard = () => {
             borderBottomWidth={3}
             width={"100%"}
           >
-            <Switch
-              size="lg"
-              colorScheme="red"
-              isChecked={activeStatus}
-              onChange={() => setActiveStatus(!activeStatus)}
-            />
+            <Tooltip
+              label={
+                activeStatus
+                  ? "Report Status: Active"
+                  : "Report Status: Inactive"
+              }
+              placement="top-start"
+              bg={primaryColor}
+              fontSize={"lg"}
+            >
+              <Box>
+                <Switch
+                  size="lg"
+                  colorScheme="red"
+                  isChecked={activeStatus}
+                  onChange={() => setActiveStatus(!activeStatus)}
+                />
+              </Box>
+            </Tooltip>
             <Spacer />
             <Text fontSize={25} textAlign="center">
               {isEditingMode ? "Edit Report" : "Register Report"}
             </Text>
             <Spacer />
             <HStack spacing={5}>
-              <Button
-                variant="link"
-                _active={{ color: primaryColor }}
-                color={primaryColor}
-                onClick={() => setIsPinned(!isPinned)}
+              <Tooltip
+                label={isPinned ? "Report: Pinned" : "Report: Not Pinned"}
+                bg={primaryColor}
               >
-                {isPinned ? <BsFillPinFill size={30} /> : <BsPin size={30} />}
-              </Button>
-              <Button
-                variant="link"
-                p={0}
-                _active={{ color: primaryColor }}
-                color={primaryColor}
-                onClick={() => setIsSaveOpen(true)}
-              >
-                <AiOutlineSave size={35} />
-              </Button>
+                <Button
+                  variant="link"
+                  _active={{ color: primaryColor }}
+                  color={primaryColor}
+                  onClick={() => setIsPinned(!isPinned)}
+                >
+                  {isPinned ? <BsFillPinFill size={30} /> : <BsPin size={30} />}
+                </Button>
+              </Tooltip>
+              <Tooltip label="Save" bg={primaryColor}>
+                <Button
+                  variant="link"
+                  p={0}
+                  _active={{ color: primaryColor }}
+                  color={primaryColor}
+                  onClick={() => setIsSaveOpen(true)}
+                >
+                  <AiOutlineSave size={35} />
+                </Button>
+              </Tooltip>
             </HStack>
           </HStack>
           {productDetails ? (

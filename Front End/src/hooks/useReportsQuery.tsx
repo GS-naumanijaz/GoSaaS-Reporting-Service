@@ -98,6 +98,22 @@ export const useBulkDeleteReport = (appId: number) => {
   });
 };
 
+// Hook to bulk update reports
+export const useBulkUpdateReportStatus = (appId: number) => {
+  const queryClient = useQueryClient();
+  const apiClient = createApiClient1(appId);
+
+  return useMutation({
+    mutationFn: (data: { reportIds: number[]; status: boolean }) =>
+      apiClient.updateStatus(data.status, data.reportIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: invalidateReportsConnections(appId),
+      });
+    },
+  });
+};
+
 // Hook to upload file
 export const useUploadFile = (appId: number) => {
   const apiClient = createApiClient1(appId);
@@ -159,7 +175,7 @@ export const useEditReport = (appId: number) => {
     },
   });
 };
-  
+
 // Hook to get the list of all pinned reports
 export const useGetPinnedReports = () => {
   const apiClient = new APIClient<ReportsConnection>(`applications`);

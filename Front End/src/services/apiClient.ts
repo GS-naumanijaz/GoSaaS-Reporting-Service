@@ -160,7 +160,7 @@ class APIClient<T> {
 
   create = (
     data: T,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<ReportResponse | null> => {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
