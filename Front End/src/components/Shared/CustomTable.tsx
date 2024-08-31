@@ -111,8 +111,6 @@ const CustomTable = ({
 
   const [canTest, setCanTest] = useState(true);
 
-  console.log("can test", canTest);
-
   useEffect(() => {
     updateState();
   }, [tableManager]);

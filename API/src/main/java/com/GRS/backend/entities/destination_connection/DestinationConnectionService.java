@@ -128,6 +128,7 @@ public class DestinationConnectionService {
         DestinationConnection existingDestination = destinationConnectionRepository.findById(destinationConnectionId)
                 .orElseThrow(() -> new EntityNotFoundException("Destination Connection", destinationConnectionId));
 
+
         existingDestination.decryptSecretKey();
         FieldUpdater.updateField(existingDestination, "alias", destinationConnection);
         FieldUpdater.updateField(existingDestination, "bucketName", destinationConnection);
@@ -151,6 +152,7 @@ public class DestinationConnectionService {
 
         existingDestination.setLastUpdatedBy(username);
         existingDestination.encryptSecretKey();
+
         return destinationConnectionRepository.save(existingDestination); // Save attached entity
     }
 

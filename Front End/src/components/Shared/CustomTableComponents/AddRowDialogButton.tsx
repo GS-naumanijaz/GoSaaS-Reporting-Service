@@ -73,7 +73,6 @@ const AddRowDialogButton: React.FC<Props> = ({
     } else {
       onSubmit(formData);
       onClose();
-      console.log("setting can test")
       setCanTest(false);
       setTimeout(() => {
         setCanTest(true);

@@ -64,7 +64,7 @@ public class DestinationConnectionController {
 
     @GetMapping("/{destinationId}/test")
     public ResponseEntity<Object> testDestinationConnection(@PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
-        Application application = applicationService.getApplicationById(appId);
+        applicationService.getApplicationById(appId);
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         DestinationConnection connectionToTest = destinationConnectionService.getDestinationConnectionById(destinationId);
 

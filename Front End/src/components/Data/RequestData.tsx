@@ -66,7 +66,6 @@ const RequestData = () => {
   }
 
   function handleSort(field: string, order: string): void {
-    console.log("Order: ", order);
     const mappedField = fieldMapping[field as FieldMappingKey] || field;
     setSortField(mappedField);
     setSortOrder(order);
@@ -80,7 +79,6 @@ const RequestData = () => {
   }
 
   function handleClearSort(): void {
-    console.log("Clearing sort");
     setSortField("createdAt");
     setSortOrder("desc");
     setCurrentPage(0);
@@ -109,8 +107,6 @@ const RequestData = () => {
     let request = RequestList[index];
     let destination = request.getDestination();
 
-    console.log(request);
-    console.log(destination);
 
     const s3 = new S3Client({
       region: destination.region,

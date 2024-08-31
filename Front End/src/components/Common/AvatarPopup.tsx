@@ -14,7 +14,6 @@ const AvatarPopup = () => {
   const handleLogout = async () => {
     
     try {
-      console.log(1);
       const response = await fetch(`${BackendURL}/logout`, {
         method: "POST",
         credentials: "include",

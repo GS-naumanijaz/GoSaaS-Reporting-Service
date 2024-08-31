@@ -96,6 +96,8 @@ export class TableManager {
   }
 
   getPartialRowItem(index: number): any {
+
+    
     const differentIndexes: number[] = [];
 
     for (let i = 0; i < this.preEditRows[index].length; i++) {
@@ -115,6 +117,8 @@ export class TableManager {
         isActive: this.data[index].getSwitchStatus(),
       };
     }
+
+    console.log("hello from tablemmanager", partialData);
 
     return partialData;
   }

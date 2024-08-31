@@ -386,6 +386,7 @@ export class SourceConnection extends TableRowData {
   }
 
   getPartialData(indexes: number[]): Partial<SourceConnection> {
+    console.log("hello source");
     return indexes.reduce((partialData, index) => {
       return { ...partialData, ...this.getPartialDataObject(index) };
     }, {});

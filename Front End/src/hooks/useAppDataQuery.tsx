@@ -95,7 +95,6 @@ export const useEditApplicationMutation = () => {
 
   return useMutation({
     mutationFn: async (appData: any & { id: number }) => {
-      console.log("in hook", appData);
       const { id, ...appDataToSend } = appData;
       return apiClient.update(`${id}`, appDataToSend);
     },

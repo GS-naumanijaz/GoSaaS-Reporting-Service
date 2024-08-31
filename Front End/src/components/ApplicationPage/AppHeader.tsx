@@ -109,25 +109,18 @@ const AppHeader = ({ appData }: Props) => {
       }
     });
   
-    console.log(updatedFields);
     // If there are any updated fields, send the update request
     if (Object.keys(updatedFields).length > 0) {
-      console.log("in if");
       if (appData?.id) {
-        console.log("in if 2");
-        console.log({ id: appData.id, ...updatedFields });
         // Use the edit mutation if appData exists (this means we are editing)
         editApplication.mutate({ id: appData.id, ...updatedFields });
       } else {
-        console.log("in toher else");
         // Otherwise, use the add mutation (this means we are adding a new application)
         saveApplication.mutate(updatedFields);
       }
     } else {
-      console.log("at else");
       navigate('/homepage');
     }
-    console.log("at end");
     onSaveClose();
   };
 

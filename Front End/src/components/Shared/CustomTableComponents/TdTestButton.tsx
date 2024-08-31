@@ -35,10 +35,8 @@ const TdTestButton = ({ onClick, isEditingMode, lastTestResult, setLastTestResul
     setButtonState("loading");
     try {
       await onClick();
-      console.log("pass");
       setLastTestResult(true);
     } catch {
-      console.log("fail");
       setLastTestResult(false);
     } finally {
       setTimeout(() => {
@@ -47,7 +45,6 @@ const TdTestButton = ({ onClick, isEditingMode, lastTestResult, setLastTestResul
     }
   };
 
-  console.log(rowIndex, lastTestResult, canTest);
 
   let buttonText = "Test";
   let buttonColorScheme = "blue";

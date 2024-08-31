@@ -279,16 +279,16 @@ export class DestinationConnection extends TableRowData {
     switch (index) {
       case 0:
         return { alias: this.alias } as Partial<DestinationConnection>;
-      case 2:
-        return {
-          databaseName: this.bucketName,
-        } as Partial<DestinationConnection>;
-      case 3:
-        return { host: this.region } as Partial<DestinationConnection>;
       case 1:
-        return { type: this.accessKey } as Partial<DestinationConnection>;
+        return {
+          bucketName: this.bucketName,
+        } as Partial<DestinationConnection>;
+      case 2:
+        return { region: this.region } as Partial<DestinationConnection>;
+      case 3:
+        return { accessKey: this.accessKey } as Partial<DestinationConnection>;
       case 4:
-        return { port: this.secretKey } as Partial<DestinationConnection>;
+        return { secretKey: this.secretKey } as Partial<DestinationConnection>;
       default:
         return {} as Partial<DestinationConnection>;
     }
