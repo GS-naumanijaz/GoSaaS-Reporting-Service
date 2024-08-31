@@ -17,9 +17,9 @@ export const GoSaaSLabsLogo: string =
 // Main Component Heights
 export const navbarHeight = "10vh";
 export const sidebarHeight = "90vh";
-export const mainDashboardHeight = "90vh";
-export const pinnedRequestHeight = "50vh";
-export const statusSummaryHeight = "40vh";
+export const mainDashboardHeight = "85vh";
+export const pinnedRequestHeight = "42.5vh";
+export const statusSummaryHeight = "42.5vh";
 
 // Custom Scrollbar
 export const sx = {

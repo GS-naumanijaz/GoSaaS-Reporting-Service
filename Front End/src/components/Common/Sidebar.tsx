@@ -13,10 +13,10 @@ const Sidebar = ({ onSelected }: SidebarProps) => {
     <Box
       paddingLeft={5}
       p={5}
-      borderRightColor={"lightgrey"}
-      borderRightWidth={2}
+      // borderRightColor={"lightgrey"}
+      // borderRightWidth={2}
       bg={tertiaryColor}
-      h={sidebarHeight}
+      // h={sidebarHeight}
     >
       <Button variant="ghost" onClick={() => onSelected("Dashboard")}>
         <MdDashboard size={20} color={primaryColor} />

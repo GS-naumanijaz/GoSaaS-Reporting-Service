@@ -118,7 +118,7 @@ const AuditLogData = () => {
       borderColor={"lightgrey"}
       borderWidth={2}
       borderRadius="md"
-      marginX={3}
+      // marginX={3}
       marginTop={2}
       textAlign="center"
       overflowY="auto"

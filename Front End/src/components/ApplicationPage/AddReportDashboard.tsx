@@ -369,10 +369,11 @@ const AddReportDashboard = () => {
         borderColor={"lightgrey"}
         borderWidth={2}
         borderRadius="md"
-        marginX={3}
+        // marginX={3}
         marginTop={2}
+        paddingBottom={20}
         textAlign="center"
-        h="96.8%"
+        // h="96.8%"
         overflowY="auto"
         sx={sx}
       >

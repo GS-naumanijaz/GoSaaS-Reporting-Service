@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react"; // Import PseudoBox
 import { Product } from "./Products";
-import { primaryColor } from "../../configs";
+import { primaryColor, secondaryColor, tertiaryColor } from "../../configs";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -34,10 +34,19 @@ const ProductElement = ({ product }: Props) => {
         top={0}
         right={0}
         bg={product.isActive ? "lightgreen" : "#ff9999"}
-        width={10}
-        height={10}
+        width={"20"}
+        height={"10"}
         borderRadius="0 20px 0 50px"
-      />
+      >
+        <Text
+          pt={2}
+          pl={2}
+          color={product.isActive ? "darkgreen" : "darkred"}
+          cursor="pointer"
+        >
+          {product.isActive ? "Active" : "Inactive"}
+        </Text>
+      </Box>
 
       <Text
         fontSize={["sm", "md", "lg"]}

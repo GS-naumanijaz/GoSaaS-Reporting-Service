@@ -58,7 +58,7 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
             placement="bottom"
           >
             <Box>
-              <Tooltip label="Search Applications" bg={primaryColor}>
+              <Tooltip label="Search Applications " bg={primaryColor}>
                 <Button
                   onClick={toggleExpand}
                   right={isExpanded ? "0" : "unset"}
@@ -73,7 +73,7 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
               </Tooltip>
               <Input
                 ref={inputRef}
-                placeholder="Search..."
+                placeholder="Search by alias..."
                 pl={isExpanded ? "2rem" : "0"}
                 width={isExpanded ? "200px" : "0"}
                 opacity={isExpanded ? "1" : "0"}

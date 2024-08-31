@@ -1,6 +1,6 @@
 import { Button, HStack, Image } from "@chakra-ui/react";
 import { GoSaaSLabsLogo, navbarHeight } from "../../configs";
-import NotificationPopup from "./NotificationPopup";
+// import NotificationPopup from "./NotificationPopup";
 import AvatarPopup from "./AvatarPopup";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,9 @@ const NavBar = () => {
   return (
     <HStack
       justify={"space-between"}
-      height={navbarHeight}
+      // height={navbarHeight}
+      paddingBottom={10}
+      paddingTop={10}
       borderBottomColor={"red"}
       borderBottomWidth={3}
     >

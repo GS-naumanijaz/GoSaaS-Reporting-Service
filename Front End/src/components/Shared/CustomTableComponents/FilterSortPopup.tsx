@@ -156,7 +156,7 @@ const FilterSortPopup = ({
         <PopoverTrigger>
           <HStack justifyContent={"center"}>
             <Button variant={"ghost"}>{heading}</Button>
-            <FaRegCaretSquareUp color={primaryColor} size={25} />
+            <FaRegCaretSquareUp color={primaryColor} size="1.5em" />
           </HStack>
         </PopoverTrigger>
         <PopoverContent>

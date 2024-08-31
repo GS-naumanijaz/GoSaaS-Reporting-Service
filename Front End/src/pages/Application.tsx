@@ -47,7 +47,7 @@ const Application = () => {
       <GridItem area="nav" bg={secondaryColor}>
         <NavBar />
       </GridItem>
-      <Show above="lg">
+      <Show above="md">
         <GridItem area="sidebar">
           <Sidebar onSelected={onSelected} />
         </GridItem>
