@@ -420,7 +420,13 @@ const CustomTable = ({
                                 : () => handleEditToggle(rowIndex)
                             }
                             revertEdit={() => revertEdit(rowIndex)}
-                            saveEdit={() => {handleEditSave(rowIndex)}}
+                            saveEdit={() => {
+                              handleEditSave(rowIndex);
+                              setCanTest(false);
+                              setTimeout(() => {
+                                setCanTest(true);
+                              }, 1000);
+                            }}
                           />
                         )}
 
