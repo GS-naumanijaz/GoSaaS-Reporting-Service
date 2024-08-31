@@ -1,6 +1,7 @@
 package com.GRS.backend.entities.destination_connection;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.base_models.ConnectionSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.report.Report;
@@ -59,7 +60,8 @@ public class DestinationConnectionService {
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<DestinationConnection> spec = Specification
                     .<DestinationConnection> where(BaseSpecification.belongsTo("application", appId))
-                    .and(BaseSpecification.isActive());
+                    .and(BaseSpecification.isActive())
+                    .and(ConnectionSpecification.passedLastTestResult());
 
             return destinationConnectionRepository.findAll(spec).stream()
                     .map(destinationConnection -> new DestinationConnectionDTO(destinationConnection.getId(), destinationConnection.getAlias()))
@@ -90,7 +92,6 @@ public class DestinationConnectionService {
         String region = destinationConnection.getRegion();
 
 
-        System.out.println("before test");
         boolean testResult;
         try {
             testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
@@ -99,12 +100,19 @@ public class DestinationConnectionService {
             testResult = false;
         }
 
-        System.out.println("hello setting the new test result to " + testResult);
+        if (!testResult) {
+            List<Report> reportsToUpdate = new ArrayList<>(destinationConnection.getReports());
+            for (Report report: reportsToUpdate) {
+                report.setIsActive(false);
+                report.setLastUpdatedBy(username);
+                reportRepository.save(report);
+            }
+        }
+
 
         destinationConnection.encryptSecretKey();
         DestinationConnection updatedDestination = new DestinationConnection();
         updatedDestination.setLastTestResult(testResult);
-        System.out.println("result = " + updatedDestination.getLastTestResult());
         updateDestinationConnection(destinationConnection.getId(), updatedDestination, username);
 
         return testResult;
