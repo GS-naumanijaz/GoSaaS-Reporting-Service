@@ -11,6 +11,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import {
@@ -19,12 +20,11 @@ import {
   minimumAppDescription,
   minimumAppName,
 } from "../../configs";
-import { useLocation, useNavigate } from "react-router-dom";
 
 interface AddApplicationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (formData: Record<string, string>) => void;
+  onSubmit: (formData: Record<string, string>) => Promise<void>; // Expecting async function
 }
 
 const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
@@ -39,15 +39,14 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
     applicationDescription: "",
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setFormData({ ...formData, [field]: event.target.value });
     };
 
-  const handleSubmit = () => {
-
-
+  const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
 
     if (
@@ -67,9 +66,16 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
     } else {
-      
-      onSubmit(formData);
-      onClose();
+      setIsSubmitting(true); // Start loading state
+      try {
+        await onSubmit(formData); // Await the async submit function
+        
+      } catch (error) {
+        console.error("Failed to add applicssssation:", error);
+        // Optionally, set additional error state here to show a message to the user
+      } finally {
+        setIsSubmitting(false); // End loading state
+      }
     }
   };
 
@@ -121,8 +127,13 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="red" onClick={handleSubmit} ml={3}>
-              Add
+            <Button
+              colorScheme="red"
+              onClick={handleSubmit}
+              ml={3}
+              isDisabled={isSubmitting} // Disable the button while submitting
+            >
+              {isSubmitting ? <Spinner size="sm" /> : "Add"} {/* Show spinner while loading */}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

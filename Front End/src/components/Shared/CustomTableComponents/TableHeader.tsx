@@ -19,7 +19,7 @@ interface Props {
   handleBulkSwitchActions: (status: boolean) => void;
   handleBulkDeleteRows: () => void;
   productDetails?: Product;
-  onAddNew: () => void;
+  onAddNew: () => Promise<void>;
   isConnection?: boolean;
   setCanTest: (newValue: boolean) => void;
 }
@@ -53,6 +53,7 @@ const TableHeader = ({
   const handleAddApplicationSubmit = async (
     formData: Record<string, string>
   ) => {
+    console.log("hello")
     try {
       await saveAppMutation.mutateAsync({
         applicationName: formData.applicationName,
@@ -62,12 +63,12 @@ const TableHeader = ({
       await queryClient.refetchQueries({
         queryKey: ["products"],
       });
-    } catch (error) {
-      console.error("Failed to save application:", error);
-    } finally {
-      handleAddApplicationClose();
+
       setIsAddApplicationOpen(false);
-    }
+
+    } catch (error) {
+      console.error("Failed to save987 application:", error);
+    } 
   };
 
   const renderActionButton = () => {

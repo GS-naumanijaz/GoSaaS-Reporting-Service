@@ -84,15 +84,16 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
         applicationDescription: formData.applicationDescription,
       });
 
+
       await queryClient.refetchQueries({
         queryKey: ["products"],
       });
-    } catch (error) {
-      console.error("Failed to save application:", error);
-    } finally {
+
       handleAddApplicationClose();
-      setIsAddApplicationOpen(false);
-    }
+
+    } catch (error) {
+      console.error("Failed to save123 application:", error);
+    } 
   };
 
   // Effect to reset page number when search term, filter, or page size changes
