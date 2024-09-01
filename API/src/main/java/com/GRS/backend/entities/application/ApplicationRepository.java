@@ -12,5 +12,4 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
 
     @Query("SELECT a FROM Application a LEFT JOIN FETCH a.reports WHERE a.alias = :alias")
     Optional<Application> findByAlias(String alias);
-
 }

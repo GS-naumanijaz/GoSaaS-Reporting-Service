@@ -137,4 +137,13 @@ public class ApplicationService {
         }
         return deletedApps;
     }
+
+    public List<Number> getAllApplicationIds() {
+        List<Application> allApps = applicationRepository.findAll();
+        List<Number> allAppIds = new ArrayList<>();
+        for (Application app : allApps) {
+            allAppIds.add(app.getId());
+        }
+        return allAppIds;
+    }
 }

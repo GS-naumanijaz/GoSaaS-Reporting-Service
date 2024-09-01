@@ -63,7 +63,8 @@ export const useUpdateApplicationStatus = () => {
     }) => apiClient.updateStatus(status, updateIds),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
+        predicate: (query) =>
+          query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
       });
     },
   });
@@ -77,7 +78,8 @@ export const useBulkDeleteApplications = () => {
     mutationFn: (ids: number[]) => apiClient.bulkDelete(ids),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
+        predicate: (query) =>
+          query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
       });
     },
   });
@@ -91,8 +93,20 @@ export const useDeleteApplication = () => {
     mutationFn: (deleteId: number) => apiClient.delete(`${deleteId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
+        predicate: (query) =>
+          query.queryKey[0] === "products" || query.queryKey[0] === "auditLogs",
       });
     },
   });
+};
+
+export const getAllIds = async (): Promise<number[]> => {
+  const apiClient = createApiClient();
+  try {
+    const response = await apiClient.getAllIds(); // response is of type AxiosResponse<number[]>
+    return response.data; // Directly return the number[] array
+  } catch (error) {
+    console.error("Error fetching all IDs:", error);
+    return [];
+  }
 };

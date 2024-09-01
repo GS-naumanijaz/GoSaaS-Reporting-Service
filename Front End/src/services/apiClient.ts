@@ -195,6 +195,10 @@ class APIClient<T> {
       .catch(this.handleError);
   };
 
+  getAllIds = () => {
+    return axiosInstance.get<number[]>(`${this.endpoint}/getAllIds`);
+  };
+
   create = (
     data: T,
     config?: AxiosRequestConfig

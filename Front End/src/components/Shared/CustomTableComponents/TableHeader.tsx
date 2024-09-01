@@ -1,10 +1,10 @@
-import { Button, HStack, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Button, HStack, Text, Tooltip } from "@chakra-ui/react";
 import { FaPlus } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
-import AlertDialogButton from "../AlertDialogButton";
+import AlertDialogButton from "../AlertDialogButton"; // Import AlertDialogButton
 import AddRowDialogButton from "./AddRowDialogButton";
 import { InputField } from "../../../models/TableManagementModels";
-import { primaryColor } from "../../../configs";
+import { primaryColor, secondaryColor } from "../../../configs";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../Dashboard/Products";
 import AddApplicationDialog from "../../ApplicationPage/AddApplicationDialog";
@@ -65,8 +65,6 @@ const TableHeader = ({
       setIsAddApplicationOpen(false);
     } catch (error) {
       console.error("Failed to save application:", error);
-      // } finally {
-      //   handleAddApplicationClose();
     }
   };
 
@@ -137,25 +135,36 @@ const TableHeader = ({
         <HStack>
           {isSelectingRows && (
             <HStack spacing={6}>
-              {/* {tableHeading !== "Reports" && ( */}
               <>
                 {checkedStatuses.length > 0 &&
                 checkedStatuses.every((value) => value === true) ? null : (
-                  <Button onClick={() => handleBulkSwitchActions(true)}>
-                    {checkedStatuses.length === 1 ? "Activate" : "Active All"}
-                  </Button>
+                  <AlertDialogButton
+                    header="Activate"
+                    body="Are you sure you want to activate the selected items?"
+                    cancelText="Cancel"
+                    confirmText="Proceed"
+                    onConfirm={() => handleBulkSwitchActions(true)}
+                    buttonColor={"green.400"}
+                  >
+                    {checkedStatuses.length === 1 ? "Activate" : "Activate All"}
+                  </AlertDialogButton>
                 )}
                 {checkedStatuses.length > 0 &&
                 checkedStatuses.every((value) => value === false) ? null : (
-                  <Button onClick={() => handleBulkSwitchActions(false)}>
+                  <AlertDialogButton
+                    header="Deactivate"
+                    body="Are you sure you want to deactivate the selected items?"
+                    cancelText="Cancel"
+                    confirmText="Proceed"
+                    onConfirm={() => handleBulkSwitchActions(false)}
+                    buttonColor={"red.400"}
+                  >
                     {checkedStatuses.length === 1
                       ? "Deactivate"
-                      : "Deactive All"}
-                  </Button>
+                      : "Deactivate All"}
+                  </AlertDialogButton>
                 )}
               </>
-              {/* )} */}
-
               <AlertDialogButton
                 header="Delete Connection"
                 body={

@@ -60,6 +60,12 @@ public class ApplicationController {
         return Response.responseBuilder("Application found successfully", HttpStatus.OK, applicationToAdd);
     }
 
+    @GetMapping("/getAllIds")
+    public ResponseEntity<List<Number>> getAllApplicationIds() {
+        List<Number> allApplicationIds = applicationService.getAllApplicationIds();
+        return ResponseEntity.ok(allApplicationIds);
+    }
+
     @PostMapping
     public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application,OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
@@ -84,7 +90,6 @@ public class ApplicationController {
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedApps);
         }
-
     }
 
     @PatchMapping("/{appId}")

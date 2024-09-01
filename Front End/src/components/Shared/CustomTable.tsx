@@ -35,6 +35,7 @@ import { ReportsConnection } from "../../models/ReportsConnection";
 import { ImCross } from "react-icons/im";
 import TdRedirect from "./CustomTableComponents/TdRedirect";
 import { FaDownload } from "react-icons/fa";
+// import { getAllIds } from "../../hooks/useProductsQuery";
 
 interface Props {
   tableManager: TableManager;
@@ -100,6 +101,8 @@ const CustomTable = ({
     canSaveEditedRows: tableManager.getCanSaveEditedRows(),
   });
 
+  const [selectedAll, setSelectedAll] = useState(false);
+
   const updateState = () => {
     setTableState({
       tableData: tableManager.getTableData(),
@@ -115,11 +118,28 @@ const CustomTable = ({
     updateState();
   }, [tableManager]);
 
+  // useEffect(() => {
+  //   const fetchAndSetAllIds = async () => {
+  //     if (selectedAll) {
+  //       try {
+  //         const ids = await getAllIds();
+  // tableManager.setCheckedIds(ids);
+  //       } catch (error) {
+  //         console.error("Failed to fetch IDs:", error);
+  //       } finally {
+  //         setSelectedAll(false);
+  //       }
+  //     }
+  //   };
+  //   fetchAndSetAllIds();
+  // }, [selectedAll, tableManager]);
+
   const handleBulkSwitchActions = (newStatus: boolean) => {
     if (onBulkUpdateStatus) {
       onBulkUpdateStatus(tableManager.getCheckedIds(), newStatus);
     }
   };
+
   const selectAllCheckBoxes = () => {
     tableManager.selectAllCheckBoxes();
     updateState();
@@ -132,7 +152,6 @@ const CustomTable = ({
 
   const handleEditToggle = (index: number) => {
     tableManager.handleEditToggle(index);
-
     updateState();
   };
 
@@ -178,6 +197,8 @@ const CustomTable = ({
     return isEditing.some((value) => value);
   };
 
+  console.log("checkedids: ", tableManager.getCheckedIds());
+
   // search field prompt box
   const searchField = searchObject?.searchField ?? "";
   const mappedSearchField = reverseFieldMapping[searchField] || searchField;
@@ -192,6 +213,18 @@ const CustomTable = ({
       width={"95%"}
       mx="auto"
     >
+      {allRowsSelected && (
+        <Button
+          bg={secondaryColor}
+          variant={"ghost"}
+          mt={15}
+          onClick={() => {
+            setSelectedAll(true);
+          }}
+        >
+          {`Select All ${totalElements} ${tableManager.getTableHeader()}`}
+        </Button>
+      )}
       <TableHeader
         tableHeading={tableManager.getTableHeader()}
         isSelectingRows={isSelectingRows}

@@ -24,7 +24,7 @@ export class ProductTable extends TableRowData {
     "View",
     "Delete",
   ];
-  private static columnWidths = ["5%", "20%", "25%", "15%", "15%", "5%", "5%"];
+  private static columnWidths = ["5%", "10%", "15%", "10%", "10%", "5%", "5%"];
 
   private static inputFields: InputField[] = [
     {

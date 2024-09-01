@@ -21,6 +21,7 @@ interface Props {
   tooltipLabel?: string;
   tooltipColor?: string;
   tooltipHasArrow?: boolean;
+  buttonColor?: string;
 }
 
 const AlertDialogButton = ({
@@ -33,6 +34,7 @@ const AlertDialogButton = ({
   tooltipLabel,
   tooltipColor = "gray.300",
   tooltipHasArrow = false,
+  buttonColor = "",
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -43,7 +45,7 @@ const AlertDialogButton = ({
   };
 
   const button = (
-    <Button variant={"ghost"} onClick={onOpen}>
+    <Button variant={"ghost"} onClick={onOpen} bg={buttonColor}>
       {children}
     </Button>
   );
