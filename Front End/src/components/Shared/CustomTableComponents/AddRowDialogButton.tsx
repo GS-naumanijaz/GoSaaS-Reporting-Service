@@ -15,6 +15,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -27,7 +28,7 @@ import { sx } from "../../../configs";
 interface Props {
   header: string;
   inputFields: InputField[];
-  onSubmit: (formData: Record<string, string>) => void;
+  onSubmit: (formData: Record<string, string>) => Promise<void>;
   tooltipLabel?: string;
   tooltipColor?: string;
   tooltipHasArrow?: boolean;
@@ -41,7 +42,7 @@ const AddRowDialogButton: React.FC<Props> = ({
   tooltipLabel,
   tooltipColor = "gray.800",
   tooltipHasArrow = true,
-  setCanTest
+  setCanTest,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -51,16 +52,15 @@ const AddRowDialogButton: React.FC<Props> = ({
     {}
   );
 
-  const [formData, setFormData] =
-    useState<Record<string, string>>(initialFormState);
+  const [formData, setFormData] = useState<Record<string, string>>(initialFormState);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // Manage the loading state
 
-  const handleChange =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({ ...formData, [field]: event.target.value });
-    };
+  const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [field]: event.target.value });
+  };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
 
     inputFields.forEach((field) => {
@@ -71,12 +71,22 @@ const AddRowDialogButton: React.FC<Props> = ({
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
     } else {
-      onSubmit(formData);
-      onClose();
-      setCanTest(false);
-      setTimeout(() => {
-        setCanTest(true);
-      }, 1000);
+      setIsSubmitting(true); // Start loading state
+      try {
+        await onSubmit(formData); // Use mutateAsync for the API call
+
+        // Close the dialog only if the submission is successful
+        onClose();
+        setCanTest(false);
+        setTimeout(() => {
+          setCanTest(true);
+        }, 1000);
+      } catch (error) {
+        console.error("Error adding new row:", error);
+        // You can show an error toast or message here
+      } finally {
+        setIsSubmitting(false); // End loading state
+      }
     }
   };
 
@@ -183,7 +193,8 @@ const AddRowDialogButton: React.FC<Props> = ({
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleSubmit} ml={3}>
+              <Button colorScheme="red" onClick={handleSubmit} ml={3} isDisabled={isSubmitting}>
+                {isSubmitting ? <Spinner size="sm" mr={2} /> : null}
                 Add
               </Button>
             </AlertDialogFooter>
