@@ -113,7 +113,59 @@ class APIClient<T> {
     return false;
   };
 
+  private cleanParams = (params: Record<string, any>) => {
+    
+    const cleanedParams = { ...params };
+  
+    // // Remove empty fields
+    // for (const key in cleanedParams) {
+    //   if (
+    //     cleanedParams[key] === "" ||
+    //     cleanedParams[key] === undefined ||
+    //     cleanedParams[key] === null
+    //   ) {
+    //     delete cleanedParams[key];
+    //   }
+    // }
+  
+    // Specific conditions
+    if (cleanedParams.search === "" || cleanedParams.search_by === "") {
+      delete cleanedParams.search;
+      delete cleanedParams.search_by;
+    }
+  
+    if (cleanedParams.page === '0') {
+      delete cleanedParams.page;
+    }
+  
+    if (cleanedParams.start_date === "0000-01-01") {
+      delete cleanedParams.start_date;
+    }
+  
+    if (cleanedParams.end_date === "9999-12-31") {
+      delete cleanedParams.end_date;
+    }
+
+    if (cleanedParams.action === "All") {
+      delete cleanedParams.action;
+    }
+
+    if (cleanedParams.module === "All") {
+      delete cleanedParams.module;
+    }
+
+    if (cleanedParams.sort_order === "desc") {
+      delete cleanedParams.sort_order;
+    }
+
+    return cleanedParams;
+  };
+  
+
   getAll = (config?: AxiosRequestConfig) => {
+    if (config?.params) {
+      config.params = this.cleanParams(config.params);
+    }
     return axiosInstance
       .get<APIResponse<PageableResponse<T>>>(this.endpoint, config)
       .then((res) => this.handleResponse(res))
