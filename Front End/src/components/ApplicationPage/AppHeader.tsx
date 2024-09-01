@@ -168,6 +168,7 @@ const AppHeader = ({ appData }: Props) => {
         <HStack spacing={5}>
           <Tooltip hasArrow label="Save" bg={primaryColor}>
             <Button
+              isDisabled={!validationCheck(newAppData)}
               variant="link"
               p={0}
               _active={

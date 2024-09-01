@@ -17,7 +17,7 @@ import {
   pinnedRequestHeight,
   primaryColor,
   sx,
-} from "../../configs"; // Make sure this import is correct
+} from "../../configs";
 import { IoIosArrowForward } from "react-icons/io";
 import { useGetPinnedReports } from "../../hooks/useReportsQuery";
 import { ReportsConnection } from "../../models/ReportsConnection";
@@ -65,20 +65,23 @@ const PinnedReports = () => {
                 <Th width="5%"></Th>
               </Tr>
             </Thead>
-            {isError && (
-              <Tbody>
-                <Text>Failed to fetch Pinned Reports</Text>
-              </Tbody>
-            )}
-            {isLoading && (
-              <Tbody>
-                <Spinner />
-              </Tbody>
-            )}
-
-            {pinnedReports && (
-              <Tbody>
-                {pinnedReports.map((report, index) => (
+            <Tbody>
+              {isError && (
+                <Tr>
+                  <Td colSpan={3}>
+                    <Text>Failed to fetch Pinned Reports</Text>
+                  </Td>
+                </Tr>
+              )}
+              {isLoading && (
+                <Tr>
+                  <Td colSpan={3} textAlign="center">
+                    <Spinner />
+                  </Td>
+                </Tr>
+              )}
+              {pinnedReports &&
+                pinnedReports.map((report, index) => (
                   <Tr key={index} onClick={() => handleRowClick(report)}>
                     <Td cursor="pointer" fontSize={15}>
                       {report.alias}
@@ -95,8 +98,7 @@ const PinnedReports = () => {
                     </Td>
                   </Tr>
                 ))}
-              </Tbody>
-            )}
+            </Tbody>
           </Table>
         </TableContainer>
       </Box>

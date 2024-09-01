@@ -34,14 +34,14 @@ public class AuditLogGenerator {
     }
 
     public void log(AuditLogAction action, String username) {
-        String details = "User " + username + " " + action;
+        String details = "User '" + username + "' " + action;
 
         AuditLog auditLog = new AuditLog(AuditLogModule.USER, action, details, username);
         auditLogService.addAuditLog(auditLog);
     }
 
     public void log(AuditLogAction action, AuditLogModule module, String moduleAlias, String username) {
-        String details = "User " + username + " " + action + " " + module + " '" + moduleAlias + "'";
+        String details = "User '" + username + "' " + action + " " + module + " '" + moduleAlias + "'";
 
         AuditLog auditLog = new AuditLog(module, action, details, username);
         auditLogService.addAuditLog(auditLog);
@@ -49,7 +49,7 @@ public class AuditLogGenerator {
 
     public void log(AuditLogAction action, AuditLogModule module, String moduleAlias, String username, String appAlias) {
 
-        String details = "User " + username + " " + action + " " + module + " '" + moduleAlias + "' in APPLICATION '" + appAlias + "'";
+        String details = "User '" + username + "' " + action + " " + module + " '" + moduleAlias + "' in APPLICATION '" + appAlias + "'";
 
         AuditLog auditLog = new AuditLog(module, action, details, username);
         auditLogService.addAuditLog(auditLog);
@@ -57,7 +57,7 @@ public class AuditLogGenerator {
 
     public void logBulk(AuditLogAction action, AuditLogModule module, String[] moduleAlaises, String username) {
 
-        String details = "User " + username + " BULK " + action + " " + module + "'s " + arrayToString(moduleAlaises);
+        String details = "User '" + username + "' BULK " + action + " " + module + "'s " + arrayToString(moduleAlaises);
 
         AuditLog auditLog = new AuditLog(module, action, details, username);
         auditLogService.addAuditLog(auditLog);
@@ -99,7 +99,7 @@ public class AuditLogGenerator {
     private String arrayToString(String[] array) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
-            sb.append(array[i]);
+            sb.append("'").append(array[i]).append("'");
             if (i < array.length - 1) {
                 sb.append(", ");
             }

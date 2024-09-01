@@ -159,12 +159,12 @@ public class ReportController {
     }
 
     @PostMapping("/upload/{reportId}")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable int reportId) {
+    public ResponseEntity<Object> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable int reportId) {
         try {
             reportService.uploadFile(file, reportId);
-            return ResponseEntity.ok("File uploaded successfully");
+            return Response.responseBuilder("File uploaded successfully", HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed");
+            return Response.responseBuilder("File upload failed!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
