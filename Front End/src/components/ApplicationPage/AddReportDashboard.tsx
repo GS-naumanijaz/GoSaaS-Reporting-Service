@@ -390,26 +390,30 @@ const AddReportDashboard = () => {
           >
             <IoArrowBack size={35} />
           </Button>
-          <Switch
-            size="lg"
-            colorScheme="red"
-            isChecked={activeStatus}
-            onChange={() => setActiveStatus(!activeStatus)}
-          />
+          {isEditingMode ? (
+            <Switch
+              size="lg"
+              colorScheme="red"
+              isChecked={activeStatus}
+              onChange={() => setActiveStatus(!activeStatus)}
+            />
+          ) : null}
           <Spacer />
           <Text fontSize={25} textAlign="center">
             {isEditingMode ? "Edit Report" : "Register Report"}
           </Text>
           <Spacer />
           <HStack spacing={5}>
-            <Button
-              variant="link"
-              _active={{ color: primaryColor }}
-              color={primaryColor}
-              onClick={() => setIsPinned(!isPinned)}
-            >
-              {isPinned ? <BsFillPinFill size={30} /> : <BsPin size={30} />}
-            </Button>
+            {isEditingMode ? (
+              <Button
+                variant="link"
+                _active={{ color: primaryColor }}
+                color={primaryColor}
+                onClick={() => setIsPinned(!isPinned)}
+              >
+                {isPinned ? <BsFillPinFill size={30} /> : <BsPin size={30} />}
+              </Button>
+            ) : null}
             <Button
               variant="link"
               _active={{ color: primaryColor }}
@@ -627,7 +631,7 @@ const AddReportDashboard = () => {
                 marginTop={2}
                 bg={secondaryColor}
                 onClick={handleButtonClick}
-                border={selectedFile ? "none" : "1px solid red"} 
+                border={selectedFile ? "none" : "1px solid red"}
               >
                 Upload XSL File
               </Button>
