@@ -33,10 +33,6 @@ public class AuditLogGenerator {
         return instance;
     }
 
-    public void setAuditLogService(AuditLogService auditLogService) {
-        this.auditLogService = auditLogService;
-    }
-
     public void log(AuditLogAction action, String username) {
         String details = "User '" + username + "' " + action;
 

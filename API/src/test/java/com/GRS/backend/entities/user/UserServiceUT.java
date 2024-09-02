@@ -63,7 +63,7 @@ public class UserServiceUT{
     public void testSaveOrUpdateUser_whenUserDoesNotExist() {
         User newUser = new User();
         newUser.setEmail("newuser@example.com");
-        when(userRepository.findByEmail(newUser.getEmail())).thenReturn(null);
+        when(userRepository.findByEmail(newUser.getEmail())).thenReturn(Optional.empty());
         userService.saveOrUpdateUser(newUser);
 
         verify(userRepository, times(1)).save(newUser);

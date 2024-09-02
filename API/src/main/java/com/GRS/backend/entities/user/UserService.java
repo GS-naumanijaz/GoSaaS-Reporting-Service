@@ -39,13 +39,19 @@ public class UserService {
 
     public void saveOrUpdateUser(User user) {
         Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
-        AuditLogGenerator.getInstance().log(AuditLogAction.LOGIN, user.getUsername());
-        if (!existingUser.isPresent()) {
+        try {
+            AuditLogGenerator.getInstance().log(AuditLogAction.LOGIN, user.getUsername());
+        } catch (IllegalStateException e) {
+            // Log the exception or handle it appropriately
+            System.err.println("Failed to log audit: " + e.getMessage());
+        }
+        if (existingUser.isEmpty()) {
             userRepository.save(user);
         } else {
-            existingUser.get().setName(user.getName());
-            existingUser.get().setLastLogin(LocalDateTime.now());
-            userRepository.save(existingUser.get());
+            User foundUser = existingUser.get();
+            foundUser.setName(user.getName());
+            foundUser.setLastLogin(LocalDateTime.now());
+            userRepository.save(foundUser);
         }
     }
 
