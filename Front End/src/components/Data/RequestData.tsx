@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { TableManager } from "../../models/TableManager";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import CustomTable from "../Shared/CustomTable";
@@ -31,7 +32,7 @@ const RequestData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data } = useRequestsQuery(
+  const { data, refetch } = useRequestsQuery(
     sortField,
     sortOrder,
     page,
@@ -58,6 +59,21 @@ const RequestData = () => {
     ) || [];
 
   const manager = new TableManager(new Request(), RequestList);
+
+  // Refetch logic for "inprogress" status
+  useEffect(() => {
+    const hasInProgressReports = RequestList.some(
+      (request) => request.status === "inprogress"
+    );
+
+    if (hasInProgressReports) {
+      const intervalId = setInterval(() => {
+        refetch();
+      }, 5000); // Refetch every 5 seconds
+
+      return () => clearInterval(intervalId); // Cleanup on unmount or when no "inprogress" reports
+    }
+  }, [RequestList, refetch]);
 
   function handleSearch(searchTerm: string, field: string): void {
     setSearchTerm(searchTerm);
@@ -106,7 +122,6 @@ const RequestData = () => {
   function handleDownload(index: number) {
     let request = RequestList[index];
     let destination = request.getDestination();
-
 
     const s3 = new S3Client({
       region: destination.region,

@@ -41,41 +41,44 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
+  const validateField = (field: string, value: string) => {
+    let error = "";
+    if (field === "applicationName") {
+      if (value.length < minimumAppName || value.length > maximumAppName) {
+        error = `Application Name must be between ${minimumAppName} and ${maximumAppName} characters.`;
+      }
+    } else if (field === "applicationDescription") {
+      if (
+        value.length < minimumAppDescription ||
+        value.length > maximumAppDescription
+      ) {
+        error = `Application Description must be between ${minimumAppDescription} and ${maximumAppDescription} characters.`;
+      }
+    }
+    return error;
+  };
+
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({ ...formData, [field]: event.target.value });
+      const value = event.target.value;
+      const error = validateField(field, value);
+      setFormData({ ...formData, [field]: value });
+      setFormErrors({ ...formErrors, [field]: error });
     };
 
   const handleSubmit = async () => {
-    const newErrors: Record<string, string> = {};
-
-    if (
-      formData.applicationName.length < minimumAppName ||
-      formData.applicationName.length > maximumAppName
-    ) {
-      newErrors.applicationName = `Application Name must be between ${minimumAppName} and ${maximumAppName} characters.`;
+    if (Object.keys(formErrors).some((key) => formErrors[key])) {
+      return; // Do not submit if there are validation errors
     }
 
-    if (
-      formData.applicationDescription.length < minimumAppDescription ||
-      formData.applicationDescription.length > maximumAppDescription
-    ) {
-      newErrors.applicationDescription = `Application Description must be between ${minimumAppDescription} and ${maximumAppDescription} characters.`;
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setFormErrors(newErrors);
-    } else {
-      setIsSubmitting(true); // Start loading state
-      try {
-        await onSubmit(formData); // Await the async submit function
-        
-      } catch (error) {
-        console.error("Failed to add applicssssation:", error);
-        // Optionally, set additional error state here to show a message to the user
-      } finally {
-        setIsSubmitting(false); // End loading state
-      }
+    setIsSubmitting(true); // Start loading state
+    try {
+      await onSubmit(formData); // Await the async submit function
+    } catch (error) {
+      console.error("Failed to add application:", error);
+      // Optionally, set additional error state here to show a message to the user
+    } finally {
+      setIsSubmitting(false); // End loading state
     }
   };
 
@@ -131,7 +134,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
               colorScheme="red"
               onClick={handleSubmit}
               ml={3}
-              isDisabled={isSubmitting} // Disable the button while submitting
+              isDisabled={isSubmitting || Object.keys(formErrors).some((key) => formErrors[key])} // Disable the button while submitting or if there are validation errors
             >
               {isSubmitting ? <Spinner size="sm" /> : "Add"} {/* Show spinner while loading */}
             </Button>
