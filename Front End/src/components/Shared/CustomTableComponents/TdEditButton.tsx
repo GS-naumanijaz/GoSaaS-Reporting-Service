@@ -22,7 +22,7 @@ const TdEditButton = ({
   return (
     <Td textAlign="center">
       {isEditing ? (
-        <HStack>
+        <HStack p={0} m={0} spacing={0} gap={0}>
           <Tooltip hasArrow label="Save" bg="green">
             <Button
               onClick={() => {
@@ -31,6 +31,9 @@ const TdEditButton = ({
               }}
               isDisabled={isDisabled}
               variant={"ghost"}
+              p={0}
+              m={0}
+              gap={0}
             >
               <FaRegSave color="green" size={20} />
             </Button>
@@ -38,6 +41,9 @@ const TdEditButton = ({
           <Tooltip hasArrow label="Cancel" bg="red  ">
             <Button
               variant={"ghost"}
+              p={0}
+              m={0}
+              gap={0}
               onClick={() => {
                 handleEditToggle();
                 revertEdit();

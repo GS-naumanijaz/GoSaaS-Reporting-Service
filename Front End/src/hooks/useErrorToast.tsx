@@ -14,3 +14,4 @@ export const useErrorToast = (titleValue: string = "Error", color:string = "red"
     });
   };
 };
+
