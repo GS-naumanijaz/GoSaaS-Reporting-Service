@@ -80,6 +80,8 @@ const AddReportDashboard = () => {
     reportDetails?.xslTemplate ?? null
   );
 
+  console.log("selected file: ", selectedFile);
+
   const hasSetInitialSource = useRef(false);
   const hasSetInitialDestination = useRef(false);
 
@@ -168,7 +170,8 @@ const AddReportDashboard = () => {
     !selectedDestination ||
     selectedProcedure === -1 ||
     !!aliasError ||
-    !!descriptionError;
+    !!descriptionError ||
+    !selectedFile;
 
   const [isSaving, setIsSaving] = useState(false); // State to manage save button loading
 
@@ -176,44 +179,44 @@ const AddReportDashboard = () => {
     if (isSaveButtonDisabled) {
       return;
     }
-  
+
     setIsSaving(true); // Show spinner on the save button
-  
+
     try {
       let partialReport: Partial<ReportsConnection> = {};
-  
+
       // Preparing the request based on editing mode or adding new report
       if (isEditingMode) {
         if (reportAlias !== reportDetails.alias) {
           partialReport.alias = reportAlias;
         }
-  
+
         if (reportDescription !== reportDetails.description) {
           partialReport.description = reportDescription;
         }
-  
+
         const currentStoredProcedureName = storedProcedures
           ? storedProcedures[selectedProcedure].name
           : "";
-  
+
         if (currentStoredProcedureName !== reportDetails.storedProcedure) {
           partialReport.storedProcedure = currentStoredProcedureName;
         }
-  
+
         const currentParams = storedProcedures
           ? storedProcedures[selectedProcedure].parameters
           : [];
-  
+
         if (
           JSON.stringify(currentParams) !== JSON.stringify(reportDetails.params)
         ) {
           partialReport.params = currentParams;
         }
-  
+
         if (activeStatus !== reportDetails.isActive) {
           partialReport.isActive = activeStatus;
         }
-  
+
         if (isPinned !== reportDetails.isPinned) {
           partialReport.isPinned = isPinned;
         }
@@ -231,11 +234,11 @@ const AddReportDashboard = () => {
           isPinned: isPinned,
         };
       }
-  
+
       let reportRequest: any = {
         report: partialReport,
       };
-  
+
       if (isEditingMode) {
         if (selectedSource !== reportDetails.sourceConnection.id) {
           reportRequest = {
@@ -256,12 +259,12 @@ const AddReportDashboard = () => {
           destinationId: Number(selectedDestination),
         };
       }
-  
+
       let response;
       if (isEditingMode) {
         const currentReportId =
           reportDetails.id ?? reportDetails.reportId ?? -1;
-  
+
         response = await updateReport({
           reportId: currentReportId,
           updatedReport: reportRequest,
@@ -269,22 +272,23 @@ const AddReportDashboard = () => {
       } else {
         response = await addReport(reportRequest);
       }
-  
+
       if (response && "id" in response) {
         const reportId = response.id;
-  
+
         console.log("report details xsl tempple", reportDetails?.xslTemplate);
         console.log("selected file", selectedFile);
-        
 
         // Only call uploadFile if the file has changed
+        console.log("ouside upload", selectedFile);
         if (selectedFile && selectedFile !== reportDetails?.xslTemplate) {
+          console.log("inside upload", selectedFile);
           uploadFile({ file: selectedFile, reportId });
         }
       } else {
         console.error("Save report response does not contain an id.");
       }
-  
+
       navigate(-1); // Navigate back on success
     } catch (error) {
       console.error("Error saving the report:", error);
@@ -293,7 +297,6 @@ const AddReportDashboard = () => {
       setIsSaving(false); // Hide spinner on the save button
     }
   };
-  
 
   useEffect(() => {
     if (selectedProcedure === -1) {
@@ -624,12 +627,17 @@ const AddReportDashboard = () => {
                 marginTop={2}
                 bg={secondaryColor}
                 onClick={handleButtonClick}
+                border={selectedFile ? "none" : "1px solid red"} 
               >
                 Upload XSL File
               </Button>
-              {selectedFile && (
+              {selectedFile ? (
                 <Text marginTop={2}>
                   Selected File: {selectedFile.toString()}
+                </Text>
+              ) : (
+                <Text marginTop={2} color="red" fontSize={13}>
+                  XSL File not uploaded
                 </Text>
               )}
             </Box>

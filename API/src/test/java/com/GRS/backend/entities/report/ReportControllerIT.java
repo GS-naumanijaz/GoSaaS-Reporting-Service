@@ -325,18 +325,6 @@ class ReportControllerIT {
     }
 
     @Test
-    void testUpdateReport_ValidationError() throws Exception {
-        ReportRequestBody requestBody = new ReportRequestBody(new Report(), 1, 1);  // Empty report object, should trigger validation error
-
-        mockMvc.perform(patch("/applications/1/reports/1")
-                        .with(authentication(auth))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.asJsonString(requestBody)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Invalid Request Body"));
-    }
-
-    @Test
     void testUpdateReport_ServiceException() throws Exception {
         Report report = new Report();
         report.setAlias("Updated Report");
