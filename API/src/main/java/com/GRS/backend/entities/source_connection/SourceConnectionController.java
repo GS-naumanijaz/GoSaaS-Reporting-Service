@@ -10,6 +10,7 @@ import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.enums.SourceConnectionType;
+import com.GRS.backend.exceptionHandler.exceptions.InvalidRequestBodyException;
 import com.GRS.backend.models.DTO.SourceConnectionDTO;
 import com.GRS.backend.models.StoredProcedure;
 import com.GRS.backend.resolver.QueryArgumentResolver;
@@ -113,6 +114,17 @@ public class SourceConnectionController {
 
     @PatchMapping("/{sourceId}")
     public ResponseEntity<Object> updateSourceConnection(@RequestBody SourceConnection sourceConnection, @PathVariable int sourceId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+
+        if (sourceConnection == null || sourceConnection.isEmpty()) {
+            throw new InvalidRequestBodyException("The update request body is invalid or empty.");
+        }
+
+        // Check if alias is provided and ensure it's not blank
+        if (sourceConnection.getAlias() != null && "".equals(sourceConnection.getAlias())) {
+            throw new InvalidRequestBodyException("Alias must not be blank.");
+        }
+
+
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application sourceApp = applicationService.getApplicationById(appId);
         SourceConnection updatedSourceConnection = sourceConnectionService.updateSourceConnection(sourceId, sourceConnection, username);

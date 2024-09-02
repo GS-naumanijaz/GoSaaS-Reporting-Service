@@ -1,104 +1,104 @@
-    package com.GRS.backend.entities.source_connection;
+package com.GRS.backend.entities.source_connection;
 
 
-    import com.GRS.backend.entities.application.Application;
-    import com.GRS.backend.entities.report.Report;
-    import com.GRS.backend.enums.SourceConnectionType;
-    import com.GRS.backend.utilities.EncryptionUtility;
-    import com.fasterxml.jackson.annotation.JsonIgnore;
-    import jakarta.persistence.*;
-    import jakarta.validation.constraints.NotBlank;
-    import jakarta.validation.constraints.NotNull;
-    import lombok.Getter;
-    import lombok.Setter;
+import com.GRS.backend.entities.application.Application;
+import com.GRS.backend.entities.report.Report;
+import com.GRS.backend.enums.SourceConnectionType;
+import com.GRS.backend.utilities.EncryptionUtility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
-    import javax.crypto.SecretKey;
-    import java.time.LocalDateTime;
-    import java.util.HashSet;
-    import java.util.Objects;
-    import java.util.Set;
+import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-    @Entity
-    @Table(name = "source_connections")
-    @Getter
-    @Setter
-    public class SourceConnection {
+@Entity
+@Table(name = "source_connections")
+@Getter
+@Setter
+public class SourceConnection {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-        //Foreign Key's
-        @ManyToOne(cascade = CascadeType.ALL)
-        @JoinColumn(name = "app_id", referencedColumnName = "id")
-        private Application application;
+    //Foreign Key's
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "app_id", referencedColumnName = "id")
+    private Application application;
 
-        @JsonIgnore
-        @OneToMany(mappedBy = "sourceConnection", cascade = CascadeType.ALL)
-        private Set<Report> reports = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "sourceConnection", cascade = CascadeType.ALL)
+    private Set<Report> reports = new HashSet<>();
 
-        @NotBlank(message = "Alias must not be blank")
-        private String alias;
+    @NotBlank(message = "Alias must not be blank")
+    private String alias;
 
-        private SourceConnectionType type;
+    private SourceConnectionType type;
 
-        private String host;
+    private String host;
 
-        private Integer port;
+    private Integer port;
 
-        private Boolean isActive;
+    private Boolean isActive;
 
-        private Boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
-        private Boolean lastTestResult;
+    private Boolean lastTestResult;
 
-        private String username;
+    private String username;
 
-        private String password;
+    private String password;
 
-        private String databaseName;
+    private String databaseName;
 
-        private String schema;
+    private String schema;
 
-        private String createdBy;
+    private String createdBy;
 
-        private String lastUpdatedBy;
+    private String lastUpdatedBy;
 
-        private String deletedBy ;
+    private String deletedBy ;
 
-        private LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
-        private LocalDateTime deletionDate;
+    private LocalDateTime deletionDate;
 
-        private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-        @JsonIgnore
-        private String key;
+    @JsonIgnore
+    private String key;
 
-        public SourceConnection() {}
+    public SourceConnection() {}
 
-        public SourceConnection(int id) {
-            this.id = id;
-        }
+    public SourceConnection(int id) {
+        this.id = id;
+    }
 
-        public void addReport(Report report) {
-            this.reports.add(report);
-            report.setSourceConnection(this);
-        }
+    public void addReport(Report report) {
+        this.reports.add(report);
+        report.setSourceConnection(this);
+    }
 
-        public void decryptPassword() {
-            if (this.key == null || this.password == null) {
+    public void decryptPassword() {
+        if (this.key == null || this.password == null) {
 //                throw new RuntimeException("Cannot decrypt password: key or password is null");
-                this.password = "";
-                return;
-            }
-            try {
-                SecretKey key = EncryptionUtility.decodeKey(this.key);
-                this.password = EncryptionUtility.decrypt(this.password, key);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to decrypt password", e);
-            }
+            this.password = "";
+            return;
         }
+        try {
+            SecretKey key = EncryptionUtility.decodeKey(this.key);
+            this.password = EncryptionUtility.decrypt(this.password, key);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decrypt password", e);
+        }
+    }
 
 //        public String retrieveDecryptedPassword() {
 //            if (this.key == null || this.password == null) {
@@ -113,39 +113,58 @@
 //        }
 
 
-        public void encryptPassword() {
-            if (this.password == null) {
-                this.key = "";
-                return;
+    public void encryptPassword() {
+        if (this.password == null) {
+            this.key = "";
+            return;
+        }
+
+        try {
+            if (this.password != null) {
+                SecretKey key = EncryptionUtility.generateKey();
+                String encryptedPassword = EncryptionUtility.encrypt(this.password, key);
+                this.password = encryptedPassword;
+                this.key = EncryptionUtility.encodeKey(key);
             }
-
-            try {
-                if (this.password != null) {
-                    SecretKey key = EncryptionUtility.generateKey();
-                    String encryptedPassword = EncryptionUtility.encrypt(this.password, key);
-                    this.password = encryptedPassword;
-                    this.key = EncryptionUtility.encodeKey(key);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to encrypt password", e);
-            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to encrypt password", e);
         }
-
-        @PrePersist
-        public void prePersist() {
-            this.creationDate = LocalDateTime.now();
-            this.updatedAt = LocalDateTime.now();
-            this.deletedBy = "";
-            this.isDeleted = false;
-            this.isActive = true;
-            this.deletionDate = null;
-            this.lastTestResult = null;
-        }
-
-        @PreUpdate
-        public void preUpdate() {
-            this.updatedAt = LocalDateTime.now();
-        }
-
-
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.creationDate = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.deletedBy = "";
+        this.isDeleted = false;
+        this.isActive = true;
+        this.deletionDate = null;
+        this.lastTestResult = null;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public boolean isEmpty() {
+        return (alias == null || alias.isBlank()) &&
+                type == null &&
+                host == null &&
+                port == null &&
+                isActive == null &&
+                isDeleted == null &&
+                lastTestResult == null &&
+                username == null &&
+                password == null &&
+                databaseName == null &&
+                schema == null &&
+                createdBy == null &&
+                lastUpdatedBy == null &&
+                deletedBy == null &&
+                creationDate == null &&
+                deletionDate == null &&
+                updatedAt == null;
+    }
+
+}

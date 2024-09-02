@@ -169,4 +169,25 @@ public class DestinationConnection {
                 ", updatedAt=" + updatedAt +
                 '}';
     }
+
+    public boolean isEmpty() {
+        return (alias == null || alias.isBlank()) &&
+                isActive == null &&
+                isDeleted == null &&
+                lastTestResult == null &&
+                secretKey == null &&
+                accessKey == null &&
+                bucketName == null &&
+                region == null &&
+                createdBy == null &&
+                lastUpdatedBy == null &&
+                deletedBy == null &&
+                creationDate == null &&
+                deletionDate == null &&
+                updatedAt == null &&
+                application == null &&
+                (reports == null || reports.isEmpty()) &&
+                (requests == null || requests.isEmpty());
+    }
+
 }

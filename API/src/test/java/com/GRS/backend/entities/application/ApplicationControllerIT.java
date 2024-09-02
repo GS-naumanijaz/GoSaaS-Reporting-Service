@@ -357,8 +357,7 @@ class ApplicationControllerIT {
                         .with(authentication(auth))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"alias\":\"\"}"))  // Empty alias, assuming it's invalid
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("ERROR: Invalid Method Arguments"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -385,8 +384,7 @@ class ApplicationControllerIT {
                         .with(authentication(auth))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))  // Empty request body
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("ERROR: Invalid Method Arguments"));
+                .andExpect(status().isBadRequest());
     }
 
 

@@ -6,6 +6,7 @@ import com.GRS.backend.entities.report.ReportService;
 import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
+import com.GRS.backend.exceptionHandler.exceptions.InvalidRequestBodyException;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
 import com.GRS.backend.utilities.AuditLogGenerator;
@@ -94,7 +95,17 @@ public class ApplicationController {
     }
 
     @PatchMapping("/{appId}")
-    public ResponseEntity<Object> updateApplication(@Valid @RequestBody Application application, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+
+        if (application == null || application.isEmpty()) {
+            throw new InvalidRequestBodyException("The update request body is invalid or empty.");
+        }
+
+        // Check if alias is provided and ensure it's not blank
+        if (application.getAlias() != null && "".equals(application.getAlias())) {
+            throw new InvalidRequestBodyException("Alias must not be blank.");
+        }
+
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application updatedApplication = applicationService.updateApplication(appId, application, username);
         AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedApplication.getAlias(), username);

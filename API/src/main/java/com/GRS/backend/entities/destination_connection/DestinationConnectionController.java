@@ -6,6 +6,7 @@ import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
+import com.GRS.backend.exceptionHandler.exceptions.InvalidRequestBodyException;
 import com.GRS.backend.models.DTO.DestinationConnectionDTO;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
@@ -91,6 +92,15 @@ public class DestinationConnectionController {
 
     @PatchMapping("/{destinationId}")
     public ResponseEntity<Object> updateDestinationConnection(@RequestBody DestinationConnection destinationConnection, @PathVariable int destinationId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+        if (destinationConnection == null || destinationConnection.isEmpty()) {
+            throw new InvalidRequestBodyException("The update request body is invalid or empty.");
+        }
+
+        // Check if alias is provided and ensure it's not blank
+        if (destinationConnection.getAlias() != null && "".equals(destinationConnection.getAlias())) {
+            throw new InvalidRequestBodyException("Alias must not be blank.");
+        }
+
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application destinationApp = applicationService.getApplicationById(appId);
         DestinationConnection updatedDestinationConnection = destinationConnectionService.updateDestinationConnection(destinationId, destinationConnection, username);

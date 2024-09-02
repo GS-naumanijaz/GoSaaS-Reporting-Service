@@ -107,4 +107,22 @@ public class Application {
                 ", updatedAt=" + updatedAt +
                 '}';
     }
+
+    public boolean isEmpty() {
+        return (alias == null || alias.isBlank()) &&
+                description == null &&
+                isActive == null &&
+                isDeleted == null &&
+                createdBy == null &&
+                lastUpdatedBy == null &&
+                deletedBy == null &&
+                creationDate == null &&
+                deletionDate == null &&
+                updatedAt == null &&
+                (reports == null || reports.isEmpty()) &&
+                (destination_connections == null || destination_connections.isEmpty()) &&
+                (source_connections == null || source_connections.isEmpty()) &&
+                (requests == null || requests.isEmpty());
+    }
+
 }

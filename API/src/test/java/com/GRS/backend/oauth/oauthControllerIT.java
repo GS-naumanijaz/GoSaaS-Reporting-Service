@@ -52,6 +52,7 @@ class oauthControllerIT {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
     }
 
     @Test

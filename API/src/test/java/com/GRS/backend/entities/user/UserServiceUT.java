@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -36,7 +37,7 @@ public class UserServiceUT{
         String email = "test@example.com";
         User mockUser = new User();
         mockUser.setEmail(email);
-        when(userRepository.findByEmail(email)).thenReturn(mockUser);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(mockUser));
 
         User result = userService.findUserByEmail(email);
 
@@ -50,7 +51,7 @@ public class UserServiceUT{
         User mockUser = new User();
         mockUser.setEmail(email);
         mockUser.setUsername("testUser");
-        when(userRepository.findByEmail(email)).thenReturn(mockUser);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(mockUser));
 
         String username = userService.getUserNameByEmail(email);
 
@@ -79,7 +80,7 @@ public class UserServiceUT{
         updatedUser.setEmail(existingUser.getEmail());
         updatedUser.setName("New Name");
 
-        when(userRepository.findByEmail(existingUser.getEmail())).thenReturn(existingUser);
+        when(userRepository.findByEmail(existingUser.getEmail())).thenReturn(Optional.of(existingUser));
 
         userService.saveOrUpdateUser(updatedUser);
 

@@ -80,4 +80,24 @@ public class Report {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public boolean isEmpty() {
+        return application == null &&
+                destinationConnection == null &&
+                sourceConnection == null &&
+                (alias == null || alias.isBlank()) &&
+                description == null &&
+                storedProcedure == null &&
+                (params == null || params.length == 0) &&
+                xslTemplate == null &&
+                isDeleted == null &&
+                isPinned == null &&
+                isActive == null &&
+                creationDate == null &&
+                deletionDate == null &&
+                updatedAt == null &&
+                createdBy == null &&
+                lastUpdatedBy == null &&
+                deletedBy == null;
+    }
+
 }
