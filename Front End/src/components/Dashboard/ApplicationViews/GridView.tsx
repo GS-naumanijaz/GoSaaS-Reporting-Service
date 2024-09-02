@@ -89,9 +89,12 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
       await queryClient.refetchQueries({
         queryKey: ["products"],
       });
+
+      handleAddApplicationClose();
+
     } catch (error) {
-      console.error("Failed to save application:", error);
-    }
+      console.error("Failed to save123 application:", error);
+    } 
   };
 
   // Effect to reset page number when search term, filter, or page size changes
@@ -199,6 +202,7 @@ const GridView = ({ handleSelectedView }: ProductsRenderProps) => {
               isFetching={isFetching}
               pageSize={pageSize}
               onPageSizeChange={handlePageSizeChange}
+              searchTerm={searchTerm}
             />
           </motion.div>
         )}

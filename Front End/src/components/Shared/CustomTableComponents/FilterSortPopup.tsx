@@ -34,6 +34,7 @@ import {
   sx,
 } from "../../../configs";
 import { useErrorToast } from "../../../hooks/useErrorToast";
+import { TbMenuOrder } from "react-icons/tb";
 
 interface Props {
   heading: string;
@@ -156,7 +157,7 @@ const FilterSortPopup = ({
         <PopoverTrigger>
           <HStack justifyContent={"center"}>
             <Button variant={"ghost"}>{heading}</Button>
-            <FaRegCaretSquareUp color={primaryColor} size="1.5em" />
+            <TbMenuOrder color={primaryColor} size="1.5em" />
           </HStack>
         </PopoverTrigger>
         <PopoverContent>

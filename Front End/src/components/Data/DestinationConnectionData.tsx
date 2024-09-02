@@ -54,7 +54,7 @@ const DestinationConnectionData = ({
   const { mutate: updateDestinationConnectionStatus } =
     useUpdateDestinationConnectionStatus(appId);
   const testDestinationMutation = useTestDestinationConnection(appId);
-  const { mutate: addDestinationConnection } =
+  const { mutateAsync: addDestinationConnection } =
     useAddDestinationConnection(appId);
   const { mutate: editDestinationConnection } =
     useEditDestinationConnection(appId);
@@ -86,7 +86,8 @@ const DestinationConnectionData = ({
           destinationConnection.bucketName,
           destinationConnection.region,
           destinationConnection.application,
-          destinationConnection.isActive
+          destinationConnection.isActive,
+          destinationConnection.lastTestResult
         )
     );
 
@@ -134,7 +135,7 @@ const DestinationConnectionData = ({
     setPageSize(newPageSize);
   };
 
-  const handleAddNew = (formData: Record<string, string>) => {
+  const handleAddNew = async (formData: Record<string, string>) => {
     let destinationForm = mapFormDataKeys(formData);
     let newDestination = new DestinationConnection(
       undefined,
@@ -144,7 +145,7 @@ const DestinationConnectionData = ({
       destinationForm.bucketName,
       destinationForm.region
     );
-    addDestinationConnection(newDestination);
+    await addDestinationConnection(newDestination);
   };
 
   const handleEdit = (destinationId: number, updatedDestination: any) => {

@@ -71,8 +71,9 @@ public class SourceConnectionController {
     }
 
     @GetMapping("/{sourceId}/test")
-    public ResponseEntity<Object> testSourceConnection(@PathVariable int sourceId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> testSourceConnection(@PathVariable int sourceId, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
+        Application application = applicationService.getApplicationById(appId);
         SourceConnection connectionToTest = sourceConnectionService.getSourceConnectionById(sourceId);
 
         if (sourceConnectionService.testSourceConnection(connectionToTest, username)) {
@@ -81,12 +82,12 @@ public class SourceConnectionController {
         } else {
             return Response.responseBuilder("Source Connection failed test", HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @GetMapping("/{sourceId}/storedProcedures")
-    public ResponseEntity<Object> getSourceConnectionStoredProcedures(@PathVariable int sourceId) {
+    public ResponseEntity<Object> getSourceConnectionStoredProcedures(@PathVariable int sourceId, @PathVariable int appId) {
         SourceConnection sourceConnection = sourceConnectionService.getSourceConnectionById(sourceId);
+        Application application = applicationService.getApplicationById(appId);
 
         List<StoredProcedure> storedProcedures = sourceConnectionService.getSourceConnectionStoredProcedures(sourceConnection);
 
@@ -107,7 +108,7 @@ public class SourceConnectionController {
 
         SourceConnection createdSourceConnection = sourceConnectionService.addSourceConnection(sourceConnection, username);
         AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.SOURCE, createdSourceConnection.getAlias(), username, sourceApp.getAlias());
-        return Response.responseBuilder("Source Connection added successfully", HttpStatus.OK, createdSourceConnection);
+        return Response.responseBuilder("Source Connection added successfully", HttpStatus.CREATED, createdSourceConnection);
     }
 
     @PatchMapping("/{sourceId}")
@@ -133,7 +134,7 @@ public class SourceConnectionController {
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedSources);
         } else if (!updatedSources.isEmpty()){
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.SOURCE, updatedAliases, username, sourceApp.getAlias());
-            return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedSources);
+            return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.MULTI_STATUS, updatedSources);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedSources);
         }
@@ -159,7 +160,7 @@ public class SourceConnectionController {
             return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
         } else if (!deletedAliases.isEmpty()){
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.DELETED, AuditLogModule.SOURCE, deletedAliases, username, sourceApp.getAlias());
-            return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+            return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.MULTI_STATUS);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);
         }

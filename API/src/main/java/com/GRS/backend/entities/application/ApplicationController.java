@@ -70,6 +70,7 @@ public class ApplicationController {
     public ResponseEntity<Object> addApplication(@Valid @RequestBody Application application,OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application createdApplication = applicationService.addApplication(application, username);
+        System.out.println("In add application controller " + createdApplication.getAlias());
         AuditLogGenerator.getInstance().log(AuditLogAction.CREATED, AuditLogModule.APPLICATION, createdApplication.getAlias(), username);
         return Response.responseBuilder("Application added successfully", HttpStatus.CREATED, createdApplication);
     }
@@ -86,14 +87,14 @@ public class ApplicationController {
             return Response.responseBuilder("All Source Connections updated successfully", HttpStatus.OK, updatedApps);
         } else if (updatedApps.size() != 0){
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedAliases, username);
-            return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.PARTIAL_CONTENT, updatedApps);
+            return Response.responseBuilder("Some Source Connections could not be updated", HttpStatus.MULTI_STATUS, updatedApps);
         } else {
             return Response.responseBuilder("None of the Source Connections could not be updated", HttpStatus.BAD_REQUEST, updatedApps);
         }
     }
 
     @PatchMapping("/{appId}")
-    public ResponseEntity<Object> updateApplication(@RequestBody Application application, @PathVariable int appId, OAuth2AuthenticationToken auth) {
+    public ResponseEntity<Object> updateApplication(@Valid @RequestBody Application application, @PathVariable int appId, OAuth2AuthenticationToken auth) {
         String username = userService.getUserNameByEmail(OAuthUtil.getEmail(auth));
         Application updatedApplication = applicationService.updateApplication(appId, application, username);
         AuditLogGenerator.getInstance().log(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, updatedApplication.getAlias(), username);
@@ -112,7 +113,7 @@ public class ApplicationController {
     public ResponseEntity<Object> getAllPinnedReports() {
         List<Report> allSourceConnections = reportService.getAllPinnedReports();
 
-        return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
+        return Response.responseBuilder("Pinned Reports found successfully", HttpStatus.OK, allSourceConnections);
     }
 
 
@@ -124,12 +125,12 @@ public class ApplicationController {
 
         if (deletedApps.size() == applicationIds.size()) {
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, deletedApps, username);
-            return Response.responseBuilder("All Source Connections deleted successfully", HttpStatus.OK);
+            return Response.responseBuilder("All Applications deleted successfully", HttpStatus.OK);
         } else if (!deletedApps.isEmpty()){
             AuditLogGenerator.getInstance().logBulk(AuditLogAction.MODIFIED, AuditLogModule.APPLICATION, deletedApps, username);
-            return Response.responseBuilder("Some Source Connections could not be deleted", HttpStatus.PARTIAL_CONTENT);
+            return Response.responseBuilder("Some Applications could not be deleted", HttpStatus.MULTI_STATUS);
         } else {
-            return Response.responseBuilder("None of the Source Connections could not be deleted", HttpStatus.BAD_REQUEST);
+            return Response.responseBuilder("None of the Applications could not be deleted", HttpStatus.BAD_REQUEST);
         }
     }
 }

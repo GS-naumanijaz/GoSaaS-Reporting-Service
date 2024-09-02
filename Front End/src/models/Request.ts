@@ -7,7 +7,7 @@ export class Request extends TableRowData {
   private reportName: string;
   private applicationAlias: string;
   private createdBy: string;
-  private status: string;
+  public status: string;
   public reportLink: string;
   private destination: DestinationConnection;
 

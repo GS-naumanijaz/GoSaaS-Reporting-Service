@@ -11,47 +11,39 @@ interface Props {
 
 const TdSwitch = ({ row, isEditable, handleToggleSwitch }: Props) => {
   return (
-    <Tooltip
-      bg={secondaryColor}
-      color="black"
-      label={row.getSwitchStatus() ? "Active" : "Inactive"}
-    >
-      <Td textAlign="center">
-        {row.getTableHeader() === "Applications" ? (
-          <Text
-            color={row.getSwitchStatus() ? "green.500" : "red.500"}
-            fontWeight="bold"
-            fontSize="lg"
-          >
-            <HStack spacing={3} justifyContent={"center"}>
-              <Icon
-                as={row.getSwitchStatus() ? FaCheckCircle : FaTimesCircle}
-              />
-              <span>{row.getSwitchStatus() ? "Active" : "Inactive"}</span>
-            </HStack>
-          </Text>
-        ) : (
-          <Switch
-            isChecked={row.getSwitchStatus()}
-            onChange={() => handleToggleSwitch(row.getId())}
-            isDisabled={!isEditable}
-            sx={{
-              "& .chakra-switch__track": {
-                bg: row.getSwitchStatus() ? primaryColor : "gray.200",
-                opacity: 1, // Ensure the track's background doesn't fade when disabled
-              },
-              "& .chakra-switch__thumb": {
-                bg: row.getSwitchStatus() ? "white" : "gray.500",
-                opacity: 1, // Ensure the track's background doesn't fade when disabled
-              },
-              "&:disabled .chakra-switch__track": {
-                cursor: "not-allowed", // Optionally, change the cursor when disabled
-              },
-            }}
-          />
-        )}
-      </Td>
-    </Tooltip>
+    <Td textAlign="center">
+      {row.getTableHeader() === "Applications" ? (
+        <Text
+          color={row.getSwitchStatus() ? "green.500" : "red.500"}
+          fontWeight="bold"
+          fontSize="lg"
+        >
+          <HStack spacing={3} justifyContent={"center"}>
+            <Icon as={row.getSwitchStatus() ? FaCheckCircle : FaTimesCircle} />
+            <span>{row.getSwitchStatus() ? "Active" : "Inactive"}</span>
+          </HStack>
+        </Text>
+      ) : (
+        <Switch
+          isChecked={row.getSwitchStatus()}
+          onChange={() => handleToggleSwitch(row.getId())}
+          isDisabled={!isEditable}
+          sx={{
+            "& .chakra-switch__track": {
+              bg: row.getSwitchStatus() ? primaryColor : "gray.200",
+              opacity: 1, // Ensure the track's background doesn't fade when disabled
+            },
+            "& .chakra-switch__thumb": {
+              bg: row.getSwitchStatus() ? "white" : "gray.500",
+              opacity: 1, // Ensure the track's background doesn't fade when disabled
+            },
+            "&:disabled .chakra-switch__track": {
+              cursor: "not-allowed", // Optionally, change the cursor when disabled
+            },
+          }}
+        />
+      )}
+    </Td>
   );
 };
 

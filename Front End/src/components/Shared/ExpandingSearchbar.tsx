@@ -83,6 +83,7 @@ const ExpandingSearchbar = ({ onSearch, bg = "gray.100", children }: Props) => {
                 onChange={handleChange}
                 focusBorderColor={primaryColor}
                 value={searchTerm}
+                maxLength={50}
               />
             </Box>
           </Tooltip>

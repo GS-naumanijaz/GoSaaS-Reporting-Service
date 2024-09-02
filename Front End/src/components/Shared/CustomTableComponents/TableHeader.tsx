@@ -19,8 +19,9 @@ interface Props {
   handleBulkSwitchActions: (status: boolean) => void;
   handleBulkDeleteRows: () => void;
   productDetails?: Product;
-  onAddNew: () => void;
+  onAddNew: () => Promise<void>;
   isConnection?: boolean;
+  setCanTest: (newValue: boolean) => void;
   checkedStatuses: boolean[];
 }
 
@@ -33,6 +34,7 @@ const TableHeader = ({
   productDetails,
   onAddNew,
   isConnection = false,
+  setCanTest,
   checkedStatuses,
 }: Props) => {
   const navigate = useNavigate();
@@ -43,6 +45,7 @@ const TableHeader = ({
 
   const handleAddApplicationClose = () => {
     setIsAddApplicationOpen(false);
+    
   };
 
   const onclose: (() => void) | null = null;
@@ -53,6 +56,7 @@ const TableHeader = ({
   const handleAddApplicationSubmit = async (
     formData: Record<string, string>
   ) => {
+    console.log("hello")
     try {
       await saveAppMutation.mutateAsync({
         applicationName: formData.applicationName,
@@ -62,10 +66,12 @@ const TableHeader = ({
       await queryClient.refetchQueries({
         queryKey: ["products"],
       });
+
       setIsAddApplicationOpen(false);
+
     } catch (error) {
-      console.error("Failed to save application:", error);
-    }
+      console.error("Failed to save987 application:", error);
+    } 
   };
 
   const renderActionButton = () => {
@@ -80,6 +86,7 @@ const TableHeader = ({
           onSubmit={onAddNew}
           tooltipLabel="Add new"
           tooltipHasArrow
+          setCanTest={setCanTest}
         />
       );
     } else if (tableHeading === "Reports") {

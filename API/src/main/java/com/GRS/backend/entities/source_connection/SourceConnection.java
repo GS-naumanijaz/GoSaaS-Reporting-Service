@@ -7,6 +7,7 @@
     import com.GRS.backend.utilities.EncryptionUtility;
     import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
+    import jakarta.validation.constraints.NotBlank;
     import jakarta.validation.constraints.NotNull;
     import lombok.Getter;
     import lombok.Setter;
@@ -14,6 +15,7 @@
     import javax.crypto.SecretKey;
     import java.time.LocalDateTime;
     import java.util.HashSet;
+    import java.util.Objects;
     import java.util.Set;
 
     @Entity
@@ -35,10 +37,9 @@
         @OneToMany(mappedBy = "sourceConnection", cascade = CascadeType.ALL)
         private Set<Report> reports = new HashSet<>();
 
-        @NotNull(message = "Alias must not be null")
+        @NotBlank(message = "Alias must not be blank")
         private String alias;
 
-        @NotNull(message = "Type must not be null")
         private SourceConnectionType type;
 
         private String host;
@@ -51,10 +52,8 @@
 
         private Boolean lastTestResult;
 
-        @NotNull
         private String username;
 
-        @NotNull
         private String password;
 
         private String databaseName;
@@ -75,6 +74,12 @@
 
         @JsonIgnore
         private String key;
+
+        public SourceConnection() {}
+
+        public SourceConnection(int id) {
+            this.id = id;
+        }
 
         public void addReport(Report report) {
             this.reports.add(report);
@@ -115,10 +120,12 @@
             }
 
             try {
-                SecretKey key = EncryptionUtility.generateKey();
-                String encryptedPassword = EncryptionUtility.encrypt(this.password, key);
-                this.password = encryptedPassword;
-                this.key = EncryptionUtility.encodeKey(key);
+                if (this.password != null) {
+                    SecretKey key = EncryptionUtility.generateKey();
+                    String encryptedPassword = EncryptionUtility.encrypt(this.password, key);
+                    this.password = encryptedPassword;
+                    this.key = EncryptionUtility.encodeKey(key);
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Failed to encrypt password", e);
             }

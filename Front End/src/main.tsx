@@ -17,7 +17,16 @@ const { ToastContainer } = createStandaloneToast();
 // Polyfill global for AWS SDK v2
 window.global = window;
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+// Get the root element
+const rootElement = document.getElementById("root") as HTMLElement;
+
+// rootElement.style.transform = "scale(0.70)";
+// rootElement.style.transformOrigin = "top left";
+
+// rootElement.style.width = "142.86%"; 
+// rootElement.style.height = "142.86%"; 
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>

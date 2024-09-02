@@ -57,4 +57,10 @@ export abstract class TableRowData {
   getDisableDownload(): boolean {
     return true;
   }
+  getLastTestResult(): boolean | undefined {
+    throw new Error("This component cant be tested");
+  }
+  setLastTestResult(result: boolean | undefined) {
+    throw new Error("This component cant be tested");
+  }
 }

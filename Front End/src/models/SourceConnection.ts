@@ -178,7 +178,7 @@ export class SourceConnection extends TableRowData {
       type: "password",
       validation: {
         required: true,
-        minLength: 8,
+        minLength: 4,
         maxLength: 100,
         pattern: /^[a-zA-Z0-9\W_]+$/,
         customErrorMessage:
@@ -337,6 +337,14 @@ export class SourceConnection extends TableRowData {
     return SourceConnection.columnWidths.slice(1);
   }
 
+  getLastTestResult(): boolean | undefined {
+    return this.lastTestResult;
+  }
+
+  setLastTestResult(result: boolean | undefined): void {
+    this.lastTestResult = result;
+  }
+
   editRowData(elementIndex: number, newValue: string): void {
     switch (elementIndex) {
       case 0:
@@ -378,6 +386,7 @@ export class SourceConnection extends TableRowData {
   }
 
   getPartialData(indexes: number[]): Partial<SourceConnection> {
+    console.log("hello source");
     return indexes.reduce((partialData, index) => {
       return { ...partialData, ...this.getPartialDataObject(index) };
     }, {});

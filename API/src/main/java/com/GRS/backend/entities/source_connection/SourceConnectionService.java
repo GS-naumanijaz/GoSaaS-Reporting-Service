@@ -1,6 +1,7 @@
 package com.GRS.backend.entities.source_connection;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.base_models.ConnectionSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.report.Report;
@@ -72,7 +73,8 @@ public class SourceConnectionService {
         if (existingApplicationOpt.isPresent() && Boolean.TRUE.equals(!existingApplicationOpt.get().getIsDeleted())) {
             Specification<SourceConnection> spec = Specification
                     .<SourceConnection>where(BaseSpecification.belongsTo("application", appId))
-                    .and(BaseSpecification.isActive());
+                    .and(BaseSpecification.isActive())
+                    .and(ConnectionSpecification.passedLastTestResult());
 
             return sourceConnectionRepository.findAll(spec).stream()
                     .map(sourceConnection -> new SourceConnectionDTO(sourceConnection.getId(), sourceConnection.getAlias()))
@@ -108,6 +110,15 @@ public class SourceConnectionService {
         String driverClassName  = sourceConnection.getType().getDriverClassName();
 
         boolean testResult = DatabaseUtilities.tryConnect(url, username, password, driverClassName);
+
+        if (!testResult) {
+            List<Report> reportsToUpdate = new ArrayList<>(sourceConnection.getReports());
+            for (Report report: reportsToUpdate) {
+                report.setIsActive(false);
+                report.setLastUpdatedBy(username);
+                reportRepository.save(report);
+            }
+        }
 
         sourceConnection.encryptPassword();
         SourceConnection updatedSource = new SourceConnection();
@@ -151,8 +162,13 @@ public class SourceConnectionService {
                 reportRepository.save(report);
             }
 
+            if (sourceConnection.getLastTestResult() == null) {
+                existingSourceConnection.setLastTestResult(null);
+            }
+
             existingSourceConnection.setLastUpdatedBy(username);
             existingSourceConnection.encryptPassword();
+
             return sourceConnectionRepository.save(existingSourceConnection);
         } else {
             throw new EntityNotFoundException("Source Connection", sourceConnectionId);

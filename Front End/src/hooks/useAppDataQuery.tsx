@@ -35,14 +35,6 @@ export const useAppDataMutation = (onclose: () => void) => {
         description: formData.applicationDescription,
       });
     },
-    onError: (error: any) => {
-      console.log("Fail");
-      useErrorToast()(error.message);
-    },
-    onSuccess: () => {
-      console.log("Success");
-      onclose();
-    },
   });
 };
 

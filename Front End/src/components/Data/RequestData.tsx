@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { TableManager } from "../../models/TableManager";
 import { fieldMapping, FieldMappingKey } from "../../services/sortMappings";
 import CustomTable from "../Shared/CustomTable";
@@ -31,7 +32,7 @@ const RequestData = () => {
   const actualSearchField =
     fieldMapping[searchField as FieldMappingKey] || searchField;
 
-  const { data, isLoading } = useRequestsQuery(
+  const { data, refetch, isLoading } = useRequestsQuery(
     sortField,
     sortOrder,
     page,
@@ -59,6 +60,21 @@ const RequestData = () => {
 
   const manager = new TableManager(new Request(), RequestList);
 
+  // Refetch logic for "inprogress" status
+  useEffect(() => {
+    const hasInProgressReports = RequestList.some(
+      (request) => request.status === "inprogress"
+    );
+
+    if (hasInProgressReports) {
+      const intervalId = setInterval(() => {
+        refetch();
+      }, 5000); // Refetch every 5 seconds
+
+      return () => clearInterval(intervalId); // Cleanup on unmount or when no "inprogress" reports
+    }
+  }, [RequestList, refetch]);
+
   function handleSearch(searchTerm: string, field: string): void {
     setSearchTerm(searchTerm);
     setSearchField(field);
@@ -66,7 +82,6 @@ const RequestData = () => {
   }
 
   function handleSort(field: string, order: string): void {
-    console.log("Order: ", order);
     const mappedField = fieldMapping[field as FieldMappingKey] || field;
     setSortField(mappedField);
     setSortOrder(order);
@@ -80,7 +95,6 @@ const RequestData = () => {
   }
 
   function handleClearSort(): void {
-    console.log("Clearing sort");
     setSortField("createdAt");
     setSortOrder("desc");
     setCurrentPage(0);
@@ -108,9 +122,6 @@ const RequestData = () => {
   function handleDownload(index: number) {
     let request = RequestList[index];
     let destination = request.getDestination();
-
-    console.log(request);
-    console.log(destination);
 
     const s3 = new S3Client({
       region: destination.region,

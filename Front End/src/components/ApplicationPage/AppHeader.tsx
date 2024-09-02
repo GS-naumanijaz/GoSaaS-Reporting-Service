@@ -27,11 +27,14 @@ import {
 } from "../../configs";
 import { Application } from "./AppDashboard";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import useProductStore from "../../store/ProductStore";
 import {
   useDeleteApplicationMutation,
   useEditApplicationMutation,
   useSaveApplicationMutation,
 } from "../../hooks/useAppDataQuery";
+import { IoArrowBack } from "react-icons/io5";
 
 interface Props {
   appData?: Application;
@@ -92,9 +95,28 @@ const AppHeader = ({ appData }: Props) => {
     onDeleteClose();
   };
 
+  // const handleSave = () => {
+  //   // First, update the state with the created_by field
+  //   setNewAppData((prev) => ({
+  //     ...prev,
+  //     createdBy: user?.fullName || "",
+  //   }));
+  //   saveApplication.mutate(newAppData);
+  //   onSaveClose();
+  // };
+
+  function assignUpdatedField<K extends keyof Application>(
+    obj: Partial<Application>,
+    key: K,
+    value: Application[K]
+  ) {
+    obj[key] = value;
+  }
+
   const handleSave = () => {
     const updatedFields: Partial<Application> = {};
 
+    // Compare newAppData with originalApp and only add changed fields to updatedFields
     Object.keys(newAppData).forEach((key) => {
       const keyTyped = key as keyof Application;
       if (newAppData[keyTyped] !== appData?.[keyTyped]) {
@@ -102,10 +124,13 @@ const AppHeader = ({ appData }: Props) => {
       }
     });
 
+    // If there are any updated fields, send the update request
     if (Object.keys(updatedFields).length > 0) {
       if (appData?.id) {
+        // Use the edit mutation if appData exists (this means we are editing)
         editApplication.mutate({ id: appData.id, ...updatedFields });
       } else {
+        // Otherwise, use the add mutation (this means we are adding a new application)
         saveApplication.mutate(updatedFields);
       }
     } else {
@@ -140,6 +165,15 @@ const AppHeader = ({ appData }: Props) => {
         borderBottomColor={"lightgrey"}
         borderBottomWidth={3}
       >
+        <Button
+          variant="link"
+          p={0}
+          _active={{ color: primaryColor }}
+          color={primaryColor}
+          onClick={() => navigate(-1)}
+        >
+          <IoArrowBack size={35} />
+        </Button>
         <Tooltip
           label={
             newAppData.isActive
@@ -172,6 +206,7 @@ const AppHeader = ({ appData }: Props) => {
         <HStack spacing={5}>
           <Tooltip hasArrow label="Save" bg={primaryColor}>
             <Button
+              isDisabled={!validationCheck(newAppData)}
               variant="link"
               p={0}
               _active={

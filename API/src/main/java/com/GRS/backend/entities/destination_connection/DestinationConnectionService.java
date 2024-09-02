@@ -1,6 +1,7 @@
 package com.GRS.backend.entities.destination_connection;
 
 import com.GRS.backend.base_models.BaseSpecification;
+import com.GRS.backend.base_models.ConnectionSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
 import com.GRS.backend.entities.report.Report;
@@ -59,7 +60,8 @@ public class DestinationConnectionService {
         if (existingApplicationOpt.isPresent() && !existingApplicationOpt.get().getIsDeleted()) {
             Specification<DestinationConnection> spec = Specification
                     .<DestinationConnection> where(BaseSpecification.belongsTo("application", appId))
-                    .and(BaseSpecification.isActive());
+                    .and(BaseSpecification.isActive())
+                    .and(ConnectionSpecification.passedLastTestResult());
 
             return destinationConnectionRepository.findAll(spec).stream()
                     .map(destinationConnection -> new DestinationConnectionDTO(destinationConnection.getId(), destinationConnection.getAlias()))
@@ -90,9 +92,23 @@ public class DestinationConnectionService {
         String region = destinationConnection.getRegion();
 
 
+        boolean testResult;
+        try {
+            testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
+        } catch (Exception e) {
+            e.printStackTrace();
+            testResult = false;
+        }
 
+        if (!testResult) {
+            List<Report> reportsToUpdate = new ArrayList<>(destinationConnection.getReports());
+            for (Report report: reportsToUpdate) {
+                report.setIsActive(false);
+                report.setLastUpdatedBy(username);
+                reportRepository.save(report);
+            }
+        }
 
-        boolean testResult = S3BucketTester.testS3Connection(accessKey, secretKey, bucketName, region);
 
         destinationConnection.encryptSecretKey();
         DestinationConnection updatedDestination = new DestinationConnection();
@@ -112,6 +128,7 @@ public class DestinationConnectionService {
         DestinationConnection existingDestination = destinationConnectionRepository.findById(destinationConnectionId)
                 .orElseThrow(() -> new EntityNotFoundException("Destination Connection", destinationConnectionId));
 
+
         existingDestination.decryptSecretKey();
         FieldUpdater.updateField(existingDestination, "alias", destinationConnection);
         FieldUpdater.updateField(existingDestination, "bucketName", destinationConnection);
@@ -119,6 +136,8 @@ public class DestinationConnectionService {
         FieldUpdater.updateField(existingDestination, "isActive", destinationConnection);
         FieldUpdater.updateField(existingDestination, "secretKey", destinationConnection);
         FieldUpdater.updateField(existingDestination, "accessKey", destinationConnection);
+        FieldUpdater.updateField(existingDestination, "lastTestResult", destinationConnection);
+
 
         if (!Boolean.TRUE.equals(existingDestination.getIsActive())) {
             for (Report report : existingDestination.getReports()) {
@@ -127,8 +146,13 @@ public class DestinationConnectionService {
             }
         }
 
+        if (destinationConnection.getLastTestResult() == null) {
+            existingDestination.setLastTestResult(null);
+        }
+
         existingDestination.setLastUpdatedBy(username);
         existingDestination.encryptSecretKey();
+
         return destinationConnectionRepository.save(existingDestination); // Save attached entity
     }
 

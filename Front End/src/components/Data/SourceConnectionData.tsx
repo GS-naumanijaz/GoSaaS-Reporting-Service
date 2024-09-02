@@ -51,7 +51,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   const { mutate: updateSourceConnectionStatus } =
     useUpdateSourceConnectionStatus(appId);
   const { mutateAsync: testSourceConnection } = useTestSourceConnection(appId);
-  const { mutate: addSourceConnection } = useAddSourceConnection(appId);
+  const { mutateAsync: addSourceConnection } = useAddSourceConnection(appId);
   const { mutate: editSourceConnection } = useEditSourceConnection(appId);
 
   // Determine the actual field to search by, using fieldMapping if it exists
@@ -129,7 +129,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
     setPageSize(newPageSize);
   };
 
-  const handleAddNew = (formData: Record<string, string>) => {
+  const handleAddNew = async (formData: Record<string, string>) => {
     let sourceForm = mapFormDataKeys(formData);
     let newSource = new SourceConnection(
       undefined,
@@ -145,7 +145,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
       undefined,
       sourceForm.schema
     );
-    addSourceConnection(newSource);
+    await addSourceConnection(newSource);
   };
 
   const handleEdit = (sourceId: number, updatedSource: any) => {

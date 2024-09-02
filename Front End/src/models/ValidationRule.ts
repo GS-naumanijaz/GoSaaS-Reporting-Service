@@ -12,13 +12,13 @@ export const validateField = (value: string, validation?: ValidationRule): strin
   if (validation.required && !value) {
     return "This field is required";
   }
-  if (validation.minLength && value.length < validation.minLength) {
+  if (validation.required && validation.minLength && value.length < validation.minLength) {
     return `Minimum length is ${validation.minLength}`;
   }
-  if (validation.maxLength && value.length > validation.maxLength) {
+  if (validation.required && validation.maxLength && value.length > validation.maxLength) {
     return `Maximum length is ${validation.maxLength}`;
   }
-  if (validation.pattern && !validation.pattern.test(value)) {
+  if (validation.required && validation.pattern && !validation.pattern.test(value)) {
     return validation.customErrorMessage || "Invalid format";
   }
   return "";

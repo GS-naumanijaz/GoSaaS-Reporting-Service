@@ -11,6 +11,7 @@ export class DestinationConnection extends TableRowData {
   public region: string;
   private application: Application;
   private isActive: boolean;
+  public lastTestResult?: boolean;
 
   //Static variables
   private static tableHeader = "Destination Connections";
@@ -105,7 +106,7 @@ export class DestinationConnection extends TableRowData {
       validation: {
         required: true,
         minLength: 8,
-        maxLength: 30,
+        maxLength: 50,
         pattern: /^[a-zA-Z0-9 _-]+$/,
         customErrorMessage:
           "Secret Key must be 8-30 characters long and contain only letters, numbers, spaces, underscores, or hyphens.",
@@ -171,7 +172,8 @@ export class DestinationConnection extends TableRowData {
       deletionDate: null,
       updatedAt: "",
     },
-    isActive: boolean = false
+    isActive: boolean = false,
+    lastTestResult?: boolean
   ) {
     super();
     this.id = connectionId;
@@ -180,9 +182,9 @@ export class DestinationConnection extends TableRowData {
     this.region = region;
     this.accessKey = access_key;
     this.secretKey = secret_key;
-    // this.appId = appId;
     this.application = application;
     this.isActive = isActive;
+    this.lastTestResult = lastTestResult;
   }
 
   getId(): number {
@@ -231,6 +233,14 @@ export class DestinationConnection extends TableRowData {
     return DestinationConnection.columnWidths.slice(1);
   }
 
+  getLastTestResult(): boolean | undefined {
+    return this.lastTestResult;
+  }
+
+  setLastTestResult(result: boolean | undefined): void {
+    this.lastTestResult = result;
+  }
+
   editRowData(elementIndex: number, newValue: string): void {
     switch (elementIndex) {
       case 0:
@@ -269,16 +279,16 @@ export class DestinationConnection extends TableRowData {
     switch (index) {
       case 0:
         return { alias: this.alias } as Partial<DestinationConnection>;
-      case 2:
-        return {
-          databaseName: this.bucketName,
-        } as Partial<DestinationConnection>;
-      case 3:
-        return { host: this.region } as Partial<DestinationConnection>;
       case 1:
-        return { type: this.accessKey } as Partial<DestinationConnection>;
+        return {
+          bucketName: this.bucketName,
+        } as Partial<DestinationConnection>;
+      case 2:
+        return { region: this.region } as Partial<DestinationConnection>;
+      case 3:
+        return { accessKey: this.accessKey } as Partial<DestinationConnection>;
       case 4:
-        return { port: this.secretKey } as Partial<DestinationConnection>;
+        return { secretKey: this.secretKey } as Partial<DestinationConnection>;
       default:
         return {} as Partial<DestinationConnection>;
     }

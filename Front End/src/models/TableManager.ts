@@ -96,6 +96,8 @@ export class TableManager {
   }
 
   getPartialRowItem(index: number): any {
+
+    
     const differentIndexes: number[] = [];
 
     for (let i = 0; i < this.preEditRows[index].length; i++) {
@@ -115,6 +117,8 @@ export class TableManager {
         isActive: this.data[index].getSwitchStatus(),
       };
     }
+
+    console.log("hello from tablemmanager", partialData);
 
     return partialData;
   }
@@ -244,4 +248,15 @@ export class TableManager {
     }
     return false;
   }
+
+  getLastTestResult(index: number): boolean | undefined {
+    if (this.data.length > index) {
+      return this.data[index].getLastTestResult();
+    }
+    return false;
+  }
+  setLastTestResult(index: number, result: boolean | undefined) {
+    this.data[index].setLastTestResult(result);
+  }
+
 }

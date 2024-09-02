@@ -114,6 +114,8 @@ const CustomTable = ({
     });
   };
 
+  const [canTest, setCanTest] = useState(true);
+
   useEffect(() => {
     updateState();
   }, [tableManager]);
@@ -237,6 +239,7 @@ const CustomTable = ({
           tableManager.getTableHeader() === "Source Connections" ||
           tableManager.getTableHeader() === "Destination Connections"
         }
+        setCanTest={setCanTest}
         checkedStatuses={tableManager.getCheckedStatuses()}
       />
       <Stack spacing={6} align="stretch" width="100%" maxW="500px" mx="auto">
@@ -455,7 +458,13 @@ const CustomTable = ({
                                 : () => handleEditToggle(rowIndex)
                             }
                             revertEdit={() => revertEdit(rowIndex)}
-                            saveEdit={() => handleEditSave(rowIndex)}
+                            saveEdit={() => {
+                              handleEditSave(rowIndex);
+                              setCanTest(false);
+                              setTimeout(() => {
+                                setCanTest(true);
+                              }, 1000);
+                            }}
                           />
                         )}
 
@@ -479,6 +488,13 @@ const CustomTable = ({
                     <TdTestButton
                       onClick={() => onTestConnection!(row.getId())}
                       isEditingMode={isEditingMode()}
+                      lastTestResult={tableManager.getLastTestResult(rowIndex)}
+                      setLastTestResult={(result: boolean) => {
+                        tableManager.setLastTestResult(rowIndex, result);
+                        updateState();
+                      }}
+                      rowIndex={rowIndex}
+                      canTest={canTest}
                     />
                   )}
                 </Tr>

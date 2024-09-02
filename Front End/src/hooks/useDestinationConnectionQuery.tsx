@@ -109,9 +109,15 @@ export const useUpdateDestinationConnectionStatus = (appId: number) => {
 // Hook to test a specific destination connection
 export const useTestDestinationConnection = (appId: number) => {
   const apiClient = createApiClient(appId);
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (destinationId: number) => apiClient.get(`${destinationId}/test`),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        predicate: invalidateDestinationAndReportsConnections(appId),
+      });
+    },
   });
 };
 

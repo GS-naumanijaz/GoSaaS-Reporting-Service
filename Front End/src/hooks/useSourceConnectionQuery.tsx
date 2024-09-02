@@ -112,6 +112,7 @@ export const useUpdateSourceConnectionStatus = (appId: number) => {
 
 // Hook to test a specific source connection
 export const useTestSourceConnection = (appId: number) => {
+  const queryClient = useQueryClient();
   const apiClient = createApiClient(appId);
 
   return useMutation<SourceConnection | null, AxiosError, number>({
@@ -126,6 +127,11 @@ export const useTestSourceConnection = (appId: number) => {
       } catch (error) {
         throw error;
       }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        predicate: invalidateSourceAndReportsConnections(appId),
+      });
     },
   });
 };
