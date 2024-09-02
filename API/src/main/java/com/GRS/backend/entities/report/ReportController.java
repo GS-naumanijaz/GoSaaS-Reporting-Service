@@ -11,7 +11,6 @@ import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
 import com.GRS.backend.exceptionHandler.exceptions.InvalidRequestBodyException;
-import com.GRS.backend.models.DTO.ReportDTO;
 import com.GRS.backend.models.ReportRequestBody;
 import com.GRS.backend.resolver.QueryArgumentResolver;
 import com.GRS.backend.response.Response;
@@ -58,6 +57,12 @@ public class ReportController {
         Page<Report> allReports = reportService.getAllReports(appId, search, searchBy, pageable);
 
         return Response.responseBuilder("Reports retrieved successfully", HttpStatus.OK, allReports);
+    }
+
+    @GetMapping("/getAllIds")
+    public ResponseEntity<List<Number>> getAllReportIds() {
+        List<Number> allReportIds = reportService.getAllReportIds();
+        return ResponseEntity.ok(allReportIds);
     }
 
     @GetMapping("/{reportId}")

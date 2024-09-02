@@ -35,7 +35,11 @@ import { ReportsConnection } from "../../models/ReportsConnection";
 import { ImCross } from "react-icons/im";
 import TdRedirect from "./CustomTableComponents/TdRedirect";
 import { FaDownload } from "react-icons/fa";
-// import { getAllIds } from "../../hooks/useProductsQuery";
+import { getAllIds } from "../../hooks/useProductsQuery";
+import { getAllSourceIds } from "../../hooks/useSourceConnectionQuery";
+import { getAllDestinationIds } from "../../hooks/useDestinationConnectionQuery";
+import { getAllReportIds } from "../../hooks/useReportsQuery";
+import { useErrorToast } from "../../hooks/useErrorToast";
 
 interface Props {
   tableManager: TableManager;
@@ -66,6 +70,7 @@ interface Props {
   handleClearSort: () => void;
   handleDownload?: (reportIndex: number) => void;
   isLoading?: boolean;
+  appId?: number;
 }
 
 const CustomTable = ({
@@ -91,6 +96,7 @@ const CustomTable = ({
   handleClearDates,
   handleDownload,
   isLoading,
+  appId = 0,
 }: Props) => {
   const [tableState, setTableState] = useState({
     tableData: tableManager.getTableData(),
@@ -120,25 +126,53 @@ const CustomTable = ({
     updateState();
   }, [tableManager]);
 
-  // useEffect(() => {
-  //   const fetchAndSetAllIds = async () => {
-  //     if (selectedAll) {
-  //       try {
-  //         const ids = await getAllIds();
-  // tableManager.setCheckedIds(ids);
-  //       } catch (error) {
-  //         console.error("Failed to fetch IDs:", error);
-  //       } finally {
-  //         setSelectedAll(false);
-  //       }
-  //     }
-  //   };
-  //   fetchAndSetAllIds();
-  // }, [selectedAll, tableManager]);
+  useEffect(() => {
+    const fetchAndSetAllIds = async () => {
+      if (selectedAll) {
+        try {
+          let ids: number[] = [];
+          switch (tableManager.getTableHeader()) {
+            case "Applications": {
+              ids = await getAllIds();
+              break;
+            }
+            case "Source Connections": {
+              ids = await getAllSourceIds(appId);
+              break;
+            }
+            case "Destination Connections": {
+              ids = await getAllDestinationIds(appId);
+              console.log("dest: ", ids);
+              break;
+            }
+            case "Reports": {
+              ids = await getAllReportIds(appId);
+              break;
+            }
+          }
+          tableManager.setSelectedAll(ids);
+        } catch (error) {
+          console.error("Failed to fetch IDs:", error);
+        } finally {
+          useErrorToast(
+            tableManager.getTableHeader(),
+            "green"
+          )(`Selected All ${tableManager.getTableHeader()}`);
+          setSelectedAll(false);
+        }
+      }
+    };
+    fetchAndSetAllIds();
+  }, [selectedAll, tableManager]);
 
   const handleBulkSwitchActions = (newStatus: boolean) => {
     if (onBulkUpdateStatus) {
-      onBulkUpdateStatus(tableManager.getCheckedIds(), newStatus);
+      onBulkUpdateStatus(
+        tableManager.getSelectedAll().length === 0
+          ? tableManager.getCheckedIds()
+          : tableManager.getSelectedAll(),
+        newStatus
+      );
     }
   };
 
@@ -184,7 +218,11 @@ const CustomTable = ({
   };
 
   const handleBulkDeleteRows = () => {
-    onBulkDelete(tableManager.getCheckedIds());
+    onBulkDelete(
+      tableManager.getSelectedAll().length === 0
+        ? tableManager.getCheckedIds()
+        : tableManager.getSelectedAll()
+    );
   };
 
   const {

@@ -181,6 +181,7 @@ const ReportsConnectionData = ({ product }: ReportsConnectionDataProps) => {
         throw new Error("Function not implemented.");
       }}
       isLoading={isLoading}
+      appId={productId}
     />
   );
 };

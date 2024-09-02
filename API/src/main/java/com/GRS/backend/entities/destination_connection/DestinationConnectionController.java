@@ -54,6 +54,12 @@ public class DestinationConnectionController {
         return Response.responseBuilder("Destination Connections found successfully", HttpStatus.OK, allSourceConnections);
     }
 
+    @GetMapping("/getAllIds")
+    public ResponseEntity<List<Number>> getAllDestinationIds() {
+        List<Number> allDestinationIds = destinationConnectionService.getAllDestinationIds();
+        return ResponseEntity.ok(allDestinationIds);
+    }
+
     @GetMapping("/{destinationId}")
     public ResponseEntity<Object> getDestinationConnectionById(@PathVariable int destinationId, @PathVariable int appId) {
         Application application = applicationService.getApplicationById(appId);

@@ -240,5 +240,9 @@ public class DestinationConnectionService {
     }
 
 
-
+    public List<Number> getAllDestinationIds() {
+        return destinationConnectionRepository.findAll().stream()
+                .map(DestinationConnection::getId)
+                .collect(Collectors.toList());
+    }
 }

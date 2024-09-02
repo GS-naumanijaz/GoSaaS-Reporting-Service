@@ -167,3 +167,14 @@ export const useGetDestinationConnectionsListQuery = (appId: number) => {
     staleTime: 1000 * 60 * 5, 
   });
 };
+
+export const getAllDestinationIds = async (appId: number): Promise<number[]> => {
+  const apiClient = createApiClient(appId);
+  try {
+    const response = await apiClient.getAllIds(); // response is of type AxiosResponse<number[]>
+    return response.data; // Directly return the number[] array
+  } catch (error) {
+    console.error("Error fetching all IDs:", error);
+    return [];
+  }
+};

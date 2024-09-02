@@ -3,9 +3,6 @@ package com.GRS.backend.entities.source_connection;
 import com.GRS.backend.annotations.QueryParams;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationService;
-import com.GRS.backend.entities.destination_connection.DestinationConnection;
-import com.GRS.backend.entities.report.Report;
-import com.GRS.backend.entities.user.User;
 import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.enums.AuditLogAction;
 import com.GRS.backend.enums.AuditLogModule;
@@ -26,8 +23,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/applications/{appId}/sourceConnections")
@@ -53,6 +48,12 @@ public class SourceConnectionController {
 
         return Response.responseBuilder("Source Connections retrieved successfully", HttpStatus.OK, allSourceConnections);
 
+    }
+
+    @GetMapping("/getAllIds")
+    public ResponseEntity<List<Number>> getAllSourceIds() {
+        List<Number> allSourceIds = sourceConnectionService.getAllSourceIds();
+        return ResponseEntity.ok(allSourceIds);
     }
 
     @GetMapping("/all")
