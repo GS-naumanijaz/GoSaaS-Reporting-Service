@@ -66,9 +66,13 @@ const TableFooter = ({
   return (
     <Box margin={4}>
       <Flex justifyContent="space-between" alignItems="center">
-        {NoOfRecords !== 0 && (
+        {NoOfRecords !== 0 ? (
           <Text flex="1" textAlign="left">
             {`${lowerRange}-${upperRange} of ${NoOfRecords} records showing`}
+          </Text>
+        ) : (
+          <Text flex="1" textAlign="left">
+            {`0 records showing`}
           </Text>
         )}
         <HStack spacing={4} justifyContent="center" flex="1">
@@ -94,7 +98,9 @@ const TableFooter = ({
                 </Button>
               </Tooltip>
             </>
-          ): <Text>1 of 1</Text>}
+          ) : (
+            <Text>1 of 1</Text>
+          )}
         </HStack>
 
         <HStack flex="1" justifyContent="flex-end">

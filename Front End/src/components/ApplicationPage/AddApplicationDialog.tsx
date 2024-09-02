@@ -77,6 +77,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
     setIsSubmitting(true); // Start loading state
     try {
       await onSubmit(formData); // Await the async submit function
+      console.log(formData);
     } catch (error) {
       console.error("Failed to add application:", error);
       // Optionally, set additional error state here to show a message to the user
@@ -105,7 +106,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
                 <Input
                   type="text"
                   value={formData.applicationName}
-                  onChange={handleChange("applicationName", maximumAppName)}
+                  onChange={handleChange("applicationName")}
                   placeholder="Enter application name"
                   autoComplete="off"
                 />
@@ -120,10 +121,7 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
                 <Input
                   type="text"
                   value={formData.applicationDescription}
-                  onChange={handleChange(
-                    "applicationDescription",
-                    maximumAppDescription
-                  )}
+                  onChange={handleChange("applicationDescription")}
                   placeholder="Enter application description"
                   autoComplete="off"
                 />
@@ -142,9 +140,13 @@ const AddApplicationDialog: React.FC<AddApplicationDialogProps> = ({
               colorScheme="red"
               onClick={handleSubmit}
               ml={3}
-              isDisabled={isSubmitting || Object.keys(formErrors).some((key) => formErrors[key])} // Disable the button while submitting or if there are validation errors
+              isDisabled={
+                isSubmitting ||
+                Object.keys(formErrors).some((key) => formErrors[key])
+              } // Disable the button while submitting or if there are validation errors
             >
-              {isSubmitting ? <Spinner size="sm" /> : "Add"} {/* Show spinner while loading */}
+              {isSubmitting ? <Spinner size="sm" /> : "Add"}{" "}
+              {/* Show spinner while loading */}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

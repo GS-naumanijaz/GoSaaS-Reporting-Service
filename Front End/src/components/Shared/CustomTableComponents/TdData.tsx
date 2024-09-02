@@ -111,10 +111,16 @@ const TdData: React.FC<Props> = ({
     }
 
     if (inputField.type === "password") {
+      const maxLength = 20;
+      const displayValue =
+        data.length > maxLength
+          ? "•".repeat(maxLength) + "…" // If data length is more than 20, show 20 dots and an ellipsis
+          : "•".repeat(data.length); // Otherwise, show the number of dots equal to the data length
+
       return (
         <Input
           type="password"
-          value={"•".repeat(data.length)}
+          value={displayValue}
           isReadOnly
           variant="filled"
           bg="transparent"
@@ -184,7 +190,7 @@ const TdData: React.FC<Props> = ({
         bg={secondaryColor}
         color="black"
       >
-        <Text>{data}</Text>
+        <Text>{data.slice(0, 20)}</Text>
       </Tooltip>
     );
   };

@@ -204,4 +204,10 @@ public class ReportService {
             return ResponseEntity.status(500).body("Error uploading file: " + e.getMessage());
         }
     }
+
+    public List<Number> getAllReportIds() {
+        return reportRepository.findAll().stream()
+                .map(Report::getId)
+                .collect(Collectors.toList());
+    }
 }

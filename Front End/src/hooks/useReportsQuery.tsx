@@ -186,3 +186,14 @@ export const useGetPinnedReports = () => {
     staleTime: 1000 * 60 * 5,
   });
 };
+
+export const getAllReportIds = async (appId: number): Promise<number[]> => {
+  const apiClient = createApiClient1(appId);
+  try {
+    const response = await apiClient.getAllIds(); // response is of type AxiosResponse<number[]>
+    return response.data; // Directly return the number[] array
+  } catch (error) {
+    console.error("Error fetching all IDs:", error);
+    return [];
+  }
+};

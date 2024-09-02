@@ -4,6 +4,7 @@ import com.GRS.backend.base_models.BaseSpecification;
 import com.GRS.backend.base_models.ConnectionSpecification;
 import com.GRS.backend.entities.application.Application;
 import com.GRS.backend.entities.application.ApplicationRepository;
+import com.GRS.backend.entities.destination_connection.DestinationConnection;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.report.ReportRepository;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.Source;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -260,5 +262,11 @@ public class SourceConnectionService {
 
     public List<StoredProcedure> getSourceConnectionStoredProcedures(SourceConnection sourceConnection) {
         return DatabaseUtilities.getDatabaseInfo(sourceConnection);
+    }
+
+    public List<Number> getAllSourceIds() {
+        return sourceConnectionRepository.findAll().stream()
+                .map(SourceConnection::getId)
+                .collect(Collectors.toList());
     }
 }

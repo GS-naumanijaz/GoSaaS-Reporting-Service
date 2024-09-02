@@ -192,6 +192,7 @@ const DestinationConnectionData = ({
         throw new Error("Function not implemented.");
       }}
       isLoading={isLoading}
+      appId={appId}
     />
   );
 };

@@ -193,6 +193,7 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
         throw new Error("handleClearDates function not implemented.");
       }}
       isLoading={isLoading}
+      appId = {appId}
     />
   );
 };

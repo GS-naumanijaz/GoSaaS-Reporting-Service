@@ -157,7 +157,7 @@ const FilterSortPopup = ({
         <PopoverTrigger>
           <HStack justifyContent={"center"}>
             <Button variant={"ghost"}>{heading}</Button>
-            <TbMenuOrder color={primaryColor} size="1.5em" />
+            {/* <TbMenuOrder color={primaryColor} size={25} /> */}
           </HStack>
         </PopoverTrigger>
         <PopoverContent>

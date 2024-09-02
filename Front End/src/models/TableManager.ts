@@ -13,6 +13,7 @@ export class TableManager {
   private isSelectingRows: boolean;
   private canSaveEditedRows: boolean[];
   private preEditActiveStatus: boolean;
+  private selectedAll: number[];
 
   constructor(dataType: TableRowData, data: TableRowData[], product?: Product) {
     this.defaultData = dataType;
@@ -25,10 +26,19 @@ export class TableManager {
     this.allRowsSelected = false;
     this.isSelectingRows = false;
     this.preEditActiveStatus = false;
+    this.selectedAll = [];
   }
 
   pageSize(): number {
     return this.data.length;
+  }
+
+  getSelectedAll(): number[] {
+    return this.selectedAll;
+  }
+
+  setSelectedAll(selectedAll: number[]) {
+    this.selectedAll = selectedAll;
   }
 
   getTableData(): TableRowData[] {
@@ -96,8 +106,6 @@ export class TableManager {
   }
 
   getPartialRowItem(index: number): any {
-
-    
     const differentIndexes: number[] = [];
 
     for (let i = 0; i < this.preEditRows[index].length; i++) {
@@ -258,5 +266,4 @@ export class TableManager {
   setLastTestResult(index: number, result: boolean | undefined) {
     this.data[index].setLastTestResult(result);
   }
-
 }

@@ -1,8 +1,9 @@
 package com.GRS.backend.enums;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public enum SourceConnectionType {
+public enum SourceConnectionType  {
     SQL("sql", "com.mysql.cj.jdbc.Driver"),
     POSTGRES("postgresql", "org.postgresql.Driver"),
     MYSQL("mysql", "com.mysql.cj.jdbc.Driver"),
