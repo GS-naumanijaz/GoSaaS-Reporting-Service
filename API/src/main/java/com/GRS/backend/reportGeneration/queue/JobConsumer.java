@@ -70,6 +70,9 @@ public class JobConsumer {
             }
 
             Report report = optionalReport.get();
+            if (!report.getIsActive()) {
+                throw new EntityNotFoundException("Report", "Report is not active.");
+            }
             DestinationConnection destination = report.getDestinationConnection();
             if (destination == null) {
                 throw new EntityNotFoundException("DestinationConnection", "Destination connection not found for report.");
@@ -110,10 +113,4 @@ public class JobConsumer {
             logger.error("Error Processing Job: {}", e.getMessage(), e);
         }
     }
-
-
-//    private Request mapGenerateReportDTOToRequest(GenerateReportDTO generateReportDTO) {
-//
-//        return request;
-//    }
 }

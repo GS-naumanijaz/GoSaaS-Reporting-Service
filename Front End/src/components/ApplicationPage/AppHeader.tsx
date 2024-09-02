@@ -246,6 +246,7 @@ const AppHeader = ({ appData }: Props) => {
           <Tooltip label={newAppData.alias} bg={primaryColor}>
             <Input
               size="md"
+              autoComplete="off"
               variant="outline"
               width={"20%"}
               focusBorderColor={primaryColor}
@@ -283,6 +284,7 @@ const AppHeader = ({ appData }: Props) => {
           <Tooltip label={newAppData.description} bg={primaryColor}>
             <Input
               size="md"
+              autoComplete="off"
               width="40%"
               variant="outline"
               focusBorderColor={primaryColor}

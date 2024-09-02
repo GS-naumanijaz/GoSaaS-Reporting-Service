@@ -66,7 +66,7 @@ class APIClient<T> {
     this.endpoint = endpoint;
   }
 
-  // Handles API responses
+  // Handles API responses 
   private handleResponse = <R>(response: AxiosResponse<APIResponse<R>>): R => {
     if (
       response.data.httpStatus !== "OK" &&

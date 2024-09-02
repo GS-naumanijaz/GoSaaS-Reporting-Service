@@ -1,13 +1,13 @@
 package com.GRS.backend.reportGeneration;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 @Component
@@ -17,28 +17,50 @@ public class JsonToXmlConverter {
         // Read the JSON string from the InputStream
         String json = new Scanner(jsonInputStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
 
-        // Convert the string to a JSON array
-        JSONArray jsonArray = null;
+        // Convert JSON string to Object
+        ObjectMapper jsonMapper = new ObjectMapper();
+        Object jsonObject;
         try {
-            jsonArray = new JSONArray(json);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+            jsonObject = jsonMapper.readValue(json, Object.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse JSON", e);
         }
 
-        // Convert each object in the array to XML and wrap it in a root element
-        StringBuilder xmlBuilder = new StringBuilder();
-        xmlBuilder.append("<records>");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = jsonArray.getJSONObject(i);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            String xml = XML.toString(jsonObject, "record");
-            xmlBuilder.append(xml);
+        // Convert Object to XML
+        XmlMapper xmlMapper = new XmlMapper();
+        String xml;
+        try {
+            xml = buildXml(jsonObject);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert JSON to XML", e);
         }
-        xmlBuilder.append("</records>");
+
+        System.out.println("Converted JSON to XML:");
+        System.out.println(xml);
+        return xml;
+    }
+
+    private String buildXml(Object jsonObject) throws Exception {
+        StringBuilder xmlBuilder = new StringBuilder();
+
+        if (jsonObject instanceof List) {
+            xmlBuilder.append("<records>");
+            List<?> jsonArray = (List<?>) jsonObject;
+            for (Object obj : jsonArray) {
+                if (obj instanceof Map) {
+                    Map<?, ?> jsonMap = (Map<?, ?>) obj;
+                    String recordXml = new XmlMapper().writeValueAsString(jsonMap);
+                    xmlBuilder.append("<record>").append(recordXml.substring(recordXml.indexOf(">") + 1, recordXml.lastIndexOf("<"))).append("</record>");
+                }
+            }
+            xmlBuilder.append("</records>");
+        } else if (jsonObject instanceof Map) {
+            xmlBuilder.append("<record>");
+            xmlBuilder.append(new XmlMapper().writeValueAsString(jsonObject));
+            xmlBuilder.append("</record>");
+        } else {
+            throw new Exception("Unsupported JSON structure");
+        }
 
         return xmlBuilder.toString();
     }

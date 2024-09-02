@@ -344,11 +344,11 @@ const CustomTable = ({
                 <Th
                   key={index}
                   textAlign="center"
-                  _hover={{
-                    bg: "#f0f0f0",
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  }}
+                  _hover={
+                    tableManager.getSortFilterOptions()[index].isEnabled
+                      ? { bg: "#f0f0f0", cursor: "pointer" }
+                      : {}
+                  }
                   width={tableManager.getColumnWidths()[index]}
                 >
                   <FilterSortPopup

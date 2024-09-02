@@ -67,6 +67,7 @@ const RequestData = () => {
     );
 
     if (hasInProgressReports) {
+      console.log("refreshing")
       const intervalId = setInterval(() => {
         refetch();
       }, 5000); // Refetch every 5 seconds

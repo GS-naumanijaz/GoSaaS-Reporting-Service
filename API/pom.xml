@@ -156,7 +156,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20230227</version>
+			<version>20231013</version>
 		</dependency>
 
 		<!-- Jsoup HTML parser -->
@@ -187,11 +187,18 @@
 		</dependency>
 
  		<!-- Jackson Databind for Json-->
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
+<!--			<artifactId>jackson-databind</artifactId>-->
+<!--			<version>2.15.2</version> &lt;!&ndash; Use the latest version &ndash;&gt;-->
+<!--		</dependency>-->
+
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.14.2</version> <!-- Use the latest version -->
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.15.2</version> <!-- Make sure this version matches your Jackson core version -->
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

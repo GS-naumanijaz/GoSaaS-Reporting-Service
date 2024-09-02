@@ -35,7 +35,7 @@ const Products = () => {
             borderColor="lightgrey"
             borderWidth={2}
             borderRadius="md"
-            marginX={3}
+            // marginX={3}
             marginTop={2}
             textAlign="center"
             h="96.8%"
