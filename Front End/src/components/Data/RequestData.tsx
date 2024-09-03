@@ -50,7 +50,7 @@ const RequestData = () => {
         new Request(
           request.id,
           request.reportName,
-          request.application.alias,
+          request.application?.alias || "N/A", // Check if application is null or undefined
           request.createdAt,
           request.status,
           request.reportLink,
@@ -67,7 +67,7 @@ const RequestData = () => {
     );
 
     if (hasInProgressReports) {
-      console.log("refreshing")
+      console.log("refreshing");
       const intervalId = setInterval(() => {
         refetch();
       }, 5000); // Refetch every 5 seconds

@@ -66,7 +66,7 @@ class APIClient<T> {
     this.endpoint = endpoint;
   }
 
-  // Handles API responses 
+  // Handles API responses
   private handleResponse = <R>(response: AxiosResponse<APIResponse<R>>): R => {
     if (
       response.data.httpStatus !== "OK" &&
@@ -160,43 +160,66 @@ class APIClient<T> {
     return cleanedParams;
   };
 
-  private edgeTrimmer = (data: any): any => {
+  private edgeTrimmer = (
+    data: any
+  ): { trimmedData: any; trimmedFields: string[] } => {
+    const trimmedFields: string[] = [];
+
     if (data && typeof data === "object" && !Array.isArray(data)) {
-      return Object.keys(data).reduce((acc, key) => {
+      const trimmedData = Object.keys(data).reduce((acc, key) => {
         let value = data[key];
 
         // Trim string values
         if (typeof value === "string") {
-          value = value.trim();
+          const trimmedValue = value.trim();
+          if (trimmedValue !== value) {
+            trimmedFields.push(key); // Record the field if it was trimmed
+          }
+          value = trimmedValue;
         }
 
         // Recursively trim nested objects
         if (typeof value === "object" && value !== null) {
-          value = this.edgeTrimmer(value);
+          const nestedResult = this.edgeTrimmer(value);
+          value = nestedResult.trimmedData;
+
+          if (nestedResult.trimmedFields.length > 0) {
+            trimmedFields.push(
+              ...nestedResult.trimmedFields.map(
+                (nestedKey) => `${key}.${nestedKey}`
+              )
+            );
+          }
         }
 
         acc[key] = value;
-
         return acc;
       }, {} as { [key: string]: any });
+
+      return { trimmedData, trimmedFields };
     }
 
-    return data;
+    return { trimmedData: data, trimmedFields };
   };
 
-  private InvalidChecker = (data: any): Promise<never> | false => {
+  private InvalidChecker = (
+    data: any,
+    trimmedFields: string[]
+  ): Promise<never> | false => {
     if (data && typeof data === "object") {
       const hasInvalidField = Object.entries(data).some(([key, value]) => {
+        // Skip fields that were not trimmed
+        if (!trimmedFields.includes(key)) {
+          return false;
+        }
+
         // General validation for empty, null, or undefined values
-        console.log(key, value);
-        if (value === "" || value === null ) {
+        if (value === "" || value === null) {
           return true;
         }
 
         // Specific validation for 'alias'
         if (key === "alias" && typeof value === "string" && value.length < 3) {
-          console.log("key: ", key);
-
           return true;
         }
 
@@ -206,7 +229,6 @@ class APIClient<T> {
           typeof value === "string" &&
           value.length < 20
         ) {
-          console.log("key: ", key);
           return true;
         }
 
@@ -262,17 +284,17 @@ class APIClient<T> {
     }
 
     console.log("data before trim: ", data);
-    data = this.edgeTrimmer(data);
+    const { trimmedData, trimmedFields } = this.edgeTrimmer(data);
 
     // Check for invalid fields before proceeding
-    const validationError = this.InvalidChecker(data);
+    const validationError = this.InvalidChecker(trimmedData, trimmedFields);
     if (validationError) {
       return validationError; // Return the rejected promise
     }
 
-    console.log("data after trim: ", data);
+    console.log("data after trim: ", trimmedData);
     return axiosInstance
-      .post<APIResponse<ReportResponse>>(this.endpoint, data, config)
+      .post<APIResponse<ReportResponse>>(this.endpoint, trimmedData, config)
       .then((res) => this.handleResponse(res))
       .catch(this.handleError);
   };
@@ -285,16 +307,17 @@ class APIClient<T> {
     if (!this.isValidBody(data)) {
       return Promise.resolve(null); // Just return null if the data is invalid
     }
-    data = this.edgeTrimmer(data);
 
-    if (this.InvalidChecker(data)) {
+    const { trimmedData, trimmedFields } = this.edgeTrimmer(data);
+
+    if (this.InvalidChecker(trimmedData, trimmedFields)) {
       return Promise.resolve(null);
     }
 
     return axiosInstance
       .patch<APIResponse<ReportResponse>>(
         `${this.endpoint}/${urlParams}`,
-        data,
+        trimmedData,
         config
       )
       .then((res) => this.handleResponse(res))

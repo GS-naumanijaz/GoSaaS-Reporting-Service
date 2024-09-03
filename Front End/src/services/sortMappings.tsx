@@ -11,13 +11,13 @@ export const fieldMapping = {
   "Last Modified": "updatedAt",
   // source
   Alias: "alias",
-  "Connection Type": "type",
+  "Type": "type",
   Host: "host",
   Port: "port",
-  "Database Name": "databaseName",
+  "Database": "databaseName",
   Username: "username",
   Password: "password",
-  "Schema (if applicable)": "schema",
+  "Schema": "schema",
   // destination
   "Active Status": "isActive",
   "Bucket Name": "bucketName",

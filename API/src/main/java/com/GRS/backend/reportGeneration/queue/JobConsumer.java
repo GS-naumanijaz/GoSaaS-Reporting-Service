@@ -56,8 +56,12 @@ public class JobConsumer {
             GenerateReportDTO generateReportDTO = objectMapper.readValue(jobJson, GenerateReportDTO.class);
 
             // Fetch the Application and Report
-            Application app = applicationService.getApplicationByAlias(generateReportDTO.getData().getApplicationName());
-            if (app == null) {
+            Application app;
+            try {
+                app = applicationService.getApplicationByAlias(generateReportDTO.getData().getApplicationName());
+            }
+            catch (EntityNotFoundException e) {
+                FailedRequestExtracted(generateReportDTO, Optional.empty());
                 throw new EntityNotFoundException("Application", generateReportDTO.getData().getApplicationName());
             }
 
@@ -66,6 +70,8 @@ public class JobConsumer {
                     .findFirst();
 
             if (optionalReport.isEmpty()) {
+                FailedRequestExtracted(generateReportDTO, Optional.of(app));
+
                 throw new EntityNotFoundException("Report", generateReportDTO.getData().getReportName());
             }
 
@@ -75,6 +81,7 @@ public class JobConsumer {
             }
             DestinationConnection destination = report.getDestinationConnection();
             if (destination == null) {
+                FailedRequestExtracted(generateReportDTO, Optional.of(app));
                 throw new EntityNotFoundException("DestinationConnection", "Destination connection not found for report.");
             }
 
@@ -112,5 +119,18 @@ public class JobConsumer {
         } catch (Exception e) {
             logger.error("Error Processing Job: {}", e.getMessage(), e);
         }
+    }
+
+    private void FailedRequestExtracted(GenerateReportDTO generateReportDTO, Optional<Application> app) {
+        System.out.println("Failed to generate report" + generateReportDTO.getData());
+        System.out.println("app: " + app);
+        Request request = new Request();
+        request.setReportName(generateReportDTO.getData().getReportName());
+        request.setParams(generateReportDTO.getData().getParameterValues().values().toArray(new String[0]));
+        request.setStatus(RequestStatus.valueOf("failed"));
+        if (app.isPresent()) {
+            request.setApplication(app.get());
+        }
+        requestService.saveOrUpdateRequest(request);
     }
 }

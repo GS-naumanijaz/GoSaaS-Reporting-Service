@@ -32,7 +32,7 @@ export const useSourceConnections = (
   searchField: string
 ) => {
   const apiClient = createApiClient(appId);
-
+  console.log("sarchField", searchField, "searchTerm", searchTerm);
   return useQuery({
     queryKey: [
       "sourceConnections",

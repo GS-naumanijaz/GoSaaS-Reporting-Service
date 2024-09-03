@@ -12,6 +12,7 @@ import com.GRS.backend.utilities.DatabaseUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -62,7 +63,8 @@ public class MiscService {
                 .findFirst();
 
         if (!optionalReport.isPresent()) {
-            throw new EntityNotFoundException("Report", generateReportDTO.getData().getReportName());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Report not found");
+//            throw new EntityNotFoundException("Report", generateReportDTO.getData().getReportName());
         }
 
         Report report = optionalReport.get();

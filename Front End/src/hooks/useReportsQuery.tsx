@@ -117,6 +117,7 @@ export const useBulkUpdateReportStatus = (appId: number) => {
 // Hook to upload file
 export const useUploadFile = (appId: number) => {
   const apiClient = createApiClient1(appId);
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: { file: File; reportId: number }) =>
@@ -126,6 +127,9 @@ export const useUploadFile = (appId: number) => {
     },
     onSuccess: () => {
       console.log("File uploaded successfully.");
+      queryClient.invalidateQueries({
+        predicate: invalidateReportsConnections(appId),
+      });
     },
   });
 };

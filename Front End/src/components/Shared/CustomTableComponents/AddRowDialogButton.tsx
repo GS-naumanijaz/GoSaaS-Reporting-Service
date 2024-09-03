@@ -52,7 +52,8 @@ const AddRowDialogButton: React.FC<Props> = ({
     {}
   );
 
-  const [formData, setFormData] = useState<Record<string, string>>(initialFormState);
+  const [formData, setFormData] =
+    useState<Record<string, string>>(initialFormState);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false); // Manage the loading state
 
@@ -73,13 +74,17 @@ const AddRowDialogButton: React.FC<Props> = ({
       const error = validateField(formData[field.name], field.validation);
       if (error) newErrors[field.name] = error;
     });
+    console.log("outside");
 
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
     } else {
       setIsSubmitting(true); // Start loading state
       try {
-        console.log("before api call");
+        if (formData["Schema (if applicable)"] === "") {
+          delete formData["Schema (if applicable)"];
+        }
+
         await onSubmit(formData); // Use mutateAsync for the API call
         console.log("after api call");
         // Close the dialog only if the submission is successful
@@ -203,7 +208,12 @@ const AddRowDialogButton: React.FC<Props> = ({
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleSubmit} ml={3} isDisabled={isSubmitting}>
+              <Button
+                colorScheme="red"
+                onClick={handleSubmit}
+                ml={3}
+                isDisabled={isSubmitting}
+              >
                 {isSubmitting ? <Spinner size="sm" mr={2} /> : null}
                 Add
               </Button>

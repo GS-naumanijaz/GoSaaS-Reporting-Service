@@ -53,7 +53,7 @@ export class SourceConnection extends TableRowData {
     "Port",
     "Username",
     "Password",
-    "Status",
+    "Active Status",
     "Edit",
     "Delete",
     "",

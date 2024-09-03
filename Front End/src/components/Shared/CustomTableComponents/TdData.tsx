@@ -190,7 +190,8 @@ const TdData: React.FC<Props> = ({
         bg={secondaryColor}
         color="black"
       >
-        <Text>{data.slice(0, 20)}</Text>
+        <Text>{inputField.name === "Details" ? data : data.slice(0, 20)}</Text>
+        {/* this is for audit log only */}
       </Tooltip>
     );
   };
