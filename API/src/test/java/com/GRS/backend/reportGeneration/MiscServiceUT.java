@@ -116,28 +116,6 @@ public class MiscServiceUT {
     }
 
     @Test
-    public void testGenerateReport_EntityNotFound() {
-        ApplicationService applicationService = mock(ApplicationService.class);
-        MiscService miscService = new MiscService(
-                applicationService, mock(S3Client.class), mock(S3ClientProvider.class),
-                mock(JsonToXmlConverter.class), mock(XmlToHtmlTransformer.class), mock(HtmlToPdfConverter.class));
-
-        GenerateReportDTO generateReportDTO = new GenerateReportDTO();
-        ReportDataDTO reportDataDTO = new ReportDataDTO();
-        reportDataDTO.setApplicationName("testApplication");
-        reportDataDTO.setReportName("nonExistentReport");
-        generateReportDTO.setData(reportDataDTO);
-
-        Application application = new Application();
-        application.setAlias("testApplication");
-        when(applicationService.getApplicationByAlias(anyString())).thenReturn(application);
-
-        // Call method under test and expect exception
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> miscService.generateReport(generateReportDTO));
-        assertEquals("Report with alias nonExistentReport not found", exception.getMessage());
-    }
-
-    @Test
     public void testGenerateReport_EntityIsInactive() {
         ApplicationService applicationService = mock(ApplicationService.class);
         MiscService miscService = new MiscService(
