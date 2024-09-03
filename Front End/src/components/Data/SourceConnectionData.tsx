@@ -130,7 +130,9 @@ const SourceConnectionData = ({ appId }: SourceConnectionDataProps) => {
   };
 
   const handleAddNew = async (formData: Record<string, string>) => {
+    console.log("formdata", formData);
     let sourceForm = mapFormDataKeys(formData);
+    console.log("after mapping", sourceForm );
     let newSource = new SourceConnection(
       undefined,
       sourceForm.alias,

@@ -68,6 +68,9 @@ const AddRowDialogButton: React.FC<Props> = ({
     };
 
   const handleSubmit = async () => {
+
+    
+
     const newErrors: Record<string, string> = {};
 
     inputFields.forEach((field) => {
@@ -75,6 +78,8 @@ const AddRowDialogButton: React.FC<Props> = ({
       if (error) newErrors[field.name] = error;
     });
     console.log("outside");
+
+
 
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
@@ -84,6 +89,7 @@ const AddRowDialogButton: React.FC<Props> = ({
         if (formData["Schema (if applicable)"] === "") {
           delete formData["Schema (if applicable)"];
         }
+        console.log("form data", formData);
 
         await onSubmit(formData); // Use mutateAsync for the API call
         console.log("after api call");
