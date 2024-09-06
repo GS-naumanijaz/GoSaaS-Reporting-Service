@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./Front End
+    ports:
+      - 5173:5173
+    depends_on:
+      - api
+
+  api:
+    build: ./API
+    ports:  
+      - 8080:8080
+    depends_on:
+      - database 
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: gosaas_reporting_service
+    ports:
+      - 5433:5432 
+    volumes:
+      - gosaas_reporting_service:/var/lib/postgresql/data
+
+volumes:
+  gosaas_reporting_service:
+
+
+
