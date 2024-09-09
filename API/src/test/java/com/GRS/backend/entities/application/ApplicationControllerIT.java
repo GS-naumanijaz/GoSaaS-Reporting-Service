@@ -1,7 +1,6 @@
 package com.GRS.backend.entities.application;
 
 import com.GRS.backend.TestUtils;
-import com.GRS.backend.entities.application.ApplicationService;
 import com.GRS.backend.entities.report.Report;
 import com.GRS.backend.entities.report.ReportService;
 import com.GRS.backend.entities.user.User;
@@ -10,8 +9,6 @@ import com.GRS.backend.entities.user.UserService;
 import com.GRS.backend.exceptionHandler.exceptions.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

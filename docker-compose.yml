@@ -25,6 +25,15 @@ services:
     volumes:
       - gosaas_reporting_service:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672    # Port for RabbitMQ communication
+      - 15672:15672  # Port for RabbitMQ management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   gosaas_reporting_service:
 
