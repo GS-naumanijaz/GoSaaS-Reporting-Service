@@ -22,8 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-Entity Relation Diagram
-Wireframes
 API/.env
 API/src/main/resources/application-host.yml
 API/src/main/resources/application-local.yml

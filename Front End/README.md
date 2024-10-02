@@ -21,3 +21,13 @@ The core goals of the GoSaaS Reporting Service project are:
 - **Resource Optimization:** Efficiently utilize system resources to maximize the number of reports that can be generated concurrently.
 
 By achieving these goals, GoSaaS will provide a robust, efficient, and scalable reporting solution that empowers users to generate insights and make data-driven decisions with ease.
+
+## How to run
+
+1. Start up your Docker Desktop.
+2. Run the command `docker-compose up --build` to build and start the services.
+3. Once the services are running, you can access the application through the following URLs:
+   - **Local:** [http://localhost:5173/](http://localhost:5173/)
+   - **Network:** [http://172.18.0.5:5173/](http://172.18.0.5:5173/)
+
+Make sure your Docker environment is properly set up, and all required dependencies are installed before running the service.
