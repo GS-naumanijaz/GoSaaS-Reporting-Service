@@ -1,6 +1,6 @@
 # GoSaaS Reporting Service
 
-**Overview:**
+## Project Details
 
 GoSaaS aims to develop a unified reporting microservice that addresses the current challenges posed by diverse reporting mechanisms across multiple products. The primary objective is to centralize report generation, improve scalability for large reports, and introduce additional features such as product/report registration tracking.
 
@@ -21,6 +21,8 @@ The core goals of the GoSaaS Reporting Service project are:
 - **Resource Optimization:** Efficiently utilize system resources to maximize the number of reports that can be generated concurrently.
 
 By achieving these goals, GoSaaS will provide a robust, efficient, and scalable reporting solution that empowers users to generate insights and make data-driven decisions with ease.
+
+## Screenshots of the Application
 
 ## How to run
 
