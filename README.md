@@ -24,6 +24,27 @@ By achieving these goals, GoSaaS will provide a robust, efficient, and scalable 
 
 ## Screenshots of the Application
 
+![Login Page](Screenshots/loginPage.png)  
+_Login page where users can enter their credentials._
+
+![Home Page (Grid View)](Screenshots/homePageGridView.png)  
+_Home page displaying data in a grid view._
+
+![Home Page (Table View)](Screenshots/homePageTableView.png)  
+_Home page showing data in a table view format._
+
+![Application Details Page](Screenshots/applicationDetailsPage.png)  
+_Detailed view of a selected application._
+
+![Reports Page](Screenshots/reportsPage.png)  
+_Reports page where users can generate and view reports._
+
+![Audit Log Page](Screenshots/auditLogPage.png)  
+_Audit log page showing user activities and system events._
+
+![Requests Page](Screenshots/requestsPage.png)  
+_Requests page displaying pending and processed requests._
+
 ## How to run
 
 1. Start up your Docker Desktop.
